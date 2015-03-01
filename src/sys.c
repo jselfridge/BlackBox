@@ -60,7 +60,7 @@ void sys_loop ( void )  {
   ushort i;
   timer_start();
   for ( i=0; i<6; i++ )  sys.input[i] = pru_read_pulse(i);
-  imu_sample(&mpu1);
+  imu_sample(&imu1);
   ctrl_law();
   //for ( i=0; i<4; i++ )  pru_send_pulse( i, 1000 );
   for ( i=0; i<4; i++ )  pru_send_pulse( i, sys.output[i] );
@@ -94,49 +94,49 @@ void sys_debug (  )  {
   for ( i=0; i<6; i++ )  printf("%06.1f ", sys.input[i]  );  printf("   ");
   for ( i=0; i<4; i++ )  printf("%06.1f ", sys.output[i] );  printf("   ");
 
-  // MPU1 heading status
-  //printf("%012ld ", mpu1.rawQuat[0] );  printf("   ");
+  // IMU1 heading status
+  //printf("%012ld ", imu1.rawQuat[0] );  printf("   ");
   //printf("%6.1f ", heading *(180.0f/PI) );  printf("   ");
 
-  // MPU2 heading status
-  //printf("%012ld ", mpu2.rawQuat[0] );  printf("   ");
+  // IMU2 heading status
+  //printf("%012ld ", imu2.rawQuat[0] );  printf("   ");
   //printf("%6.1f ", heading *(180.0f/PI) );  printf("   ");
 
-  // Raw sensor values - MPU1
-  //for ( i=0; i<3; i++ )  printf("%04d ",   mpu1.rawMag[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%06d ",   mpu1.rawAcc[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%06d ",   mpu1.rawGyro[i] );  printf("   ");
-  //for ( i=0; i<4; i++ )  printf("%012ld ", mpu1.rawQuat[i] );  printf("   ");
+  // Raw sensor values - IMU1
+  //for ( i=0; i<3; i++ )  printf("%04d ",   imu1.rawMag[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%06d ",   imu1.rawAcc[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%06d ",   imu1.rawGyro[i] );  printf("   ");
+  //for ( i=0; i<4; i++ )  printf("%012ld ", imu1.rawQuat[i] );  printf("   ");
 
-  // Raw sensor values - MPU2
-  //for ( i=0; i<3; i++ )  printf("%04d ",   mpu2.rawMag[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%06d ",   mpu2.rawAcc[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%06d ",   mpu2.rawGyro[i] );  printf("   ");
-  //for ( i=0; i<4; i++ )  printf("%012ld ", mpu2.rawQuat[i] );  printf("   ");
+  // Raw sensor values - IMU2
+  //for ( i=0; i<3; i++ )  printf("%04d ",   imu2.rawMag[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%06d ",   imu2.rawAcc[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%06d ",   imu2.rawGyro[i] );  printf("   ");
+  //for ( i=0; i<4; i++ )  printf("%012ld ", imu2.rawQuat[i] );  printf("   ");
 
-  // Normalized sensor values - MPU1
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", mpu1.normMag[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", mpu1.normAcc[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", mpu1.normGyro[i] );  printf("   ");
-  //for ( i=0; i<4; i++ )  printf("%7.4f ", mpu1.normQuat[i] );  printf("   ");
+  // Normalized sensor values - IMU1
+  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.normMag[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.normAcc[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.normGyro[i] );  printf("   ");
+  //for ( i=0; i<4; i++ )  printf("%7.4f ", imu1.normQuat[i] );  printf("   ");
 
-  // Normalized sensor values - MPU2
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", mpu2.normMag[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", mpu2.normAcc[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", mpu2.normGyro[i] );  printf("   ");
-  //for ( i=0; i<4; i++ )  printf("%7.4f ", mpu2.normQuat[i] );  printf("   ");
+  // Normalized sensor values - IMU2
+  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.normMag[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.normAcc[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.normGyro[i] );  printf("   ");
+  //for ( i=0; i<4; i++ )  printf("%7.4f ", imu2.normQuat[i] );  printf("   ");
 
-  // Data fusion values - MPU1
-  //for ( i=0; i<4; i++ )  printf("%6.3f ", mpu1.Quat[i]              );  printf("   ");
-  //for ( i=0; i<4; i++ )  printf("%6.3f ", mpu1.dQuat[i]             );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%6.1f ", mpu1.Eul[i]  *(180.0f/PI) );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%6.1f ", mpu1.dEul[i] *(180.0f/PI) );  printf("   ");
+  // Data fusion values - IMU1
+  //for ( i=0; i<4; i++ )  printf("%6.3f ", imu1.Quat[i]              );  printf("   ");
+  //for ( i=0; i<4; i++ )  printf("%6.3f ", imu1.dQuat[i]             );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.Eul[i]  *(180.0f/PI) );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.dEul[i] *(180.0f/PI) );  printf("   ");
 
-  // Data fusion values - MPU2
-  //for ( i=0; i<4; i++ )  printf("%6.3f ", mpu2.Quat[i]              );  printf("   ");
-  //for ( i=0; i<4; i++ )  printf("%6.3f ", mpu2.dQuat[i]             );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%6.1f ", mpu2.Eul[i]  *(180.0f/PI) );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%6.1f ", mpu2.dEul[i] *(180.0f/PI) );  printf("   ");
+  // Data fusion values - IMU2
+  //for ( i=0; i<4; i++ )  printf("%6.3f ", imu2.Quat[i]              );  printf("   ");
+  //for ( i=0; i<4; i++ )  printf("%6.3f ", imu2.dQuat[i]             );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%6.1f ", imu2.Eul[i]  *(180.0f/PI) );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%6.1f ", imu2.dEul[i] *(180.0f/PI) );  printf("   ");
 
   // Control values
   printf( "%6.3f   " , heading*(180.0/PI) );

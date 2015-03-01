@@ -20,15 +20,15 @@ int main ( void )  {
   sys.running      = true;
   datalog.open     = false;
   datalog.enabled  = false;
-  mpu1.bus = 1;  //mpu1.rot[0] = 1;  mpu1.rot[4] = 1;  mpu1.rot[8] = 1;  // Add this later
-  //mpu2.bus = 2;  //mpu2.rot[0] = 1;  mpu2.rot[4] = 1;  mpu2.rot[8] = 1;
+  imu1.bus = 1;  //imu1.rot[0] = 1;  imu1.rot[4] = 1;  imu1.rot[8] = 1;  // Add this later
+  //imu2.bus = 2;  //imu2.rot[0] = 1;  imu2.rot[4] = 1;  imu2.rot[8] = 1;
 
   // Initialize subsystems
   sys_init();
   timer_init();  // Pass system process into function
   pru_init();
-  imu_init(&mpu1);
-  //imu_init(&mpu2);
+  imu_init(&imu1);
+  //imu_init(&imu2);
   ctrl_init();
   timer_begin();
 

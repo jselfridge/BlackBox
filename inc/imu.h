@@ -12,8 +12,8 @@
 #define GYRO_SCALE  ( 500.0f / 32768.0f ) * ( PI / 180.0f )
 #define GYRO_ERROR  5.0f * ( PI / 180.0 )
 #define GYRO_DRIFT  0.2f * ( PI / 180.0 )
-#define MPU_BETA    sqrt( 3.0f / 4.0f ) * GYRO_ERROR
-#define MPU_ZETA    sqrt( 3.0f / 4.0f ) * GYRO_DRIFT
+#define IMU_BETA    sqrt( 3.0f / 4.0f ) * GYRO_ERROR
+#define IMU_ZETA    sqrt( 3.0f / 4.0f ) * GYRO_DRIFT
 #define R_BIAS      -3.9f * ( PI / 180.0 )
 #define P_BIAS      -1.0f * ( PI / 180.0 )
 #define Y_BIAS       0.0f * ( PI / 180.0 )
@@ -23,7 +23,7 @@
 #define PI  M_PI
 
 
-// MPU structure
+// IMU structure
 typedef struct {
   int bus;
   //signed char rot [9];  // Add this later
@@ -48,9 +48,9 @@ typedef struct {
   double bias [3];
   double fx;
   double fz;
-} mpu_struct;
-mpu_struct mpu1;
-//mpu_struct mpu2;
+} imu_struct;
+imu_struct imu1;
+//imu_struct imu2;
 
 
 // Global variables
@@ -62,17 +62,17 @@ ushort counter;
 
 
 // MPU functions
-void    imu_init     ( mpu_struct* mpu );
+void    imu_init     ( imu_struct* imu );
 void    imu_exit     ( void );
-void    imu_param    ( mpu_struct* mpu );
-void    imu_setcal   ( mpu_struct* mpu );
-void    imu_conv     ( mpu_struct* mpu );
-void    imu_setic    ( mpu_struct* mpu );
+void    imu_param    ( imu_struct* imu );
+void    imu_setcal   ( imu_struct* imu );
+void    imu_conv     ( imu_struct* imu );
+void    imu_setic    ( imu_struct* imu );
 int     imu_avail    ( void );
-void    imu_raw      ( mpu_struct* mpu );
-void    imu_norm     ( mpu_struct* mpu );
-void    imu_fusion   ( mpu_struct* mpu );
-void    imu_sample   ( mpu_struct* mpu );
+void    imu_raw      ( imu_struct* imu );
+void    imu_norm     ( imu_struct* imu );
+void    imu_fusion   ( imu_struct* imu );
+void    imu_sample   ( imu_struct* imu );
 short   imu_row_map  ( const signed char* row );
 short   imu_orient   ( const signed char* mtx );
 

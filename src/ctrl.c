@@ -113,7 +113,7 @@ void ctrl_flags ( void )  {
       if ( fullStick[CH_Y][RIGHT] >= stickHold ) {
 	motorsArmed = true;
 	led_on(LED_MOT);
-	heading = mpu1.Eul[Z];
+	heading = imu1.Eul[Z];
 	if(DEBUG) printf("Armed at %7.4f deg\n",heading);
       }
       if ( fullStick[CH_Y][LEFT]  >= stickHold ) {
@@ -170,8 +170,8 @@ void ctrl_pid ( void )  {
 
   // Determine roll adjustment
   double R_KPerr, R_KDerr, R_KIreset, R_adj;
-  R_KPerr = -mpu1.Eul[X] + ref[CH_R];
-  R_KDerr = -mpu1.dEul[X];
+  R_KPerr = -imu1.Eul[X] + ref[CH_R];
+  R_KDerr = -imu1.dEul[X];
   R_KIreset = ref[CH_R] / range[CH_R];
   if ( R_KIreset < -I_RESET || R_KIreset > I_RESET )  R_KIerr = 0; 
   else  R_KIerr += R_KPerr * SYS_DT;
@@ -179,8 +179,8 @@ void ctrl_pid ( void )  {
 
   // Determine pitch adjustment
   double P_KPerr, P_KDerr, P_KIreset, P_adj;
-  P_KPerr = -mpu1.Eul[Y] + ref[CH_P];
-  P_KDerr = -mpu1.dEul[Y];
+  P_KPerr = -imu1.Eul[Y] + ref[CH_P];
+  P_KDerr = -imu1.dEul[Y];
   P_KIreset = ref[CH_P] / range[CH_P];
   if ( P_KIreset < -I_RESET || P_KIreset > I_RESET )  P_KIerr = 0; 
   else  P_KIerr += P_KPerr * SYS_DT;
@@ -191,10 +191,10 @@ void ctrl_pid ( void )  {
   if ( norm[CH_T] > -0.9 && fabs(norm[CH_Y]) > 0.15 )  heading += ref[CH_Y] * SYS_DT;
   while ( heading >   PI )  heading -= 2.0*PI;
   while ( heading <= -PI )  heading += 2.0*PI;
-  Y_KPerr = -mpu1.Eul[Z] + heading;
+  Y_KPerr = -imu1.Eul[Z] + heading;
   while ( Y_KPerr >   PI )  heading -= 2.0*PI;
   while ( Y_KPerr <= -PI )  heading += 2.0*PI;
-  Y_KDerr = -mpu1.dEul[Z];
+  Y_KDerr = -imu1.dEul[Z];
   Y_KIreset = ref[CH_Y] / range[CH_Y];
   if ( Y_KIreset < -I_RESET || Y_KIreset > I_RESET )  Y_KIerr = 0; 
   else  Y_KIerr += Y_KPerr * SYS_DT;
@@ -202,7 +202,7 @@ void ctrl_pid ( void )  {
 
   // Determine throttle adjustment
   double tilt, range, T_adj; 
-  tilt = 1 - ( cos(mpu1.Eul[X]) * cos(mpu1.Eul[Y]) );
+  tilt = 1 - ( cos(imu1.Eul[X]) * cos(imu1.Eul[Y]) );
   if   ( norm[CH_D] <=0 )  range = T_MIN - 1000;
   else                     range = T_MAX - T_MIN;
   T_adj = T_MIN + range * norm[CH_D] + ref[CH_T] + tilt * T_TILT;

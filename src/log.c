@@ -100,55 +100,55 @@ void log_record ( void )  {
   for ( i=0; i<6; i++ )  fprintf( datalog.file, "%06.1f, ", sys.input[i]  );  fprintf( datalog.file, "   " );
   for ( i=0; i<4; i++ )  fprintf( datalog.file, "%06.1f, ", sys.output[i] );  fprintf( datalog.file, "   " );
  
-  // Raw sensors data (MPU1)
-  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   mpu1.rawMag[i]  );  fprintf( datalog.file, "   " );
-  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   mpu1.rawAcc[i]  );  fprintf( datalog.file, "   " );
-  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   mpu1.rawGyro[i] );  fprintf( datalog.file, "   " );
-  for ( i=0; i<4; i++ )  fprintf( datalog.file, "%012ld, ", mpu1.rawQuat[i] );  fprintf( datalog.file, "   " );
+  // Raw sensors data (IMU1)
+  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   imu1.rawMag[i]  );  fprintf( datalog.file, "   " );
+  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   imu1.rawAcc[i]  );  fprintf( datalog.file, "   " );
+  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   imu1.rawGyro[i] );  fprintf( datalog.file, "   " );
+  for ( i=0; i<4; i++ )  fprintf( datalog.file, "%012ld, ", imu1.rawQuat[i] );  fprintf( datalog.file, "   " );
 
- // Normalized sensor data (MPU1)
-  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", mpu1.normMag[i]  );  fprintf( datalog.file, "   " );
-  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", mpu1.normAcc[i]  );  fprintf( datalog.file, "   " );
-  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", mpu1.normGyro[i] );  fprintf( datalog.file, "   " );
+ // Normalized sensor data (IMU1)
+  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", imu1.normMag[i]  );  fprintf( datalog.file, "   " );
+  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", imu1.normAcc[i]  );  fprintf( datalog.file, "   " );
+  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", imu1.normGyro[i] );  fprintf( datalog.file, "   " );
 
-  // Internal fusion algorithm values (MPU1)
+  // Internal fusion algorithm values (IMU1)
   for ( i=0; i<3; i++ )  
-  fprintf( datalog.file, "%9.6f, ", mpu1.bias[i] );
+  fprintf( datalog.file, "%9.6f, ", imu1.bias[i] );
   fprintf( datalog.file, "   " );
-  fprintf( datalog.file, "%7.4f, ", mpu1.fx );
-  fprintf( datalog.file, "%7.4f, ", mpu1.fz );
+  fprintf( datalog.file, "%7.4f, ", imu1.fx );
+  fprintf( datalog.file, "%7.4f, ", imu1.fz );
   fprintf( datalog.file, "   " );
 
-  // Fused sensor data (MPU1)
-  for ( i=0; i<4; i++ )  fprintf( datalog.file, "%7.4f, ", mpu1.Quat[i]  );  fprintf( datalog.file, "   " );
-  for ( i=0; i<4; i++ )  fprintf( datalog.file, "%7.4f, ", mpu1.dQuat[i] );  fprintf( datalog.file, "   " );
-  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", mpu1.Eul[i]   );  fprintf( datalog.file, "   " );
-  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", mpu1.dEul[i]  );  fprintf( datalog.file, "   " );
+  // Fused sensor data (IMU1)
+  for ( i=0; i<4; i++ )  fprintf( datalog.file, "%7.4f, ", imu1.Quat[i]  );  fprintf( datalog.file, "   " );
+  for ( i=0; i<4; i++ )  fprintf( datalog.file, "%7.4f, ", imu1.dQuat[i] );  fprintf( datalog.file, "   " );
+  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", imu1.Eul[i]   );  fprintf( datalog.file, "   " );
+  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", imu1.dEul[i]  );  fprintf( datalog.file, "   " );
 
-  // Raw sensors data (MPU2)
-  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   mpu2.rawMag[i]  );  fprintf( datalog.file, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   mpu2.rawAcc[i]  );  fprintf( datalog.file, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   mpu2.rawGyro[i] );  fprintf( datalog.file, "   " );
-  //for ( i=0; i<4; i++ )  fprintf( datalog.file, "%012ld, ", mpu2.rawQuat[i] );  fprintf( datalog.file, "   " );
+  // Raw sensors data (IMU2)
+  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   imu2.rawMag[i]  );  fprintf( datalog.file, "   " );
+  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   imu2.rawAcc[i]  );  fprintf( datalog.file, "   " );
+  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   imu2.rawGyro[i] );  fprintf( datalog.file, "   " );
+  //for ( i=0; i<4; i++ )  fprintf( datalog.file, "%012ld, ", imu2.rawQuat[i] );  fprintf( datalog.file, "   " );
 
-  // Calibrated sensors data (MPU2)
-  //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", mpu2.normMag[i]  );  fprintf( uav.logfile, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", mpu2.normAcc[i]  );  fprintf( uav.logfile, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", mpu2.normGyro[i] );  fprintf( uav.logfile, "   " );
+  // Calibrated sensors data (IMU2)
+  //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", imu2.normMag[i]  );  fprintf( uav.logfile, "   " );
+  //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", imu2.normAcc[i]  );  fprintf( uav.logfile, "   " );
+  //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", imu2.normGyro[i] );  fprintf( uav.logfile, "   " );
 
-  // Internal fusion algorithm values (MPU2)
+  // Internal fusion algorithm values (IMU2)
   //for ( i=0; i<3; i++ )  
-  //fprintf( uav.logfile, "%9.6f, ", mpu2.bias[i] );
+  //fprintf( uav.logfile, "%9.6f, ", imu2.bias[i] );
   //fprintf( uav.logfile, "   " );
-  //fprintf( uav.logfile, "%7.4f, ", mpu2.fx );
-  //fprintf( uav.logfile, "%7.4f, ", mpu2.fz );
+  //fprintf( uav.logfile, "%7.4f, ", imu2.fx );
+  //fprintf( uav.logfile, "%7.4f, ", imu2.fz );
   //fprintf( uav.logfile, "   " );
 
-  // Fused sensor data (MPU2)
-  //for ( i=0; i<4; i++ )  fprintf( uav.logfile, "%7.4f, ", mpu2.Quat[i]  );  fprintf( uav.logfile, "   " );
-  //for ( i=0; i<4; i++ )  fprintf( uav.logfile, "%7.4f, ", mpu2.dQuat[i] );  fprintf( uav.logfile, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", mpu2.Eul[i]   );  fprintf( uav.logfile, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", mpu2.dEul[i]  );  fprintf( uav.logfile, "   " );
+  // Fused sensor data (IMU2)
+  //for ( i=0; i<4; i++ )  fprintf( uav.logfile, "%7.4f, ", imu2.Quat[i]  );  fprintf( uav.logfile, "   " );
+  //for ( i=0; i<4; i++ )  fprintf( uav.logfile, "%7.4f, ", imu2.dQuat[i] );  fprintf( uav.logfile, "   " );
+  //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", imu2.Eul[i]   );  fprintf( uav.logfile, "   " );
+  //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", imu2.dEul[i]  );  fprintf( uav.logfile, "   " );
 
   return;
 }

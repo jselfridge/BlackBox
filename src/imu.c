@@ -10,19 +10,19 @@
 //  imu_init
 //  Initializes an MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_init ( mpu_struct* mpu )  {
+void imu_init ( imu_struct* imu )  {
 
   // Start initialization
   char bus[1];
-  sprintf( bus, "%d", mpu->bus );
-  if(DEBUG)  printf( "Initializing MPU%s \n", bus );
+  sprintf( bus, "%d", imu->bus );
+  if(DEBUG)  printf( "Initializing IMU%s \n", bus );
   led_blink( LED_MPU, 500, 500 );
 
   // Init functions
-  imu_param(mpu);
-  imu_setcal(mpu);
-  imu_conv(mpu);
-  imu_setic(mpu);
+  imu_param(imu);
+  imu_setcal(imu);
+  imu_conv(imu);
+  imu_setic(imu);
 
   // Indicate init completed
   led_on(LED_MPU);
@@ -36,9 +36,9 @@ void imu_init ( mpu_struct* mpu )  {
 //  Terminate an MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_exit ( void )  {
-  if(DEBUG)  printf("  Closing MPU \n");
+  if(DEBUG)  printf("  Closing IMU \n");
   ret = mpu_set_dmp_state(0);
-  sys_err( ret, "Error (mpu_exit): 'mpu_set_dmp_state' failed." );
+  sys_err( ret, "Error (imu_exit): 'mpu_set_dmp_state' failed." );
   return;
 }
 
@@ -47,46 +47,46 @@ void imu_exit ( void )  {
 //  imu_param
 //  Assign parameters to an MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_param ( mpu_struct* mpu )  {
+void imu_param ( imu_struct* imu )  {
 
   // Modify this later
   const signed char R[9] = { 1,0,0, 0,1,0, 0,0,1 };
 
-  if(DEBUG) {  printf("  Assigning MPU parameters ");  fflush(stdout);  }
-  linux_set_i2c_bus(mpu->bus);
+  if(DEBUG) {  printf("  Assigning IMU parameters ");  fflush(stdout);  }
+  linux_set_i2c_bus(imu->bus);
 
   ret = mpu_init_master(NULL);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (mpu_init): 'mpu_init_master' failed." );
+  sys_err( ret, "Error (imu_init): 'mpu_init_master' failed." );
 
   ret = mpu_set_sensors( INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS );
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (mpu_init): 'mpu_set_sensors' failed." );
+  sys_err( ret, "Error (imu_init): 'mpu_set_sensors' failed." );
 
   ret = mpu_configure_fifo( INV_XYZ_GYRO | INV_XYZ_ACCEL );
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (mpu_init): 'mpu_configure_fifo' failed." );
+  sys_err( ret, "Error (imu_init): 'mpu_configure_fifo' failed." );
 
   ret = mpu_set_sample_rate((int)SYS_FREQ);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (mpu_init): 'mpu_set_sample_rate' failed." );
+  sys_err( ret, "Error (imu_init): 'mpu_set_sample_rate' failed." );
 
   ret = mpu_set_compass_sample_rate((int)SYS_FREQ);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (mpu_init): 'mpu_set_compass_sample_rate' failed." );
+  sys_err( ret, "Error (imu_init): 'mpu_set_compass_sample_rate' failed." );
 
   ret = mpu_set_lpf(5);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (mpu_init): 'mpu_set_lpf' failed." );
+  sys_err( ret, "Error (imu_init): 'mpu_set_lpf' failed." );
 
   ret = dmp_load_motion_driver_firmware();
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (mpu_init): 'dmp_load_motion_driver_firmware' failed." );
+  sys_err( ret, "Error (imu_init): 'dmp_load_motion_driver_firmware' failed." );
 
   //ret = dmp_set_orientation( mpu_orient(mpu->rot) );
   ret = dmp_set_orientation( imu_orient(R) );
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (mpu_init): 'dmp_set_orientation' failed." );
+  sys_err( ret, "Error (imu_init): 'dmp_set_orientation' failed." );
 
   ret = dmp_enable_feature( 
           DMP_FEATURE_6X_LP_QUAT | 
@@ -94,23 +94,23 @@ void imu_param ( mpu_struct* mpu )  {
 	  DMP_FEATURE_SEND_CAL_GYRO | 
           DMP_FEATURE_GYRO_CAL );
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (mpu_init): 'dmp_enable_feature' failed." );
+  sys_err( ret, "Error (imu_init): 'dmp_enable_feature' failed." );
 
   ret = dmp_set_fifo_rate(SYS_FREQ);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (mpu_init): 'dmp_set_fifo_rate' failed." );
+  sys_err( ret, "Error (imu_init): 'dmp_set_fifo_rate' failed." );
 
   ret = mpu_set_dmp_state(1);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (mpu_init): 'mpu_set_dmp_state' failed." );
+  sys_err( ret, "Error (imu_init): 'mpu_set_dmp_state' failed." );
 
   ret = mpu_set_gyro_fsr(500);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (mpu_init): 'mpu_set_gyro_fsr' failed." );
+  sys_err( ret, "Error (imu_init): 'mpu_set_gyro_fsr' failed." );
 
   ret = mpu_set_accel_fsr(4);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (mpu_init): 'mpu_set_accel_fsr' failed." );
+  sys_err( ret, "Error (imu_init): 'mpu_set_accel_fsr' failed." );
 
   if(DEBUG)  printf(" complete \n");
   return;
@@ -121,8 +121,8 @@ void imu_param ( mpu_struct* mpu )  {
 //  imu_setcal
 //  Sets the calibration parameters for the MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_setcal ( mpu_struct* mpu )  {
-  if(DEBUG)  printf("  MPU calibration values: \n");
+void imu_setcal ( imu_struct* imu )  {
+  if(DEBUG)  printf("  IMU calibration values: \n");
 
   // Local variables
   int i;
@@ -132,42 +132,42 @@ void imu_setcal ( mpu_struct* mpu )  {
   memset( buff, 0, sizeof(buff) );
 
   // Set magnetometer offset
-  sprintf( path, "cal/mpu%d/moffset", mpu->bus );
+  sprintf( path, "cal/imu%d/moffset", imu->bus );
   f = fopen( path, "r" );
-  if (!f)  {  printf("Error (mpu_setcal): File 'moffset' not found. \n");  return;  }
+  if (!f)  {  printf("Error (imu_setcal): File 'moffset' not found. \n");  return;  }
   for ( i=0; i<3; i++ ) {
     if ( !fgets( buff, 32, f ) )  printf("Error: Failed to read 'moffset' file. \n");
-    mpu->moffset[i] = atoi(buff);
+    imu->moffset[i] = atoi(buff);
   }
   fclose(f);
 
   // Set magnetometer range
-  sprintf( path, "cal/mpu%d/mrange", mpu->bus );
+  sprintf( path, "cal/imu%d/mrange", imu->bus );
   f = fopen( path, "r" );
-  if (!f)  {  printf("Error (mpu_setcal): File 'mrange' not found. \n");  return;  }
+  if (!f)  {  printf("Error (imu_setcal): File 'mrange' not found. \n");  return;  }
   for ( i=0; i<3; i++ ) {
     if ( !fgets( buff, 32, f ) )  printf("Error: Failed to read 'mrange' file. \n");
-    mpu->mrange[i] = atoi(buff);
+    imu->mrange[i] = atoi(buff);
   }
   fclose(f);
 
   // Set acceleration offset
-  sprintf( path, "cal/mpu%d/aoffset", mpu->bus );
+  sprintf( path, "cal/imu%d/aoffset", imu->bus );
   f = fopen( path, "r" );
-  if (!f)  {  printf("Error (mpu_setcal): File 'aoffset' not found. \n");  return;  }
+  if (!f)  {  printf("Error (imu_setcal): File 'aoffset' not found. \n");  return;  }
   for ( i=0; i<3; i++ ) {
     if ( !fgets( buff, 32, f ) )  printf("Error: Failed to read 'aoffset' file. \n");
-    mpu->aoffset[i] = atoi(buff);
+    imu->aoffset[i] = atoi(buff);
   }
   fclose(f);
 
   // Set acceleration range
-  sprintf( path, "cal/mpu%d/arange", mpu->bus );
+  sprintf( path, "cal/imu%d/arange", imu->bus );
   f = fopen( path, "r" );
-  if (!f)  {  printf("Error (mpu_setcal): File 'arange' not found. \n");  return;  }
+  if (!f)  {  printf("Error (imu_setcal): File 'arange' not found. \n");  return;  }
   for ( i=0; i<3; i++ ) {
     if ( !fgets( buff, 32, f ) )  printf("Error: Failed to read 'arange' file. \n");
-    mpu->arange[i] = atoi(buff);
+    imu->arange[i] = atoi(buff);
   }
   fclose(f);
 
@@ -176,10 +176,10 @@ void imu_setcal ( mpu_struct* mpu )  {
   printf("    moffset  mrange  aoffset  arange \n");
   for ( i=0; i<3; i++ ) {
     printf("      ");
-    printf( "%04d    ", mpu->moffset[i] );
-    printf( "%04d    ", mpu->mrange[i]  );
-    printf( "%04d    ", mpu->aoffset[i] );
-    printf( "%06d  \n", mpu->arange[i]  );
+    printf( "%04d    ", imu->moffset[i] );
+    printf( "%04d    ", imu->mrange[i]  );
+    printf( "%04d    ", imu->aoffset[i] );
+    printf( "%06d  \n", imu->arange[i]  );
   } 
   }
 
@@ -191,8 +191,8 @@ void imu_setcal ( mpu_struct* mpu )  {
 //  imu_conv
 //  Allows the sensor heading to converge after initialization. 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_conv ( mpu_struct* mpu )  {
-  if(DEBUG)  printf("  Determining MPU heading:    "); 
+void imu_conv ( imu_struct* imu )  {
+  if(DEBUG)  printf("  Determining IMU heading:    "); 
 
   /*
   double magx, magy;
@@ -230,26 +230,26 @@ void imu_conv ( mpu_struct* mpu )  {
 //  imu_setic
 //  Sets the initial conditions for the MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_setic ( mpu_struct* mpu )  {
-  if(DEBUG)  printf("  Setting MPU initial conditions \n");
+void imu_setic ( imu_struct* imu )  {
+  if(DEBUG)  printf("  Setting IMU initial conditions \n");
 
   unsigned short i=1;
-  mpu->fx = 0.5;  mpu->fz = 0.866;
+  imu->fx = 0.5;  imu->fz = 0.866;
   for ( i=0; i<4; i++ ) {
-    mpu->dQuat[i] = 0;
+    imu->dQuat[i] = 0;
     if (i<3) {
-      mpu->Eul[i]  = 0;
-      mpu->dEul[i] = 0;
-      mpu->bias[i] = 0;
+      imu->Eul[i]  = 0;
+      imu->dEul[i] = 0;
+      imu->bias[i] = 0;
     }
   }
-  mpu->Quat[0] = 1;
-  mpu->Eul[Z] = heading;
+  imu->Quat[0] = 1;
+  imu->Eul[Z] = heading;
 
-  mpu->Quat[0] = cos(heading/2);
-  mpu->Quat[1] = 0;
-  mpu->Quat[2] = 0;
-  mpu->Quat[3] = sin(heading/2);
+  imu->Quat[0] = cos(heading/2);
+  imu->Quat[1] = 0;
+  imu->Quat[2] = 0;
+  imu->Quat[3] = sin(heading/2);
 
   return;
 }
@@ -262,7 +262,7 @@ void imu_setic ( mpu_struct* mpu )  {
 int imu_avail ( void )  {
   short status;
   ret = mpu_get_int_status(&status);
-  sys_err( ret<0, "Error (mpu_avail): 'mpu_get_int_status' failed." );
+  sys_err( ret<0, "Error (imu_avail): 'mpu_get_int_status' failed." );
   return ( status == ( MPU_INT_STATUS_DATA_READY | MPU_INT_STATUS_DMP | MPU_INT_STATUS_DMP_0 ) );
 }
 
@@ -272,7 +272,7 @@ int imu_avail ( void )  {
 //  Clears the FIFO buffer on the MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /*
-int imu_avail ( void )  {
+int imu_clear ( void )  {
   unsigned char ii;
   unsigned char data;
   for (ii = 0; ii < st.hw->num_reg; ii++) {
@@ -291,7 +291,7 @@ int imu_avail ( void )  {
 //  imu_raw
 //  Obtains raw data from MPU sensor and maps to body frame.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_raw ( mpu_struct* mpu )  {
+void imu_raw ( imu_struct* imu )  {
 
   // Local variables 
   short sensors;
@@ -301,17 +301,16 @@ void imu_raw ( mpu_struct* mpu )  {
   if ( imu_avail() ) {
 
     // Obtain magnetometer values
-    ret = mpu_get_compass_reg( mpu->rawMag, &mpu->magTime );
-    sys_err( ret<0, "Error (mpu_raw): 'mpu_get_compass_reg' failed." );
+    ret = mpu_get_compass_reg( imu->rawMag, &imu->magTime );
+    sys_err( ret<0, "Error (imu_raw): 'mpu_get_compass_reg' failed." );
 
     // Obatin gyro, acc, and quat values
     while (more) {
-      ret = dmp_read_fifo( mpu->rawGyro, mpu->rawAcc, mpu->rawQuat, &mpu->dmpTime, &sensors, &more );
-      sys_err( ret<0, "Error (mpu_raw): 'dmp_read_fifo' failed. ");
+      ret = dmp_read_fifo( imu->rawGyro, imu->rawAcc, imu->rawQuat, &imu->dmpTime, &sensors, &more );
+      sys_err( ret<0, "Error (imu_raw): 'dmp_read_fifo' failed. ");
+
     }
-
   }
-
   return;
 }
 
@@ -320,28 +319,28 @@ void imu_raw ( mpu_struct* mpu )  {
 //  imu_norm
 //  Generates normalized sensor data.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_norm ( mpu_struct* mpu )  {
+void imu_norm ( imu_struct* imu )  {
 
   // Shift and orient magnetometer readings
-  mpu->normMag[X] = -( mpu->rawMag[X] - mpu->moffset[X] ) / (double)mpu->mrange[X];
-  mpu->normMag[Y] = -( mpu->rawMag[Y] - mpu->moffset[Y] ) / (double)mpu->mrange[Y];
-  mpu->normMag[Z] =  ( mpu->rawMag[Z] - mpu->moffset[Z] ) / (double)mpu->mrange[Z];
+  imu->normMag[X] = -( imu->rawMag[X] - imu->moffset[X] ) / (double)imu->mrange[X];
+  imu->normMag[Y] = -( imu->rawMag[Y] - imu->moffset[Y] ) / (double)imu->mrange[Y];
+  imu->normMag[Z] =  ( imu->rawMag[Z] - imu->moffset[Z] ) / (double)imu->mrange[Z];
 
   // Shift and orient accelerometer readings
-  mpu->normAcc[X] = ( mpu->rawAcc[Y] - mpu->aoffset[Y] ) / (double)mpu->arange[Y];
-  mpu->normAcc[Y] = ( mpu->rawAcc[X] - mpu->aoffset[X] ) / (double)mpu->arange[X];
-  mpu->normAcc[Z] = ( mpu->rawAcc[Z] - mpu->aoffset[Z] ) / (double)mpu->arange[Z];
+  imu->normAcc[X] = ( imu->rawAcc[Y] - imu->aoffset[Y] ) / (double)imu->arange[Y];
+  imu->normAcc[Y] = ( imu->rawAcc[X] - imu->aoffset[X] ) / (double)imu->arange[X];
+  imu->normAcc[Z] = ( imu->rawAcc[Z] - imu->aoffset[Z] ) / (double)imu->arange[Z];
 
   // Scale and orient gyro readings
-  mpu->normGyro[X] = -mpu->rawGyro[Y] * GYRO_SCALE;
-  mpu->normGyro[Y] = -mpu->rawGyro[X] * GYRO_SCALE;
-  mpu->normGyro[Z] = -mpu->rawGyro[Z] * GYRO_SCALE;
+  imu->normGyro[X] = -imu->rawGyro[Y] * GYRO_SCALE;
+  imu->normGyro[Y] = -imu->rawGyro[X] * GYRO_SCALE;
+  imu->normGyro[Z] = -imu->rawGyro[Z] * GYRO_SCALE;
 
   // Normalize raw quaternion values
   double mag = 0.0;  unsigned short i = 1;
-  for ( i=0; i<4; i++ )  mag += mpu->rawQuat[i] * mpu->rawQuat[i];
+  for ( i=0; i<4; i++ )  mag += imu->rawQuat[i] * imu->rawQuat[i];
   mag = sqrt(mag);
-  for ( i=0; i<4; i++ )  mpu->normQuat[i] = mpu->rawQuat[i] / mag;
+  for ( i=0; i<4; i++ )  imu->normQuat[i] = imu->rawQuat[i] / mag;
 
   return;
 }
@@ -351,7 +350,7 @@ void imu_norm ( mpu_struct* mpu )  {
 //  imu_fusion
 //  Applies sensor data fusion algorithm. 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_fusion ( mpu_struct* mpu )  {
+void imu_fusion ( imu_struct* imu )  {
 
   // Local variables
   unsigned short i;
@@ -362,14 +361,14 @@ void imu_fusion ( mpu_struct* mpu )  {
 
   // Get values from mpu structure
   double q[4], m[3], a[3], g[3], b[3], fx, fz;
-  fx = mpu->fx;  fz = mpu->fz;
+  fx = imu->fx;  fz = imu->fz;
   for ( i=0; i<4; i++ ) {
-    q[i] = mpu->Quat[i];
+    q[i] = imu->Quat[i];
     if (i<3) {
-      m[i] = mpu->normMag[i];
-      a[i] = mpu->normAcc[i];
-      g[i] = mpu->normGyro[i];
-      b[i] = mpu->bias[i];
+      m[i] = imu->normMag[i];
+      a[i] = imu->normAcc[i];
+      g[i] = imu->normGyro[i];
+      b[i] = imu->bias[i];
     }
   }
 
@@ -459,7 +458,7 @@ void imu_fusion ( mpu_struct* mpu )  {
 
   // Adjust for gyroscope baises
   for ( i=0; i<3; i++ ) {
-    b[i] += err[i] * SYS_DT * MPU_ZETA;
+    b[i] += err[i] * SYS_DT * IMU_ZETA;
     g[i] -= b[i];
   }
 
@@ -473,7 +472,7 @@ void imu_fusion ( mpu_struct* mpu )  {
   // Fused quaternion and derivative values
   double qd[4];
   for ( i=0; i<4; i++ ) {
-    qd[i] = qdr[i] - ( MPU_BETA * qdf[i] );
+    qd[i] = qdr[i] - ( IMU_BETA * qdf[i] );
     q[i] += qd[i] * SYS_DT;
   }
 
@@ -500,14 +499,14 @@ void imu_fusion ( mpu_struct* mpu )  {
   e[Z] = atan2 ( ( 2* ( qwz + qxy ) ), ( 1- 2* ( qyy + qzz ) ) ) - Y_BIAS;
 
   // Update mpu structure
-  mpu->fx = fx;  mpu->fz = fz;
+  imu->fx = fx;  imu->fz = fz;
   for ( i=0; i<4; i++ ) {
-    mpu->Quat[i] = q[i];
-    mpu->dQuat[i] = qd[i];
+    imu->Quat[i] = q[i];
+    imu->dQuat[i] = qd[i];
     if(i<3) {
-      mpu->Eul[i]  = e[i];
-      mpu->dEul[i] = g[i];
-      mpu->bias[i] = b[i];
+      imu->Eul[i]  = e[i];
+      imu->dEul[i] = g[i];
+      imu->bias[i] = b[i];
     }
   }
 
@@ -519,10 +518,10 @@ void imu_fusion ( mpu_struct* mpu )  {
 //  imu_sample
 //  Generates a sample of the MPU sensor data.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_sample ( mpu_struct* mpu )  {
-  imu_raw(mpu);
-  imu_norm(mpu);
-  imu_fusion(mpu);
+void imu_sample ( imu_struct* imu )  {
+  imu_raw(imu);
+  imu_norm(imu);
+  imu_fusion(imu);
   return;
 }
 
