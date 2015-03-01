@@ -47,14 +47,14 @@
 #define R_RANGE   0.50f
 #define R_KP    150.00f
 #define R_KI      0.00f
-#define R_KD     35.00f
+#define R_KD     40.00f
 
 
 // Define pitch gains
 #define P_RANGE   0.50f
 #define P_KP    150.00f
 #define P_KI      0.00f
-#define P_KD     35.00f
+#define P_KD     40.00f
 
 
 // Define yaw gains
