@@ -14,6 +14,7 @@
 #define STICK_HOLD  3.0
 #define I_RESET     0.25
 
+
 // Define radio channel index
 #define CH_1    0
 #define CH_2    1
@@ -24,6 +25,7 @@
 #define CH_7    6
 #define CH_8    7
 
+
 // Define state index
 #define CH_R    0    //  Roll
 #define CH_P    1    //  Pitch
@@ -33,11 +35,13 @@
 #define CH_D    5    //  Dial
 #define CH_A    6    //  Auxiliary
 
+
 // Define motor channel index
 #define MOT_FR  0
 #define MOT_BL  1
 #define MOT_FL  2
 #define MOT_BR  3
+
 
 // Define roll gains
 #define R_RANGE   0.50f
@@ -45,11 +49,13 @@
 #define R_KI      0.00f
 #define R_KD     35.00f
 
+
 // Define pitch gains
 #define P_RANGE   0.50f
 #define P_KP    150.00f
 #define P_KI      0.00f
 #define P_KD     35.00f
+
 
 // Define yaw gains
 #define Y_RANGE   2.00f
@@ -57,11 +63,13 @@
 #define Y_KI      0.00f
 #define Y_KD     60.00f
 
+
 // Define throttle gains
-#define T_HOVER   1550
-#define T_RANGE    400
-#define T_TUNE     100
+#define T_RANGE    100
+#define T_MIN     1500
+#define T_MAX     1650
 #define T_TILT   12.0f
+
 
 // Full scale ranges
 #define MIN   0
@@ -86,14 +94,14 @@ bool    motorsArmed;
 
 
 // CTRL functions
-void    ctrl_init    ( void );
-void    ctrl_disarm  ( void );
-void    ctrl_law     ( void );
-void    ctrl_ref     ( void );
-void    ctrl_flags   ( void );
-void    ctrl_switch  ( void );
-void    ctrl_pid     ( void );
-void    ctrl_limit   ( void );
+void  ctrl_init    ( void );
+void  ctrl_disarm  ( void );
+void  ctrl_law     ( void );
+void  ctrl_ref     ( void );
+void  ctrl_flags   ( void );
+void  ctrl_switch  ( void );
+void  ctrl_pid     ( void );
+void  ctrl_limit   ( void );
 
 
 #endif

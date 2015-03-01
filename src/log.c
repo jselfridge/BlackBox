@@ -46,8 +46,8 @@ void log_init ( void )  {
   fprintf( datalog.file, " time,    start,     dur,        perc,  X,    ");
 
   // Input/Output header
-  fprintf( datalog.file, "R1,   R2,   R3,   R4,   R5,   R6,      ");
-  fprintf( datalog.file, "M1,   M2,   M3,   M4,       ");
+  fprintf( datalog.file, "R1,     R2,     R3,     R4,     R5,     R6,        ");
+  fprintf( datalog.file, "M1,     M2,     M3,     M4,         ");
 
   // MPU1 header
   fprintf( datalog.file, "rMx1,   rMy1,   rMz1,      ");
@@ -97,8 +97,8 @@ void log_record ( void )  {
   else                fprintf( datalog.file, "X,    ");
 
   // Inputs and outputs
-  for ( i=0; i<6; i++ )  fprintf( datalog.file, "%04d, ", sys.input[i]  );  fprintf( datalog.file, "   " );
-  for ( i=0; i<4; i++ )  fprintf( datalog.file, "%04d, ", sys.output[i] );  fprintf( datalog.file, "   " );
+  for ( i=0; i<6; i++ )  fprintf( datalog.file, "%06.1f, ", sys.input[i]  );  fprintf( datalog.file, "   " );
+  for ( i=0; i<4; i++ )  fprintf( datalog.file, "%06.1f, ", sys.output[i] );  fprintf( datalog.file, "   " );
  
   // Raw sensors data (MPU1)
   for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   mpu1.rawMag[i]  );  fprintf( datalog.file, "   " );

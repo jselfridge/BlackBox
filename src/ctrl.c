@@ -110,8 +110,16 @@ void ctrl_flags ( void )  {
 
     // Motor arming: yaw stick only, no roll command
     if ( !fullStick[CH_R][LEFT] && !fullStick[CH_R][RIGHT] )  {
-      if ( fullStick[CH_Y][RIGHT] >= stickHold ) {  motorsArmed = true;  led_on(LED_MOT);   heading = mpu1.Eul[Z];  if(DEBUG) printf("Armed at %7.4f deg\n",heading);  }
-      if ( fullStick[CH_Y][LEFT]  >= stickHold ) {  motorsArmed = false; led_off(LED_MOT);                         }
+      if ( fullStick[CH_Y][RIGHT] >= stickHold ) {
+	motorsArmed = true;
+	led_on(LED_MOT);
+	heading = mpu1.Eul[Z];
+	if(DEBUG) printf("Armed at %7.4f deg\n",heading);
+      }
+      if ( fullStick[CH_Y][LEFT]  >= stickHold ) {
+	motorsArmed = false;
+	led_off(LED_MOT);
+      }
     }
 
     // Exit program: roll and yaw together to exit program
@@ -193,16 +201,19 @@ void ctrl_pid ( void )  {
   Y_adj = Y_KPerr * Y_KP + Y_KIerr * Y_KI + Y_KDerr * Y_KD;
 
   // Determine throttle adjustment
-  double tilt = 1 - ( cos(mpu1.Eul[X]) * cos(mpu1.Eul[Y]) );
-  double T_adj = ref[CH_T] + norm[CH_D] * T_TUNE + tilt * T_TILT;
+  double tilt, range, T_adj; 
+  tilt = 1 - ( cos(mpu1.Eul[X]) * cos(mpu1.Eul[Y]) );
+  if   ( norm[CH_D] <=0 )  range = T_MIN - 1000;
+  else                     range = T_MAX - T_MIN;
+  T_adj = T_MIN + range * norm[CH_D] + ref[CH_T] + tilt * T_TILT;
 
   // Set motor outputs
   ushort i;
   if ( norm[CH_T] > -0.9 ) {
-  sys.output[MOT_FR] = T_HOVER + T_adj - R_adj + P_adj + Y_adj;
-  sys.output[MOT_BL] = T_HOVER + T_adj + R_adj - P_adj + Y_adj;
-  sys.output[MOT_FL] = T_HOVER + T_adj + R_adj + P_adj - Y_adj;
-  sys.output[MOT_BR] = T_HOVER + T_adj - R_adj - P_adj - Y_adj;
+  sys.output[MOT_FR] = T_adj - R_adj + P_adj + Y_adj;
+  sys.output[MOT_BL] = T_adj + R_adj - P_adj + Y_adj;
+  sys.output[MOT_FL] = T_adj + R_adj + P_adj - Y_adj;
+  sys.output[MOT_BR] = T_adj - R_adj - P_adj - Y_adj;
   } else {  for ( i=0; i<4; i++ )  sys.output[i] = 1000;  }
 
   return;

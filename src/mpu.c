@@ -373,13 +373,13 @@ void mpu_fusion ( mpu_struct* mpu )  {
     }
   }
 
-  // Normalize magnetometer (create function)
+  // Normalize magnetometer
   mag = 0.0;
   for ( i=0; i<3; i++ )  mag += m[i] * m[i];
   mag = sqrt(mag);
   for ( i=0; i<3; i++ )  m[i] /= mag;
 
-  // Normalize accelerometer (create function)
+  // Normalize accelerometer
   mag = 0.0;
   for ( i=0; i<3; i++ )  mag += a[i] * a[i];
   mag = sqrt(mag);
@@ -477,7 +477,7 @@ void mpu_fusion ( mpu_struct* mpu )  {
     q[i] += qd[i] * SYS_DT;
   }
 
-  // Normalise quaternion (create function)
+  // Normalise quaternion
   mag = 0.0;
   for ( i=0; i<4; i++ )  mag += q[i] * q[i];
   mag = sqrt(mag);
@@ -495,9 +495,9 @@ void mpu_fusion ( mpu_struct* mpu )  {
 
   // Calculate euler angles
   double e[3];
-  e[X] = atan2 ( ( 2* ( qwx + qyz ) ), ( 1- 2* ( qxx + qyy ) ) );
-  e[Y] = asin  (   2* ( qwy - qxz ) );
-  e[Z] = atan2 ( ( 2* ( qwz + qxy ) ), ( 1- 2* ( qyy + qzz ) ) );
+  e[X] = atan2 ( ( 2* ( qwx + qyz ) ), ( 1- 2* ( qxx + qyy ) ) ) - R_BIAS;
+  e[Y] = asin  (   2* ( qwy - qxz ) )                            - P_BIAS;
+  e[Z] = atan2 ( ( 2* ( qwz + qxy ) ), ( 1- 2* ( qyy + qzz ) ) ) - Y_BIAS;
 
   // Update mpu structure
   mpu->fx = fx;  mpu->fz = fz;

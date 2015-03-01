@@ -14,6 +14,9 @@
 #define GYRO_DRIFT  0.2f * ( PI / 180.0 )
 #define MPU_BETA    sqrt( 3.0f / 4.0f ) * GYRO_ERROR
 #define MPU_ZETA    sqrt( 3.0f / 4.0f ) * GYRO_DRIFT
+#define R_BIAS      -3.9f * ( PI / 180.0 )
+#define P_BIAS      -1.0f * ( PI / 180.0 )
+#define Y_BIAS       0.0f * ( PI / 180.0 )
 #define X   0
 #define Y   1
 #define Z   2

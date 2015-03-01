@@ -16,8 +16,8 @@
 
 // System structure
 typedef struct {
-  short input[10];
-  short output[10];
+  double input[10];
+  double output[10];
   bool  running;
 } sys_struct;
 sys_struct sys;
