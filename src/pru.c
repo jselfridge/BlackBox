@@ -31,7 +31,7 @@ void pru_init ( void )  {
   memset( memoryPtr, 0, 4*24 );
 
   // Loops per PWM period [21800 => 400Hz]
-  memoryPtr[ OUT_OFFSET -1 ] = 11000;
+  memoryPtr[ OUT_OFFSET -1 ] = 44000;
 
   // Load assembly code
   prussdrv_exec_program ( 0, "bin/input.bin" );
