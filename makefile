@@ -5,7 +5,7 @@
 ##============================================================
 
 
-EXEC   = RunBox
+EXEC   = RunBlackBox
 CC     = gcc
 CFLAGS = -Wall -g -c
 
@@ -13,9 +13,9 @@ CFLAGS = -Wall -g -c
 #LDIR   = ../Libraries/lib/
 #IDIR   = ../Libraries/inc/
 
-#SRC   := $(shell cd src; ls -F | grep ".c" )
-#CNAME := $(patsubst %.c, %, $(SRC) )
-#OBJ   := $(foreach o, $(CNAME), obj/$(o).o )
+SRC   := $(shell cd src; ls -F | grep ".c" )
+CNAME := $(patsubst %.c, %, $(SRC) )
+OBJ   := $(foreach o, $(CNAME), obj/$(o).o )
 
 #PRU   := $(shell cd pru; ls -F | grep ".p" )
 #PNAME := $(patsubst %.p, %, $(PRU) )
@@ -26,19 +26,24 @@ CFLAGS = -Wall -g -c
          mpu/inv_mpu_dmp_motion_driver.o
 
 
-#all : $(EXEC)
+all : $(EXEC)
 
 #$(EXEC) : $(OBJ) $(BIN) 
 #	$(CC) -o $@ $(OBJ) $(MPU) -L$(LDIR) $(LIB)
+$(EXEC) : $(OBJ)
+	$(CC) -o $@ $(OBJ)
 
 #obj/%.o : src/%.c inc/%.h
 #	$(CC) $(CFLAGS) -I$(IDIR) -Iinc -Impu -o $@ $<
+obj/%.o : src/%.c inc/%.h
+	$(CC) $(CFLAGS) -Iinc -o $@ $<
 
 #bin/%.bin : pru/%.p
 #	pasm -b $<
 #	mv *.bin bin
 
-#clean :
+clean :
+	rm $(OBJ) $(EXEC)
 #	rm $(OBJ) $(BIN) $(EXEC)
 
 
