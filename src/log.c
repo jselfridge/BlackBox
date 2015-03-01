@@ -29,9 +29,9 @@ void log_init ( void )  {
   datalog.name = malloc(32);
   while (true) {
     i++;
-    if      ( i<10   )  sprintf( datalog.name, "../DataLogs/Log_00%d.txt", i );
-    else if ( i<100  )  sprintf( datalog.name, "../DataLogs/Log_0%d.txt",  i );
-    else if ( i<1000 )  sprintf( datalog.name, "../DataLogs/Log_%d.txt",   i );
+    if      ( i<10   )  sprintf( datalog.name, "./log/Log_00%d.txt", i );
+    else if ( i<100  )  sprintf( datalog.name, "./log/Log_0%d.txt",  i );
+    else if ( i<1000 )  sprintf( datalog.name, "./log/Log_%d.txt",   i );
     else  sys_err( true, "Error (log_init): Exceeded maximum number of log files." );
     if ( access( datalog.name, F_OK ) == -1 )  break;
   }
