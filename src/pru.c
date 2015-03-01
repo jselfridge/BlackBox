@@ -30,12 +30,10 @@ void pru_init ( void )  {
   memoryPtr = (unsigned int*) sharedMem;
   memset( memoryPtr, 0, 4*24 );
 
-  // Loops per PWM period [26315 ~ 400Hz]
-  memoryPtr[ OUT_OFFSET -1 ] = 25000;
+  // Loops per PWM period [21800 => 400Hz]
+  memoryPtr[ OUT_OFFSET -1 ] = 21800;
 
   // Load assembly code
-  //prussdrv_exec_program ( 0, "bin/servo.bin" );
-  //prussdrv_exec_program ( 1, "bin/radio.bin" );
   prussdrv_exec_program ( 0, "bin/input.bin" );
   prussdrv_exec_program ( 1, "bin/output.bin" );
 
@@ -69,20 +67,20 @@ float pru_read_pulse ( int ch )  {
   return memoryPtr[ IN_OFFSET +ch ] * (30.0/200);
 }
 
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  pru_read_norm
 //  Reads normalized value of PWM signal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 float pru_read_norm ( int ch )  {
-  uav_err( ch<0 || ch>=IN_CH, "Error (pru_read_norm): Radio channel must be between 0-7.");
+  sys_err( ch<0 || ch>=IN_CH, "Error (pru_read_norm): Radio channel must be between 0-7.");
   float pwm = pru_read_pulse (ch);
   float norm = ( pwm - IN_MIN ) / (float)( IN_MAX - IN_MIN );
   if (norm>1.0)  norm = 1.0;
   if (norm<0.0)  norm = 0.0;
   return norm;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  pru_send_pulse
@@ -95,18 +93,18 @@ void pru_send_pulse ( int ch, int pwm )  {
   return;
 }
 
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  pru_send_norm
 //  Sends normalized value of PWM signal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void pru_send_norm ( int ch, float norm )  {
-  uav_err( ch<0 || ch>=OUT_CH,  "Error (pru_send_norm): Servo channel must be between 0-7."        );
-  uav_err( norm<0.0 || norm>1.0, "Error (pru_send_norm): Normalized input must be between 0.0-1.0." );
+  sys_err( ch<0 || ch>=OUT_CH,  "Error (pru_send_norm): Servo channel must be between 0-7."        );
+  sys_err( norm<0.0 || norm>1.0, "Error (pru_send_norm): Normalized input must be between 0.0-1.0." );
   float pulse = OUT_MIN + ( norm * ( OUT_MAX - OUT_MIN ) );
   pru_send_pulse ( ch, pulse );
   return;
 }
-*/
+
 
 

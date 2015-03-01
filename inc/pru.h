@@ -22,7 +22,7 @@
 
 
 // Servo variables
-#define OUT_OFFSET  2060  // ORIG 2059
+#define OUT_OFFSET  2060
 #define OUT_CH      10
 #define OUT_MIN     1000
 #define OUT_MAX     2000
@@ -36,9 +36,9 @@ uint* memoryPtr;
 void  pru_init       ( void );
 void  pru_exit       ( void );
 float pru_read_pulse ( int ch );
-//float pru_read_norm  ( int ch );
+float pru_read_norm  ( int ch );
 void  pru_send_pulse ( int ch, int pwm );
-//void  pru_send_norm  ( int ch, float norm );
+void  pru_send_norm  ( int ch, float norm );
 
 
 #endif

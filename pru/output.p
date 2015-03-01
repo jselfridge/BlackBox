@@ -35,6 +35,12 @@
 *  RESTART:                             asses final loop
 *    QBEQ    OUTER_LOOP, r0, 0          check total counter, if zero, start another outer loop
 *    QBA     INNER_LOOP                 else, go back for another inner loop
+**~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~**
+*  Based on the ideal PCB wiring configuration, the index of
+*  the register does not match the index of the output pins.
+*  The folowing illustrates the mapping between the two.
+*  PIN:  01  02  03  04  05  06  07  08  09  10
+*  REG:  08  06  04  02  00  01  03  05  07  10
 **~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 START:
@@ -46,8 +52,8 @@ START:
     SBBO    r0, r1, 0, 4
 
 OUTER_LOOP:
-    LBCO    r0, CONST_PRUSHAREDRAM, 44, 92   // ORIG: 40, 80 
-    MOV     r30, 0xFFFF    // ORIG: r30.bo, 
+    LBCO    r0, CONST_PRUSHAREDRAM, 44, 92
+    MOV     r30, 0xFFFF
 
 INNER_LOOP:
     SUB     r0,  r0,  1
