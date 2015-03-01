@@ -38,7 +38,7 @@ void mpu_init ( mpu_struct* mpu )  {
 void mpu_exit ( void )  {
   if(DEBUG)  printf("  Closing MPU \n");
   ret = mpu_set_dmp_state(0);
-  mat_err( ret, "Error (mpu_exit): 'mpu_set_dmp_state' failed." );
+  sys_err( ret, "Error (mpu_exit): 'mpu_set_dmp_state' failed." );
   return;
 }
 
@@ -49,43 +49,40 @@ void mpu_exit ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void mpu_param ( mpu_struct* mpu )  {
 
-  int i2c_bus = mpu->bus;
-  const signed char R[9] = { 1,0,0, 0,1,0, 0,0,1 };
-
   if(DEBUG) {  printf("  Assigning MPU parameters ");  fflush(stdout);  }
-  linux_set_i2c_bus(i2c_bus);
+  linux_set_i2c_bus(mpu->bus);
 
   ret = mpu_init_master(NULL);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  mat_err( ret, "Error (mpu_init): 'mpu_init_master' failed." );
+  sys_err( ret, "Error (mpu_init): 'mpu_init_master' failed." );
 
   ret = mpu_set_sensors( INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS );
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  mat_err( ret, "Error (mpu_init): 'mpu_set_sensors' failed." );
+  sys_err( ret, "Error (mpu_init): 'mpu_set_sensors' failed." );
 
   ret = mpu_configure_fifo( INV_XYZ_GYRO | INV_XYZ_ACCEL );
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  mat_err( ret, "Error (mpu_init): 'mpu_configure_fifo' failed." );
+  sys_err( ret, "Error (mpu_init): 'mpu_configure_fifo' failed." );
 
-  ret = mpu_set_sample_rate((int)FREQ);
+  ret = mpu_set_sample_rate((int)SYS_FREQ);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  mat_err( ret, "Error (mpu_init): 'mpu_set_sample_rate' failed." );
+  sys_err( ret, "Error (mpu_init): 'mpu_set_sample_rate' failed." );
 
-  ret = mpu_set_compass_sample_rate((int)FREQ);
+  ret = mpu_set_compass_sample_rate((int)SYS_FREQ);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  mat_err( ret, "Error (mpu_init): 'mpu_set_compass_sample_rate' failed." );
+  sys_err( ret, "Error (mpu_init): 'mpu_set_compass_sample_rate' failed." );
 
   ret = mpu_set_lpf(5);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  mat_err( ret, "Error (mpu_init): 'mpu_set_lpf' failed." );
+  sys_err( ret, "Error (mpu_init): 'mpu_set_lpf' failed." );
 
   ret = dmp_load_motion_driver_firmware();
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  mat_err( ret, "Error (mpu_init): 'dmp_load_motion_driver_firmware' failed." );
+  sys_err( ret, "Error (mpu_init): 'dmp_load_motion_driver_firmware' failed." );
 
-  ret = dmp_set_orientation( mpu_orient(R) );
+  ret = dmp_set_orientation( mpu_orient(mpu->rot) );
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  mat_err( ret, "Error (mpu_init): 'dmp_set_orientation' failed." );
+  sys_err( ret, "Error (mpu_init): 'dmp_set_orientation' failed." );
 
   ret = dmp_enable_feature( 
           DMP_FEATURE_6X_LP_QUAT | 
@@ -93,23 +90,23 @@ void mpu_param ( mpu_struct* mpu )  {
 	  DMP_FEATURE_SEND_CAL_GYRO | 
           DMP_FEATURE_GYRO_CAL );
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  mat_err( ret, "Error (mpu_init): 'dmp_enable_feature' failed." );
+  sys_err( ret, "Error (mpu_init): 'dmp_enable_feature' failed." );
 
-  ret = dmp_set_fifo_rate(FREQ);
+  ret = dmp_set_fifo_rate(SYS_FREQ);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  mat_err( ret, "Error (mpu_init): 'dmp_set_fifo_rate' failed." );
+  sys_err( ret, "Error (mpu_init): 'dmp_set_fifo_rate' failed." );
 
   ret = mpu_set_dmp_state(1);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  mat_err( ret, "Error (mpu_init): 'mpu_set_dmp_state' failed." );
+  sys_err( ret, "Error (mpu_init): 'mpu_set_dmp_state' failed." );
 
   ret = mpu_set_gyro_fsr(500);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  mat_err( ret, "Error (mpu_init): 'mpu_set_gyro_fsr' failed." );
+  sys_err( ret, "Error (mpu_init): 'mpu_set_gyro_fsr' failed." );
 
   ret = mpu_set_accel_fsr(4);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  mat_err( ret, "Error (mpu_init): 'mpu_set_accel_fsr' failed." );
+  sys_err( ret, "Error (mpu_init): 'mpu_set_accel_fsr' failed." );
 
   if(DEBUG)  printf(" complete \n");
   return;
@@ -261,7 +258,7 @@ void mpu_setic ( mpu_struct* mpu )  {
 int mpu_avail ( void )  {
   short status;
   ret = mpu_get_int_status(&status);
-  mat_err( ret<0, "Error (mpu_avail): 'mpu_get_int_status' failed." );
+  sys_err( ret<0, "Error (mpu_avail): 'mpu_get_int_status' failed." );
   return ( status == ( MPU_INT_STATUS_DATA_READY | MPU_INT_STATUS_DMP | MPU_INT_STATUS_DMP_0 ) );
 }
 
@@ -301,12 +298,12 @@ void mpu_raw ( mpu_struct* mpu )  {
 
     // Obtain magnetometer values
     ret = mpu_get_compass_reg( mpu->rawMag, &mpu->magTime );
-    mat_err( ret<0, "Error (mpu_raw): 'mpu_get_compass_reg' failed." );
+    sys_err( ret<0, "Error (mpu_raw): 'mpu_get_compass_reg' failed." );
 
     // Obatin gyro, acc, and quat values
     while (more) {
       ret = dmp_read_fifo( mpu->rawGyro, mpu->rawAcc, mpu->rawQuat, &mpu->dmpTime, &sensors, &more );
-      mat_err( ret<0, "Error (mpu_raw): 'dmp_read_fifo' failed. ");
+      sys_err( ret<0, "Error (mpu_raw): 'dmp_read_fifo' failed. ");
     }
 
   }
@@ -458,7 +455,7 @@ void mpu_fusion ( mpu_struct* mpu )  {
 
   // Adjust for gyroscope baises
   for ( i=0; i<3; i++ ) {
-    b[i] += err[i] * DT * MPU_ZETA;
+    b[i] += err[i] * SYS_DT * MPU_ZETA;
     g[i] -= b[i];
   }
 
@@ -473,7 +470,7 @@ void mpu_fusion ( mpu_struct* mpu )  {
   double qd[4];
   for ( i=0; i<4; i++ ) {
     qd[i] = qdr[i] - ( MPU_BETA * qdf[i] );
-    q[i] += qd[i] * DT;
+    q[i] += qd[i] * SYS_DT;
   }
 
   // Normalise quaternion (create function)

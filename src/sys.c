@@ -51,7 +51,7 @@ void sys_init ( void )  {
   led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
 
   // Set run condition
-  //uav.running  = true;
+  sys.running = true;
 
   return;
 }
@@ -73,8 +73,10 @@ void sys_loop ( void )  {
   for ( i=0; i<10; i++ )   sys.input[i] = pru_read_pulse(i);
 
   // Get new MPU data
-  //mpu_sample(&mpu1);
-  //mpu_sample(&mpu2);
+  mpu_sample(&mpu1);
+  //mpu_sample(&mpu2);  // Save data fussion for later
+  mpu_raw(&mpu2);
+  mpu_norm(&mpu2);
 
   // Run control law
   //ctrl_law();
@@ -109,21 +111,20 @@ void sys_debug (  )  {
   // Time values
   printf("\r");
   printf("%6.3f  ", t.runtime );
-  printf("%09ld  ", t.start_nano );
-  printf("%09ld  ", t.dur );
+  //printf("%09ld  ", t.start_nano );
+  //printf("%09ld  ", t.dur );
   printf("%4.2f  ", t.percent );
   if (t.percent<1.0) printf("_    ");
   else               printf("X    ");
 
   // Input/Output values
-  for ( i=0; i<10; i++ )  printf("%04d ", sys.input[i] );  printf("   ");
-  //for ( i=0; i<4; i++ )  printf("%04d ", uav.servo[i] );  printf("   ");
+  for ( i=0; i<4; i++ )  printf("%04d ", sys.input[i] );  printf("   ");
 
-  // MPU1 status
+  // MPU1 heading status
   //printf("%012ld ", mpu1.rawQuat[0] );  printf("   ");
   //printf("%6.1f ", heading *(180.0f/PI) );  printf("   ");
 
-  // MPU2 status
+  // MPU2 heading status
   //printf("%012ld ", mpu2.rawQuat[0] );  printf("   ");
   //printf("%6.1f ", heading *(180.0f/PI) );  printf("   ");
 
@@ -140,10 +141,10 @@ void sys_debug (  )  {
   //for ( i=0; i<4; i++ )  printf("%012ld ", mpu2.rawQuat[i] );  printf("   ");
 
   // Calibrated sensor values - MPU1
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", mpu1.calMag[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", mpu1.calAcc[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", mpu1.calGyro[i] );  printf("   ");
-  //for ( i=0; i<4; i++ )  printf("%7.4f ", mpu1.calQuat[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%7.4f ", mpu1.normMag[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%7.4f ", mpu1.normAcc[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%7.4f ", mpu1.normGyro[i] );  printf("   ");
+  //for ( i=0; i<4; i++ )  printf("%7.4f ", mpu1.normQuat[i] );  printf("   ");
 
   // Calibrated sensor values - MPU2
   //for ( i=0; i<3; i++ )  printf("%7.4f ", mpu2.calMag[i]  );  printf("   ");
@@ -154,8 +155,8 @@ void sys_debug (  )  {
   // Data fusion values - MPU1
   //for ( i=0; i<4; i++ )  printf("%6.3f ", mpu1.Quat[i]              );  printf("   ");
   //for ( i=0; i<4; i++ )  printf("%6.3f ", mpu1.dQuat[i]             );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%6.1f ", mpu1.Eul[i]  *(180.0f/PI) );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%6.1f ", mpu1.dEul[i] *(180.0f/PI) );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%6.1f ", mpu1.Eul[i]  *(180.0f/PI) );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%6.1f ", mpu1.dEul[i] *(180.0f/PI) );  printf("   ");
 
   // Data fusion values - MPU2
   //for ( i=0; i<4; i++ )  printf("%6.3f ", mpu2.Quat[i]              );  printf("   ");
@@ -179,8 +180,8 @@ void sys_exit (  )  {
   if(DEBUG)  printf("\n\nExiting program \n");
   timer_exit();
   log_exit();    // Remove after debugging (called by control law)
-  //usleep(200000);
-  //mpu_exit();
+  usleep(200000);
+  mpu_exit();
   pru_exit();
   led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
   if(DEBUG)  printf("Program complete \n");

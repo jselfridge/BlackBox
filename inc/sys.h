@@ -9,7 +9,7 @@
 
 
 // Define statements
-#define SYS_LOOP        10000000u
+#define SYS_LOOP        20000000u
 #define SYS_FREQ        (double)( NSEC_PER_SEC / SYS_LOOP )
 #define SYS_DT          (double)( 1/SYS_FREQ )
 
@@ -20,12 +20,11 @@ typedef struct {
   short output[10];
   bool  running;
 } sys_struct;
-sys_struct  sys;
+sys_struct sys;
 
 
 // Global variables
 struct sigaction sys_signal;
-//uint* memoryPtr;
 
 
 // Function declarations

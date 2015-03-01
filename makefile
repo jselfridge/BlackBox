@@ -22,7 +22,7 @@ PRU   := $(shell cd pru; ls -F | grep ".p" )
 PNAME := $(patsubst %.p, %, $(PRU) )
 BIN   := $(foreach b, $(PNAME), bin/$(b).bin )
 
-#MPU    = mpu/inv_glue.o \
+MPU    = mpu/inv_glue.o \
          mpu/inv_mpu.o  \
          mpu/inv_mpu_dmp_motion_driver.o
 
@@ -32,12 +32,12 @@ all : $(EXEC)
 #$(EXEC) : $(OBJ) $(BIN) 
 #	$(CC) -o $@ $(OBJ) $(MPU) -L$(LDIR) $(LIB)
 $(EXEC) : $(OBJ) $(BIN)
-	$(CC) -o $@ $(OBJ) $(LIB)
+	$(CC) -o $@ $(OBJ) $(MPU) $(LIB)
 
 #obj/%.o : src/%.c inc/%.h
 #	$(CC) $(CFLAGS) -I$(IDIR) -Iinc -Impu -o $@ $<
 obj/%.o : src/%.c inc/%.h
-	$(CC) $(CFLAGS) -Iinc -o $@ $<
+	$(CC) $(CFLAGS) -Iinc -Impu -o $@ $<
 
 bin/%.bin : pru/%.p
 	pasm -b $<

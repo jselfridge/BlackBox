@@ -16,15 +16,15 @@ int main ( void )  {
   // Initial structure values
   datalog.open     = false;
   datalog.enabled  = true;  // Change back to FALSE after debugging
-  //mpu1.bus = 1;
-  //mpu2.bus = 2;
+  mpu1.bus = 1;  mpu1.rot[0] = 1;  mpu1.rot[4] = 1;  mpu1.rot[8] = 1;
+  mpu2.bus = 2;  mpu2.rot[0] = 1;  mpu2.rot[4] = 1;  mpu2.rot[8] = 1;
 
   // Initialize subsystems
   sys_init();
   timer_init();  // Pass process into function
   pru_init();
-  //mpu_init(&mpu1);
-  //mpu_init(&mpu2);
+  mpu_init(&mpu1);
+  mpu_init(&mpu2);
   //ctrl_init();
   timer_begin();
 
@@ -36,11 +36,10 @@ int main ( void )  {
   if(DEBUG)  printf("Switching on power to I/O bus \n");
 
   // Run eternal loop
-  while(1);
-  //while(uav.running) {}
-  //uav_exit();
+  while(sys.running);
 
   // Exit program
+  sys_exit();
   return 0;
 
 }

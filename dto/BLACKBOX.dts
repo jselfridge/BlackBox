@@ -32,8 +32,6 @@
         "P9.42",
 
         //--  OUTPUTS  --//
-	//"P8.20",  // Used for eMMC
-	//"P8.21",  // Used for eMMc
 	"P8.27",
 	"P8.28",
         "P8.39",
@@ -45,8 +43,14 @@
         "P8.45",
         "P8.46",
 
-	//--  TRANSISTORS  --//
+	//--  GPIO  --//
 	"P9.12",
+
+        //--  I2C  --//
+        "P9.17",
+        "P9.18",
+        "P9.19",
+        "P9.20",
 /*
         //--  SERIAL  --//
         "P8.37",
@@ -58,20 +62,13 @@
         "P9.24",
         "P9.26",
 */
-/*
-        //--  I2C  --//
-        "P9.17",
-        "P9.18",
-        "P9.19",
-        "P9.20",
-*/
         //--  HARDWARE  --//
         //"uart1",
         //"uart2",
         //"uart4",
         //"uart5",
-        //"i2c1",
-        //"i2c2",
+        "i2c1",
+        "i2c2",
         "pru0",
         "pru1",
         "pruss";
@@ -101,7 +98,6 @@
                     0x164  0x20	     //  Enable P9.42  //
 
                     //--  PRU1: Output  --//
-		    // Originally set to: 0x26
                     0x0A0  0x05      //  P8.45 | r31_00 | MODE 5  //
                     0x0A4  0x05      //  P8.46 | r31_01 | MODE 5  //
                     0x0A8  0x05      //  P8.43 | r31_02 | MODE 5  //
@@ -112,17 +108,33 @@
                     0x0BC  0x05      //  P8.40 | r31_07 | MODE 5  //
                     0x0E0  0x05      //  P8.27 | r31_08 | MODE 5  //
                     0x0E8  0x05      //  P8.28 | r31_10 | MODE 5  //
-                    //0x080  0x05      //  P8.21 | r31_12 | MODE 5  //
-                    //0x084  0x05      //  P8.20 | r31_13 | MODE 5  //
 
                 >;
             };
 
 
-            //--  Transistor pins  --//
-            tran_pins: pinmux_tran_pins {
+            //--  GPIO pins  --//
+            gpio_pins: pinmux_gpio_pins {
                 pinctrl-single,pins = <
-                    0x078  0x07      //  P9.12 | GPIO1_28 | OUTPUT | PULL DOWN | MODE 7 | Rail switch  //
+                    0x078  0x07      //  P9.12 | GPIO1_28 | OUTPUT | PULL DOWN | MODE 7 | I/O bus  //
+                >;
+            };
+
+
+            //--  I2C1 pins  --//
+            i2c1_pins: pinmux_i2c1_pins {
+                pinctrl-single,pins = <
+                    0x15C  0x72      //  P9.17 | I2C1_SCL | MODE 2  //
+                    0x158  0x72      //  P9.18 | I2C1_SDA | MODE 2  //
+                >;
+            };
+
+
+            //--  I2C2 pins  --//
+            i2c2_pins: pinmux_i2c2_pins {
+                pinctrl-single,pins = <
+                    0x17C  0x73      //  P9.19 | I2C2_SCL | MODE 3  //
+                    0x178  0x73      //  P9.20 | I2C2_SDA | MODE 3  //
                 >;
             };
 
@@ -162,24 +174,6 @@
                 >;
             };
 */
-/*
-            //--  I2C1 pins  --//
-            i2c1_pins: pinmux_i2c1_pins {
-                pinctrl-single,pins = <
-                    0x15C  0x72      //  P9.17 | I2C1_SCL | MODE 2  //
-                    0x158  0x72      //  P9.18 | I2C1_SDA | MODE 2  //
-                >;
-            };
-*/
-/*
-            //--  I2C2 pins  --//
-            i2c2_pins: pinmux_i2c2_pins {
-                pinctrl-single,pins = <
-                    0x17C  0x73      //  P9.19 | I2C2_SCL | MODE 3  //
-                    0x178  0x73      //  P9.20 | I2C2_SDA | MODE 3  //
-                >;
-            };
-*/
 
         };
     };
@@ -196,7 +190,7 @@
     };
 
 
-    //--  TRANSISTORS  --//
+    //--  GENERAL I/O  --//
     fragment@2 {
         target = <&ocp>;
         __overlay__ {
@@ -204,8 +198,30 @@
 	        compatible = "bone-pinmux-helper";
                 status = "okay";
                 pinctrl-names = "default";
-                pinctrl-0 = <&tran_pins>;
+                pinctrl-0 = <&gpio_pins>;
             };
+        };
+    };
+
+
+    //--  I2C1  --//
+    fragment@3 {
+        target = <&i2c1>;
+        __overlay__ {
+            status = "okay";
+            pinctrl-names = "default";
+            pinctrl-0 = <&i2c1_pins>;
+        };
+    };
+
+
+    //--  I2C2  --//
+    fragment@4 {
+        target = <&i2c2>;
+        __overlay__ {
+            status = "okay";
+            pinctrl-names = "default";
+            pinctrl-0 = <&i2c2_pins>;
         };
     };
 
@@ -250,28 +266,6 @@
             status = "okay";
             pinctrl-names = "default";
             pinctrl-0 = <&uart5_pins>;
-        };
-    };
-*/
-/*
-    //--  I2C1  --//
-    fragment@6 {
-        target = <&i2c1>;
-        __overlay__ {
-            status = "okay";
-            pinctrl-names = "default";
-            pinctrl-0 = <&i2c1_pins>;
-        };
-    };
-*/
-/*
-    //--  I2C2  --//
-    fragment@7 {
-        target = <&i2c2>;
-        __overlay__ {
-            status = "okay";
-            pinctrl-names = "default";
-            pinctrl-0 = <&i2c2_pins>;
         };
     };
 */

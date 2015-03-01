@@ -5,7 +5,7 @@
 //============================================================
 #ifndef _MPU_H_
 #define _MPU_H_
-#include <uav.h>
+#include <main.h>
 
 
 // Define statements
@@ -14,14 +14,16 @@
 #define GYRO_DRIFT  0.2f * ( PI / 180.0 )
 #define MPU_BETA    sqrt( 3.0f / 4.0f ) * GYRO_ERROR
 #define MPU_ZETA    sqrt( 3.0f / 4.0f ) * GYRO_DRIFT
-#define X 0
-#define Y 1
-#define Z 2
+#define X   0
+#define Y   1
+#define Z   2
+#define PI  M_PI
 
 
 // MPU structure
 typedef struct {
   int bus;
+  signed char rot [9];
   int moffset [3];
   int aoffset [3];
   int mrange  [3];
@@ -45,12 +47,13 @@ typedef struct {
   double fz;
 } mpu_struct;
 mpu_struct mpu1;
-//mpu_struct mpu2;
+mpu_struct mpu2;
 
 
 // Global variables
 double curr_head;
 double prev_head;
+double heading;
 double factor;
 ushort counter;
 

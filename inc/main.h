@@ -30,7 +30,7 @@
 #include <gpio.h>
 #include <led.h>
 #include <log.h>
-//#include <mpu.h>
+#include <mpu.h>
 #include <pru.h>
 #include <sys.h>
 #include <timer.h>
@@ -42,9 +42,9 @@
 
 
 // MPU includes
-//#include <inv_mpu.h>
-//#include <inv_mpu_dmp_motion_driver.h>
-//#include <inv_glue.h>
+#include <inv_mpu.h>
+#include <inv_mpu_dmp_motion_driver.h>
+#include <inv_glue.h>
 
 
 // Define statements
@@ -52,18 +52,7 @@
 #define NSEC_PER_SEC    1000000000u
 
 
-// UAV structure
-//typedef struct {
-//  short radio[8];
-//  short servo[8];
-//  bool  running;
-//} uav_struct;
-//uav_struct  uav;
-
-
 // Global variables
-//struct sigaction exit_signal;
-//uint* memoryPtr;
 uint ret;
 
 
