@@ -1,15 +1,16 @@
 
 //============================================================
-//  uav.c
+//  sys.c
 //  Justin M Selfridge
 //============================================================
-#include "uav.h"
+#include "sys.h"
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  main
 //  Primary code that runs the UAV avionics.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/*
 int main ( void )  {
   if(DEBUG)  printf("\nBegin UAV program \n");
   uav_init();
@@ -25,17 +26,17 @@ int main ( void )  {
   uav_exit();
   return 0;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  uav_err
+//  sys_err
 //  If error condition is true, prints a warning and exits.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void uav_err ( bool cond, char* msg )  {
+void sys_err ( bool cond, char* msg )  {
   if (cond) {  fprintf( stderr, "%s\n\n", msg );  exit(1);  }
 }
 
-
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  uav_init
 //  Initializes the UAV program.
@@ -78,8 +79,8 @@ void uav_init ( void )  {
 
   return;
 }
-
-
+*/
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  uav_loop
 //  Executes instructions at timed intervals.
@@ -117,8 +118,8 @@ void uav_loop ( void )  {
 
   return;
 }
-
-
+*/
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  uav_debug
 //  Prints debugging messages to the terminal.
@@ -191,8 +192,8 @@ void uav_debug (  )  {
 
   return;
 }
-
-
+*/
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  uav_exit
 //  Code that runs prior to exiting the program.
@@ -210,8 +211,8 @@ void uav_exit (  )  {
   kill( 0, SIGINT );
   return;
 }
-
-
+*/
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  uav_memory
 //  Reserves a block of memory exclusively for UAV program.
@@ -222,6 +223,6 @@ void uav_memory ( void )  {
   memset( temp, 0, size );
   return;
 }
-
+*/
 
 

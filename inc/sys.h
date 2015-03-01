@@ -1,19 +1,20 @@
 
 //============================================================
-//  main.h
+//  sys.h
 //  Justin M Selfridge
 //============================================================
-#ifndef _MAIN_H_
-#define _MAIN_H_
+#ifndef _SYS_H_
+#define _SYS_H_
+#include <main.h>
 
 
 // Standard includes
 //#include <fcntl.h>
 //#include <sched.h>
 //#include <signal.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
+//#include <stdbool.h>
+//#include <stdio.h>
+//#include <stdlib.h>
 //#include <string.h>
 //#include <sys/mman.h>
 //#include <time.h>
@@ -32,7 +33,6 @@
 //#include <log.h>
 //#include <mpu.h>
 //#include <pru.h>
-#include <sys.h>
 //#include <timer.h>
 
 
@@ -48,7 +48,7 @@
 
 
 // Define statements
-#define DEBUG           true
+//#define DEBUG           false
 //#define NSEC_PER_SEC    1000000000u
 //#define MAIN_LOOP_NS    10000000u
 //#define FREQ            (double)( NSEC_PER_SEC / MAIN_LOOP_NS )
@@ -95,7 +95,7 @@
 
 
 // Function declarations
-//void uav_err    ( bool cond, char* msg );
+void sys_err    ( bool cond, char* msg );
 //void uav_init   (  );
 //void uav_loop   (  );
 //void uav_debug  (  );
