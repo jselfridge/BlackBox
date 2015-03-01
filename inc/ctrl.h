@@ -8,7 +8,7 @@
 #include <main.h>
 
 
-// Define angle conversions
+// Define misc items
 #define DEG2RAD     (PI/180.0f)
 #define RAD2DEG     (180.0f/PI)
 #define STICK_HOLD  3.0
@@ -39,43 +39,25 @@
 #define MOT_FL  2
 #define MOT_BR  3
 
-// Roll and pitch tests
-// Flight01:   R0.5, P200, D25
-// Flight02:   R0.5, P150, D30
-// Flight03:   R0.5, P150, D35
-// Flight04:   R0.5, P175, D35
-// Flight05:   R0.5, P150, D35
-
+// Define roll gains
 #define R_RANGE   0.50f
 #define R_KP    150.00f
 #define R_KI      0.00f
 #define R_KD     35.00f
 
+// Define pitch gains
 #define P_RANGE   0.50f
 #define P_KP    150.00f
 #define P_KI      0.00f
 #define P_KD     35.00f
 
-// Yaw tests
-// Flight06 values were used during Flight01-05.
-// Flight06:   R3.0, P200, D60
-// Flight07:   R2.0, P200, D60
-
+// Define yaw gains
 #define Y_RANGE   2.00f
 #define Y_KP    200.00f
 #define Y_KI      0.00f
 #define Y_KD     60.00f
 
-// Throttle tests
-// Flight01: T00 (bug in code, no good flights)
-// Flight02: T00 (stable flight, good data)
-// Flight03: T20 (very transient at takeoff)
-// Flight04: T10 (very stable flight, moving on to doublets)
-// Flight05: T12
-
-// Define throttle values
-// Min is around 1450
-// Detrmine max in field
+// Define throttle gains
 #define T_HOVER   1550
 #define T_RANGE    400
 #define T_TUNE     100

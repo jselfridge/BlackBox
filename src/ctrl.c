@@ -38,7 +38,6 @@ void ctrl_init ( void )  {
   R_KIerr = 0;
   P_KIerr = 0;
   Y_KIerr = 0;
-  //heading = 0;  // Moved to MPU
 
   return;
 }

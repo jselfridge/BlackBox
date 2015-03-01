@@ -32,7 +32,6 @@ void sys_init ( void )  {
   if(DEBUG)  printf("complete \n");
 
   // Establish realtime priority
-  //if(DEBUG)  printf("  Setting realtime priority... ");
   if(!DEBUG) {
   struct sched_param sys_priority;
   memset( &sys_priority, 0, sizeof(sys_priority) );
@@ -40,7 +39,6 @@ void sys_init ( void )  {
   ret = sched_setscheduler( 0, SCHED_FIFO, &sys_priority );
   sys_err( ret == -1, "Error (sys_init): Function 'sched_setscheduler' failed." );
   }
-  //if(DEBUG)  printf("complete \n");
 
   // Lock and reserve memory
   if(DEBUG)  printf("  Locking and reserving memory... ");
@@ -59,37 +57,14 @@ void sys_init ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_loop ( void )  {
 
-  // Loop counter
   ushort i;
-
-  // Start timing loop
   timer_start();
-
-  // Get new radio inputs
-  for ( i=0; i<10; i++ )   sys.input[i] = pru_read_pulse(i);
-
-  // Get new MPU data
+  for ( i=0; i<10; i++ )  sys.input[i] = pru_read_pulse(i);
   mpu_sample(&mpu1);
-  //mpu_sample(&mpu2);  // Save data fussion for later
-  //mpu_raw(&mpu2);
-  //mpu_norm(&mpu2);
-
-  // Run control law
-  //ctrl_law();
-
-  // Assign motor values
-  //for ( i=0; i<10; i++ )   pru_send_pulse( i, sys.output[i] );
-  //for ( i=0; i<10; i++ )   pru_send_pulse( i, 1000 );    //  Manually turn off motors for debugging
-  //for ( i=0; i<10; i++ )   pru_send_pulse( i, sys.input[i] );  // One to one mapping
-  for ( i=0; i<4; i++ )    pru_send_pulse( i, sys.input[3] );  // Throttle to all motors
-
-  // Finish timing loop 
+  ctrl_law();
+  for ( i=0; i<10; i++ )  pru_send_pulse( i, sys.output[i] );
   timer_finish();
-
-  // Write to log file
-  //log_write();
-
-  // Debugging print statement
+  log_write();
   if (DEBUG)  sys_debug();
 
   return;

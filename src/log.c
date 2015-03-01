@@ -64,6 +64,10 @@ void log_init ( void )  {
   fprintf( datalog.file, "dEx1,    dEy1,    dEz1,      ");
 
   // MPU2 header
+  //fprintf( datalog.file, "rMx2,   rMy2,   rMz2,      ");
+  //fprintf( datalog.file, "rAx2,   rAy2,   rAz2,      ");
+  //fprintf( datalog.file, "rGx2,   rGy2,   rGz2,      ");
+  //fprintf( datalog.file, "rQo2,         rQx2,         rQy2,         rQz2,            ");
   //fprintf( uav.logfile, "nMx2,    nMy2,    nMz2,       ");
   //fprintf( uav.logfile, "nAx2,    nAy2,    nAz2,       ");
   //fprintf( uav.logfile, "nGx2,    nGy2,    nGz2,       ");
@@ -73,19 +77,6 @@ void log_init ( void )  {
   //fprintf( uav.logfile, "Ex2,     Ey2,     Ez2,        ");
   //fprintf( uav.logfile, "dEx2,    dEy2,    dEz2,      ");
 
-  return;
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  log_exit
-//  Closes the data log file.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void log_exit ( void )  {
-  if(DEBUG)  printf("  Closing log file \n");
-  fclose(datalog.file);
-  free(datalog.name);
-  datalog.open = false;
   return;
 }
 
@@ -108,14 +99,14 @@ void log_record ( void )  {
   // Inputs and outputs
   for ( i=0; i<6; i++ )  fprintf( datalog.file, "%04d, ", sys.input[i]  );  fprintf( datalog.file, "   " );
   for ( i=0; i<4; i++ )  fprintf( datalog.file, "%04d, ", sys.output[i] );  fprintf( datalog.file, "   " );
-
+ 
   // Raw sensors data (MPU1)
   for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   mpu1.rawMag[i]  );  fprintf( datalog.file, "   " );
   for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   mpu1.rawAcc[i]  );  fprintf( datalog.file, "   " );
   for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   mpu1.rawGyro[i] );  fprintf( datalog.file, "   " );
   for ( i=0; i<4; i++ )  fprintf( datalog.file, "%012ld, ", mpu1.rawQuat[i] );  fprintf( datalog.file, "   " );
 
-  // Normalized sensor data (MPU1)
+ // Normalized sensor data (MPU1)
   for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", mpu1.normMag[i]  );  fprintf( datalog.file, "   " );
   for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", mpu1.normAcc[i]  );  fprintf( datalog.file, "   " );
   for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", mpu1.normGyro[i] );  fprintf( datalog.file, "   " );
@@ -133,6 +124,12 @@ void log_record ( void )  {
   for ( i=0; i<4; i++ )  fprintf( datalog.file, "%7.4f, ", mpu1.dQuat[i] );  fprintf( datalog.file, "   " );
   for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", mpu1.Eul[i]   );  fprintf( datalog.file, "   " );
   for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", mpu1.dEul[i]  );  fprintf( datalog.file, "   " );
+
+  // Raw sensors data (MPU2)
+  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   mpu2.rawMag[i]  );  fprintf( datalog.file, "   " );
+  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   mpu2.rawAcc[i]  );  fprintf( datalog.file, "   " );
+  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   mpu2.rawGyro[i] );  fprintf( datalog.file, "   " );
+  //for ( i=0; i<4; i++ )  fprintf( datalog.file, "%012ld, ", mpu2.rawQuat[i] );  fprintf( datalog.file, "   " );
 
   // Calibrated sensors data (MPU2)
   //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", mpu2.normMag[i]  );  fprintf( uav.logfile, "   " );
@@ -153,6 +150,19 @@ void log_record ( void )  {
   //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", mpu2.Eul[i]   );  fprintf( uav.logfile, "   " );
   //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", mpu2.dEul[i]  );  fprintf( uav.logfile, "   " );
 
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  log_exit
+//  Closes the data log file.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void log_exit ( void )  {
+  if(DEBUG)  printf("  Closing log file \n");
+  fclose(datalog.file);
+  free(datalog.name);
+  datalog.open = false;
   return;
 }
 

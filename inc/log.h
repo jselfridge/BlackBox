@@ -21,8 +21,8 @@ log_struct datalog;
 // Log functions
 void  log_write  ( void );
 void  log_init   ( void );
-void  log_exit   ( void );
 void  log_record ( void );
+void  log_exit   ( void );
 
 
 #endif
