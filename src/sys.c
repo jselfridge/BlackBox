@@ -32,13 +32,13 @@ void sys_init ( void )  {
   if(DEBUG)  printf("complete \n");
 
   // Establish realtime priority
-  if(!DEBUG) {
+  if(DEBUG)  printf("Setting realtime priority... ");
   struct sched_param sys_priority;
   memset( &sys_priority, 0, sizeof(sys_priority) );
   sys_priority.sched_priority = 90;
   ret = sched_setscheduler( 0, SCHED_FIFO, &sys_priority );
   sys_err( ret == -1, "Error (sys_init): Function 'sched_setscheduler' failed." );
-  }
+  if(DEBUG)  printf("complete \n");
 
   // Lock and reserve memory
   if(DEBUG)  printf("  Locking and reserving memory... ");

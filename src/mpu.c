@@ -219,7 +219,7 @@ void mpu_conv ( mpu_struct* mpu )  {
   led_on(LED_MPU);
   */
 
-  heading = 30* (PI/180.0);
+  heading = 50* (PI/180.0);
   if(DEBUG)  printf("hard coded as %6.3f \n", heading*(180.0/PI) );
 
   return;
