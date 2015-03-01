@@ -9,7 +9,6 @@ EXEC   = RunBlackBox
 CC     = gcc
 CFLAGS = -Wall -g -c
 
-#LIB    = -lmat -lrot -lrt -lm -lprussdrv -lpthread
 LIB    = -lrt -lm -lprussdrv -lpthread
 #LDIR   = ../Libraries/lib/
 #IDIR   = ../Libraries/inc/
@@ -22,22 +21,18 @@ PRU   := $(shell cd pru; ls -F | grep ".p" )
 PNAME := $(patsubst %.p, %, $(PRU) )
 BIN   := $(foreach b, $(PNAME), bin/$(b).bin )
 
-MPU    = mpu/inv_glue.o \
+#MPU    = mpu/inv_glue.o \
          mpu/inv_mpu.o  \
          mpu/inv_mpu_dmp_motion_driver.o
 
 
 all : $(EXEC)
 
-#$(EXEC) : $(OBJ) $(BIN) 
-#	$(CC) -o $@ $(OBJ) $(MPU) -L$(LDIR) $(LIB)
 $(EXEC) : $(OBJ) $(BIN)
-	$(CC) -o $@ $(OBJ) $(MPU) $(LIB)
+	$(CC) -o $@ $(OBJ) $(LIB) # $(MPU) -L$(LDIR)
 
-#obj/%.o : src/%.c inc/%.h
-#	$(CC) $(CFLAGS) -I$(IDIR) -Iinc -Impu -o $@ $<
 obj/%.o : src/%.c inc/%.h
-	$(CC) $(CFLAGS) -Iinc -Impu -o $@ $<
+	$(CC) $(CFLAGS) -Iinc -o $@ $<  # -Impu -I$(IDIR)
 
 bin/%.bin : pru/%.p
 	pasm -b $<
