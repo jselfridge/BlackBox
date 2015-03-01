@@ -10,6 +10,7 @@ CC     = gcc
 CFLAGS = -Wall -g -c
 
 #LIB    = -lmat -lrot -lrt -lm -lprussdrv -lpthread
+LIB    = -lrt
 #LDIR   = ../Libraries/lib/
 #IDIR   = ../Libraries/inc/
 
@@ -31,7 +32,7 @@ all : $(EXEC)
 #$(EXEC) : $(OBJ) $(BIN) 
 #	$(CC) -o $@ $(OBJ) $(MPU) -L$(LDIR) $(LIB)
 $(EXEC) : $(OBJ)
-	$(CC) -o $@ $(OBJ)
+	$(CC) -o $@ $(OBJ) $(LIB)
 
 #obj/%.o : src/%.c inc/%.h
 #	$(CC) $(CFLAGS) -I$(IDIR) -Iinc -Impu -o $@ $<

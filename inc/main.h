@@ -8,16 +8,16 @@
 
 
 // Standard includes
-//#include <fcntl.h>
-//#include <sched.h>
-//#include <signal.h>
+#include <fcntl.h>
+#include <sched.h>
+#include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-//#include <string.h>
-//#include <sys/mman.h>
+#include <string.h>
+#include <sys/mman.h>
 //#include <time.h>
-//#include <unistd.h>
+#include <unistd.h>
 
 
 // Custom libraries
@@ -28,7 +28,7 @@
 // Custom includes
 //#include <ctrl.h>
 //#include <gpio.h>
-//#include <led.h>
+#include <led.h>
 //#include <log.h>
 //#include <mpu.h>
 //#include <pru.h>
@@ -53,10 +53,6 @@
 //#define MAIN_LOOP_NS    10000000u
 //#define FREQ            (double)( NSEC_PER_SEC / MAIN_LOOP_NS )
 //#define DT              (double) 1/FREQ
-//#define LED_MOT  0
-//#define LED_LOG  1
-//#define LED_MPU  2
-//#define LED_PRU  3
 
 
 // UAV structure

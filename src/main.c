@@ -12,7 +12,8 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int main ( void )  {
   if(DEBUG)  printf("Begin BlackBox program \n");
-  //uav_init();
+  sys_init();
+  while(1);
   //timer_init();
   //pru_init();
   //mpu1.bus = 1;
@@ -27,15 +28,7 @@ int main ( void )  {
 }
 
 
-/*
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  uav_err
-//  If error condition is true, prints a warning and exits.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void uav_err ( bool cond, char* msg )  {
-  if (cond) {  fprintf( stderr, "%s\n\n", msg );  exit(1);  }
-}
-*/
+
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  uav_init

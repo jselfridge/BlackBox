@@ -53,10 +53,6 @@
 //#define MAIN_LOOP_NS    10000000u
 //#define FREQ            (double)( NSEC_PER_SEC / MAIN_LOOP_NS )
 //#define DT              (double) 1/FREQ
-//#define LED_MOT  0
-//#define LED_LOG  1
-//#define LED_MPU  2
-//#define LED_PRU  3
 
 
 // UAV structure
@@ -87,20 +83,20 @@
 
 
 // Global variables
-//struct sigaction exit_signal;
+struct sigaction sys_signal;
 //uint* memoryPtr;
-//uint ret;
+uint ret;
 //struct timespec timeval;
 //timer_t timerid;
 
 
 // Function declarations
 void sys_err    ( bool cond, char* msg );
-//void uav_init   (  );
+void sys_init   (  );
 //void uav_loop   (  );
 //void uav_debug  (  );
-//void uav_exit   (  );
-//void uav_memory ( void );
+void sys_exit   (  );
+void sys_memory ( void );
 
 
 #endif

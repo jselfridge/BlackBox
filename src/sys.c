@@ -7,28 +7,6 @@
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  main
-//  Primary code that runs the UAV avionics.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*
-int main ( void )  {
-  if(DEBUG)  printf("\nBegin UAV program \n");
-  uav_init();
-  timer_init();
-  pru_init();
-  mpu1.bus = 1;
-  //mpu2.bus = 2;
-  mpu_init(&mpu1);
-  //mpu_init(&mpu2);
-  ctrl_init();
-  timer_begin();
-  while(uav.running) {}
-  uav_exit();
-  return 0;
-}
-*/
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_err
 //  If error condition is true, prints a warning and exits.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,50 +14,50 @@ void sys_err ( bool cond, char* msg )  {
   if (cond) {  fprintf( stderr, "%s\n\n", msg );  exit(1);  }
 }
 
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  uav_init
-//  Initializes the UAV program.
+//  sys_init
+//  Initializes the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void uav_init ( void )  {
-  if(DEBUG)  printf("Initializing UAV \n");
+void sys_init ( void )  {
+  if(DEBUG)  printf("Initializing system \n");
 
   // Establish exit condition
-  struct sigaction uav_run;
-  if(DEBUG)  printf("  Setting exit condition... ");
-  memset( &uav_run, 0, sizeof(uav_run) );
-  uav_run.sa_handler = &uav_exit;
-  ret = sigaction( SIGINT, &uav_run, NULL );
-  uav_err( ret == -1, "Error (main): Function'sigaction' failed." );
+  struct sigaction sys_run;
+  if(DEBUG)  printf("  Setting system exit condition... ");
+  memset( &sys_run, 0, sizeof(sys_run) );
+  sys_run.sa_handler = &sys_exit;
+  ret = sigaction( SIGINT, &sys_run, NULL );
+  sys_err( ret == -1, "Error (sys_init): Function 'sigaction' failed." );
   if(DEBUG)  printf("complete \n");
 
   // Establish realtime priority
   if(!DEBUG) {
-  struct sched_param uav_priority;
-  memset( &uav_priority, 0, sizeof(uav_priority) );
-  uav_priority.sched_priority = 90;
-  ret = sched_setscheduler( 0, SCHED_FIFO, &uav_priority );
-  uav_err( ret == -1, "Error (main): Function 'sched_setscheduler' failed." );
+  struct sched_param sys_priority;
+  memset( &sys_priority, 0, sizeof(sys_priority) );
+  sys_priority.sched_priority = 90;
+  ret = sched_setscheduler( 0, SCHED_FIFO, &sys_priority );
+  sys_err( ret == -1, "Error (sys_init): Function 'sched_setscheduler' failed." );
   }
 
   // Lock and reserve memory
   if(DEBUG)  printf("  Locking and reserving memory... ");
   ret = mlockall( MCL_CURRENT | MCL_FUTURE );
-  uav_err( ret == -1, "Error (uav_init): Failed to lock memory." );
-  uav_memory();
+  sys_err( ret == -1, "Error (sys_init): Failed to lock memory." );
+  sys_memory();
   if(DEBUG)  printf("complete \n");
 
   // Set LEDs
   led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
-
+/*
   // Log file status
   uav.fileopen = false;
   uav.logdata  = false;
   uav.running  = true;
-
+*/
   return;
 }
-*/
+
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  uav_loop
@@ -193,36 +171,36 @@ void uav_debug (  )  {
   return;
 }
 */
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  uav_exit
-//  Code that runs prior to exiting the program.
+//  sys_exit
+//  Code that runs prior to exiting the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void uav_exit (  )  {
+void sys_exit (  )  {
   if(DEBUG)  printf("\n\nExiting program \n");
-  timer_exit();
-  usleep(200000);
-  mpu_exit();
-  pru_exit();
-  led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
-  if(DEBUG)  printf("Program complete \n");
-  ret = sigaction( SIGINT, &exit_signal, NULL );
-  uav_err( ret == -1, "Error (uav_exit): Function 'sigaction' failed." );
+  //timer_exit();
+  //usleep(200000);
+  //mpu_exit();
+  //pru_exit();
+  //led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
+  //if(DEBUG)  printf("Program complete \n");
+  ret = sigaction( SIGINT, &sys_signal, NULL );
+  sys_err( ret == -1, "Error (sys_exit): Function 'sigaction' failed." );
   kill( 0, SIGINT );
   return;
 }
-*/
-/*
+
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  uav_memory
-//  Reserves a block of memory exclusively for UAV program.
+//  sys_memory
+//  Reserves a block of memory exclusively for the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void uav_memory ( void )  {
+void sys_memory ( void )  {
   int size = 1024*1024;
   unsigned char temp[size];
   memset( temp, 0, size );
   return;
 }
-*/
+
 
 
