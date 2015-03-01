@@ -56,25 +56,10 @@
 #define D  2
 
 
-// Define roll gains
+// Define range values
 #define R_RANGE   0.50f
-//#define R_KP    130.00f  // 150
-//#define R_KI      0.00f
-//#define R_KD     35.00f
-
-
-// Define pitch gains
 #define P_RANGE   0.50f
-//#define P_KP    130.00f  // 150
-//#define P_KI      0.00f
-//#define P_KD     35.00f
-
-
-// Define yaw gains
-#define Y_RANGE   2.00f
-//#define Y_KP    200.00f
-//#define Y_KI      0.00f
-//#define Y_KD     60.00f
+#define Y_RANGE   1.50f
 
 
 // Define throttle gains
