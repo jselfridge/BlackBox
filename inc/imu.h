@@ -1,10 +1,10 @@
 
 //============================================================
-//  mpu.h
+//  imu.h
 //  Justin M Selfridge
 //============================================================
-#ifndef _MPU_H_
-#define _MPU_H_
+#ifndef _IMU_H_
+#define _IMU_H_
 #include <main.h>
 
 
@@ -62,19 +62,19 @@ ushort counter;
 
 
 // MPU functions
-void    mpu_init     ( mpu_struct* mpu );
-void    mpu_exit     ( void );
-void    mpu_param    ( mpu_struct* mpu );
-void    mpu_setcal   ( mpu_struct* mpu );
-void    mpu_conv     ( mpu_struct* mpu );
-void    mpu_setic    ( mpu_struct* mpu );
-int     mpu_avail    ( void );
-void    mpu_raw      ( mpu_struct* mpu );
-void    mpu_norm     ( mpu_struct* mpu );
-void    mpu_fusion   ( mpu_struct* mpu );
-void    mpu_sample   ( mpu_struct* mpu );
-short   mpu_row_map  ( const signed char* row );
-short   mpu_orient   ( const signed char* mtx );
+void    imu_init     ( mpu_struct* mpu );
+void    imu_exit     ( void );
+void    imu_param    ( mpu_struct* mpu );
+void    imu_setcal   ( mpu_struct* mpu );
+void    imu_conv     ( mpu_struct* mpu );
+void    imu_setic    ( mpu_struct* mpu );
+int     imu_avail    ( void );
+void    imu_raw      ( mpu_struct* mpu );
+void    imu_norm     ( mpu_struct* mpu );
+void    imu_fusion   ( mpu_struct* mpu );
+void    imu_sample   ( mpu_struct* mpu );
+short   imu_row_map  ( const signed char* row );
+short   imu_orient   ( const signed char* mtx );
 
 
 #endif

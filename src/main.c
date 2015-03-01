@@ -27,8 +27,8 @@ int main ( void )  {
   sys_init();
   timer_init();  // Pass system process into function
   pru_init();
-  mpu_init(&mpu1);
-  //mpu_init(&mpu2);
+  imu_init(&mpu1);
+  //imu_init(&mpu2);
   ctrl_init();
   timer_begin();
 

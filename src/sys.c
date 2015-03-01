@@ -60,7 +60,7 @@ void sys_loop ( void )  {
   ushort i;
   timer_start();
   for ( i=0; i<6; i++ )  sys.input[i] = pru_read_pulse(i);
-  mpu_sample(&mpu1);
+  imu_sample(&mpu1);
   ctrl_law();
   //for ( i=0; i<4; i++ )  pru_send_pulse( i, 1000 );
   for ( i=0; i<4; i++ )  pru_send_pulse( i, sys.output[i] );
@@ -157,7 +157,7 @@ void sys_exit (  )  {
   if(DEBUG)  printf("\n\nExiting program \n");
   timer_exit();
   usleep(200000);
-  mpu_exit();
+  imu_exit();
   pru_exit();
   led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
   if(DEBUG)  printf("Program complete \n");

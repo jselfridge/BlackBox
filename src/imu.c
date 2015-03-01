@@ -1,16 +1,16 @@
 
 //============================================================
-//  mpu.c
+//  imu.c
 //  Justin M Selfridge
 //============================================================
-#include "mpu.h"
+#include "imu.h"
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  mpu_init
+//  imu_init
 //  Initializes an MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void mpu_init ( mpu_struct* mpu )  {
+void imu_init ( mpu_struct* mpu )  {
 
   // Start initialization
   char bus[1];
@@ -19,10 +19,10 @@ void mpu_init ( mpu_struct* mpu )  {
   led_blink( LED_MPU, 500, 500 );
 
   // Init functions
-  mpu_param(mpu);
-  mpu_setcal(mpu);
-  mpu_conv(mpu);
-  mpu_setic(mpu);
+  imu_param(mpu);
+  imu_setcal(mpu);
+  imu_conv(mpu);
+  imu_setic(mpu);
 
   // Indicate init completed
   led_on(LED_MPU);
@@ -32,10 +32,10 @@ void mpu_init ( mpu_struct* mpu )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  mpu_exit
+//  imu_exit
 //  Terminate an MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void mpu_exit ( void )  {
+void imu_exit ( void )  {
   if(DEBUG)  printf("  Closing MPU \n");
   ret = mpu_set_dmp_state(0);
   sys_err( ret, "Error (mpu_exit): 'mpu_set_dmp_state' failed." );
@@ -44,10 +44,10 @@ void mpu_exit ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  mpu_param
+//  imu_param
 //  Assign parameters to an MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void mpu_param ( mpu_struct* mpu )  {
+void imu_param ( mpu_struct* mpu )  {
 
   // Modify this later
   const signed char R[9] = { 1,0,0, 0,1,0, 0,0,1 };
@@ -84,7 +84,7 @@ void mpu_param ( mpu_struct* mpu )  {
   sys_err( ret, "Error (mpu_init): 'dmp_load_motion_driver_firmware' failed." );
 
   //ret = dmp_set_orientation( mpu_orient(mpu->rot) );
-  ret = dmp_set_orientation( mpu_orient(R) );
+  ret = dmp_set_orientation( imu_orient(R) );
   if(DEBUG) {  printf(".");  fflush(stdout);  }
   sys_err( ret, "Error (mpu_init): 'dmp_set_orientation' failed." );
 
@@ -118,10 +118,10 @@ void mpu_param ( mpu_struct* mpu )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  mpu_setcal
+//  imu_setcal
 //  Sets the calibration parameters for the MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void mpu_setcal ( mpu_struct* mpu )  {
+void imu_setcal ( mpu_struct* mpu )  {
   if(DEBUG)  printf("  MPU calibration values: \n");
 
   // Local variables
@@ -188,10 +188,10 @@ void mpu_setcal ( mpu_struct* mpu )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  mpu_conv
+//  imu_conv
 //  Allows the sensor heading to converge after initialization. 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void mpu_conv ( mpu_struct* mpu )  {
+void imu_conv ( mpu_struct* mpu )  {
   if(DEBUG)  printf("  Determining MPU heading:    "); 
 
   /*
@@ -227,10 +227,10 @@ void mpu_conv ( mpu_struct* mpu )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  mpu_setic
+//  imu_setic
 //  Sets the initial conditions for the MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void mpu_setic ( mpu_struct* mpu )  {
+void imu_setic ( mpu_struct* mpu )  {
   if(DEBUG)  printf("  Setting MPU initial conditions \n");
 
   unsigned short i=1;
@@ -256,10 +256,10 @@ void mpu_setic ( mpu_struct* mpu )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  mpu_avail
+//  imu_avail
 //  Check the MPU interupt to see if new data is avialable.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int mpu_avail ( void )  {
+int imu_avail ( void )  {
   short status;
   ret = mpu_get_int_status(&status);
   sys_err( ret<0, "Error (mpu_avail): 'mpu_get_int_status' failed." );
@@ -268,11 +268,11 @@ int mpu_avail ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  mpu_clear
+//  imu_clear
 //  Clears the FIFO buffer on the MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /*
-int mpu_avail ( void )  {
+int imu_avail ( void )  {
   unsigned char ii;
   unsigned char data;
   for (ii = 0; ii < st.hw->num_reg; ii++) {
@@ -288,17 +288,17 @@ int mpu_avail ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  mpu_raw
+//  imu_raw
 //  Obtains raw data from MPU sensor and maps to body frame.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void mpu_raw ( mpu_struct* mpu )  {
+void imu_raw ( mpu_struct* mpu )  {
 
   // Local variables 
   short sensors;
   unsigned char more = 1;
 
   // Check for new data
-  if ( mpu_avail() ) {
+  if ( imu_avail() ) {
 
     // Obtain magnetometer values
     ret = mpu_get_compass_reg( mpu->rawMag, &mpu->magTime );
@@ -317,10 +317,10 @@ void mpu_raw ( mpu_struct* mpu )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  mpu_norm
+//  imu_norm
 //  Generates normalized sensor data.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void mpu_norm ( mpu_struct* mpu )  {
+void imu_norm ( mpu_struct* mpu )  {
 
   // Shift and orient magnetometer readings
   mpu->normMag[X] = -( mpu->rawMag[X] - mpu->moffset[X] ) / (double)mpu->mrange[X];
@@ -348,10 +348,10 @@ void mpu_norm ( mpu_struct* mpu )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  mpu_fusion
+//  imu_fusion
 //  Applies sensor data fusion algorithm. 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void mpu_fusion ( mpu_struct* mpu )  {
+void imu_fusion ( mpu_struct* mpu )  {
 
   // Local variables
   unsigned short i;
@@ -516,22 +516,22 @@ void mpu_fusion ( mpu_struct* mpu )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  mpu_sample
+//  imu_sample
 //  Generates a sample of the MPU sensor data.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void mpu_sample ( mpu_struct* mpu )  {
-  mpu_raw(mpu);
-  mpu_norm(mpu);
-  mpu_fusion(mpu);
+void imu_sample ( mpu_struct* mpu )  {
+  imu_raw(mpu);
+  imu_norm(mpu);
+  imu_fusion(mpu);
   return;
 }
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  mpu_row_map
+//  imu_row_map
 //  Maps rows so the DMP can define proper orientation.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-short mpu_row_map ( const signed char* row )  {
+short imu_row_map ( const signed char* row )  {
   short b;
   if      ( row[0] >0 )  b = 0;
   else if ( row[0] <0 )  b = 4;
@@ -545,14 +545,14 @@ short mpu_row_map ( const signed char* row )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  mpu_orient
+//  imu_orient
 //  Returns a scalar the DMP uses to define orientation.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-short mpu_orient ( const signed char* mtx )  {
+short imu_orient ( const signed char* mtx )  {
   short scalar;
-  scalar  = mpu_row_map(mtx);
-  scalar |= mpu_row_map(mtx + 3) << 3;
-  scalar |= mpu_row_map(mtx + 6) << 6;
+  scalar  = imu_row_map(mtx);
+  scalar |= imu_row_map(mtx + 3) << 3;
+  scalar |= imu_row_map(mtx + 6) << 6;
   return scalar;
 }
 

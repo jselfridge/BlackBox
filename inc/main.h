@@ -23,9 +23,9 @@
 // Custom includes
 #include <ctrl.h>
 #include <gpio.h>
+#include <imu.h>
 #include <led.h>
 #include <log.h>
-#include <mpu.h>
 #include <pru.h>
 #include <sys.h>
 #include <timer.h>
@@ -40,11 +40,6 @@
 #include <inv_mpu.h>
 #include <inv_mpu_dmp_motion_driver.h>
 #include <inv_glue.h>
-
-
-// Define statements
-#define DEBUG           false
-#define NSEC_PER_SEC    1000000000u
 
 
 // Global variables
