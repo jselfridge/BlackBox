@@ -9,7 +9,7 @@
 
 
 // Define statements
-#define SYS_LOOP        20000000u
+#define SYS_LOOP        10000000u
 #define SYS_FREQ        (double)( NSEC_PER_SEC / SYS_LOOP )
 #define SYS_DT          (double)( 1/SYS_FREQ )
 

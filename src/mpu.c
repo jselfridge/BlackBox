@@ -215,7 +215,7 @@ void mpu_conv ( mpu_struct* mpu )  {
   led_on(LED_MPU);
   */
 
-  heading = -PI/4;
+  heading = 30* (PI/180.0);
   if(DEBUG)  printf("hard coded as %6.3f \n", heading*(180.0/PI) );
 
   return;
@@ -316,7 +316,7 @@ void mpu_raw ( mpu_struct* mpu )  {
 //  mpu_norm
 //  Generates normalized sensor data.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void mpu_cal ( mpu_struct* mpu )  {
+void mpu_norm ( mpu_struct* mpu )  {
 
   // Shift and orient magnetometer readings
   mpu->normMag[X] = -( mpu->rawMag[X] - mpu->moffset[X] ) / (double)mpu->mrange[X];
@@ -517,7 +517,7 @@ void mpu_fusion ( mpu_struct* mpu )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void mpu_sample ( mpu_struct* mpu )  {
   mpu_raw(mpu);
-  mpu_cal(mpu);
+  mpu_norm(mpu);
   mpu_fusion(mpu);
   return;
 }

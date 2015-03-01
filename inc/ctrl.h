@@ -5,7 +5,7 @@
 //============================================================
 #ifndef _CTRL_H_
 #define _CTRL_H_
-#include <uav.h>
+#include <main.h>
 
 
 // Define angle conversions
@@ -91,7 +91,7 @@
 
 
 // Global variables
-double  norm[8];
+double  norm[10];
 double  range[4];
 double  ref[4];
 double  heading;

@@ -47,12 +47,6 @@ void sys_init ( void )  {
   sys_memory();
   if(DEBUG)  printf("complete \n");
 
-  // Set LEDs
-  led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
-
-  // Set run condition
-  sys.running = true;
-
   return;
 }
 
@@ -79,12 +73,12 @@ void sys_loop ( void )  {
   mpu_norm(&mpu2);
 
   // Run control law
-  //ctrl_law();
+  ctrl_law();
 
   // Assign motor values
+  for ( i=0; i<10; i++ )   pru_send_pulse( i, sys.output[i] );
   //for ( i=0; i<10; i++ )   pru_send_pulse( i, 1000 );    //  Manually turn off motors for debugging
-  //for ( i=0; i<10; i++ )   pru_send_pulse( i, sys.output[i] );
-  for ( i=0; i<10; i++ )   pru_send_pulse( i, sys.input[i] );
+  //for ( i=0; i<10; i++ )   pru_send_pulse( i, sys.input[i] );
 
   // Finish timing loop 
   timer_finish();
@@ -118,7 +112,8 @@ void sys_debug (  )  {
   else               printf("X    ");
 
   // Input/Output values
-  for ( i=0; i<4; i++ )  printf("%04d ", sys.input[i] );  printf("   ");
+  for ( i=0; i<4; i++ )  printf("%04d ", sys.input[i]  );  printf("   ");
+  for ( i=0; i<4; i++ )  printf("%04d ", sys.output[i] );  printf("   ");
 
   // MPU1 heading status
   //printf("%012ld ", mpu1.rawQuat[0] );  printf("   ");
@@ -179,7 +174,6 @@ void sys_debug (  )  {
 void sys_exit (  )  {
   if(DEBUG)  printf("\n\nExiting program \n");
   timer_exit();
-  log_exit();    // Remove after debugging (called by control law)
   usleep(200000);
   mpu_exit();
   pru_exit();

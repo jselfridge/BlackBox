@@ -3,7 +3,7 @@
 //  ctrl.c
 //  Justin M Selfridge
 //============================================================
-#include "uav.h"
+#include "ctrl.h"
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,7 +29,7 @@ void ctrl_init ( void )  {
     fullStick[i][HIGH] = 0;
     fullStick[i][LOW]  = 0;
   }
-  stickHold = STICK_HOLD * FREQ;
+  stickHold = STICK_HOLD * SYS_FREQ;
 
   // Set command flags
   motorsArmed = false;
@@ -38,7 +38,7 @@ void ctrl_init ( void )  {
   R_KIerr = 0;
   P_KIerr = 0;
   Y_KIerr = 0;
-  heading = 0;  // Assign value when arming motors
+  //heading = 0;  // Moved to MPU
 
   return;
 }
@@ -50,9 +50,9 @@ void ctrl_init ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void ctrl_disarm ( void )  {
   ushort i;
-  for ( i=0; i<8; i++ ) {
-    uav.servo[i] = 1000;
-    pru_send_pulse( i, uav.servo[i] );
+  for ( i=0; i<10; i++ ) {
+    sys.output[i] = 1000;
+    pru_send_pulse( i, sys.output[i] );
   }
   return;
 }
@@ -77,8 +77,8 @@ void ctrl_law ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void ctrl_ref ( void )  {
   ushort i;
-  for ( i=0; i<8; i++ ) {
-    norm[i] = 2.0 * ( uav.radio[i] - IN_MID ) / (float)( IN_MAX - IN_MIN );
+  for ( i=0; i<10; i++ ) {
+    norm[i] = 2.0 * ( sys.input[i] - IN_MID ) / (float)( IN_MAX - IN_MIN );
     if ( norm[i] >  1.0 )  norm[i] =  1.0;
     if ( norm[i] < -1.0 )  norm[i] = -1.0;
     if (i<4)  ref[i] = norm[i] * range[i];
@@ -105,8 +105,8 @@ void ctrl_flags ( void )  {
     
     // Data log: roll stick only, no yaw command
     if ( !fullStick[CH_Y][LEFT] && !fullStick[CH_Y][RIGHT] )  {
-      if ( fullStick[CH_R][LEFT]  >= stickHold ) {  uav.logdata = true;  led_on(LED_LOG);   }
-      if ( fullStick[CH_R][RIGHT] >= stickHold ) {  uav.logdata = false; led_off(LED_LOG);  }
+      if ( fullStick[CH_R][LEFT]  >= stickHold ) {  datalog.enabled = true;  led_on(LED_LOG);   }
+      if ( fullStick[CH_R][RIGHT] >= stickHold ) {  datalog.enabled = false; led_off(LED_LOG);  }
     }
 
     // Motor arming: yaw stick only, no roll command
@@ -117,7 +117,7 @@ void ctrl_flags ( void )  {
 
     // Exit program: roll and yaw together to exit program
     if (  fullStick[CH_Y][LEFT] >= stickHold  &&  fullStick[CH_R][RIGHT] >= stickHold  ) {
-      uav.running = false;
+      sys.running = false;
       led_off(LED_MPU);
       led_off(LED_PRU);
       led_off(LED_LOG);
@@ -167,7 +167,7 @@ void ctrl_pid ( void )  {
   R_KDerr = -mpu1.dEul[X];
   R_KIreset = ref[CH_R] / range[CH_R];
   if ( R_KIreset < -I_RESET || R_KIreset > I_RESET )  R_KIerr = 0; 
-  else  R_KIerr += R_KPerr * DT;
+  else  R_KIerr += R_KPerr * SYS_DT;
   R_adj  = R_KPerr * R_KP + R_KIerr * R_KI + R_KDerr * R_KD;
 
   // Determine pitch adjustment
@@ -176,21 +176,21 @@ void ctrl_pid ( void )  {
   P_KDerr = -mpu1.dEul[Y];
   P_KIreset = ref[CH_P] / range[CH_P];
   if ( P_KIreset < -I_RESET || P_KIreset > I_RESET )  P_KIerr = 0; 
-  else  P_KIerr += P_KPerr * DT;
+  else  P_KIerr += P_KPerr * SYS_DT;
   P_adj  = P_KPerr * P_KP + P_KIerr * P_KI + P_KDerr * P_KD;
 
   // Determine yaw adjustment
   double Y_KPerr, Y_KDerr, Y_KIreset, Y_adj;
-  if ( norm[CH_T] > -0.9 && fabs(norm[CH_Y]) > 0.15 )  heading += ref[CH_Y] * DT;
-  while ( heading >   PI )  heading -= PI2;
-  while ( heading <= -PI )  heading += PI2;
+  if ( norm[CH_T] > -0.9 && fabs(norm[CH_Y]) > 0.15 )  heading += ref[CH_Y] * SYS_DT;
+  while ( heading >   PI )  heading -= 2.0*PI;
+  while ( heading <= -PI )  heading += 2.0*PI;
   Y_KPerr = -mpu1.Eul[Z] + heading;
-  while ( Y_KPerr >   PI )  heading -= PI2;
-  while ( Y_KPerr <= -PI )  heading += PI2;
+  while ( Y_KPerr >   PI )  heading -= 2.0*PI;
+  while ( Y_KPerr <= -PI )  heading += 2.0*PI;
   Y_KDerr = -mpu1.dEul[Z];
   Y_KIreset = ref[CH_Y] / range[CH_Y];
   if ( Y_KIreset < -I_RESET || Y_KIreset > I_RESET )  Y_KIerr = 0; 
-  else  Y_KIerr += Y_KPerr * DT;
+  else  Y_KIerr += Y_KPerr * SYS_DT;
   Y_adj = Y_KPerr * Y_KP + Y_KIerr * Y_KI + Y_KDerr * Y_KD;
 
   // Determine throttle adjustment
@@ -200,11 +200,11 @@ void ctrl_pid ( void )  {
   // Set motor outputs
   ushort i;
   if ( norm[CH_T] > -0.9 ) {
-  uav.servo[MOT_FR] = T_HOVER + T_adj - R_adj + P_adj + Y_adj;
-  uav.servo[MOT_BL] = T_HOVER + T_adj + R_adj - P_adj + Y_adj;
-  uav.servo[MOT_FL] = T_HOVER + T_adj + R_adj + P_adj - Y_adj;
-  uav.servo[MOT_BR] = T_HOVER + T_adj - R_adj - P_adj - Y_adj;
-  } else {  for ( i=0; i<4; i++ )  uav.servo[i] = 1000;  }
+  sys.output[MOT_FR] = T_HOVER + T_adj - R_adj + P_adj + Y_adj;
+  sys.output[MOT_BL] = T_HOVER + T_adj + R_adj - P_adj + Y_adj;
+  sys.output[MOT_FL] = T_HOVER + T_adj + R_adj + P_adj - Y_adj;
+  sys.output[MOT_BR] = T_HOVER + T_adj - R_adj - P_adj - Y_adj;
+  } else {  for ( i=0; i<4; i++ )  sys.output[i] = 1000;  }
 
   return;
 }
@@ -217,8 +217,8 @@ void ctrl_pid ( void )  {
 void ctrl_limit ( void )  {
   ushort i;
   for ( i=0; i<4; i++ ) {
-    if ( uav.servo[i] > 2000 )  uav.servo[i] = 2000;
-    if ( uav.servo[i] < 1000 )  uav.servo[i] = 1000;
+    if ( sys.output[i] > OUT_MAX )  sys.output[i] = OUT_MAX;
+    if ( sys.output[i] < OUT_MIN )  sys.output[i] = OUT_MIN;
   }
   return;
 }
