@@ -32,13 +32,15 @@ void sys_init ( void )  {
   if(DEBUG)  printf("complete \n");
 
   // Establish realtime priority
-  if(DEBUG)  printf("Setting realtime priority... ");
+  //if(DEBUG)  printf("  Setting realtime priority... ");
+  if(!DEBUG) {
   struct sched_param sys_priority;
   memset( &sys_priority, 0, sizeof(sys_priority) );
   sys_priority.sched_priority = 90;
   ret = sched_setscheduler( 0, SCHED_FIFO, &sys_priority );
   sys_err( ret == -1, "Error (sys_init): Function 'sched_setscheduler' failed." );
-  if(DEBUG)  printf("complete \n");
+  }
+  //if(DEBUG)  printf("complete \n");
 
   // Lock and reserve memory
   if(DEBUG)  printf("  Locking and reserving memory... ");
@@ -58,25 +60,25 @@ void sys_init ( void )  {
 void sys_loop ( void )  {
 
   // Loop counter
-  ushort i;
+  //ushort i;
 
   // Start timing loop
   timer_start();
 
   // Get new radio inputs
-  for ( i=0; i<10; i++ )   sys.input[i] = pru_read_pulse(i);
+  //for ( i=0; i<10; i++ )   sys.input[i] = pru_read_pulse(i);
 
   // Get new MPU data
-  mpu_sample(&mpu1);
+  //mpu_sample(&mpu1);
   //mpu_sample(&mpu2);  // Save data fussion for later
   //mpu_raw(&mpu2);
   //mpu_norm(&mpu2);
 
   // Run control law
-  ctrl_law();
+  //ctrl_law();
 
   // Assign motor values
-  for ( i=0; i<10; i++ )   pru_send_pulse( i, sys.output[i] );
+  //for ( i=0; i<10; i++ )   pru_send_pulse( i, sys.output[i] );
   //for ( i=0; i<10; i++ )   pru_send_pulse( i, 1000 );    //  Manually turn off motors for debugging
   //for ( i=0; i<10; i++ )   pru_send_pulse( i, sys.input[i] );
 
@@ -84,7 +86,7 @@ void sys_loop ( void )  {
   timer_finish();
 
   // Write to log file
-  log_write();
+  //log_write();
 
   // Debugging print statement
   if (DEBUG)  sys_debug();
@@ -100,20 +102,20 @@ void sys_loop ( void )  {
 void sys_debug (  )  {
 
   // Loop counter
-  ushort i;
+  //ushort i;
 
   // Time values
-  printf("\r");
-  printf("%6.3f  ", t.runtime );
-  //printf("%09ld  ", t.start_nano );
-  //printf("%09ld  ", t.dur );
-  printf("%4.2f  ", t.percent );
-  if (t.percent<1.0) printf("_    ");
-  else               printf("X    ");
+  printf("\r");  fflush(stdout);
+  printf("%6.3f  ", t.runtime );  fflush(stdout);
+  //printf("%09ld  ", t.start_nano );  fflush(stdout);
+  //printf("%09ld  ", t.dur );  fflush(stdout);
+  printf("%4.2f  ", t.percent );  fflush(stdout);
+  if (t.percent<1.0) {  printf("_    ");  fflush(stdout);  }
+  else               {  printf("X    ");  fflush(stdout);  }
 
   // Input/Output values
-  for ( i=0; i<4; i++ )  printf("%04d ", sys.input[i]  );  printf("   ");
-  for ( i=0; i<4; i++ )  printf("%04d ", sys.output[i] );  printf("   ");
+  //for ( i=0; i<4; i++ )  printf("%04d ", sys.input[i]  );  printf("   ");
+  //for ( i=0; i<4; i++ )  printf("%04d ", sys.output[i] );  printf("   ");
 
   // MPU1 heading status
   //printf("%012ld ", mpu1.rawQuat[0] );  printf("   ");
@@ -150,8 +152,8 @@ void sys_debug (  )  {
   // Data fusion values - MPU1
   //for ( i=0; i<4; i++ )  printf("%6.3f ", mpu1.Quat[i]              );  printf("   ");
   //for ( i=0; i<4; i++ )  printf("%6.3f ", mpu1.dQuat[i]             );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%6.1f ", mpu1.Eul[i]  *(180.0f/PI) );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%6.1f ", mpu1.dEul[i] *(180.0f/PI) );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%6.1f ", mpu1.Eul[i]  *(180.0f/PI) );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%6.1f ", mpu1.dEul[i] *(180.0f/PI) );  printf("   ");
 
   // Data fusion values - MPU2
   //for ( i=0; i<4; i++ )  printf("%6.3f ", mpu2.Quat[i]              );  printf("   ");
@@ -175,8 +177,8 @@ void sys_exit (  )  {
   if(DEBUG)  printf("\n\nExiting program \n");
   timer_exit();
   usleep(200000);
-  mpu_exit();
-  pru_exit();
+  //mpu_exit();
+  //pru_exit();
   led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
   if(DEBUG)  printf("Program complete \n");
   ret = sigaction( SIGINT, &sys_signal, NULL );

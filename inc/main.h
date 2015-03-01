@@ -20,35 +20,30 @@
 #include <unistd.h>
 
 
-// Custom libraries
-//#include <matLib.h>
-//#include <rotLib.h>
-
-
 // Custom includes
-//#include <ctrl.h>
-//#include <gpio.h>
-//#include <led.h>
-//#include <log.h>
-//#include <mpu.h>
-//#include <pru.h>
-//#include <sys.h>
-//#include <timer.h>
+#include <ctrl.h>
+#include <gpio.h>
+#include <led.h>
+#include <log.h>
+#include <mpu.h>
+#include <pru.h>
+#include <sys.h>
+#include <timer.h>
 
 
 // PRU includes
-//#include <prussdrv.h>
-//#include <pruss_intc_mapping.h>
+#include <prussdrv.h>
+#include <pruss_intc_mapping.h>
 
 
 // MPU includes
-//#include <inv_mpu.h>
-//#include <inv_mpu_dmp_motion_driver.h>
-//#include <inv_glue.h>
+#include <inv_mpu.h>
+#include <inv_mpu_dmp_motion_driver.h>
+#include <inv_glue.h>
 
 
 // Define statements
-#define DEBUG           false
+#define DEBUG           true
 #define NSEC_PER_SEC    1000000000u
 
 
