@@ -20,8 +20,8 @@ int main ( void )  {
   sys.running      = true;
   datalog.open     = false;
   datalog.enabled  = false;
-  mpu1.bus = 1;  mpu1.rot[0] = 1;  mpu1.rot[4] = 1;  mpu1.rot[8] = 1;
-  mpu2.bus = 2;  mpu2.rot[0] = 1;  mpu2.rot[4] = 1;  mpu2.rot[8] = 1;
+  mpu1.bus = 1;  //mpu1.rot[0] = 1;  mpu1.rot[4] = 1;  mpu1.rot[8] = 1;  // Add this later
+  mpu2.bus = 2;  //mpu2.rot[0] = 1;  mpu2.rot[4] = 1;  mpu2.rot[8] = 1;
 
   // Initialize subsystems
   sys_init();

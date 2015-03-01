@@ -49,6 +49,9 @@ void mpu_exit ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void mpu_param ( mpu_struct* mpu )  {
 
+  // Modify this later
+  const signed char R[9] = { 1,0,0, 0,1,0, 0,0,1 };
+
   if(DEBUG) {  printf("  Assigning MPU parameters ");  fflush(stdout);  }
   linux_set_i2c_bus(mpu->bus);
 
@@ -80,7 +83,8 @@ void mpu_param ( mpu_struct* mpu )  {
   if(DEBUG) {  printf(".");  fflush(stdout);  }
   sys_err( ret, "Error (mpu_init): 'dmp_load_motion_driver_firmware' failed." );
 
-  ret = dmp_set_orientation( mpu_orient(mpu->rot) );
+  //ret = dmp_set_orientation( mpu_orient(mpu->rot) );
+  ret = dmp_set_orientation( mpu_orient(R) );
   if(DEBUG) {  printf(".");  fflush(stdout);  }
   sys_err( ret, "Error (mpu_init): 'dmp_set_orientation' failed." );
 

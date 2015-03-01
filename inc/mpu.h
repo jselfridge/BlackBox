@@ -23,7 +23,7 @@
 // MPU structure
 typedef struct {
   int bus;
-  signed char rot [9];
+  //signed char rot [9];  // Add this later
   int moffset [3];
   int aoffset [3];
   int mrange  [3];
