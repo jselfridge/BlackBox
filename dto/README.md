@@ -144,7 +144,7 @@ for robotic research capabilities.
     <td align="center"> PRU1_r30_00 </td>
     <td align="center"> gpio2[06]   </td>
     <td align="center"> 5           </td>
-    <td align="left"  > OUT_06      </td>
+    <td align="left"  > OUT_05      </td>
   </tr>
   <tr>
     <td align="center"> P8_46       </td>
@@ -154,7 +154,7 @@ for robotic research capabilities.
     <td align="center"> PRU1_r30_01 </td>
     <td align="center"> gpio2[07]   </td>
     <td align="center"> 5           </td>
-    <td align="left"  > OUT_07      </td>
+    <td align="left"  > OUT_06      </td>
   </tr>
   <tr>
     <td align="center"> P8_43       </td>
@@ -164,7 +164,7 @@ for robotic research capabilities.
     <td align="center"> PRU1_r30_02 </td>
     <td align="center"> gpio2[08]   </td>
     <td align="center"> 5           </td>
-    <td align="left"  > OUT_05      </td>
+    <td align="left"  > OUT_04      </td>
   </tr>
   <tr>
     <td align="center"> P8_44       </td>
@@ -174,7 +174,7 @@ for robotic research capabilities.
     <td align="center"> PRU1_r30_03 </td>
     <td align="center"> gpio2[09]   </td>
     <td align="center"> 5           </td>
-    <td align="left"  > OUT_08      </td>
+    <td align="left"  > OUT_07      </td>
   </tr>
   <tr>
     <td align="center"> P8_41       </td>
@@ -184,7 +184,7 @@ for robotic research capabilities.
     <td align="center"> PRU1_r30_04 </td>
     <td align="center"> gpio2[10]   </td>
     <td align="center"> 5           </td>
-    <td align="left"  > OUT_04      </td>
+    <td align="left"  > OUT_03      </td>
   </tr>
   <tr>
     <td align="center"> P8_42       </td>
@@ -194,7 +194,7 @@ for robotic research capabilities.
     <td align="center"> PRU1_r30_05 </td>
     <td align="center"> gpio2[11]   </td>
     <td align="center"> 5           </td>
-    <td align="left"  > OUT_09      </td>
+    <td align="left"  > OUT_08      </td>
   </tr>
   <tr>
     <td align="center"> P8_39       </td>
@@ -204,7 +204,7 @@ for robotic research capabilities.
     <td align="center"> PRU1_r30_06 </td>
     <td align="center"> gpio2[12]   </td>
     <td align="center"> 5           </td>
-    <td align="left"  > OUT_03      </td>
+    <td align="left"  > OUT_02      </td>
   </tr>
   <tr>
     <td align="center"> P8_40       </td>
@@ -214,7 +214,7 @@ for robotic research capabilities.
     <td align="center"> PRU1_r30_07 </td>
     <td align="center"> gpio2[13]   </td>
     <td align="center"> 5           </td>
-    <td align="left"  > OUT_10      </td>
+    <td align="left"  > OUT_09      </td>
   </tr>
   <tr>
     <td align="center"> P8_27       </td>
@@ -224,7 +224,7 @@ for robotic research capabilities.
     <td align="center"> PRU1_r30_08 </td>
     <td align="center"> gpio2[22]   </td>
     <td align="center"> 5           </td>
-    <td align="left"  > OUT_02      </td>
+    <td align="left"  > OUT_01      </td>
   </tr>
   <tr>
     <td align="center"> P8_28       </td>
@@ -234,27 +234,7 @@ for robotic research capabilities.
     <td align="center"> PRU1_r30_10 </td>
     <td align="center"> gpio2[24]   </td>
     <td align="center"> 5           </td>
-    <td align="left"  > OUT_11      </td>
-  </tr>
-  <tr>
-    <td align="center"> P8_21       </td>
-    <td align="center"> 32          </td>
-    <td align="center"> 880         </td>
-    <td align="center"> 080         </td>
-    <td align="center"> PRU1_r30_12 </td>
-    <td align="center"> gpio1[30]   </td>
-    <td align="center"> 5           </td>
-    <td align="left"  > OUT_01      </td>
-  </tr>
-  <tr>
-    <td align="center"> P8_20       </td>
-    <td align="center"> 33          </td>
-    <td align="center"> 884         </td>
-    <td align="center"> 084         </td>
-    <td align="center"> PRU1_r30_13 </td>
-    <td align="center"> gpio1[31]   </td>
-    <td align="center"> 5           </td>
-    <td align="left"  > OUT_12      </td>
+    <td align="left"  > OUT_10      </td>
   </tr>
 </table>
 
