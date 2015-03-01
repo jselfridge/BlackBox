@@ -122,7 +122,7 @@
             //--  Transistor pins  --//
             tran_pins: pinmux_tran_pins {
                 pinctrl-single,pins = <
-                    0x078  0x17      //  P9.12 | GPIO1_28 | OUTPUT | MODE 7 | Rail switch  //
+                    0x078  0x07      //  P9.12 | GPIO1_28 | OUTPUT | PULL DOWN | MODE 7 | Rail switch  //
                 >;
             };
 

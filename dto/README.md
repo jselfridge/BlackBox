@@ -259,7 +259,7 @@ for robotic research capabilities.
     <td align="center"> 078         </td>
     <td align="center"> GPIO1_28    </td>
     <td align="center"> gpio1[28]   </td>
-    <td align="center"> 17          </td>
+    <td align="center"> 07          </td>
     <td align="left"  > Rail Switch </td>
   </tr>
 </table>
