@@ -46,22 +46,22 @@ void log_init ( void )  {
   fprintf( datalog.file, " time,    start,     dur,        perc,  X,    ");
 
   // Input/Output header
-  //fprintf( datalog.logfile, "R1,   R2,   R3,   R4,   R5,   R6,      ");
-  //fprintf( datalog.logfile, "M1,   M2,   M3,   M4,       ");
+  fprintf( datalog.file, "R1,   R2,   R3,   R4,   R5,   R6,      ");
+  fprintf( datalog.file, "M1,   M2,   M3,   M4,       ");
 
   // MPU1 header
-  //fprintf( datalog.logfile, "rMx1,   rMy1,   rMz1,      ");
-  //fprintf( datalog.logfile, "rAx1,   rAy1,   rAz1,      ");
-  //fprintf( datalog.logfile, "rGx1,   rGy1,   rGz1,      ");
-  //fprintf( datalog.logfile, "rQo1,         rQx1,         rQy1,         rQz1,            ");
-  //fprintf( datalog.logfile, "nMx1,    nMy1,    nMz1,       ");
-  //fprintf( datalog.logfile, "nAx1,    nAy1,    nAz1,       ");
-  //fprintf( datalog.logfile, "nGx1,    nGy1,    nGz1,       ");
-  //fprintf( datalog.logfile, "bx1,       by1,       bz1,          fx1,     fz1,        ");
-  //fprintf( datalog.logfile, "Qo1,     Qx1,     Qy1,     Qz1,        ");
-  //fprintf( datalog.logfile, "dQo1,    dQx1,    dQy1,    dQz1,       ");
-  //fprintf( datalog.logfile, "Ex1,     Ey1,     Ez1,        ");
-  //fprintf( datalog.logfile, "dEx1,    dEy1,    dEz1,      ");
+  fprintf( datalog.file, "rMx1,   rMy1,   rMz1,      ");
+  fprintf( datalog.file, "rAx1,   rAy1,   rAz1,      ");
+  fprintf( datalog.file, "rGx1,   rGy1,   rGz1,      ");
+  fprintf( datalog.file, "rQo1,         rQx1,         rQy1,         rQz1,            ");
+  fprintf( datalog.file, "nMx1,    nMy1,    nMz1,       ");
+  fprintf( datalog.file, "nAx1,    nAy1,    nAz1,       ");
+  fprintf( datalog.file, "nGx1,    nGy1,    nGz1,       ");
+  fprintf( datalog.file, "bx1,       by1,       bz1,          fx1,     fz1,        ");
+  fprintf( datalog.file, "Qo1,     Qx1,     Qy1,     Qz1,        ");
+  fprintf( datalog.file, "dQo1,    dQx1,    dQy1,    dQz1,       ");
+  fprintf( datalog.file, "Ex1,     Ey1,     Ez1,        ");
+  fprintf( datalog.file, "dEx1,    dEy1,    dEz1,      ");
 
   // MPU2 header
   //fprintf( uav.logfile, "nMx2,    nMy2,    nMz2,       ");
@@ -97,7 +97,7 @@ void log_exit ( void )  {
 void log_record ( void )  {
 
   // Increment counter
-  //ushort i;
+  ushort i;
 
   // Time values
   fprintf( datalog.file, "\n %07.3f, %09ld, %09ld, %6.3f, ", 
@@ -106,33 +106,33 @@ void log_record ( void )  {
   else                fprintf( datalog.file, "X,    ");
 
   // Inputs and outputs
-  //for ( i=0; i<6; i++ )  fprintf( uav.logfile, "%04d, ", uav.radio[i]  );  fprintf( uav.logfile, "   " );
-  //for ( i=0; i<4; i++ )  fprintf( uav.logfile, "%04d, ", uav.servo[i]  );  fprintf( uav.logfile, "   " );
+  for ( i=0; i<6; i++ )  fprintf( datalog.file, "%04d, ", sys.input[i]  );  fprintf( datalog.file, "   " );
+  for ( i=0; i<4; i++ )  fprintf( datalog.file, "%04d, ", sys.output[i] );  fprintf( datalog.file, "   " );
 
   // Raw sensors data (MPU1)
-  //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%06d, ",   mpu1.rawMag[i]  );  fprintf( uav.logfile, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%06d, ",   mpu1.rawAcc[i]  );  fprintf( uav.logfile, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%06d, ",   mpu1.rawGyro[i] );  fprintf( uav.logfile, "   " );
-  //for ( i=0; i<4; i++ )  fprintf( uav.logfile, "%012ld, ", mpu1.rawQuat[i] );  fprintf( uav.logfile, "   " );
+  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   mpu1.rawMag[i]  );  fprintf( datalog.file, "   " );
+  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   mpu1.rawAcc[i]  );  fprintf( datalog.file, "   " );
+  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   mpu1.rawGyro[i] );  fprintf( datalog.file, "   " );
+  for ( i=0; i<4; i++ )  fprintf( datalog.file, "%012ld, ", mpu1.rawQuat[i] );  fprintf( datalog.file, "   " );
 
-  // Calibrated sensors data (MPU1)
-  //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", mpu1.normMag[i]  );  fprintf( uav.logfile, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", mpu1.normAcc[i]  );  fprintf( uav.logfile, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", mpu1.normGyro[i] );  fprintf( uav.logfile, "   " );
+  // Normalized sensor data (MPU1)
+  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", mpu1.normMag[i]  );  fprintf( datalog.file, "   " );
+  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", mpu1.normAcc[i]  );  fprintf( datalog.file, "   " );
+  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", mpu1.normGyro[i] );  fprintf( datalog.file, "   " );
 
   // Internal fusion algorithm values (MPU1)
-  //for ( i=0; i<3; i++ )  
-  //fprintf( uav.logfile, "%9.6f, ", mpu1.bias[i] );
-  //fprintf( uav.logfile, "   " );
-  //fprintf( uav.logfile, "%7.4f, ", mpu1.fx );
-  //fprintf( uav.logfile, "%7.4f, ", mpu1.fz );
-  //fprintf( uav.logfile, "   " );
+  for ( i=0; i<3; i++ )  
+  fprintf( datalog.file, "%9.6f, ", mpu1.bias[i] );
+  fprintf( datalog.file, "   " );
+  fprintf( datalog.file, "%7.4f, ", mpu1.fx );
+  fprintf( datalog.file, "%7.4f, ", mpu1.fz );
+  fprintf( datalog.file, "   " );
 
   // Fused sensor data (MPU1)
-  //for ( i=0; i<4; i++ )  fprintf( uav.logfile, "%7.4f, ", mpu1.Quat[i]  );  fprintf( uav.logfile, "   " );
-  //for ( i=0; i<4; i++ )  fprintf( uav.logfile, "%7.4f, ", mpu1.dQuat[i] );  fprintf( uav.logfile, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", mpu1.Eul[i]   );  fprintf( uav.logfile, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", mpu1.dEul[i]  );  fprintf( uav.logfile, "   " );
+  for ( i=0; i<4; i++ )  fprintf( datalog.file, "%7.4f, ", mpu1.Quat[i]  );  fprintf( datalog.file, "   " );
+  for ( i=0; i<4; i++ )  fprintf( datalog.file, "%7.4f, ", mpu1.dQuat[i] );  fprintf( datalog.file, "   " );
+  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", mpu1.Eul[i]   );  fprintf( datalog.file, "   " );
+  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", mpu1.dEul[i]  );  fprintf( datalog.file, "   " );
 
   // Calibrated sensors data (MPU2)
   //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", mpu2.normMag[i]  );  fprintf( uav.logfile, "   " );

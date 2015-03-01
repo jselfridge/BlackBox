@@ -69,8 +69,8 @@ void sys_loop ( void )  {
   // Get new MPU data
   mpu_sample(&mpu1);
   //mpu_sample(&mpu2);  // Save data fussion for later
-  mpu_raw(&mpu2);
-  mpu_norm(&mpu2);
+  //mpu_raw(&mpu2);
+  //mpu_norm(&mpu2);
 
   // Run control law
   ctrl_law();
@@ -112,8 +112,8 @@ void sys_debug (  )  {
   else               printf("X    ");
 
   // Input/Output values
-  //for ( i=0; i<4; i++ )  printf("%04d ", sys.input[i]  );  printf("   ");
-  //for ( i=0; i<4; i++ )  printf("%04d ", sys.output[i] );  printf("   ");
+  for ( i=0; i<4; i++ )  printf("%04d ", sys.input[i]  );  printf("   ");
+  for ( i=0; i<4; i++ )  printf("%04d ", sys.output[i] );  printf("   ");
 
   // MPU1 heading status
   //printf("%012ld ", mpu1.rawQuat[0] );  printf("   ");
@@ -136,9 +136,9 @@ void sys_debug (  )  {
   //for ( i=0; i<4; i++ )  printf("%012ld ", mpu2.rawQuat[i] );  printf("   ");
 
   // Normalized sensor values - MPU1
-  for ( i=0; i<3; i++ )  printf("%7.4f ", mpu1.normMag[i]  );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%7.4f ", mpu1.normAcc[i]  );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%7.4f ", mpu1.normGyro[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%7.4f ", mpu1.normMag[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%7.4f ", mpu1.normAcc[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%7.4f ", mpu1.normGyro[i] );  printf("   ");
   //for ( i=0; i<4; i++ )  printf("%7.4f ", mpu1.normQuat[i] );  printf("   ");
 
   // Normalized sensor values - MPU2
@@ -150,8 +150,8 @@ void sys_debug (  )  {
   // Data fusion values - MPU1
   //for ( i=0; i<4; i++ )  printf("%6.3f ", mpu1.Quat[i]              );  printf("   ");
   //for ( i=0; i<4; i++ )  printf("%6.3f ", mpu1.dQuat[i]             );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%6.1f ", mpu1.Eul[i]  *(180.0f/PI) );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%6.1f ", mpu1.dEul[i] *(180.0f/PI) );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%6.1f ", mpu1.Eul[i]  *(180.0f/PI) );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%6.1f ", mpu1.dEul[i] *(180.0f/PI) );  printf("   ");
 
   // Data fusion values - MPU2
   //for ( i=0; i<4; i++ )  printf("%6.3f ", mpu2.Quat[i]              );  printf("   ");

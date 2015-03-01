@@ -47,7 +47,7 @@ typedef struct {
   double fz;
 } mpu_struct;
 mpu_struct mpu1;
-mpu_struct mpu2;
+//mpu_struct mpu2;
 
 
 // Global variables
