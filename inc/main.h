@@ -31,7 +31,7 @@
 #include <led.h>
 #include <log.h>
 //#include <mpu.h>
-//#include <pru.h>
+#include <pru.h>
 #include <sys.h>
 #include <timer.h>
 

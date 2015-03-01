@@ -1,10 +1,10 @@
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-##  makefile - BlackBox
+##  makefile - BLACKBOX
 ##  Justin M Selfridge
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-all : BlackBox.dtbo
+all : BLACKBOX-00A0.dtbo
 
 %-00A0.dtbo : %.dts
 	dtc -O dtb -o $@ -b 0 -@ $<

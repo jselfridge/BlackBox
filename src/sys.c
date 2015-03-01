@@ -64,13 +64,13 @@ void sys_init ( void )  {
 void sys_loop ( void )  {
 
   // Loop counter
-  //ushort i;
+  ushort i;
 
   // Start timing loop
   timer_start();
 
   // Get new radio inputs
-  //for ( i=0; i<8; i++ )   uav.radio[i] = pru_read_pulse(i);
+  for ( i=0; i<10; i++ )   sys.input[i] = pru_read_pulse(i);
 
   // Get new MPU data
   //mpu_sample(&mpu1);
@@ -103,7 +103,7 @@ void sys_loop ( void )  {
 void sys_debug (  )  {
 
   // Loop counter
-  //ushort i;
+  ushort i;
 
   // Time values
   printf("\r");
@@ -114,8 +114,8 @@ void sys_debug (  )  {
   if (t.percent<1.0) printf("_    ");
   else               printf("X    ");
 
-  // Input output values
-  //for ( i=0; i<4; i++ )  printf("%04d ", uav.radio[i] );  printf("   ");
+  // Input/Output values
+  for ( i=0; i<10; i++ )  printf("%04d ", sys.input[i] );  printf("   ");
   //for ( i=0; i<4; i++ )  printf("%04d ", uav.servo[i] );  printf("   ");
 
   // MPU1 status
@@ -180,9 +180,9 @@ void sys_exit (  )  {
   log_exit();    // Remove after debugging (called by control law)
   //usleep(200000);
   //mpu_exit();
-  //pru_exit();
-  //led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
-  //if(DEBUG)  printf("Program complete \n");
+  pru_exit();
+  led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
+  if(DEBUG)  printf("Program complete \n");
   ret = sigaction( SIGINT, &sys_signal, NULL );
   sys_err( ret == -1, "Error (sys_exit): Function 'sigaction' failed." );
   kill( 0, SIGINT );

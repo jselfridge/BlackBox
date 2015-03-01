@@ -14,13 +14,13 @@
 #define SYS_DT          (double)( 1/SYS_FREQ )
 
 
-// UAV structure
-//typedef struct {
-//  short radio[8];
-//  short servo[8];
-//  bool  running;
-//} uav_struct;
-//uav_struct  uav;
+// System structure
+typedef struct {
+  short input[10];
+  short output[8];
+  bool  running;
+} sys_struct;
+sys_struct  sys;
 
 
 // Global variables

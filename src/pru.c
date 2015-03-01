@@ -18,8 +18,8 @@ void pru_init ( void )  {
   
   // Open interrupt
   ret = prussdrv_open(PRU_EVTOUT_0);
-  uav_err( ret, "Error (pru_init): prussdrv_open open failed" );
-  
+  sys_err( ret, "Error (pru_init): prussdrv_open open failed" );
+
   //Initialise interrupt
   tpruss_intc_initdata pruss_intc_initdata = PRUSS_INTC_INITDATA;
   prussdrv_pruintc_init(&pruss_intc_initdata);
@@ -28,14 +28,16 @@ void pru_init ( void )  {
   static void* sharedMem;
   prussdrv_map_prumem( PRUSS0_SHARED_DATARAM, &sharedMem );
   memoryPtr = (unsigned int*) sharedMem;
-  memset( memoryPtr, 0, 4*20 );
+  memset( memoryPtr, 0, 4*24 );
 
   // Loops per PWM period [26315 ~ 400Hz]
-  memoryPtr[ OUT_OFFSET -1 ] = 25000;
+  //memoryPtr[ OUT_OFFSET -1 ] = 25000;
 
   // Load assembly code
-  prussdrv_exec_program ( 0, "bin/servo.bin" );
-  prussdrv_exec_program ( 1, "bin/radio.bin" );
+  //prussdrv_exec_program ( 0, "bin/servo.bin" );
+  //prussdrv_exec_program ( 1, "bin/radio.bin" );
+  prussdrv_exec_program ( 0, "bin/input.bin" );
+  //prussdrv_exec_program ( 1, "bin/output.bin" );
 
   // Set LED indicator
   led_on(LED_PRU);
@@ -51,7 +53,7 @@ void pru_init ( void )  {
 void pru_exit ( void )  {
   if(DEBUG)  printf("  Exiting PRU \n");
   prussdrv_pru_disable(0);
-  prussdrv_pru_disable(1);
+  //prussdrv_pru_disable(1);
   prussdrv_exit(); 
   return;
 }
@@ -62,12 +64,12 @@ void pru_exit ( void )  {
 //  Reads pulse value of PWM signal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 float pru_read_pulse ( int ch )  {
-  uav_err( ch<0 || ch>=IN_CH, "Error (pru_read_pulse): Radio channel must be between 0-7."    );
-  uav_err( memoryPtr == NULL, "Error (pru_read_pulse): PRU radio controller not initialized." );
-  return memoryPtr[ IN_OFFSET +ch ] * (24.0/200);
+  sys_err( ch<0 || ch>=IN_CH, "Error (pru_read_pulse): Radio channel must be between 0-7."    );
+  sys_err( memoryPtr == NULL, "Error (pru_read_pulse): PRU radio controller not initialized." );
+  return memoryPtr[ IN_OFFSET +ch ] * (30.0/200);
 }
 
-
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  pru_read_norm
 //  Reads normalized value of PWM signal.
@@ -80,8 +82,8 @@ float pru_read_norm ( int ch )  {
   if (norm<0.0)  norm = 0.0;
   return norm;
 }
-
-
+*/
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  pru_send_pulse
 //  Sends pulse value of PWM signal.
@@ -92,8 +94,8 @@ void pru_send_pulse ( int ch, int pwm )  {
   memoryPtr[ OUT_OFFSET +ch ] = (pwm*200)/19;
   return;
 }
-
-
+*/
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  pru_send_norm
 //  Sends normalized value of PWM signal.
@@ -105,6 +107,6 @@ void pru_send_norm ( int ch, float norm )  {
   pru_send_pulse ( ch, pulse );
   return;
 }
-
+*/
 
 
