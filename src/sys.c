@@ -60,13 +60,13 @@ void sys_init ( void )  {
 void sys_loop ( void )  {
 
   // Loop counter
-  //ushort i;
+  ushort i;
 
   // Start timing loop
   timer_start();
 
   // Get new radio inputs
-  //for ( i=0; i<10; i++ )   sys.input[i] = pru_read_pulse(i);
+  for ( i=0; i<10; i++ )   sys.input[i] = pru_read_pulse(i);
 
   // Get new MPU data
   //mpu_sample(&mpu1);
@@ -80,7 +80,8 @@ void sys_loop ( void )  {
   // Assign motor values
   //for ( i=0; i<10; i++ )   pru_send_pulse( i, sys.output[i] );
   //for ( i=0; i<10; i++ )   pru_send_pulse( i, 1000 );    //  Manually turn off motors for debugging
-  //for ( i=0; i<10; i++ )   pru_send_pulse( i, sys.input[i] );
+  //for ( i=0; i<10; i++ )   pru_send_pulse( i, sys.input[i] );  // One to one mapping
+  for ( i=0; i<3; i++ )    pru_send_pulse( i, sys.input[3] );  // Throttle to all motors
 
   // Finish timing loop 
   timer_finish();
@@ -102,7 +103,7 @@ void sys_loop ( void )  {
 void sys_debug (  )  {
 
   // Loop counter
-  //ushort i;
+  ushort i;
 
   // Time values
   printf("\r");  fflush(stdout);
@@ -114,7 +115,7 @@ void sys_debug (  )  {
   else               {  printf("X    ");  fflush(stdout);  }
 
   // Input/Output values
-  //for ( i=0; i<4; i++ )  printf("%04d ", sys.input[i]  );  printf("   ");
+  for ( i=0; i<10; i++ )  printf("%04d ", sys.input[i]  );  printf("   ");
   //for ( i=0; i<4; i++ )  printf("%04d ", sys.output[i] );  printf("   ");
 
   // MPU1 heading status
@@ -178,7 +179,7 @@ void sys_exit (  )  {
   timer_exit();
   usleep(200000);
   //mpu_exit();
-  //pru_exit();
+  pru_exit();
   led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
   if(DEBUG)  printf("Program complete \n");
   ret = sigaction( SIGINT, &sys_signal, NULL );
