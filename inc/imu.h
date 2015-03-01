@@ -40,7 +40,6 @@ typedef struct {
   double  avgMag    [3];
   double  avgAcc    [3];
   double  avgGyro   [3];
-  double  avgQuat   [4];
   double  normMag   [3];
   double  normAcc   [3];
   double  normGyro  [3];

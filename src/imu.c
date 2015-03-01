@@ -173,14 +173,14 @@ void imu_setcal ( imu_struct* imu )  {
 
   // Display calibration values
   if(DEBUG) {
-  printf("    moffset  mrange  aoffset  arange \n");
-  for ( i=0; i<3; i++ ) {
-    printf("      ");
-    printf( "%04d    ", imu->moffset[i] );
-    printf( "%04d    ", imu->mrange[i]  );
-    printf( "%04d    ", imu->aoffset[i] );
-    printf( "%06d  \n", imu->arange[i]  );
-  } 
+    printf("    moffset  mrange  aoffset  arange \n");
+    for ( i=0; i<3; i++ ) {
+      printf("      ");
+      printf( "%04d    ", imu->moffset[i] );
+      printf( "%04d    ", imu->mrange[i]  );
+      printf( "%04d    ", imu->aoffset[i] );
+      printf( "%06d  \n", imu->arange[i]  );
+    } 
   }
 
   return;
@@ -338,7 +338,7 @@ void imu_avg ( imu_struct* imu )  {
   unsigned short i, j;
 
   // Loop through elements
-  for ( i=0; i<3; i-- ) {
+  for ( i=0; i<3; i++ ) {
 
     // Shift raw data history
     for ( j=11; j>0; j-- ) {
