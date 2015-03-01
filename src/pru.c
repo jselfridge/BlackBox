@@ -31,13 +31,13 @@ void pru_init ( void )  {
   memset( memoryPtr, 0, 4*24 );
 
   // Loops per PWM period [26315 ~ 400Hz]
-  //memoryPtr[ OUT_OFFSET -1 ] = 25000;
+  memoryPtr[ OUT_OFFSET -1 ] = 25000;
 
   // Load assembly code
   //prussdrv_exec_program ( 0, "bin/servo.bin" );
   //prussdrv_exec_program ( 1, "bin/radio.bin" );
   prussdrv_exec_program ( 0, "bin/input.bin" );
-  //prussdrv_exec_program ( 1, "bin/output.bin" );
+  prussdrv_exec_program ( 1, "bin/output.bin" );
 
   // Set LED indicator
   led_on(LED_PRU);
@@ -53,7 +53,7 @@ void pru_init ( void )  {
 void pru_exit ( void )  {
   if(DEBUG)  printf("  Exiting PRU \n");
   prussdrv_pru_disable(0);
-  //prussdrv_pru_disable(1);
+  prussdrv_pru_disable(1);
   prussdrv_exit(); 
   return;
 }
@@ -83,18 +83,18 @@ float pru_read_norm ( int ch )  {
   return norm;
 }
 */
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  pru_send_pulse
 //  Sends pulse value of PWM signal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void pru_send_pulse ( int ch, int pwm )  {
-  uav_err( ch<0 || ch>=OUT_CH, "Error (pru_sendpulse): Servo channel must be between 0-7."     );
-  uav_err( memoryPtr == NULL, "Error (pru_send_pulse): PRU servo controller not initialized." );
-  memoryPtr[ OUT_OFFSET +ch ] = (pwm*200)/19;
+  sys_err( ch<0 || ch>=OUT_CH, "Error (pru_send_pulse): Servo channel must be between 0-9."     );
+  sys_err( memoryPtr == NULL, "Error (pru_send_pulse): PRU servo controller not initialized." );
+  memoryPtr[ OUT_OFFSET +ch ] = (pwm*200)/23;  // ORIG: /19
   return;
 }
-*/
+
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  pru_send_norm

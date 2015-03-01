@@ -82,6 +82,17 @@ void sys_loop ( void )  {
   // Assign motor values
   //for ( i=0; i<8; i++ )   pru_send_pulse( i, 1000 );    //  Manually turn off motors for debugging
   //for ( i=0; i<8; i++ )   pru_send_pulse( i, uav.servo[i] );
+  pru_send_pulse( 0, 1100 );
+  pru_send_pulse( 1, 1200 );
+  pru_send_pulse( 2, 1300 );
+  pru_send_pulse( 3, 1400 );
+  pru_send_pulse( 4, 1500 );
+  pru_send_pulse( 5, 1600 );
+  pru_send_pulse( 6, 1700 );
+  pru_send_pulse( 7, 1800 );
+  pru_send_pulse( 8, 1900 );
+  pru_send_pulse( 9, 2000 );
+
 
   // Finish timing loop 
   timer_finish();

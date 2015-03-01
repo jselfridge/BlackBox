@@ -42,12 +42,12 @@ START:
     CLR     r0, r0, 4
     SBCO    r0, CONST_PRUCFG, 4, 4
     MOV     r0, 0x120
-    MOV     r1, PRU0_CTRL + CTPPR0
+    MOV     r1, PRU1_CTRL + CTPPR0
     SBBO    r0, r1, 0, 4
 
 OUTER_LOOP:
-    LBCO    r0, CONST_PRUSHAREDRAM, 40, 80
-    MOV     r30.b0, 0xFF
+    LBCO    r0, CONST_PRUSHAREDRAM, 44, 92   // ORIG: 40, 80 
+    MOV     r30, 0xFFFF    // ORIG: r30.bo, 
 
 INNER_LOOP:
     SUB     r0,  r0,  1
