@@ -1,6 +1,6 @@
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  BlackBox.dts
+//  BLACKBOX.dts
 //  Justin M Selfridge
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -12,7 +12,7 @@
 
     //--  Identification  --//
     compatible   = "ti,beaglebone", "ti,beaglebone-black";
-    part-number  = "BlackBox";
+    part-number  = "BLACKBOX";
     version      = "00A0";
 
 
@@ -30,8 +30,12 @@
         "P9.31",
         "P9.41",
         "P9.42",
-/*
+
         //--  OUTPUTS  --//
+	"P8.20",
+	"P8.21",
+	"P8.27",
+	"P8.28",
         "P8.39",
         "P8.40",
         "P8.41",
@@ -40,8 +44,6 @@
         "P8.44",
         "P8.45",
         "P8.46",
-*/
-
 /*
         //--  SERIAL  --//
         "P8.37",
@@ -82,9 +84,6 @@
                 pinctrl-single,pins = <
 
                     //--  PRU0: Input  --//
-		    // Originally set to: 0x05
-                    0x038  0x26      //  P8.16 | r31_14 | MODE 6  //
-                    0x03C  0x26      //  P8.15 | r31_15 | MODE 6  //
                     0x190  0x26      //  P9.31 | r31_00 | MODE 6  //
                     0x194  0x26	     //  P9.29 | r31_01 | MODE 6  //
                     0x198  0x26      //  P9.30 | r31_02 | MODE 6  //
@@ -93,19 +92,25 @@
                     0x1A4  0x26	     //  P9.27 | r31_05 | MODE 6  //
                     0x1A8  0x26	     //  P9.41 | r31_06 | MODE 6  //
                     0x1AC  0x26      //  P9.25 | r31_07 | MODE 6  //
+                    0x038  0x26      //  P8.16 | r31_14 | MODE 6  //
+                    0x03C  0x26      //  P8.15 | r31_15 | MODE 6  //
                     0x1B4  0x20      //  Enable P9.41  //
                     0x164  0x20	     //  Enable P9.42  //
 
                     //--  PRU1: Output  --//
 		    // Originally set to: 0x26
-                    //0x0A0  0x26      //  P8.45 | r31_00 | MODE 6  //
-                    //0x0A4  0x26      //  P8.46 | r31_01 | MODE 6  //
-                    //0x0A8  0x26      //  P8.43 | r31_02 | MODE 6  //
-                    //0x0AC  0x26      //  P8.44 | r31_03 | MODE 6  //
-                    //0x0B0  0x26      //  P8.41 | r31_04 | MODE 6  //
-                    //0x0B4  0x26      //  P8.42 | r31_05 | MODE 6  //
-                    //0x0B8  0x26      //  P8.39 | r31_06 | MODE 6  //
-                    //0x0BC  0x26      //  P8.40 | r31_07 | MODE 6  //
+                    //0x0A0  0x05      //  P8.45 | r31_00 | MODE 5  //
+                    //0x0A4  0x05      //  P8.46 | r31_01 | MODE 5  //
+                    //0x0A8  0x05      //  P8.43 | r31_02 | MODE 5  //
+                    //0x0AC  0x05      //  P8.44 | r31_03 | MODE 5  //
+                    //0x0B0  0x05      //  P8.41 | r31_04 | MODE 5  //
+                    //0x0B4  0x05      //  P8.42 | r31_05 | MODE 5  //
+                    //0x0B8  0x05      //  P8.39 | r31_06 | MODE 5  //
+                    //0x0BC  0x05      //  P8.40 | r31_07 | MODE 5  //
+                    //0x0E0  0x05      //  P8.27 | r31_08 | MODE 5  //
+                    //0x0E8  0x05      //  P8.28 | r31_10 | MODE 5  //
+                    //0x080  0x05      //  P8.21 | r31_12 | MODE 5  //
+                    //0x084  0x05      //  P8.20 | r31_13 | MODE 5  //
 
                 >;
             };
