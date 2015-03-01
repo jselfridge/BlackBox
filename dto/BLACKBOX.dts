@@ -44,6 +44,9 @@
         "P8.44",
         "P8.45",
         "P8.46",
+
+	//--  TRANSISTORS  --//
+	"P9.12",
 /*
         //--  SERIAL  --//
         "P8.37",
@@ -115,6 +118,14 @@
                 >;
             };
 
+
+            //--  Transistor pins  --//
+            tran_pins: pinmux_tran_pins {
+                pinctrl-single,pins = <
+                    0x078  0x17      //  P9.12 | GPIO1_28 | OUTPUT | MODE 7 | Rail switch  //
+                >;
+            };
+
 /*
             //--  UART1 pins  --//
             uart1_pins: pinmux_uart1_pins {
@@ -181,6 +192,20 @@
             status = "okay";
             pinctrl-names = "default";
             pinctrl-0 = <&pru_pins>;
+        };
+    };
+
+
+    //--  TRANSISTORS  --//
+    fragment@2 {
+        target = <&ocp>;
+        __overlay__ {
+	    test_helper: helper {
+	        compatible = "bone-pinmux-helper";
+                status = "okay";
+                pinctrl-names = "default";
+                pinctrl-0 = <&tran_pins>;
+            };
         };
     };
 

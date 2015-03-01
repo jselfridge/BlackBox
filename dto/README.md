@@ -238,6 +238,32 @@ for robotic research capabilities.
   </tr>
 </table>
 
+<table>
+  <tr>
+    <td colspan="8" align="center"> <b> TRANSISTORS </b> </td>
+  </tr>
+  <tr>
+    <th align="center"> Header       </th>
+    <th align="center"> $PINS        </th>
+    <th align="center"> Address      </th>
+    <th align="center"> Offset       </th>
+    <th align="center"> Name         </th>
+    <th align="center"> GPIO         </th>
+    <th align="center"> Mode         </th>
+    <th align="left"  > Description  </th>
+  </tr>
+  <tr>
+    <td align="center"> P9_12       </td>
+    <td align="center"> 30          </td>
+    <td align="center"> 878         </td>
+    <td align="center"> 078         </td>
+    <td align="center"> GPIO1_28    </td>
+    <td align="center"> gpio1[28]   </td>
+    <td align="center"> 17          </td>
+    <td align="left"  > Rail Switch </td>
+  </tr>
+</table>
+
 
 
 <!--
