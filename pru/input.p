@@ -2,7 +2,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  input.p
 //  Justin M Selfridge
-//  Reads radio PWM input on the PRU0 subsystem.
+//  Reads RC PWM inputs on the PRU0 subsystem.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .origin 0
