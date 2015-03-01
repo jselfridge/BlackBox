@@ -43,7 +43,7 @@
 
 
 // Define statements
-#define DEBUG           false
+#define DEBUG           true
 #define NSEC_PER_SEC    1000000000u
 
 

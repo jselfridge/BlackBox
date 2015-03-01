@@ -59,10 +59,10 @@ void sys_loop ( void )  {
 
   ushort i;
   timer_start();
-  for ( i=0; i<10; i++ )  sys.input[i] = pru_read_pulse(i);
+  for ( i=0; i<6; i++ )  sys.input[i] = pru_read_pulse(i);
   mpu_sample(&mpu1);
   ctrl_law();
-  for ( i=0; i<10; i++ )  pru_send_pulse( i, sys.output[i] );
+  for ( i=0; i<4; i++ )  pru_send_pulse( i, sys.output[i] );
   timer_finish();
   log_write();
   if (DEBUG)  sys_debug();
@@ -90,8 +90,8 @@ void sys_debug (  )  {
   else               {  printf("X    ");  fflush(stdout);  }
 
   // Input/Output values
-  for ( i=0; i<10; i++ )  printf("%04d ", sys.input[i]  );  printf("   ");
-  //for ( i=0; i<4; i++ )  printf("%04d ", sys.output[i] );  printf("   ");
+  for ( i=0; i<6; i++ )  printf("%04d ", sys.input[i]  );  printf("   ");
+  for ( i=0; i<4; i++ )  printf("%04d ", sys.output[i] );  printf("   ");
 
   // MPU1 heading status
   //printf("%012ld ", mpu1.rawQuat[0] );  printf("   ");
@@ -136,6 +136,9 @@ void sys_debug (  )  {
   //for ( i=0; i<4; i++ )  printf("%6.3f ", mpu2.dQuat[i]             );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%6.1f ", mpu2.Eul[i]  *(180.0f/PI) );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%6.1f ", mpu2.dEul[i] *(180.0f/PI) );  printf("   ");
+
+  // Control values
+  printf( "%6.3f   " , heading*(180.0/PI) );
 
   // Finish print loop
   printf("    ");

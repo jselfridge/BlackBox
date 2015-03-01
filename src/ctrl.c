@@ -110,7 +110,7 @@ void ctrl_flags ( void )  {
 
     // Motor arming: yaw stick only, no roll command
     if ( !fullStick[CH_R][LEFT] && !fullStick[CH_R][RIGHT] )  {
-      if ( fullStick[CH_Y][RIGHT] >= stickHold ) {  motorsArmed = true;  led_on(LED_MOT);   heading = mpu1.Eul[Z];  }
+      if ( fullStick[CH_Y][RIGHT] >= stickHold ) {  motorsArmed = true;  led_on(LED_MOT);   heading = mpu1.Eul[Z];  if(DEBUG) printf("Armed at %7.4f deg\n",heading);  }
       if ( fullStick[CH_Y][LEFT]  >= stickHold ) {  motorsArmed = false; led_off(LED_MOT);                         }
     }
 
