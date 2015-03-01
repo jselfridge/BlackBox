@@ -240,7 +240,7 @@ for robotic research capabilities.
 
 <table>
   <tr>
-    <td colspan="8" align="center"> <b> TRANSISTORS </b> </td>
+    <td colspan="8" align="center"> <b> GENERAL I/O </b> </td>
   </tr>
   <tr>
     <th align="center"> Header       </th>
@@ -264,6 +264,62 @@ for robotic research capabilities.
   </tr>
 </table>
 
+
+<table>
+  <tr>
+    <td colspan="8" align="center"> <b> I2C DEVICES [2CH] </b> </td>
+  </tr>
+  <tr>
+    <th align="center"> Header       </th>
+    <th align="center"> $PINS        </th>
+    <th align="center"> Address      </th>
+    <th align="center"> Offset       </th>
+    <th align="center"> Name         </th>
+    <th align="center"> GPIO         </th>
+    <th align="center"> Mode         </th>
+    <th align="left"  > Description  </th>
+  </tr>
+  <tr>
+    <td align="center"> P9_17        </td>
+    <td align="center"> 87           </td>
+    <td align="center"> 95C          </td>
+    <td align="center"> 15C          </td>
+    <td align="center"> I2C1_SCL     </td>
+    <td align="center"> gpio0[05]    </td>
+    <td align="center"> 2            </td>
+    <td align="left"  >              </td>
+  </tr>
+  <tr>
+    <td align="center"> P9_18        </td>
+    <td align="center"> 86           </td>
+    <td align="center"> 958          </td>
+    <td align="center"> 158          </td>
+    <td align="center"> I2C1_SDA     </td>
+    <td align="center"> gpio0[04]    </td>
+    <td align="center"> 2            </td>
+    <td align="left"  >              </td>
+  </tr>
+  <tr>
+    <td align="center"> P9_19        </td>
+    <td align="center"> 95           </td>
+    <td align="center"> 97C          </td>
+    <td align="center"> 17C          </td>
+    <td align="center"> I2C2_SCL     </td>
+    <td align="center"> gpio0[13]    </td>
+    <td align="center"> 3            </td>
+    <td align="left"  >              </td>
+  </tr>
+  <tr>
+    <td align="center"> P9_20        </td>
+    <td align="center"> 94           </td>
+    <td align="center"> 978          </td>
+    <td align="center"> 178          </td>
+    <td align="center"> I2C2_SDA     </td>
+    <td align="center"> gpio0[12]    </td>
+    <td align="center"> 3            </td>
+    <td align="left"  >              </td>
+  </tr>
+</table>
 
 
 <!--
@@ -364,63 +420,6 @@ for robotic research capabilities.
 </table>
 -->
 
-<!--
-<table>
-  <tr>
-    <td colspan="8" align="center"> <b> I2C DEVICES [2CH] </b> </td>
-  </tr>
-  <tr>
-    <th align="center"> Header       </th>
-    <th align="center"> $PINS        </th>
-    <th align="center"> Address      </th>
-    <th align="center"> Offset       </th>
-    <th align="center"> Name         </th>
-    <th align="center"> GPIO         </th>
-    <th align="center"> Mode         </th>
-    <th align="left"  > Description  </th>
-  </tr>
-  <tr>
-    <td align="center"> P9_17        </td>
-    <td align="center"> 87           </td>
-    <td align="center"> 95C          </td>
-    <td align="center"> 15C          </td>
-    <td align="center"> I2C1_SCL     </td>
-    <td align="center"> gpio0[05]    </td>
-    <td align="center"> 2            </td>
-    <td align="left"  >              </td>
-  </tr>
-  <tr>
-    <td align="center"> P9_18        </td>
-    <td align="center"> 86           </td>
-    <td align="center"> 958          </td>
-    <td align="center"> 158          </td>
-    <td align="center"> I2C1_SDA     </td>
-    <td align="center"> gpio0[04]    </td>
-    <td align="center"> 2            </td>
-    <td align="left"  >              </td>
-  </tr>
-  <tr>
-    <td align="center"> P9_19        </td>
-    <td align="center"> 95           </td>
-    <td align="center"> 97C          </td>
-    <td align="center"> 17C          </td>
-    <td align="center"> I2C2_SCL     </td>
-    <td align="center"> gpio0[13]    </td>
-    <td align="center"> 3            </td>
-    <td align="left"  >              </td>
-  </tr>
-  <tr>
-    <td align="center"> P9_20        </td>
-    <td align="center"> 94           </td>
-    <td align="center"> 978          </td>
-    <td align="center"> 178          </td>
-    <td align="center"> I2C2_SDA     </td>
-    <td align="center"> gpio0[12]    </td>
-    <td align="center"> 3            </td>
-    <td align="left"  >              </td>
-  </tr>
-</table>
--->
 
 <!--
 <table>
