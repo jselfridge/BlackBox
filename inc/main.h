@@ -29,7 +29,7 @@
 //#include <ctrl.h>
 //#include <gpio.h>
 #include <led.h>
-//#include <log.h>
+#include <log.h>
 //#include <mpu.h>
 //#include <pru.h>
 #include <sys.h>
@@ -56,10 +56,6 @@
 //typedef struct {
 //  short radio[8];
 //  short servo[8];
-//  FILE* logfile;
-//  char* filename;
-//  bool  fileopen;
-//  bool  logdata;
 //  bool  running;
 //} uav_struct;
 //uav_struct  uav;

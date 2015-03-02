@@ -5,7 +5,17 @@
 //============================================================
 #ifndef _LOG_H_
 #define _LOG_H_
-#include <uav.h>
+#include <main.h>
+
+
+// Log structure
+typedef struct {
+  FILE* file;
+  char* name;
+  bool  open;
+  bool  enabled;
+} log_struct;
+log_struct datalog; 
 
 
 // Log functions

@@ -53,11 +53,6 @@ void sys_init ( void )  {
   // Set run condition
   //uav.running  = true;
 
-/*
-  // Log file status
-  uav.fileopen = false;  // Move to log.h
-  uav.logdata  = false;  // Move to log.h
-*/
   return;
 }
 
@@ -92,7 +87,7 @@ void sys_loop ( void )  {
   timer_finish();
 
   // Write to log file
-  //log_write();
+  log_write();
 
   // Debugging print statement
   if (DEBUG)  sys_debug();
@@ -182,6 +177,7 @@ void sys_debug (  )  {
 void sys_exit (  )  {
   if(DEBUG)  printf("\n\nExiting program \n");
   timer_exit();
+  log_exit();    // Remove after debugging (called by control law)
   //usleep(200000);
   //mpu_exit();
   //pru_exit();

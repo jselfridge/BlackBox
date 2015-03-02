@@ -12,11 +12,17 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int main ( void )  {
   if(DEBUG)  printf("Begin BlackBox program \n");
+
+  // Initial structure values
+  datalog.open     = false;
+  datalog.enabled  = true;  // Change back to FALSE after debugging
+  //mpu1.bus = 1;
+  //mpu2.bus = 2;
+
+  // Initialize subsystems
   sys_init();
   timer_init();  // Pass process into function
   //pru_init();
-  //mpu1.bus = 1;
-  //mpu2.bus = 2;
   //mpu_init(&mpu1);
   //mpu_init(&mpu2);
   //ctrl_init();
