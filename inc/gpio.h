@@ -5,7 +5,7 @@
 //============================================================
 #ifndef _GPIO_H_
 #define _GPIO_H_
-#include <uav.h>
+#include <main.h>
 
 
 // Local definitions

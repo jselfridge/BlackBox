@@ -27,7 +27,7 @@
 
 // Custom includes
 //#include <ctrl.h>
-//#include <gpio.h>
+#include <gpio.h>
 #include <led.h>
 #include <log.h>
 //#include <mpu.h>
