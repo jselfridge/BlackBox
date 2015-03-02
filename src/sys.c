@@ -49,76 +49,79 @@ void sys_init ( void )  {
 
   // Set LEDs
   led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
+
+  // Set run condition
+  //uav.running  = true;
+
 /*
   // Log file status
-  uav.fileopen = false;
-  uav.logdata  = false;
-  uav.running  = true;
+  uav.fileopen = false;  // Move to log.h
+  uav.logdata  = false;  // Move to log.h
 */
   return;
 }
 
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  uav_loop
+//  sys_loop
 //  Executes instructions at timed intervals.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void uav_loop ( void )  {
+void sys_loop ( void )  {
 
   // Loop counter
-  ushort i;
+  //ushort i;
 
   // Start timing loop
   timer_start();
 
   // Get new radio inputs
-  for ( i=0; i<8; i++ )   uav.radio[i] = pru_read_pulse(i);
+  //for ( i=0; i<8; i++ )   uav.radio[i] = pru_read_pulse(i);
 
   // Get new MPU data
-  mpu_sample(&mpu1);
+  //mpu_sample(&mpu1);
   //mpu_sample(&mpu2);
 
   // Run control law
-  ctrl_law();
+  //ctrl_law();
 
   // Assign motor values
   //for ( i=0; i<8; i++ )   pru_send_pulse( i, 1000 );    //  Manually turn off motors for debugging
-  for ( i=0; i<8; i++ )   pru_send_pulse( i, uav.servo[i] );
+  //for ( i=0; i<8; i++ )   pru_send_pulse( i, uav.servo[i] );
 
   // Finish timing loop 
   timer_finish();
 
   // Write to log file
-  log_write();
+  //log_write();
 
   // Debugging print statement
-  if (DEBUG)  uav_debug();
+  if (DEBUG)  sys_debug();
 
   return;
 }
-*/
-/*
+
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  uav_debug
-//  Prints debugging messages to the terminal.
+//  sys_debug
+//  Prints system debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void uav_debug (  )  {
+void sys_debug (  )  {
 
   // Loop counter
-  ushort i;
+  //ushort i;
 
   // Time values
   printf("\r");
   printf("%6.3f  ", t.runtime );
-  //printf("%09ld  ", t.start_nano );
-  //printf("%09ld  ", t.dur );
+  printf("%09ld  ", t.start_nano );
+  printf("%09ld  ", t.dur );
   printf("%4.2f  ", t.percent );
   if (t.percent<1.0) printf("_    ");
   else               printf("X    ");
 
   // Input output values
-  for ( i=0; i<4; i++ )  printf("%04d ", uav.radio[i] );  printf("   ");
-  for ( i=0; i<4; i++ )  printf("%04d ", uav.servo[i] );  printf("   ");
+  //for ( i=0; i<4; i++ )  printf("%04d ", uav.radio[i] );  printf("   ");
+  //for ( i=0; i<4; i++ )  printf("%04d ", uav.servo[i] );  printf("   ");
 
   // MPU1 status
   //printf("%012ld ", mpu1.rawQuat[0] );  printf("   ");
@@ -155,8 +158,8 @@ void uav_debug (  )  {
   // Data fusion values - MPU1
   //for ( i=0; i<4; i++ )  printf("%6.3f ", mpu1.Quat[i]              );  printf("   ");
   //for ( i=0; i<4; i++ )  printf("%6.3f ", mpu1.dQuat[i]             );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%6.1f ", mpu1.Eul[i]  *(180.0f/PI) );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%6.1f ", mpu1.dEul[i] *(180.0f/PI) );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%6.1f ", mpu1.Eul[i]  *(180.0f/PI) );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%6.1f ", mpu1.dEul[i] *(180.0f/PI) );  printf("   ");
 
   // Data fusion values - MPU2
   //for ( i=0; i<4; i++ )  printf("%6.3f ", mpu2.Quat[i]              );  printf("   ");
@@ -170,7 +173,7 @@ void uav_debug (  )  {
 
   return;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_exit
@@ -178,7 +181,7 @@ void uav_debug (  )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_exit (  )  {
   if(DEBUG)  printf("\n\nExiting program \n");
-  //timer_exit();
+  timer_exit();
   //usleep(200000);
   //mpu_exit();
   //pru_exit();

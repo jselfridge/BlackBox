@@ -11,14 +11,14 @@
 //  Initializes the timing loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void timer_init ( void )  {
-  if(DEBUG)  printf("Initializing timing loop \n");
+  if(DEBUG)  printf("Initializing system timing loop \n");
 
   // Define timer function
-  struct sigaction uav_timer;
-  if(DEBUG)  printf("  Defining timer... ");
-  uav_timer.sa_sigaction = uav_loop;
-  ret = sigaction( SIGRTMIN, &uav_timer, NULL );
-  if ( ret == -1 )  printf("Error (uav_init): Could not assign sigaction. \n");
+  struct sigaction sys_timer;
+  if(DEBUG)  printf("  Defining system timer... ");
+  sys_timer.sa_sigaction = sys_loop;
+  ret = sigaction( SIGRTMIN, &sys_timer, NULL );
+  sys_err( ret == -1, "Error (timer_init): Could not assign sigaction." );
   if(DEBUG)  printf("complete \n");
 
   // Create timer
@@ -28,11 +28,11 @@ void timer_init ( void )  {
   sev.sigev_signo = SIGRTMIN;
   sev.sigev_value.sival_ptr = &timerid;
   ret = timer_create( CLOCK_REALTIME, &sev, &timerid );
-  if ( ret == -1 )  printf("Error (uav_init): Could not create timer. \n");
+  sys_err( ret == -1, "Error (timer_init): Could not create timer." );
   if(DEBUG)  printf("complete \n");
 
-  // Initialize timing counters
-  if(DEBUG)  printf( "  Sample rate: %d \n", (int)FREQ );
+  // Initialize system timing counters
+  if(DEBUG)  printf( "  Sample rate: %d \n", (int)SYS_FREQ );
   t.count = 0;
   t.dur   = 0;
 
@@ -42,7 +42,7 @@ void timer_init ( void )  {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  timer_begin
-//  Begins the timing loop thread after hardware is loaded.
+//  Begins the timing loop thread for the process.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void timer_begin ( void )  {
   if(DEBUG)  printf("Begin timing loop \n");
@@ -50,21 +50,21 @@ void timer_begin ( void )  {
   its.it_value.tv_sec      = 0;
   its.it_value.tv_nsec     = 500000000;
   its.it_interval.tv_sec   = 0;
-  its.it_interval.tv_nsec  = MAIN_LOOP_NS;
+  its.it_interval.tv_nsec  = SYS_LOOP;
   ret = timer_settime( timerid, 0, &its, NULL );
-  uav_err( ret == -1, "Error (uav_init): Could not assign timer values. \n");
+  sys_err( ret == -1, "Error (timer_begin): Could not assign timer values." );
   return;
 }
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  timer_exit
-//  Closes the timing structure.
+//  Closes the timing loop process.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void timer_exit ( void )  {
   if(DEBUG)  printf("  Closing timing loop \n");
   ret = timer_delete(timerid);
-  if ( ret == -1 )  printf("Error (uav_init): Could not create timer. \n");
+  sys_err( ret == -1, "Error (timer_exit): Could not exit the timer." );
   usleep(200000);
   return;
 }
@@ -93,8 +93,8 @@ void timer_finish ( void )  {
   if ( t.end_sec == t.start_sec )  t.dur = 0;
   else                             t.dur = NSEC_PER_SEC;
   t.dur += t.end_nano - t.start_nano;
-  t.percent = t.dur / (double)MAIN_LOOP_NS;
-  t.runtime = t.count / FREQ;
+  t.percent = t.dur / (double)SYS_LOOP;
+  t.runtime = t.count / SYS_FREQ;
   t.count++;
   return;
 }

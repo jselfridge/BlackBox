@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
-//#include <time.h>
+#include <time.h>
 #include <unistd.h>
 
 
@@ -33,7 +33,7 @@
 //#include <mpu.h>
 //#include <pru.h>
 #include <sys.h>
-//#include <timer.h>
+#include <timer.h>
 
 
 // PRU includes
@@ -49,10 +49,7 @@
 
 // Define statements
 #define DEBUG           true
-//#define NSEC_PER_SEC    1000000000u
-//#define MAIN_LOOP_NS    10000000u
-//#define FREQ            (double)( NSEC_PER_SEC / MAIN_LOOP_NS )
-//#define DT              (double) 1/FREQ
+#define NSEC_PER_SEC    1000000000u
 
 
 // UAV structure
@@ -68,35 +65,10 @@
 //uav_struct  uav;
 
 
-// Time structure
-//typedef struct {
-//  ulong   start_sec;
-//  ulong   start_nano;
-//  ulong   end_sec;
-//  ulong   end_nano;
-//  ulong   count;
-//  ulong   dur;
-//  double  runtime;
-//  double  percent;
-//} time_struct;
-//time_struct t;
-
-
 // Global variables
 //struct sigaction exit_signal;
 //uint* memoryPtr;
-//uint ret;
-//struct timespec timeval;
-//timer_t timerid;
-
-
-// Function declarations
-//void uav_err    ( bool cond, char* msg );
-//void uav_init   (  );
-//void uav_loop   (  );
-//void uav_debug  (  );
-//void uav_exit   (  );
-//void uav_memory ( void );
+uint ret;
 
 
 #endif

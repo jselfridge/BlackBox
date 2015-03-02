@@ -48,11 +48,9 @@
 
 
 // Define statements
-//#define DEBUG           false
-//#define NSEC_PER_SEC    1000000000u
-//#define MAIN_LOOP_NS    10000000u
-//#define FREQ            (double)( NSEC_PER_SEC / MAIN_LOOP_NS )
-//#define DT              (double) 1/FREQ
+#define SYS_LOOP        10000000u
+#define SYS_FREQ        (double)( NSEC_PER_SEC / SYS_LOOP )
+#define SYS_DT          (double)( 1/SYS_FREQ )
 
 
 // UAV structure
@@ -68,33 +66,16 @@
 //uav_struct  uav;
 
 
-// Time structure
-//typedef struct {
-//  ulong   start_sec;
-//  ulong   start_nano;
-//  ulong   end_sec;
-//  ulong   end_nano;
-//  ulong   count;
-//  ulong   dur;
-//  double  runtime;
-//  double  percent;
-//} time_struct;
-//time_struct t;
-
-
 // Global variables
 struct sigaction sys_signal;
 //uint* memoryPtr;
-uint ret;
-//struct timespec timeval;
-//timer_t timerid;
 
 
 // Function declarations
 void sys_err    ( bool cond, char* msg );
 void sys_init   (  );
-//void uav_loop   (  );
-//void uav_debug  (  );
+void sys_loop   (  );
+void sys_debug  (  );
 void sys_exit   (  );
 void sys_memory ( void );
 
