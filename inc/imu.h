@@ -25,29 +25,37 @@
 
 // IMU structure
 typedef struct {
-  int bus;
-  //signed char rot [9];  // Add this later
-  int moffset [3];
-  int aoffset [3];
-  int mrange  [3];
-  int arange  [3];
+  int     bus;
+  int     moffset   [3];
+  int     aoffset   [3];
+  int     mrange    [3];
+  int     arange    [3];
+  short   rawMag    [3];
+  short   rawAcc    [3];
+  short   rawGyro   [3];
+  long    rawQuat   [4];
+  short   histMag   [3][12];
+  short   histAcc   [3][12];
+  short   histGyro  [3][12];
+  double  avgMag    [3];
+  double  avgAcc    [3];
+  double  avgGyro   [3];
+  double  avgQuat   [4];
+  double  normMag   [3];
+  double  normAcc   [3];
+  double  normGyro  [3];
+  double  normQuat  [4];
+  double  Quat      [4];
+  double  dQuat     [4];
+  double  Eul       [3];
+  double  dEul      [3];
+  double  bias      [3];
+  double  fx;
+  double  fz;
+  double  weight    [12];
   unsigned long magTime; 
   unsigned long dmpTime;
-  short  rawMag  [3];
-  short  rawAcc  [3];
-  short  rawGyro [3];
-  long   rawQuat [4];
-  double normMag  [3];
-  double normAcc  [3];
-  double normGyro [3];
-  double normQuat [4];
-  double Quat  [4];
-  double dQuat [4];
-  double Eul   [3];
-  double dEul  [3];
-  double bias [3];
-  double fx;
-  double fz;
+  //signed char rot [9];  // Add this later
 } imu_struct;
 imu_struct imu1;
 //imu_struct imu2;
@@ -70,6 +78,7 @@ void    imu_conv     ( imu_struct* imu );
 void    imu_setic    ( imu_struct* imu );
 int     imu_avail    ( void );
 void    imu_raw      ( imu_struct* imu );
+void    imu_avg      ( imu_struct* imu );
 void    imu_norm     ( imu_struct* imu );
 void    imu_fusion   ( imu_struct* imu );
 void    imu_sample   ( imu_struct* imu );

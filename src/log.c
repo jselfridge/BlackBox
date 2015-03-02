@@ -49,11 +49,14 @@ void log_init ( void )  {
   fprintf( datalog.file, "R1,     R2,     R3,     R4,     R5,     R6,        ");
   fprintf( datalog.file, "M1,     M2,     M3,     M4,         ");
 
-  // MPU1 header
+  // IMU1 header
   fprintf( datalog.file, "rMx1,   rMy1,   rMz1,      ");
   fprintf( datalog.file, "rAx1,   rAy1,   rAz1,      ");
   fprintf( datalog.file, "rGx1,   rGy1,   rGz1,      ");
   fprintf( datalog.file, "rQo1,         rQx1,         rQy1,         rQz1,            ");
+  fprintf( datalog.file, "aMx1,     aMy1,     aMz1,        ");
+  fprintf( datalog.file, "aAx1,     aAy1,     aAz1,        ");
+  fprintf( datalog.file, "aGx1,     aGy1,     aGz1,        ");
   fprintf( datalog.file, "nMx1,    nMy1,    nMz1,       ");
   fprintf( datalog.file, "nAx1,    nAy1,    nAz1,       ");
   fprintf( datalog.file, "nGx1,    nGy1,    nGz1,       ");
@@ -63,19 +66,22 @@ void log_init ( void )  {
   fprintf( datalog.file, "Ex1,     Ey1,     Ez1,        ");
   fprintf( datalog.file, "dEx1,    dEy1,    dEz1,      ");
 
-  // MPU2 header
+  // IMU2 header
   //fprintf( datalog.file, "rMx2,   rMy2,   rMz2,      ");
   //fprintf( datalog.file, "rAx2,   rAy2,   rAz2,      ");
   //fprintf( datalog.file, "rGx2,   rGy2,   rGz2,      ");
   //fprintf( datalog.file, "rQo2,         rQx2,         rQy2,         rQz2,            ");
-  //fprintf( uav.logfile, "nMx2,    nMy2,    nMz2,       ");
-  //fprintf( uav.logfile, "nAx2,    nAy2,    nAz2,       ");
-  //fprintf( uav.logfile, "nGx2,    nGy2,    nGz2,       ");
-  //fprintf( uav.logfile, "bx2,       by2,       bz2,          fx2,     fz2,        ");
-  //fprintf( uav.logfile, "Qo2,     Qx2,     Qy2,     Qz2,        ");
-  //fprintf( uav.logfile, "dQo2,    dQx2,    dQy2,    dQz2,       ");
-  //fprintf( uav.logfile, "Ex2,     Ey2,     Ez2,        ");
-  //fprintf( uav.logfile, "dEx2,    dEy2,    dEz2,      ");
+  //fprintf( datalog.file, "aMx2,     aMy2,     aMz2,        ");
+  //fprintf( datalog.file, "aAx2,     aAy2,     aAz2,        ");
+  //fprintf( datalog.file, "aGx2,     aGy2,     aGz2,        ");
+  //fprintf( datalog.file, "nMx2,    nMy2,    nMz2,       ");
+  //fprintf( datalog.file, "nAx2,    nAy2,    nAz2,       ");
+  //fprintf( datalog.file, "nGx2,    nGy2,    nGz2,       ");
+  //fprintf( datalog.file, "bx2,       by2,       bz2,          fx2,     fz2,        ");
+  //fprintf( datalog.file, "Qo2,     Qx2,     Qy2,     Qz2,        ");
+  //fprintf( datalog.file, "dQo2,    dQx2,    dQy2,    dQz2,       ");
+  //fprintf( datalog.file, "Ex2,     Ey2,     Ez2,        ");
+  //fprintf( datalog.file, "dEx2,    dEy2,    dEz2,      ");
 
   return;
 }
@@ -106,6 +112,11 @@ void log_record ( void )  {
   for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   imu1.rawGyro[i] );  fprintf( datalog.file, "   " );
   for ( i=0; i<4; i++ )  fprintf( datalog.file, "%012ld, ", imu1.rawQuat[i] );  fprintf( datalog.file, "   " );
 
+  // Moving average data (IMU1)
+  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%8.2f, ",   imu1.avgMag[i]  );  fprintf( datalog.file, "   " );
+  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%8.2f, ",   imu1.avgAcc[i]  );  fprintf( datalog.file, "   " );
+  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%8.2f, ",   imu1.avgGyro[i] );  fprintf( datalog.file, "   " );
+
  // Normalized sensor data (IMU1)
   for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", imu1.normMag[i]  );  fprintf( datalog.file, "   " );
   for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", imu1.normAcc[i]  );  fprintf( datalog.file, "   " );
@@ -131,10 +142,15 @@ void log_record ( void )  {
   //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   imu2.rawGyro[i] );  fprintf( datalog.file, "   " );
   //for ( i=0; i<4; i++ )  fprintf( datalog.file, "%012ld, ", imu2.rawQuat[i] );  fprintf( datalog.file, "   " );
 
+  // Moving average data (IMU2)
+  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%8.2f, ",   imu2.avgMag[i]  );  fprintf( datalog.file, "   " );
+  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%8.2f, ",   imu2.avgAcc[i]  );  fprintf( datalog.file, "   " );
+  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%8.2f, ",   imu2.avgGyro[i] );  fprintf( datalog.file, "   " );
+
   // Calibrated sensors data (IMU2)
-  //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", imu2.normMag[i]  );  fprintf( uav.logfile, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", imu2.normAcc[i]  );  fprintf( uav.logfile, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( uav.logfile, "%7.4f, ", imu2.normGyro[i] );  fprintf( uav.logfile, "   " );
+  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", imu2.normMag[i]  );  fprintf( datalog.file, "   " );
+  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", imu2.normAcc[i]  );  fprintf( datalog.file, "   " );
+  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", imu2.normGyro[i] );  fprintf( datalog.file, "   " );
 
   // Internal fusion algorithm values (IMU2)
   //for ( i=0; i<3; i++ )  

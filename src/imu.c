@@ -251,6 +251,19 @@ void imu_setic ( imu_struct* imu )  {
   imu->Quat[2] = 0;
   imu->Quat[3] = sin(heading/2);
 
+  imu->weight[0]  = 0.203125;
+  imu->weight[1]  = 0.203125;
+  imu->weight[2]  = 0.125000;
+  imu->weight[3]  = 0.125000;
+  imu->weight[4]  = 0.078125;
+  imu->weight[5]  = 0.078125;
+  imu->weight[6]  = 0.046875;
+  imu->weight[7]  = 0.046875;
+  imu->weight[8]  = 0.031250;
+  imu->weight[9]  = 0.031250;
+  imu->weight[10] = 0.015625;
+  imu->weight[11] = 0.015625;
+
   return;
 }
 
@@ -316,25 +329,66 @@ void imu_raw ( imu_struct* imu )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  imu_avg
+//  Applies a moving average to the raw data.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void imu_avg ( imu_struct* imu )  {
+
+  // Local variables
+  unsigned short i, j;
+
+  // Loop through elements
+  for ( i=0; i<3; i-- ) {
+
+    // Shift raw data history
+    for ( j=11; j>0; j-- ) {
+      imu->histMag[i][j]  = imu->histMag[i][j-1];
+      imu->histAcc[i][j]  = imu->histAcc[i][j-1];
+      imu->histGyro[i][j] = imu->histGyro[i][j-1];
+    }
+    
+    // Assign new data
+    imu->histMag[i][0]  = imu->rawMag[i];
+    imu->histAcc[i][0]  = imu->rawAcc[i];
+    imu->histGyro[i][0] = imu->rawGyro[i];
+
+    // Reset moving average
+    imu->avgMag[i]  = 0;
+    imu->avgAcc[i]  = 0;
+    imu->avgGyro[i] = 0;
+
+    // Calculate new moving average
+    for ( j=0; j<12; j++ ) {
+      imu->avgMag[i]  += imu->histMag[i][j]  * imu->weight[j];
+      imu->avgAcc[i]  += imu->histAcc[i][j]  * imu->weight[j];
+      imu->avgGyro[i] += imu->histGyro[i][j] * imu->weight[j];
+    }
+
+  }
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_norm
 //  Generates normalized sensor data.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_norm ( imu_struct* imu )  {
 
   // Shift and orient magnetometer readings
-  imu->normMag[X] = -( imu->rawMag[X] - imu->moffset[X] ) / (double)imu->mrange[X];
-  imu->normMag[Y] = -( imu->rawMag[Y] - imu->moffset[Y] ) / (double)imu->mrange[Y];
-  imu->normMag[Z] =  ( imu->rawMag[Z] - imu->moffset[Z] ) / (double)imu->mrange[Z];
+  imu->normMag[X] = -( imu->avgMag[X] - imu->moffset[X] ) / (double)imu->mrange[X];
+  imu->normMag[Y] = -( imu->avgMag[Y] - imu->moffset[Y] ) / (double)imu->mrange[Y];
+  imu->normMag[Z] =  ( imu->avgMag[Z] - imu->moffset[Z] ) / (double)imu->mrange[Z];
 
   // Shift and orient accelerometer readings
-  imu->normAcc[X] = ( imu->rawAcc[Y] - imu->aoffset[Y] ) / (double)imu->arange[Y];
-  imu->normAcc[Y] = ( imu->rawAcc[X] - imu->aoffset[X] ) / (double)imu->arange[X];
-  imu->normAcc[Z] = ( imu->rawAcc[Z] - imu->aoffset[Z] ) / (double)imu->arange[Z];
+  imu->normAcc[X] = ( imu->avgAcc[Y] - imu->aoffset[Y] ) / (double)imu->arange[Y];
+  imu->normAcc[Y] = ( imu->avgAcc[X] - imu->aoffset[X] ) / (double)imu->arange[X];
+  imu->normAcc[Z] = ( imu->avgAcc[Z] - imu->aoffset[Z] ) / (double)imu->arange[Z];
 
   // Scale and orient gyro readings
-  imu->normGyro[X] = -imu->rawGyro[Y] * GYRO_SCALE;
-  imu->normGyro[Y] = -imu->rawGyro[X] * GYRO_SCALE;
-  imu->normGyro[Z] = -imu->rawGyro[Z] * GYRO_SCALE;
+  imu->normGyro[X] = -imu->avgGyro[Y] * GYRO_SCALE;
+  imu->normGyro[Y] = -imu->avgGyro[X] * GYRO_SCALE;
+  imu->normGyro[Z] = -imu->avgGyro[Z] * GYRO_SCALE;
 
   // Normalize raw quaternion values
   double mag = 0.0;  unsigned short i = 1;
@@ -520,6 +574,7 @@ void imu_fusion ( imu_struct* imu )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_sample ( imu_struct* imu )  {
   imu_raw(imu);
+  imu_avg(imu);
   imu_norm(imu);
   imu_fusion(imu);
   return;
