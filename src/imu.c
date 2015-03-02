@@ -219,8 +219,8 @@ void imu_conv ( imu_struct* imu )  {
   led_on(LED_MPU);
   */
 
-  heading = -45* (PI/180.0);
-  if(DEBUG)  printf("hard coded as %6.3f \n", heading*(180.0/PI) );
+  ctrl.heading = -45* (PI/180.0);
+  if(DEBUG)  printf("hard coded as %6.3f \n", ctrl.heading*(180.0/PI) );
 
   return;
 }
@@ -244,12 +244,12 @@ void imu_setic ( imu_struct* imu )  {
     }
   }
   imu->Quat[0] = 1;
-  imu->Eul[Z] = heading;
+  imu->Eul[Z] = ctrl.heading;
 
-  imu->Quat[0] = cos(heading/2);
+  imu->Quat[0] = cos(ctrl.heading/2);
   imu->Quat[1] = 0;
   imu->Quat[2] = 0;
-  imu->Quat[3] = sin(heading/2);
+  imu->Quat[3] = sin(ctrl.heading/2);
 
   imu->weight[0]  = 0.203125;
   imu->weight[1]  = 0.203125;

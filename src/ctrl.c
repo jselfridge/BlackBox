@@ -13,31 +13,38 @@
 void ctrl_init ( void )  {
 
   // Increment counter
-  ushort i;
+  ushort i, j;
 
   // Ensure motors are off
   ctrl_disarm();
 
   // Set reference ranges
-  range[CH_R] = R_RANGE;
-  range[CH_P] = P_RANGE;
-  range[CH_Y] = Y_RANGE;
-  range[CH_T] = T_RANGE;
+  ctrl.range[CH_R] = R_RANGE;
+  ctrl.range[CH_P] = P_RANGE;
+  ctrl.range[CH_Y] = Y_RANGE;
+  ctrl.range[CH_T] = T_RANGE;
 
   // Set full stick counters
   for ( i=0; i<4; i++ ) {
-    fullStick[i][HIGH] = 0;
-    fullStick[i][LOW]  = 0;
+    ctrl.fullStick[i][HIGH] = 0;
+    ctrl.fullStick[i][LOW]  = 0;
   }
-  stickHold = STICK_HOLD * SYS_FREQ;
+  ctrl.stickHold = STICK_HOLD * SYS_FREQ;
 
   // Set command flags
-  motorsArmed = false;
+  ctrl.motorsArmed = false;
 
-  // Set integral accumulators
-  R_KIerr = 0;
-  P_KIerr = 0;
-  Y_KIerr = 0;
+  // Set error values
+  for ( i=0; i<3; i++ ) {
+    for ( j=0; j<3; j++ ) {
+      ctrl.err[i][j] = 0;
+    }
+  }
+
+  // Set gain values
+  ctrl.gain[X][P] = 150.0;  ctrl.gain[Y][P] = 150.0;  ctrl.gain[Z][P] =   0.0;
+  ctrl.gain[X][I] =   0.0;  ctrl.gain[Y][I] =   0.0;  ctrl.gain[Z][I] =   0.0;
+  ctrl.gain[X][D] =  35.0;  ctrl.gain[Y][D] =  35.0;  ctrl.gain[Z][D] =   0.0;
 
   return;
 }
@@ -77,10 +84,10 @@ void ctrl_law ( void )  {
 void ctrl_ref ( void )  {
   ushort i;
   for ( i=0; i<10; i++ ) {
-    norm[i] = 2.0 * ( sys.input[i] - IN_MID ) / (float)( IN_MAX - IN_MIN );
-    if ( norm[i] >  1.0 )  norm[i] =  1.0;
-    if ( norm[i] < -1.0 )  norm[i] = -1.0;
-    if (i<4)  ref[i] = norm[i] * range[i];
+    ctrl.norm[i] = 2.0 * ( sys.input[i] - IN_MID ) / (float)( IN_MAX - IN_MIN );
+    if ( ctrl.norm[i] >  1.0 )  ctrl.norm[i] =  1.0;
+    if ( ctrl.norm[i] < -1.0 )  ctrl.norm[i] = -1.0;
+    if (i<4)  ctrl.ref[i] = ctrl.norm[i] * ctrl.range[i];
   }
   return;
 }
@@ -95,35 +102,35 @@ void ctrl_flags ( void )  {
   // Update full stick counter
   ushort i;
   for ( i=0; i<4; i++ ) {
-    if ( norm[i] >  0.95 ) {  fullStick[i][HIGH]++;  }  else {  fullStick[i][HIGH] = 0;  }
-    if ( norm[i] < -0.95 ) {  fullStick[i][LOW]++;   }  else {  fullStick[i][LOW]  = 0;  }
+    if ( ctrl.norm[i] >  0.95 ) {  ctrl.fullStick[i][HIGH]++;  }  else {  ctrl.fullStick[i][HIGH] = 0;  }
+    if ( ctrl.norm[i] < -0.95 ) {  ctrl.fullStick[i][LOW]++;   }  else {  ctrl.fullStick[i][LOW]  = 0;  }
   }
 
   // Only execute stick commands with zero throttle
-  if ( fullStick[CH_T][DOWN] >= stickHold )  {
+  if ( ctrl.fullStick[CH_T][DOWN] >= ctrl.stickHold )  {
     
     // Data log: roll stick only, no yaw command
-    if ( !fullStick[CH_Y][LEFT] && !fullStick[CH_Y][RIGHT] )  {
-      if ( fullStick[CH_R][LEFT]  >= stickHold ) {  datalog.enabled = true;  led_on(LED_LOG);   }
-      if ( fullStick[CH_R][RIGHT] >= stickHold ) {  datalog.enabled = false; led_off(LED_LOG);  }
+    if ( !ctrl.fullStick[CH_Y][LEFT] && !ctrl.fullStick[CH_Y][RIGHT] )  {
+      if ( ctrl.fullStick[CH_R][LEFT]  >= ctrl.stickHold ) {  datalog.enabled = true;  led_on(LED_LOG);   }
+      if ( ctrl.fullStick[CH_R][RIGHT] >= ctrl.stickHold ) {  datalog.enabled = false; led_off(LED_LOG);  }
     }
 
     // Motor arming: yaw stick only, no roll command
-    if ( !fullStick[CH_R][LEFT] && !fullStick[CH_R][RIGHT] )  {
-      if ( fullStick[CH_Y][RIGHT] >= stickHold ) {
-	motorsArmed = true;
+    if ( !ctrl.fullStick[CH_R][LEFT] && !ctrl.fullStick[CH_R][RIGHT] )  {
+      if ( ctrl.fullStick[CH_Y][RIGHT] >= ctrl.stickHold ) {
+	ctrl.motorsArmed = true;
 	led_on(LED_MOT);
-	heading = imu1.Eul[Z];
-	if(DEBUG) printf("Armed at %7.4f deg\n",heading);
+	ctrl.heading = imu1.Eul[Z];
+	if(DEBUG) printf( "Armed at %7.4f deg\n", ctrl.heading );
       }
-      if ( fullStick[CH_Y][LEFT]  >= stickHold ) {
-	motorsArmed = false;
+      if ( ctrl.fullStick[CH_Y][LEFT]  >= ctrl.stickHold ) {
+	ctrl.motorsArmed = false;
 	led_off(LED_MOT);
       }
     }
 
     // Exit program: roll and yaw together to exit program
-    if (  fullStick[CH_Y][LEFT] >= stickHold  &&  fullStick[CH_R][RIGHT] >= stickHold  ) {
+    if (  ctrl.fullStick[CH_Y][LEFT] >= ctrl.stickHold  &&  ctrl.fullStick[CH_R][RIGHT] >= ctrl.stickHold  ) {
       sys.running = false;
       led_off(LED_MPU);
       led_off(LED_PRU);
@@ -144,7 +151,7 @@ void ctrl_flags ( void )  {
 void ctrl_switch ( void )  {
 
   // Check arming flag
-  if (motorsArmed) {
+  if (ctrl.motorsArmed) {
 
   // Run switch command
   ctrl_pid();
@@ -168,52 +175,66 @@ void ctrl_switch ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void ctrl_pid ( void )  {
 
-  // Determine roll adjustment
-  double R_KPerr, R_KDerr, R_KIreset, R_adj;
-  R_KPerr = -imu1.Eul[X] + ref[CH_R];
-  R_KDerr = -imu1.dEul[X];
-  R_KIreset = ref[CH_R] / range[CH_R];
-  if ( R_KIreset < -I_RESET || R_KIreset > I_RESET )  R_KIerr = 0; 
-  else  R_KIerr += R_KPerr * SYS_DT;
-  R_adj  = R_KPerr * R_KP + R_KIerr * R_KI + R_KDerr * R_KD;
+  // Determine roll (X) adjustment
+  double R_KIreset;
+  ctrl.err[X][P] = -imu1.Eul[X] + ctrl.ref[CH_R];
+  ctrl.err[X][D] = -imu1.dEul[X];
+  R_KIreset = ctrl.ref[CH_R] / ctrl.range[CH_R];
+  if ( R_KIreset < -I_RESET || R_KIreset > I_RESET )  
+    ctrl.err[X][I] = 0; 
+  else
+    ctrl.err[X][I] += ctrl.err[X][P] * SYS_DT;
+  ctrl.input[X] = ctrl.err[X][P] * ctrl.gain[X][P] + 
+                  ctrl.err[X][I] * ctrl.gain[X][I] + 
+                  ctrl.err[X][D] * ctrl.gain[X][D];
 
-  // Determine pitch adjustment
-  double P_KPerr, P_KDerr, P_KIreset, P_adj;
-  P_KPerr = -imu1.Eul[Y] + ref[CH_P];
-  P_KDerr = -imu1.dEul[Y];
-  P_KIreset = ref[CH_P] / range[CH_P];
-  if ( P_KIreset < -I_RESET || P_KIreset > I_RESET )  P_KIerr = 0; 
-  else  P_KIerr += P_KPerr * SYS_DT;
-  P_adj  = P_KPerr * P_KP + P_KIerr * P_KI + P_KDerr * P_KD;
+  // Determine pitch (Y) adjustment
+  double P_KIreset;
+  ctrl.err[Y][P] = -imu1.Eul[Y] + ctrl.ref[CH_P];
+  ctrl.err[Y][D] = -imu1.dEul[Y];
+  P_KIreset = ctrl.ref[CH_P] / ctrl.range[CH_P];
+  if ( P_KIreset < -I_RESET || P_KIreset > I_RESET )
+    ctrl.err[Y][I] = 0; 
+  else
+    ctrl.err[Y][I] += ctrl.err[Y][P] * SYS_DT;
+  ctrl.input[Y] = ctrl.err[Y][P] * ctrl.gain[Y][P] + 
+                  ctrl.err[Y][I] * ctrl.gain[Y][I] + 
+                  ctrl.err[Y][D] * ctrl.gain[Y][D];
 
-  // Determine yaw adjustment
-  double Y_KPerr, Y_KDerr, Y_KIreset, Y_adj;
-  if ( norm[CH_T] > -0.9 && fabs(norm[CH_Y]) > 0.15 )  heading += ref[CH_Y] * SYS_DT;
-  while ( heading >   PI )  heading -= 2.0*PI;
-  while ( heading <= -PI )  heading += 2.0*PI;
-  Y_KPerr = -imu1.Eul[Z] + heading;
-  while ( Y_KPerr >   PI )  heading -= 2.0*PI;
-  while ( Y_KPerr <= -PI )  heading += 2.0*PI;
-  Y_KDerr = -imu1.dEul[Z];
-  Y_KIreset = ref[CH_Y] / range[CH_Y];
-  if ( Y_KIreset < -I_RESET || Y_KIreset > I_RESET )  Y_KIerr = 0; 
-  else  Y_KIerr += Y_KPerr * SYS_DT;
-  Y_adj = Y_KPerr * Y_KP + Y_KIerr * Y_KI + Y_KDerr * Y_KD;
+  // Determine yaw (Z) adjustment
+  double Y_KIreset;
+  if ( ctrl.norm[CH_T] > -0.9 && fabs(ctrl.norm[CH_Y]) > 0.15 )  ctrl.heading += ctrl.ref[CH_Y] * SYS_DT;
+  while ( ctrl.heading >   PI )  ctrl.heading -= 2.0*PI;
+  while ( ctrl.heading <= -PI )  ctrl.heading += 2.0*PI;
+  ctrl.err[Z][P] = -imu1.Eul[Z] + ctrl.heading;
+  while ( ctrl.err[Z][P] >   PI )  ctrl.heading -= 2.0*PI;
+  while ( ctrl.err[Z][P] <= -PI )  ctrl.heading += 2.0*PI;
+  ctrl.err[Z][D] = -imu1.dEul[Z];
+  Y_KIreset = ctrl.ref[CH_Y] / ctrl.range[CH_Y];
+  if ( Y_KIreset < -I_RESET || Y_KIreset > I_RESET )
+    ctrl.err[Z][I] = 0; 
+  else
+    ctrl.err[Z][I] += ctrl.err[Z][P] * SYS_DT;
+  ctrl.input[Z] = ctrl.err[Z][P] * ctrl.gain[Z][P] + 
+                  ctrl.err[Z][I] * ctrl.gain[Z][I] + 
+                  ctrl.err[Z][D] * ctrl.gain[Z][D];
 
   // Determine throttle adjustment
-  double tilt, range, T_adj; 
+  double tilt, range;
   tilt = 1 - ( cos(imu1.Eul[X]) * cos(imu1.Eul[Y]) );
-  if   ( norm[CH_D] <=0 )  range = T_MIN - 1000;
-  else                     range = T_MAX - T_MIN;
-  T_adj = T_MIN + range * norm[CH_D] + ref[CH_T] + tilt * T_TILT;
+  if ( ctrl.norm[CH_D] <=0 )
+    range = T_MIN - 1000;
+  else
+    range = T_MAX - T_MIN;
+  ctrl.input[T] = T_MIN + range * ctrl.norm[CH_D] + ctrl.ref[CH_T] + tilt * T_TILT;
 
   // Set motor outputs
   ushort i;
-  if ( norm[CH_T] > -0.9 ) {
-  sys.output[MOT_FR] = T_adj - R_adj + P_adj + Y_adj;
-  sys.output[MOT_BL] = T_adj + R_adj - P_adj + Y_adj;
-  sys.output[MOT_FL] = T_adj + R_adj + P_adj - Y_adj;
-  sys.output[MOT_BR] = T_adj - R_adj - P_adj - Y_adj;
+  if ( ctrl.norm[CH_T] > -0.9 ) {
+  sys.output[MOT_FR] = ctrl.input[T] - ctrl.input[X] + ctrl.input[Y] + ctrl.input[Z];
+  sys.output[MOT_BL] = ctrl.input[T] + ctrl.input[X] - ctrl.input[Y] + ctrl.input[Z];
+  sys.output[MOT_FL] = ctrl.input[T] + ctrl.input[X] + ctrl.input[Y] - ctrl.input[Z];
+  sys.output[MOT_BR] = ctrl.input[T] - ctrl.input[X] - ctrl.input[Y] - ctrl.input[Z];
   } else {  for ( i=0; i<4; i++ )  sys.output[i] = 1000;  }
 
   return;

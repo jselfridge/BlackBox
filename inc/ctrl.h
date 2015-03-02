@@ -43,25 +43,38 @@
 #define MOT_BR  3
 
 
+// Axes index
+#define X  0
+#define Y  1
+#define Z  2
+#define T  3
+
+
+// PID index
+#define P  0
+#define I  1
+#define D  2
+
+
 // Define roll gains
 #define R_RANGE   0.50f
-#define R_KP    130.00f  // 150
-#define R_KI      0.00f
-#define R_KD     35.00f
+//#define R_KP    130.00f  // 150
+//#define R_KI      0.00f
+//#define R_KD     35.00f
 
 
 // Define pitch gains
 #define P_RANGE   0.50f
-#define P_KP    130.00f  // 150
-#define P_KI      0.00f
-#define P_KD     35.00f
+//#define P_KP    130.00f  // 150
+//#define P_KI      0.00f
+//#define P_KD     35.00f
 
 
 // Define yaw gains
 #define Y_RANGE   2.00f
-#define Y_KP    200.00f
-#define Y_KI      0.00f
-#define Y_KD     60.00f
+//#define Y_KP    200.00f
+//#define Y_KI      0.00f
+//#define Y_KD     60.00f
 
 
 // Define throttle gains
@@ -80,17 +93,20 @@
 #define UP    1
 
 
-// Global variables
-double  norm[10];
-double  range[4];
-double  ref[4];
-double  heading;
-double  R_KIerr;
-double  P_KIerr;
-double  Y_KIerr;
-uint    fullStick[4][2];
-uint    stickHold;
-bool    motorsArmed;
+// CTRL structure
+typedef struct {
+  double  norm[10];
+  double  range[4];
+  double  ref[4];
+  double  heading;
+  double  err[3][3];
+  double  gain[3][3];
+  double  input[4];
+  uint    fullStick[4][2];
+  uint    stickHold;
+  bool    motorsArmed;
+} ctrl_struct;
+ctrl_struct ctrl;
 
 
 // CTRL functions

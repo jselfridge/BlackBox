@@ -86,13 +86,13 @@ void sys_debug (  )  {
   printf("%6.3f  ", t.runtime );  fflush(stdout);
   //printf("%09ld  ", t.start_nano );  fflush(stdout);
   //printf("%09ld  ", t.dur );  fflush(stdout);
-  printf("%4.2f  ", t.percent );  fflush(stdout);
-  if (t.percent<1.0) {  printf("_    ");  fflush(stdout);  }
-  else               {  printf("X    ");  fflush(stdout);  }
+  //printf("%4.2f  ", t.percent );  fflush(stdout);
+  //if (t.percent<1.0) {  printf("_    ");  fflush(stdout);  }
+  //else               {  printf("X    ");  fflush(stdout);  }
 
   // Input/Output values
-  for ( i=0; i<6; i++ )  printf("%06.1f ", sys.input[i]  );  printf("   ");
-  for ( i=0; i<4; i++ )  printf("%06.1f ", sys.output[i] );  printf("   ");
+  //for ( i=0; i<6; i++ )  printf("%06.1f ", sys.input[i]  );  printf("   ");
+  //for ( i=0; i<4; i++ )  printf("%06.1f ", sys.output[i] );  printf("   ");
 
   // IMU1 heading status
   //printf("%012ld ", imu1.rawQuat[0] );  printf("   ");
@@ -113,6 +113,16 @@ void sys_debug (  )  {
   //for ( i=0; i<3; i++ )  printf("%06d ",   imu2.rawAcc[i]  );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%06d ",   imu2.rawGyro[i] );  printf("   ");
   //for ( i=0; i<4; i++ )  printf("%012ld ", imu2.rawQuat[i] );  printf("   ");
+
+  // Moving average sensor values - IMU1
+  //for ( i=0; i<3; i++ )  printf("%07.2f ",   imu1.avgMag[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%09.2f ",   imu1.avgAcc[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%09.2f ",   imu1.avgGyro[i] );  printf("   ");
+
+  // Moving average sensor values - IMU2
+  //for ( i=0; i<3; i++ )  printf("%07.2f ",   imu2.avgMag[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%09.2f ",   imu2.avgAcc[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%09.2f ",   imu2.avgGyro[i] );  printf("   ");
 
   // Normalized sensor values - IMU1
   //for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.normMag[i]  );  printf("   ");
@@ -139,7 +149,11 @@ void sys_debug (  )  {
   //for ( i=0; i<3; i++ )  printf("%6.1f ", imu2.dEul[i] *(180.0f/PI) );  printf("   ");
 
   // Control values
-  printf( "%6.3f   " , heading*(180.0/PI) );
+  printf( "%6.3f      ", ctrl.heading*(180.0/PI) );
+  for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[X][i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[Y][i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[Z][i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf( "%07.2f ", ctrl.input[i]  );  printf("   ");
 
   // Finish print loop
   printf("    ");

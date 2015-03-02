@@ -61,14 +61,14 @@ imu_struct imu1;
 
 
 // Global variables
-double curr_head;
-double prev_head;
-double heading;
-double factor;
-ushort counter;
+//double curr_head;
+//double prev_head;
+//double heading;
+//double factor;
+//ushort counter;
 
 
-// MPU functions
+// IMU functions
 void    imu_init     ( imu_struct* imu );
 void    imu_exit     ( void );
 void    imu_param    ( imu_struct* imu );
