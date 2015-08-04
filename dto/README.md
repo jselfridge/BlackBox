@@ -28,7 +28,7 @@ for robotic research capabilities.
     <td align="center"> PRU0_r31_00 </td>
     <td align="center"> gpio3[14]   </td>
     <td align="center"> 6           </td>
-    <td align="left"  > INPUT_X     </td>
+    <td align="left"  > IN_04       </td>
   </tr>
   <tr>
     <td align="center"> P9_29       </td>
@@ -38,7 +38,7 @@ for robotic research capabilities.
     <td align="center"> PRU0_r31_01 </td>
     <td align="center"> gpio3[15]   </td>
     <td align="center"> 6           </td>
-    <td align="left"  > INPUT_X     </td>
+    <td align="left"  > IN_03       </td>
   </tr>
   <tr>
     <td align="center"> P9_30       </td>
@@ -48,7 +48,7 @@ for robotic research capabilities.
     <td align="center"> PRU0_r31_02 </td>
     <td align="center"> gpio3[16]   </td>
     <td align="center"> 6           </td>
-    <td align="left"  > INPUT_X     </td>
+    <td align="left"  > IN_07       </td>
   </tr>
   <tr>
     <td align="center"> P9_28       </td>
@@ -58,7 +58,7 @@ for robotic research capabilities.
     <td align="center"> PRU0_r31_03 </td>
     <td align="center"> gpio3[17]   </td>
     <td align="center"> 6           </td>
-    <td align="left"  > INPUT_X     </td>
+    <td align="left"  > IN_08       </td>
   </tr>
   <tr>
     <td align="center"> P9_42       </td>
@@ -68,7 +68,7 @@ for robotic research capabilities.
     <td align="center"> PRU0_r31_04 </td>
     <td align="center"> gpio3[18]   </td>
     <td align="center"> 6           </td>
-    <td align="left"  > INPUT_X     </td>
+    <td align="left"  > IN_06       </td>
   </tr>
   <tr>
     <td align="center"> P9_27       </td>
@@ -78,7 +78,7 @@ for robotic research capabilities.
     <td align="center"> PRU0_r31_05 </td>
     <td align="center"> gpio3[19]   </td>
     <td align="center"> 6           </td>
-    <td align="left"  > INPUT_X     </td>
+    <td align="left"  > IN_02       </td>
   </tr>
   <tr>
     <td align="center"> P9_41       </td>
@@ -88,7 +88,7 @@ for robotic research capabilities.
     <td align="center"> PRU0_r31_06 </td>
     <td align="center"> gpio3[20]   </td>
     <td align="center"> 6           </td>
-    <td align="left"  > INPUT_X     </td>
+    <td align="left"  > IN_05       </td>
   </tr>
   <tr>
     <td align="center"> P9_25       </td>
@@ -98,7 +98,7 @@ for robotic research capabilities.
     <td align="center"> PRU0_r31_07 </td>
     <td align="center"> gpio3[21]   </td>
     <td align="center"> 6           </td>
-    <td align="left"  > INPUT_X     </td>
+    <td align="left"  > IN_01       </td>
   </tr>
   <tr>
     <td align="center"> P8_16       </td>
@@ -108,7 +108,7 @@ for robotic research capabilities.
     <td align="center"> PRU0_r31_14 </td>
     <td align="center"> gpio1[14]   </td>
     <td align="center"> 6           </td>
-    <td align="left"  > INPUT_X     </td>
+    <td align="left"  > IN_10       </td>
   </tr>
   <tr>
     <td align="center"> P8_15       </td>
@@ -118,7 +118,7 @@ for robotic research capabilities.
     <td align="center"> PRU0_r31_15 </td>
     <td align="center"> gpio1[15]   </td>
     <td align="center"> 6           </td>
-    <td align="left"  > INPUT_X     </td>
+    <td align="left"  > IN_09       </td>
   </tr>
 </table>
 
