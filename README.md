@@ -1,10 +1,9 @@
 
-UAV
-===
+BLACK BOX
+=========
 
-This repository contains the set of code that transforms a 
-BeagleBone Black (BBB) linux computer into an avionics 
-board for autonomous UAVs.
+Develops a cape for a BeagleBone Black to enable "Black 
+Box" functionality for research and development. 
 
 
 
