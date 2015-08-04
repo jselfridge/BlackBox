@@ -1,6 +1,6 @@
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  BBB-UAV.dts
+//  BlackBox.dts
 //  Justin M Selfridge
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -12,24 +12,16 @@
 
     //--  Identification  --//
     compatible   = "ti,beaglebone", "ti,beaglebone-black";
-    part-number  = "BBB-UAV";
+    part-number  = "BlackBox";
     version      = "00A0";
 
 
     //--  Allocate hardware and pins  --//
     exclusive-use = 
 
-        //--  RADIO  --//
-        "P8.39",
-        "P8.40",
-        "P8.41",
-        "P8.42",
-        "P8.43",
-        "P8.44",
-        "P8.45",
-        "P8.46",
-
-        //--  SERVO  --//
+        //--  INPUTS  --//
+        "P8.15",
+        "P8.16",
         "P9.25",
         "P9.27",
         "P9.28",
@@ -38,8 +30,20 @@
         "P9.31",
         "P9.41",
         "P9.42",
+/*
+        //--  OUTPUTS  --//
+        "P8.39",
+        "P8.40",
+        "P8.41",
+        "P8.42",
+        "P8.43",
+        "P8.44",
+        "P8.45",
+        "P8.46",
+*/
 
-/*        //--  SERIAL  --//
+/*
+        //--  SERIAL  --//
         "P8.37",
         "P8.38",
         "P9.11",
@@ -49,19 +53,20 @@
         "P9.24",
         "P9.26",
 */
+/*
         //--  I2C  --//
         "P9.17",
         "P9.18",
         "P9.19",
         "P9.20",
-
+*/
         //--  HARDWARE  --//
         //"uart1",
         //"uart2",
         //"uart4",
         //"uart5",
-        "i2c1",
-        "i2c2",
+        //"i2c1",
+        //"i2c2",
         "pru0",
         "pru1",
         "pruss";
@@ -76,32 +81,37 @@
             pru_pins: pinmux_pru_pins {
                 pinctrl-single,pins = <
 
-                    //-- PRU0: output to servo  --//
-                    0x190  0x05      //  P9.31 | r30_00 | MODE 5  //
-                    0x194  0x05	     //  P9.29 | r30_01 | MODE 5  //
-                    0x198  0x05      //  P9.30 | r30_02 | MODE 5  //
-                    0x19C  0x05      //  P9.28 | r30_03 | MODE 5  //
-                    0x1A0  0x05      //  P9.42 | r30_04 | MODE 5  //
-                    0x1A4  0x05	     //  P9.27 | r30_05 | MODE 5  //
-                    0x1A8  0x05	     //  P9.41 | r30_06 | MODE 5  //
-                    0x1AC  0x05      //  P9.25 | r30_07 | MODE 5  //
+                    //--  PRU0: Input  --//
+		    // Originally set to: 0x05
+                    0x038  0x26      //  P8.16 | r31_14 | MODE 6  //
+                    0x03C  0x26      //  P8.15 | r31_15 | MODE 6  //
+                    0x190  0x26      //  P9.31 | r31_00 | MODE 6  //
+                    0x194  0x26	     //  P9.29 | r31_01 | MODE 6  //
+                    0x198  0x26      //  P9.30 | r31_02 | MODE 6  //
+                    0x19C  0x26      //  P9.28 | r31_03 | MODE 6  //
+                    0x1A0  0x26      //  P9.42 | r31_04 | MODE 6  //
+                    0x1A4  0x26	     //  P9.27 | r31_05 | MODE 6  //
+                    0x1A8  0x26	     //  P9.41 | r31_06 | MODE 6  //
+                    0x1AC  0x26      //  P9.25 | r31_07 | MODE 6  //
                     0x1B4  0x20      //  Enable P9.41  //
                     0x164  0x20	     //  Enable P9.42  //
 
-                    //--  PRU1: input from radio  --//
-                    0x0A0  0x26      //  P8.45 | r31_00 | MODE 6  //
-                    0x0A4  0x26      //  P8.46 | r31_01 | MODE 6  //
-                    0x0A8  0x26      //  P8.43 | r31_02 | MODE 6  //
-                    0x0AC  0x26      //  P8.44 | r31_03 | MODE 6  //
-                    0x0B0  0x26      //  P8.41 | r31_04 | MODE 6  //
-                    0x0B4  0x26      //  P8.42 | r31_05 | MODE 6  //
-                    0x0B8  0x26      //  P8.39 | r31_06 | MODE 6  //
-                    0x0BC  0x26      //  P8.40 | r31_07 | MODE 6  //
+                    //--  PRU1: Output  --//
+		    // Originally set to: 0x26
+                    //0x0A0  0x26      //  P8.45 | r31_00 | MODE 6  //
+                    //0x0A4  0x26      //  P8.46 | r31_01 | MODE 6  //
+                    //0x0A8  0x26      //  P8.43 | r31_02 | MODE 6  //
+                    //0x0AC  0x26      //  P8.44 | r31_03 | MODE 6  //
+                    //0x0B0  0x26      //  P8.41 | r31_04 | MODE 6  //
+                    //0x0B4  0x26      //  P8.42 | r31_05 | MODE 6  //
+                    //0x0B8  0x26      //  P8.39 | r31_06 | MODE 6  //
+                    //0x0BC  0x26      //  P8.40 | r31_07 | MODE 6  //
 
                 >;
             };
 
-/*            //--  UART1 pins  --//
+/*
+            //--  UART1 pins  --//
             uart1_pins: pinmux_uart1_pins {
                 pinctrl-single,pins = <
                     0x184  0x20      //  P9.24 | UART1_TX | MODE 0  //
@@ -109,7 +119,8 @@
                 >;
             };
 */
-/*            //--  UART2 pins  --//
+/*
+            //--  UART2 pins  --//
             uart2_pins: pinmux_uart2_pins {
                 pinctrl-single,pins = <
                     0x154  0x21      //  P9.21 | UART2_TX | MODE 1  //
@@ -117,7 +128,8 @@
                 >;
             };
 */
-/*            //--  UART4 pins  --//
+/*
+            //--  UART4 pins  --//
             uart4_pins: pinmux_uart4_pins {
                 pinctrl-single,pins = <
                     0x074  0x26      //  P9.13 | UART4_TX | MODE 6  //
@@ -125,7 +137,8 @@
                 >;
             };
 */
-/*            //--  UART5 pins  --//
+/*
+            //--  UART5 pins  --//
             uart5_pins: pinmux_uart5_pins {
                 pinctrl-single,pins = <
                     0x0C0  0x24      //  P8.37 | UART5_TX | MODE 4  //
@@ -133,6 +146,7 @@
                 >;
             };
 */
+/*
             //--  I2C1 pins  --//
             i2c1_pins: pinmux_i2c1_pins {
                 pinctrl-single,pins = <
@@ -140,7 +154,8 @@
                     0x158  0x72      //  P9.18 | I2C1_SDA | MODE 2  //
                 >;
             };
-
+*/
+/*
             //--  I2C2 pins  --//
             i2c2_pins: pinmux_i2c2_pins {
                 pinctrl-single,pins = <
@@ -148,6 +163,7 @@
                     0x178  0x73      //  P9.20 | I2C2_SDA | MODE 3  //
                 >;
             };
+*/
 
         };
     };
@@ -163,7 +179,8 @@
         };
     };
 
-/*    //--  UART1  --//
+/*
+    //--  UART1  --//
     fragment@2 {
         target = <&uart2>;
         __overlay__ {
@@ -173,7 +190,8 @@
         };
     };
 */
-/*    //--  UART2  --//
+/*
+    //--  UART2  --//
     fragment@3 {
         target = <&uart3>;
         __overlay__ {
@@ -183,7 +201,8 @@
         };
     };
 */
-/*    //--  UART4  --//
+/*
+    //--  UART4  --//
     fragment@4 {
         target = <&uart5>;
         __overlay__ {
@@ -193,7 +212,8 @@
         };
     };
 */
-/*    //--  UART5  --//
+/*
+    //--  UART5  --//
     fragment@5 {
         target = <&uart6>;
         __overlay__ {
@@ -203,6 +223,7 @@
         };
     };
 */
+/*
     //--  I2C1  --//
     fragment@6 {
         target = <&i2c1>;
@@ -212,7 +233,8 @@
             pinctrl-0 = <&i2c1_pins>;
         };
     };
-
+*/
+/*
     //--  I2C2  --//
     fragment@7 {
         target = <&i2c2>;
@@ -222,7 +244,7 @@
             pinctrl-0 = <&i2c2_pins>;
         };
     };
-
+*/
 
 };
 

@@ -1,10 +1,10 @@
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-##  makefile - BBB UAV
+##  makefile - BlackBox
 ##  Justin M Selfridge
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-all : BBB-UAV-00A0.dtbo
+all : BlackBox.dtbo
 
 %-00A0.dtbo : %.dts
 	dtc -O dtb -o $@ -b 0 -@ $<
@@ -14,4 +14,6 @@ install :
 
 clean : 
 	rm *.dtbo
+
+
 
