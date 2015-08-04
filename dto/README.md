@@ -1,117 +1,14 @@
 
-BBB UAV Overlay
-===============
+Black Box Overlay
+=================
 
-This overlay is designed to be used as an avionics platform for autonomous 
-aircraft.  The following table outlines what each of the pins will be used 
-for, and summarizes the most important characteristics during the development 
-process.
-
-
-
-PROTOTYPE BOARD CONFIGURATION
------------------------------
-
-<table>
-  <tr>
-    <td colspan="8" align="center"> <b> RADIO INPUTS </b> </td>
-  </tr>
-  <tr>
-    <th align="center"> Header       </th>
-    <th align="center"> $PINS        </th>
-    <th align="center"> Address      </th>
-    <th align="center"> Offset       </th>
-    <th align="center"> Name         </th>
-    <th align="center"> GPIO         </th>
-    <th align="center"> Mode         </th>
-    <th align="left"  > Description  </th>
-  </tr>
-  <tr>
-    <td align="center"> P8_45       </td>
-    <td align="center"> 40          </td>
-    <td align="center"> 8A0         </td>
-    <td align="center"> 0A0         </td>
-    <td align="center"> PRU1_r31_00 </td>
-    <td align="center"> gpio2[06]   </td>
-    <td align="center"> 6           </td>
-    <td align="left"  > RADIO_1     </td>
-  </tr>
-  <tr>
-    <td align="center"> P8_46       </td>
-    <td align="center"> 41          </td>
-    <td align="center"> 8A4         </td>
-    <td align="center"> 0A4         </td>
-    <td align="center"> PRU1_r31_01 </td>
-    <td align="center"> gpio2[07]   </td>
-    <td align="center"> 6           </td>
-    <td align="left"  > RADIO_2     </td>
-  </tr>
-  <tr>
-    <td align="center"> P8_43       </td>
-    <td align="center"> 42          </td>
-    <td align="center"> 8A8         </td>
-    <td align="center"> 0A8         </td>
-    <td align="center"> PRU1_r31_02 </td>
-    <td align="center"> gpio2[08]   </td>
-    <td align="center"> 6           </td>
-    <td align="left"  > RADIO_3     </td>
-  </tr>
-  <tr>
-    <td align="center"> P8_44       </td>
-    <td align="center"> 43          </td>
-    <td align="center"> 8AC         </td>
-    <td align="center"> 0AC         </td>
-    <td align="center"> PRU1_r31_03 </td>
-    <td align="center"> gpio2[09]   </td>
-    <td align="center"> 6           </td>
-    <td align="left"  > RADIO_4     </td>
-  </tr>
-  <tr>
-    <td align="center"> P8_41       </td>
-    <td align="center"> 44          </td>
-    <td align="center"> 8B0         </td>
-    <td align="center"> 0B0         </td>
-    <td align="center"> PRU1_r31_04 </td>
-    <td align="center"> gpio2[10]   </td>
-    <td align="center"> 6           </td>
-    <td align="left"  > RADIO_5     </td>
-  </tr>
-  <tr>
-    <td align="center"> P8_42       </td>
-    <td align="center"> 45          </td>
-    <td align="center"> 8B4         </td>
-    <td align="center"> 0B4         </td>
-    <td align="center"> PRU1_r31_05 </td>
-    <td align="center"> gpio2[11]   </td>
-    <td align="center"> 6           </td>
-    <td align="left"  > RADIO_6     </td>
-  </tr>
-  <tr>
-    <td align="center"> P8_39       </td>
-    <td align="center"> 46          </td>
-    <td align="center"> 8B8         </td>
-    <td align="center"> 0B8         </td>
-    <td align="center"> PRU1_r31_06 </td>
-    <td align="center"> gpio2[12]   </td>
-    <td align="center"> 6           </td>
-    <td align="left"  > RADIO_7     </td>
-  </tr>
-  <tr>
-    <td align="center"> P8_40       </td>
-    <td align="center"> 47          </td>
-    <td align="center"> 8BC         </td>
-    <td align="center"> 0BC         </td>
-    <td align="center"> PRU1_r31_07 </td>
-    <td align="center"> gpio2[13]   </td>
-    <td align="center"> 6           </td>
-    <td align="left"  > RADIO_8     </td>
-  </tr>
-</table>
+This overlay is for the Black Box cape which enables functionality
+for robotic research capabilities.
 
 
 <table>
   <tr>
-    <td colspan="8" align="center"> <b> SERVO OUTPUTS </b> </td>
+    <td colspan="8" align="center"> <b> PRU INPUTS (RADIO) [10CH] </b> </td>
   </tr>
   <tr>
     <th align="center"> Header       </th>
@@ -128,242 +25,106 @@ PROTOTYPE BOARD CONFIGURATION
     <td align="center"> 100         </td>
     <td align="center"> 990         </td>
     <td align="center"> 190         </td>
-    <td align="center"> PRU0_r30_00 </td>
+    <td align="center"> PRU0_r31_00 </td>
     <td align="center"> gpio3[14]   </td>
-    <td align="center"> 5           </td>
-    <td align="left"  > SERVO_1     </td>
+    <td align="center"> 6           </td>
+    <td align="left"  > INPUT_X     </td>
   </tr>
   <tr>
     <td align="center"> P9_29       </td>
     <td align="center"> 101         </td>
     <td align="center"> 994         </td>
     <td align="center"> 194         </td>
-    <td align="center"> PRU0_r30_01 </td>
+    <td align="center"> PRU0_r31_01 </td>
     <td align="center"> gpio3[15]   </td>
-    <td align="center"> 5           </td>
-    <td align="left"  > SERVO_2     </td>
+    <td align="center"> 6           </td>
+    <td align="left"  > INPUT_X     </td>
   </tr>
   <tr>
     <td align="center"> P9_30       </td>
     <td align="center"> 102         </td>
     <td align="center"> 998         </td>
     <td align="center"> 198         </td>
-    <td align="center"> PRU0_r30_02 </td>
+    <td align="center"> PRU0_r31_02 </td>
     <td align="center"> gpio3[16]   </td>
-    <td align="center"> 5           </td>
-    <td align="left"  > SERVO_3     </td>
+    <td align="center"> 6           </td>
+    <td align="left"  > INPUT_X     </td>
   </tr>
   <tr>
     <td align="center"> P9_28       </td>
     <td align="center"> 103         </td>
     <td align="center"> 99C         </td>
     <td align="center"> 19C         </td>
-    <td align="center"> PRU0_r30_03 </td>
+    <td align="center"> PRU0_r31_03 </td>
     <td align="center"> gpio3[17]   </td>
-    <td align="center"> 5           </td>
-    <td align="left"  > SERVO_4     </td>
+    <td align="center"> 6           </td>
+    <td align="left"  > INPUT_X     </td>
   </tr>
   <tr>
     <td align="center"> P9_42       </td>
     <td align="center"> 89          </td>
     <td align="center"> 9A0         </td>
     <td align="center"> 1A0         </td>
-    <td align="center"> PRU0_r30_04 </td>
+    <td align="center"> PRU0_r31_04 </td>
     <td align="center"> gpio3[18]   </td>
-    <td align="center"> 5           </td>
-    <td align="left"  > SERVO_5     </td>
+    <td align="center"> 6           </td>
+    <td align="left"  > INPUT_X     </td>
   </tr>
   <tr>
     <td align="center"> P9_27       </td>
     <td align="center"> 105         </td>
     <td align="center"> 9A4         </td>
     <td align="center"> 1A4         </td>
-    <td align="center"> PRU0_r30_05 </td>
+    <td align="center"> PRU0_r31_05 </td>
     <td align="center"> gpio3[19]   </td>
-    <td align="center"> 5           </td>
-    <td align="left"  > SERVO_6     </td>
+    <td align="center"> 6           </td>
+    <td align="left"  > INPUT_X     </td>
   </tr>
   <tr>
     <td align="center"> P9_41       </td>
     <td align="center"> 109         </td>
     <td align="center"> 9A8         </td>
     <td align="center"> 1A8         </td>
-    <td align="center"> PRU0_r30_06 </td>
+    <td align="center"> PRU0_r31_06 </td>
     <td align="center"> gpio3[20]   </td>
-    <td align="center"> 5           </td>
-    <td align="left"  > SERVO_7     </td>
+    <td align="center"> 6           </td>
+    <td align="left"  > INPUT_X     </td>
   </tr>
   <tr>
     <td align="center"> P9_25       </td>
     <td align="center"> 107         </td>
     <td align="center"> 9AC         </td>
     <td align="center"> 1AC         </td>
-    <td align="center"> PRU0_r30_07 </td>
+    <td align="center"> PRU0_r31_07 </td>
     <td align="center"> gpio3[21]   </td>
-    <td align="center"> 5           </td>
-    <td align="left"  > SERVO_8     </td>
-  </tr>
-</table>
-
-
-<table>
-  <tr>
-    <td colspan="8" align="center"> <b> UART DEVICES </b> </td>
+    <td align="center"> 6           </td>
+    <td align="left"  > INPUT_X     </td>
   </tr>
   <tr>
-    <th align="center"> Header       </th>
-    <th align="center"> $PINS        </th>
-    <th align="center"> Address      </th>
-    <th align="center"> Offset       </th>
-    <th align="center"> Name         </th>
-    <th align="center"> GPIO         </th>
-    <th align="center"> Mode         </th>
-    <th align="left"  > Description  </th>
+    <td align="center"> P8_16       </td>
+    <td align="center"> 14          </td>
+    <td align="center"> 838         </td>
+    <td align="center"> 038         </td>
+    <td align="center"> PRU0_r31_14 </td>
+    <td align="center"> gpio1[14]   </td>
+    <td align="center"> 6           </td>
+    <td align="left"  > INPUT_X     </td>
   </tr>
   <tr>
-    <td align="center"> P9_24     </td>
-    <td align="center"> 97        </td>
-    <td align="center"> 984       </td>
-    <td align="center"> 184       </td>
-    <td align="center"> UART1_TX  </td>
-    <td align="center"> gpio0[15] </td>
-    <td align="center"> 0         </td>
-    <td align="left"  > UART1_TX  </td>
-  </tr>
-  <tr>
-    <td align="center"> P9_26     </td>
-    <td align="center"> 96        </td>
-    <td align="center"> 980       </td>
-    <td align="center"> 180       </td>
-    <td align="center"> UART1_RX  </td>
-    <td align="center"> gpio0[14] </td>
-    <td align="center"> 0         </td>
-    <td align="left"  > UART1_RX  </td>
-  </tr>
-  <tr>
-    <td align="center"> P9_21     </td>
-    <td align="center"> 85        </td>
-    <td align="center"> 954       </td>
-    <td align="center"> 154       </td>
-    <td align="center"> UART2_TX  </td>
-    <td align="center"> gpio0[03] </td>
-    <td align="center"> 1         </td>
-    <td align="left"  > UART2_TX  </td>
-  </tr>
-  <tr>
-    <td align="center"> P9_22     </td>
-    <td align="center"> 84        </td>
-    <td align="center"> 950       </td>
-    <td align="center"> 150       </td>
-    <td align="center"> UART2_RX  </td>
-    <td align="center"> gpio0[02] </td>
-    <td align="center"> 1         </td>
-    <td align="left"  > UART2_RX  </td>
-  </tr>
-  <tr>
-    <td align="center"> P9_13     </td>
-    <td align="center"> 29        </td>
-    <td align="center"> 874       </td>
-    <td align="center"> 074       </td>
-    <td align="center"> UART4_TX  </td>
-    <td align="center"> gpio0[31] </td>
-    <td align="center"> 6         </td>
-    <td align="left"  > UART4_TX  </td>
-  </tr>
-  <tr>
-    <td align="center"> P9_11     </td>
-    <td align="center"> 28        </td>
-    <td align="center"> 870       </td>
-    <td align="center"> 070       </td>
-    <td align="center"> UART4_RX  </td>
-    <td align="center"> gpio0[30] </td>
-    <td align="center"> 6         </td>
-    <td align="left"  > UART4_RX  </td>
-  </tr>
-  <tr>
-    <td align="center"> P8_37     </td>
-    <td align="center"> 48        </td>
-    <td align="center"> 8C0       </td>
-    <td align="center"> 0C0       </td>
-    <td align="center"> UART5_TX  </td>
-    <td align="center"> gpio2[14] </td>
-    <td align="center"> 4         </td>
-    <td align="left"  > UART5_TX  </td>
-  </tr>
-  <tr>
-    <td align="center"> P8_38     </td>
-    <td align="center"> 49        </td>
-    <td align="center"> 8C4       </td>
-    <td align="center"> 0C4       </td>
-    <td align="center"> UART5_RX  </td>
-    <td align="center"> gpio2[15] </td>
-    <td align="center"> 4         </td>
-    <td align="left"  > UART5_RX  </td>
-  </tr>
-</table>
-
-
-<table>
-  <tr>
-    <td colspan="8" align="center"> <b> I2C DEVICES </b> </td>
-  </tr>
-  <tr>
-    <th align="center"> Header       </th>
-    <th align="center"> $PINS        </th>
-    <th align="center"> Address      </th>
-    <th align="center"> Offset       </th>
-    <th align="center"> Name         </th>
-    <th align="center"> GPIO         </th>
-    <th align="center"> Mode         </th>
-    <th align="left"  > Description  </th>
-  </tr>
-  <tr>
-    <td align="center"> P9_17        </td>
-    <td align="center"> 87           </td>
-    <td align="center"> 95C          </td>
-    <td align="center"> 15C          </td>
-    <td align="center"> I2C1_SCL     </td>
-    <td align="center"> gpio0[05]     </td>
-    <td align="center"> 2            </td>
-    <td align="left"  >              </td>
-  </tr>
-  <tr>
-    <td align="center"> P9_18        </td>
-    <td align="center"> 86           </td>
-    <td align="center"> 958          </td>
-    <td align="center"> 158          </td>
-    <td align="center"> I2C1_SDA     </td>
-    <td align="center"> gpio0[04]    </td>
-    <td align="center"> 2            </td>
-    <td align="left"  >              </td>
-  </tr>
-  <tr>
-    <td align="center"> P9_19        </td>
-    <td align="center"> 95           </td>
-    <td align="center"> 97C          </td>
-    <td align="center"> 17C          </td>
-    <td align="center"> I2C2_SCL     </td>
-    <td align="center"> gpio0[13]    </td>
-    <td align="center"> 3            </td>
-    <td align="left"  >              </td>
-  </tr>
-  <tr>
-    <td align="center"> P9_20        </td>
-    <td align="center"> 94           </td>
-    <td align="center"> 978          </td>
-    <td align="center"> 178          </td>
-    <td align="center"> I2C2_SDA     </td>
-    <td align="center"> gpio0[12]    </td>
-    <td align="center"> 3            </td>
-    <td align="left"  >              </td>
+    <td align="center"> P8_15       </td>
+    <td align="center"> 15          </td>
+    <td align="center"> 83C         </td>
+    <td align="center"> 03C         </td>
+    <td align="center"> PRU0_r31_15 </td>
+    <td align="center"> gpio1[15]   </td>
+    <td align="center"> 6           </td>
+    <td align="left"  > INPUT_X     </td>
   </tr>
 </table>
 
 
 
-PCB BOARD CONFIGURATION
------------------------
-
+<!--
 <table>
   <tr>
     <td colspan="8" align="center"> <b> PRU OUTPUTS (ESC/SERVO) [12CH] </b> </td>
@@ -499,128 +260,11 @@ PCB BOARD CONFIGURATION
     <td align="left"  > OUTPUT_X    </td>
   </tr>
 </table>
+-->
 
 
 
-
-<table>
-  <tr>
-    <td colspan="8" align="center"> <b> PRU INPUTS (RADIO) [10CH] </b> </td>
-  </tr>
-  <tr>
-    <th align="center"> Header       </th>
-    <th align="center"> $PINS        </th>
-    <th align="center"> Address      </th>
-    <th align="center"> Offset       </th>
-    <th align="center"> Name         </th>
-    <th align="center"> GPIO         </th>
-    <th align="center"> Mode         </th>
-    <th align="left"  > Description  </th>
-  </tr>
-  <tr>
-    <td align="center"> P9_31       </td>
-    <td align="center"> 100         </td>
-    <td align="center"> 990         </td>
-    <td align="center"> 190         </td>
-    <td align="center"> PRU0_r31_00 </td>
-    <td align="center"> gpio3[14]   </td>
-    <td align="center"> 6           </td>
-    <td align="left"  > INPUT_X     </td>
-  </tr>
-  <tr>
-    <td align="center"> P9_29       </td>
-    <td align="center"> 101         </td>
-    <td align="center"> 994         </td>
-    <td align="center"> 194         </td>
-    <td align="center"> PRU0_r31_01 </td>
-    <td align="center"> gpio3[15]   </td>
-    <td align="center"> 6           </td>
-    <td align="left"  > INPUT_X     </td>
-  </tr>
-  <tr>
-    <td align="center"> P9_30       </td>
-    <td align="center"> 102         </td>
-    <td align="center"> 998         </td>
-    <td align="center"> 198         </td>
-    <td align="center"> PRU0_r31_02 </td>
-    <td align="center"> gpio3[16]   </td>
-    <td align="center"> 6           </td>
-    <td align="left"  > INPUT_X     </td>
-  </tr>
-  <tr>
-    <td align="center"> P9_28       </td>
-    <td align="center"> 103         </td>
-    <td align="center"> 99C         </td>
-    <td align="center"> 19C         </td>
-    <td align="center"> PRU0_r31_03 </td>
-    <td align="center"> gpio3[17]   </td>
-    <td align="center"> 6           </td>
-    <td align="left"  > INPUT_X     </td>
-  </tr>
-  <tr>
-    <td align="center"> P9_42       </td>
-    <td align="center"> 89          </td>
-    <td align="center"> 9A0         </td>
-    <td align="center"> 1A0         </td>
-    <td align="center"> PRU0_r31_04 </td>
-    <td align="center"> gpio3[18]   </td>
-    <td align="center"> 6           </td>
-    <td align="left"  > INPUT_X     </td>
-  </tr>
-  <tr>
-    <td align="center"> P9_27       </td>
-    <td align="center"> 105         </td>
-    <td align="center"> 9A4         </td>
-    <td align="center"> 1A4         </td>
-    <td align="center"> PRU0_r31_05 </td>
-    <td align="center"> gpio3[19]   </td>
-    <td align="center"> 6           </td>
-    <td align="left"  > INPUT_X     </td>
-  </tr>
-  <tr>
-    <td align="center"> P9_41       </td>
-    <td align="center"> 109         </td>
-    <td align="center"> 9A8         </td>
-    <td align="center"> 1A8         </td>
-    <td align="center"> PRU0_r31_06 </td>
-    <td align="center"> gpio3[20]   </td>
-    <td align="center"> 6           </td>
-    <td align="left"  > INPUT_X     </td>
-  </tr>
-  <tr>
-    <td align="center"> P9_25       </td>
-    <td align="center"> 107         </td>
-    <td align="center"> 9AC         </td>
-    <td align="center"> 1AC         </td>
-    <td align="center"> PRU0_r31_07 </td>
-    <td align="center"> gpio3[21]   </td>
-    <td align="center"> 6           </td>
-    <td align="left"  > INPUT_X     </td>
-  </tr>
-  <tr>
-    <td align="center"> P8_16       </td>
-    <td align="center"> 14          </td>
-    <td align="center"> 838         </td>
-    <td align="center"> 038         </td>
-    <td align="center"> PRU0_r31_14 </td>
-    <td align="center"> gpio1[14]   </td>
-    <td align="center"> 6           </td>
-    <td align="left"  > INPUT_X     </td>
-  </tr>
-  <tr>
-    <td align="center"> P8_15       </td>
-    <td align="center"> 15          </td>
-    <td align="center"> 83C         </td>
-    <td align="center"> 03C         </td>
-    <td align="center"> PRU0_r31_15 </td>
-    <td align="center"> gpio1[15]   </td>
-    <td align="center"> 6           </td>
-    <td align="left"  > INPUT_X     </td>
-  </tr>
-</table>
-
-
-
+<!--
 <table>
   <tr>
     <td colspan="8" align="center"> <b> UART DEVICES [4CH] </b> </td>
@@ -716,7 +360,9 @@ PCB BOARD CONFIGURATION
     <td align="left"  > UART5_RX  </td>
   </tr>
 </table>
+-->
 
+<!--
 <table>
   <tr>
     <td colspan="8" align="center"> <b> I2C DEVICES [2CH] </b> </td>
@@ -772,7 +418,9 @@ PCB BOARD CONFIGURATION
     <td align="left"  >              </td>
   </tr>
 </table>
+-->
 
+<!--
 <table>
   <tr>
     <td colspan="8" align="center"> <b> STANDARD PWM [XCH] </b> </td>
@@ -848,7 +496,9 @@ PCB BOARD CONFIGURATION
     <td align="left"  > PWM_X        </td>
   </tr>
 </table>
+-->
 
+<!--
 <table>
   <tr>
     <td colspan="8" align="center"> <b> TIMERS [XCH] </b> </td>
@@ -904,7 +554,9 @@ PCB BOARD CONFIGURATION
     <td align="left"  > TIMER_X      </td>
   </tr>
 </table>
+-->
 
+<!--
 <table>
   <tr>
     <td colspan="2" align="center"> <b> ANALOG TO DIGITAL [7CH] </b> </td>
@@ -950,6 +602,8 @@ PCB BOARD CONFIGURATION
     <td align="center"> AIN6   </th>
   </tr>
 </table>
+-->
+
 
 <table>
   <tr>
