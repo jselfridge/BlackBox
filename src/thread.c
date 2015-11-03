@@ -19,21 +19,18 @@ void thread_init ( void )  {
 
   // Stabilization
   thr_stab.pin       =     60;
-  thr_stab.period    =   2500;
+  thr_stab.period    = 200000;
   thr_stab.priority  =     90;
-  thr_stab.missed    =      0;
 
   // Navigation
   thr_nav.pin        =     50;
   thr_nav.period     =   5000;
   thr_nav.priority   =     80;
-  thr_nav.missed     =      0;
 
   // Telemetry
   thr_telem.pin      =     51;
   thr_telem.period   =  10000;
   thr_telem.priority =     70;
-  thr_telem.missed   =      0;
 
   // Initialize attribute variable
   pthread_attr_init(&attr);
@@ -79,15 +76,21 @@ void thread_init ( void )  {
 //  thread_periodic
 //  Establishes the periodic attributes for a thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thread_periodic ( thread_struct *thr )  {
+void thread_periodic ( thread_struct *thr, int *fd )  {
+
+  //--- Debug ---
+  printf("FD (perodic_before): %d \n", *fd);
 
   // Local variables
   unsigned int sec, nsec;
   struct itimerspec itval;
 
   // Create the timer
-  thr->fd = timerfd_create ( CLOCK_MONOTONIC, 0 );
-  sys_err( thr->fd == -1, "Error (thread_periodic): Failed to create timer." );
+  *fd = timerfd_create ( CLOCK_MONOTONIC, 0 );
+  sys_err( *fd == -1, "Error (thread_periodic): Failed to create timer." );
+
+  //--- Debug ---
+  printf("FD (perodic_after): %d \n", *fd);
 
   // Determine time values
   sec = thr->period / 1000000;
@@ -102,7 +105,7 @@ void thread_periodic ( thread_struct *thr )  {
   itval.it_value.tv_nsec = 200000000;
 
   // Enable the timer
-  sys.ret = timerfd_settime ( thr->fd, 0, &itval, NULL );
+  sys.ret = timerfd_settime ( *fd, 0, &itval, NULL );
   sys_err( sys.ret, "Error (thread_periodic): Failed to enable the timer." );
 
   return;
@@ -113,14 +116,18 @@ void thread_periodic ( thread_struct *thr )  {
 //  thread_pause
 //  Implements the pause before starting the next loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thread_pause ( thread_struct *thr )  {
+void thread_pause ( thread_struct *thr, int *fd )  {
 
   // Local variables
   ulong missed;
 
+  //--- Debug ---
+  printf("FD (pause): %d \n", *fd);
+
   // Wait for timer event and obtain number of "missed" loops
-  sys.ret = read( thr->fd, &missed, sizeof(missed) );
-  sys_err( sys.ret == -1, "Error (thread_pause): Failed to read timer file.");
+  //sys.ret = read( 3, &missed, sizeof(missed) );
+  sys.ret = read( *fd, &missed, sizeof(missed) );
+  //sys_err( sys.ret == -1, "Error (thread_pause): Failed to read timer file.");
 
   // Play around with the "missed" feature some more...
   //if ( thr->missed > 0 )  {  thr->missed += (missed - 1);  }
@@ -136,7 +143,7 @@ void thread_pause ( thread_struct *thr )  {
 void thread_exit ( )  {
   printf("Closing threads  \n");
   void *status;
-  
+
   // Exit 'stabilization' thread
   sys.ret = pthread_join ( thr_stab.id, &status );
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'stab' thread." );
@@ -163,8 +170,18 @@ void *thread_stab ( )  {
   //int fd, len;
   //char buf[64];
   //int period = 500;
-  //thread_begin ( period, &signal_info );
-  //while (running) {
+
+  //--- Debug ---
+  int FD = 12;
+  printf("FD (stab_before): %d \n", FD);
+  thread_periodic ( &thr_stab, &FD );
+  printf("FD (stab_after): %d \n", FD);
+
+
+  while (sys.running) {
+    led_on(0);
+    usleep(100000);
+
     //len = snprintf( buf, sizeof(buf), "/sys/class/gpio/gpio%d/value", 60 );
     //if( len <=0 )  {  printf("Error (gpio_set_val): Failed to assign path.");  }
     //fd = open( buf, O_WRONLY );
@@ -172,9 +189,15 @@ void *thread_stab ( )  {
     //if (on) { write( fd, "0", 2 ); on=0; }
     //else    { write( fd, "1", 2 ); on=1; }
     //close(fd);
-    //thread_pause (&signal_info);
-  //}
+
+    printf("  Another 'stabilization' loop \n");
+    led_off(0);
+    //usleep(1000000);
+    thread_pause ( &thr_stab, &FD );
+  }
+
   //pthread_exit(NULL);
+  printf("  Finished 'stabilization' thread \n");
   return NULL;
 }
 
@@ -198,6 +221,7 @@ void *thread_nav ( )  {
     //loop_wait (&signal_info);
   //}
   //pthread_exit(NULL);
+  printf("  Finished 'navigation' thread \n");
   return NULL;
 }
 
@@ -221,6 +245,7 @@ void *thread_telem ( )  {
     //loop_wait (&signal_info);
   //}
   //pthread_exit(NULL);
+  printf("  Finished 'telemetry' thread \n");
   return NULL;
 }
 

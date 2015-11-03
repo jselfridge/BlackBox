@@ -172,10 +172,11 @@ void sys_debug (  )  {
 //  Code that runs prior to exiting the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_exit (  )  {
-  if(DEBUG)  printf("\n\nExiting program \n");
+  sys.running = false;
   thread_exit();
+  usleep(500000);
+  if(DEBUG)  printf("\n\nExiting program \n");
   //timer_exit();
-  //usleep(200000);
   //imu_exit();
   //pru_exit();
   led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
