@@ -18,7 +18,7 @@ int main ( void )  {
 
   // Initial structure values   === Move to ***_init() functions ===
   datalog.open     = false;
-  datalog.enabled  = true;  // DEBUGGING!! false;
+  datalog.enabled  = true;  //--- DEBUG ---// false;
   //imu1.bus = 1;  //imu1.rot[0] = 1;  imu1.rot[4] = 1;  imu1.rot[8] = 1;  // Add this later
   //imu2.bus = 2;  //imu2.rot[0] = 1;  imu2.rot[4] = 1;  imu2.rot[8] = 1;
 
@@ -35,9 +35,6 @@ int main ( void )  {
 
   thread_init();
 
-
-
-
   // Switch power to buses (relocate this code???)
   //ushort IO_SWITCH = 60;
   //gpio_export(IO_SWITCH);
@@ -45,13 +42,11 @@ int main ( void )  {
   //gpio_set_val( IO_SWITCH, HIGH );
   //if(DEBUG)  printf("Switching on power to I/O bus \n");
 
-  // Run eternal loop
+  // Continuous loop and then exit
   while(sys.running);
-
-  // Exit program
   sys_exit();
-  return 0;
 
+  return 0;
 }
 
 
