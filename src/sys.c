@@ -19,7 +19,7 @@ void sys_err ( bool cond, char* msg )  {
 //  sys_init
 //  Initializes the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void sys_init ( void )  {
+void sys_init ( void )  {
   if(DEBUG)  printf("Initializing system \n");
 
   // Establish exit condition
@@ -49,14 +49,15 @@ void sys_err ( bool cond, char* msg )  {
 
   return;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_loop
 //  Executes instructions at timed intervals.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void sys_loop ( void )  {
+void sys_loop ( void )  {
 
+  /*
   ushort i;
   timer_start();
   for ( i=0; i<6; i++ )  sys.input[i] = pru_read_pulse(i);
@@ -67,17 +68,19 @@ void sys_err ( bool cond, char* msg )  {
   timer_finish();
   log_write();
   if (DEBUG)  sys_debug();
+  */
 
   return;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_debug
 //  Prints system debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void sys_debug (  )  {
+void sys_debug (  )  {
 
+  /*
   // Loop counter
   ushort i;
 
@@ -158,21 +161,22 @@ void sys_err ( bool cond, char* msg )  {
   // Finish print loop
   printf("    ");
   fflush(stdout);
+  */
 
   return;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_exit
 //  Code that runs prior to exiting the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void sys_exit (  )  {
+void sys_exit (  )  {
   if(DEBUG)  printf("\n\nExiting program \n");
-  timer_exit();
-  usleep(200000);
-  imu_exit();
-  pru_exit();
+  //timer_exit();
+  //usleep(200000);
+  //imu_exit();
+  //pru_exit();
   led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
   if(DEBUG)  printf("Program complete \n");
   ret = sigaction( SIGINT, &sys_signal, NULL );
@@ -180,18 +184,18 @@ void sys_err ( bool cond, char* msg )  {
   kill( 0, SIGINT );
   return;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_memory
 //  Reserves a block of memory exclusively for the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void sys_memory ( void )  {
+void sys_memory ( void )  {
   int size = 1024*1024;
   unsigned char temp[size];
   memset( temp, 0, size );
   return;
 }
-*/
+
 
 

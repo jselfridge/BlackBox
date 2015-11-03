@@ -17,14 +17,14 @@ int main ( void )  {
   led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
 
   // Initial structure values
-//  sys.running      = true;
+  sys.running      = true;
 //  datalog.open     = false;
 //  datalog.enabled  = false;
 //  imu1.bus = 1;  //imu1.rot[0] = 1;  imu1.rot[4] = 1;  imu1.rot[8] = 1;  // Add this later
   //imu2.bus = 2;  //imu2.rot[0] = 1;  imu2.rot[4] = 1;  imu2.rot[8] = 1;
 
   // Initialize subsystems
-//  sys_init();
+  sys_init();
 //  timer_init();  // Pass system process into function
 //  pru_init();
 //  imu_init(&imu1);
@@ -40,10 +40,10 @@ int main ( void )  {
   //if(DEBUG)  printf("Switching on power to I/O bus \n");
 
   // Run eternal loop
-//  while(sys.running);
+  while(sys.running);
 
   // Exit program
-//  sys_exit();
+  sys_exit();
   return 0;
 
 }

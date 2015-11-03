@@ -9,15 +9,15 @@
 
 // Standard includes
 #include <fcntl.h>
+#include <sched.h>
+#include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-/*
-#include <sched.h>
-#include <signal.h>
 #include <string.h>
 #include <sys/mman.h>
+#include <unistd.h>
+/*
 #include <time.h>
 */
 
@@ -47,7 +47,7 @@
 */
 
 // Global variables
-//uint ret;
+uint ret;
 
 
 #endif
