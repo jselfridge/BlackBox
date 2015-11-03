@@ -65,7 +65,7 @@ void sys_loop ( void )  {
   //for ( i=0; i<4; i++ )  pru_send_pulse( i, 1000 );
   //for ( i=0; i<4; i++ )  pru_send_pulse( i, sys.output[i] );
   timer_finish();
-  //log_write();
+  log_write();
   if (DEBUG)  sys_debug();
 
   return;
@@ -171,6 +171,9 @@ void sys_exit (  )  {
   if(DEBUG)  printf("\n\nExiting program \n");
   timer_exit();
   usleep(200000);
+
+  log_exit();  // DEBUGGING!!!
+
   //imu_exit();
   //pru_exit();
   led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);

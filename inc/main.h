@@ -22,13 +22,13 @@
 
 // Custom includes
 #include <gpio.h>
-#include <sys.h>
 #include <led.h>
+#include <log.h>
+#include <sys.h>
 #include <timer.h>
 /*
 #include <ctrl.h>
 #include <imu.h>
-#include <log.h>
 #include <pru.h>
 */
 
