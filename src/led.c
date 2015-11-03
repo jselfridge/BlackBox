@@ -97,6 +97,7 @@ int led_blink ( unsigned int index, unsigned int on, unsigned int off )  {
   char val[MAX_BUF];
 
   path[0] = '\0';
+  val[0]  = '\0';
   len = snprintf ( path, sizeof(path), LED_PATH "%d/trigger", index );
   sys_err( len <=0, "Error (led_blink): Failed to generate 'trigger' file path." );
   fd = open ( path, O_WRONLY );

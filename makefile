@@ -7,7 +7,7 @@
 
 EXEC   = RunBlackBox
 CC     = gcc
-CFLAGS = -Wall -g -c
+CFLAGS = -Wall -g -c -fstack-check -fstack-usage
 
 LIB    = -lm -lrt -lpthread #-lprussdrv
 #LDIR   = ../Libraries/lib/
@@ -32,7 +32,7 @@ $(EXEC) : $(OBJ) #$(BIN)
 	$(CC) -o $@ $(OBJ) $(LIB) #$(MPU) # -L$(LDIR)
 
 obj/%.o : src/%.c inc/%.h
-	$(CC) $(CFLAGS) -Iinc       -o $@ $<  # -I$(IDIR)
+	$(CC) $(CFLAGS) -Iinc       -o $@ $<;  # -I$(IDIR)
 #	$(CC) $(CFLAGS) -Iinc -Impu -o $@ $<  # -I$(IDIR)
 
 #bin/%.bin : pru/%.p
@@ -40,7 +40,7 @@ obj/%.o : src/%.c inc/%.h
 #	mv *.bin bin
 
 clean :
-	rm  $(EXEC) $(OBJ)  
+	rm  $(EXEC) $(OBJ)
 #$(BIN)
 
 
