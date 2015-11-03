@@ -10,11 +10,15 @@
 
 // Thread structure
 typedef struct thread_struct {
-  pthread_t thread_stab;
-  pthread_t thread_nav;
-  pthread_t thread_telem;
+  pthread_t id;
+  int pin;
+  uint period;
+  ushort priority;
+  ushort missed;
 } thread_struct;
-thread_struct threads; 
+thread_struct thr_stab; 
+thread_struct thr_nav; 
+thread_struct thr_telem; 
 
 
 // Global variables
@@ -22,12 +26,14 @@ thread_struct threads;
 //struct timespec timeval;
 
 // Thread functions
-void  thread_init   ( void );
-//void  timer_begin  ( void );
-//void  timer_exit   ( void );
-//void  timer_start  ( void );
-//void  timer_finish ( void );
+void  thread_init    ( void );
+//void  thread_attr    ( pthread_attr_t *attr );
+//void  thread_create  ( pthread_attr_t *attr, thread_struct *thr, char *name );
+void thread_exit  ( );
 
+void *thread_stab ( );
+void *thread_nav ( );
+void *thread_telem ( );
 
 #endif
 

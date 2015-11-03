@@ -32,7 +32,7 @@ $(EXEC) : $(OBJ) #$(BIN)
 	$(CC) -o $@ $(OBJ) $(LIB) #$(MPU) # -L$(LDIR)
 
 obj/%.o : src/%.c inc/%.h
-	$(CC) $(CFLAGS) -Iinc       -o $@ $<  # -I$(IDIR)
+	$(CC) $(CFLAGS) -Iinc       -o $@ $<;  # -I$(IDIR)
 #	$(CC) $(CFLAGS) -Iinc -Impu -o $@ $<  # -I$(IDIR)
 
 #bin/%.bin : pru/%.p

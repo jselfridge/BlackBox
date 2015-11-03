@@ -28,21 +28,19 @@ void sys_init ( void )  {
 
   // Establish exit condition
   struct sigaction sys_run;
-  if(DEBUG)  printf("  Setting system exit condition... ");
+  if(DEBUG)  printf("  Setting system exit condition \n");
   memset( &sys_run, 0, sizeof(sys_run) );
   sys_run.sa_handler = &sys_exit;
   sys.ret = sigaction( SIGINT, &sys_run, NULL );
   sys_err( sys.ret == -1, "Error (sys_init): Function 'sigaction' failed." );
-  if(DEBUG)  printf("complete \n");
 
   // Lock and reserve memory
-  if(DEBUG)  printf("  Locking and reserving memory... ");
+  if(DEBUG)  printf("  Locking and reserving memory \n");
   sys.ret = mlockall( MCL_CURRENT | MCL_FUTURE );
   sys_err( sys.ret, "Error (sys_init): Failed to lock memory." );
   mallopt( M_TRIM_THRESHOLD, -1 );
   mallopt( M_MMAP_MAX, 0 );
   sys_memory(SYS_STACK);
-  if(DEBUG)  printf("complete \n");
 
   // Establish realtime priority
   //if(!DEBUG) {
@@ -175,6 +173,7 @@ void sys_debug (  )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_exit (  )  {
   if(DEBUG)  printf("\n\nExiting program \n");
+  thread_exit();
   //timer_exit();
   //usleep(200000);
   //imu_exit();

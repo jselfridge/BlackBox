@@ -24,13 +24,17 @@ int main ( void )  {
 
   // Initialize subsystems
   sys_init();
-  thread_init();
+
   //timer_init();
   //pru_init();
   //imu_init(&imu1);
   //imu_init(&imu2);
   //ctrl_init();
   //timer_begin();
+
+  thread_init();
+
+
 
 
   // Switch power to buses (relocate this code???)
@@ -43,7 +47,6 @@ int main ( void )  {
   // Run eternal loop
   //log_init();  // DEBUGGING!!!!
   while(sys.running);
-  //while(1){  printf("."); fflush(stdout);  sleep(1); }
 
   // Exit program
   sys_exit();

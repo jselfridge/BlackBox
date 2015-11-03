@@ -1,1 +1,5 @@
-thread.c:13:6:thread_init	8	static
+thread.c:13:6:thread_init	48	static
+thread.c:92:6:thread_exit	16	static
+thread.c:116:7:thread_stab	8	static
+thread.c:139:7:thread_nav	8	static
+thread.c:162:7:thread_telem	8	static

@@ -10,6 +10,7 @@
 // Standard includes
 #include <fcntl.h>
 #include <malloc.h>
+#include <pthread.h>
 #include <sched.h>
 #include <signal.h>
 #include <stdbool.h>
