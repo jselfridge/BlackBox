@@ -11,7 +11,7 @@
 //  Primary code that runs the UAV avionics.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int main ( void )  {
-  if(DEBUG)  printf("Begin BlackBox program \n");
+  if(DEBUG)  printf("\n--- Begin BlackBox program ---\n");
 
   // Set LED indicators
   led_on(LED_MPU);  led_on(LED_PRU);  led_on(LED_LOG);  led_on(LED_MOT);

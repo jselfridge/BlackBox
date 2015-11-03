@@ -172,10 +172,10 @@ void sys_debug (  )  {
 //  Code that runs prior to exiting the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_exit (  )  {
-  sys.running = false;
-  thread_exit();
-  usleep(500000);
   if(DEBUG)  printf("\n\nExiting program \n");
+  sys.running = false;
+  usleep(500000);
+  thread_exit();
   //timer_exit();
   //imu_exit();
   //pru_exit();
