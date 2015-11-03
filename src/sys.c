@@ -66,7 +66,7 @@ void sys_loop ( void )  {
   return;
 }
 */
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_debug
 //  Prints system debugging messages to the terminal.
@@ -74,16 +74,19 @@ void sys_loop ( void )  {
 void sys_debug (  )  {
 
   // Loop counter
-  //ushort i;
+  ushort i;
 
   // Time values
   printf("\r");  fflush(stdout);
-  printf("%6.3f  ", t.runtime );  fflush(stdout);
-  printf("%09ld  ", t.start_nano );  fflush(stdout);
-  printf("%09ld  ", t.dur );  fflush(stdout);
-  printf("%4.2f  ", t.percent );  fflush(stdout);
-  if (t.percent<1.0) {  printf("_    ");  fflush(stdout);  }
-  else               {  printf("X    ");  fflush(stdout);  }
+  if (datalog.enabled)  printf(" %s: ", datalog.dir );
+  else                  printf(" - - - -  ");
+
+  //printf("%6.3f  ", t.runtime );  fflush(stdout);
+  //printf("%09ld  ", t.start_nano );  fflush(stdout);
+  //printf("%09ld  ", t.dur );  fflush(stdout);
+  //printf("%4.2f  ", t.percent );  fflush(stdout);
+  //if (t.percent<1.0) {  printf("_    ");  fflush(stdout);  }
+  //else               {  printf("X    ");  fflush(stdout);  }
 
   // Input/Output values
   //for ( i=0; i<6; i++ )  printf("%06.1f ", sys.input[i]  );  printf("   ");
@@ -100,7 +103,7 @@ void sys_debug (  )  {
   // Raw sensor values - IMU1
   //for ( i=0; i<3; i++ )  printf("%04d ",   imu1.rawMag[i]  );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%06d ",   imu1.rawAcc[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%06d ",   imu1.rawGyro[i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%6d ",   imu1.rawGyro[i] );  printf("   ");
   //for ( i=0; i<4; i++ )  printf("%012ld ", imu1.rawQuat[i] );  printf("   ");
 
   // Raw sensor values - IMU2
@@ -156,7 +159,7 @@ void sys_debug (  )  {
 
   return;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_exit
@@ -172,7 +175,7 @@ void sys_exit (  )  {
   //pru_exit();
   log_exit();  //--- DEBUG ---//
   led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
-  if(DEBUG)  printf("Program complete \n\n");
+  if(DEBUG)  printf("Program complete \n");
   sys.ret = sigaction( SIGINT, &sys_signal, NULL );
   sys_err( sys.ret == -1, "Error (sys_exit): Function 'sigaction' failed." );
   kill( 0, SIGINT );

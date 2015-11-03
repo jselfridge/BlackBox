@@ -47,6 +47,11 @@ void thread_init ( void )  {
   //thr_telem.pin      =     XX;
   //thr_telem.period   =  XXXXX;
 
+  // Debugging
+  thr_debug.priority =     94;
+  thr_debug.pin      =     00;
+  thr_debug.period   = 100000;
+
   // Initialize attribute variable
   pthread_attr_init(&attr);
 
@@ -103,6 +108,16 @@ void thread_init ( void )  {
   //sys_err( sys.ret, "Error (thread_init): Failed to set 'telem' priority." );
   //sys.ret = pthread_create ( &thr_telem.id, &attr, thread_telem, (void *)NULL );
   //sys_err( sys.ret, "Error (thread_init): Failed to create 'telem' thread." );
+
+  // Initialize 'debug' thread
+  if(DEBUG) {
+  param.sched_priority = thr_debug.priority;
+  sys.ret = pthread_attr_setschedparam( &attr, &param );
+  sys_err( sys.ret, "Error (thread_init): Failed to set 'debug' priority." );
+  sys.ret = pthread_create ( &thr_debug.id, &attr, thread_debug, (void *)NULL );
+  sys_err( sys.ret, "Error (thread_init): Failed to create 'debug' thread." );
+  printf("\n");
+  }
 
   return;
 }
@@ -245,6 +260,13 @@ void thread_exit ( void )  {
   //sys_err( sys.ret, "Error (thread_exit): Failed to exit 'telem' thread." );
   //if(DEBUG)  printf( "  Status %ld for 'telemetry' thread \n", (long)status );
 
+  // Exit 'debug' thread
+  if(DEBUG) {
+  sys.ret = pthread_join ( thr_debug.id, &status );
+  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'debug' thread." );
+  printf( "  Status %ld for 'debug' thread \n", (long)status );
+  }
+
   return;
 }
 
@@ -385,5 +407,26 @@ void *thread_telem ( )  {
   return NULL;
 }
 */
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  thread_debug
+//  Run the 'magnetomter' thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void *thread_debug ( )  {
+  printf("  Running 'debug' thread \n");
+  thread_periodic (&thr_debug);
+  while (sys.running) {
+    thread_start(&thr_debug);
+
+    usleep(10000);
+    sys_debug();
+
+    thread_finish(&thr_debug);
+    thread_pause(&thr_debug);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
 
 

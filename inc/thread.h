@@ -29,6 +29,7 @@ thread_struct thr_mag;
 //thread_struct thr_stab; 
 //thread_struct thr_nav; 
 //thread_struct thr_telem; 
+thread_struct thr_debug;
 
 
 // Thread functions
@@ -44,6 +45,7 @@ void *thread_mag       ( );
 //void *thread_stab      ( );
 //void *thread_nav       ( );
 //void *thread_telem     ( );
+void *thread_debug     ( );
 
 
 #endif

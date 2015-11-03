@@ -22,7 +22,6 @@ void log_write ( enum log_index index )  {
 //  Initalizes next sequential log file and populates the header.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void log_init ( void )  {
-  if(DEBUG)  printf("Initializing log file: \t");
 
   // Local varaibales
   int i = 0;
@@ -43,7 +42,6 @@ void log_init ( void )  {
     sprintf( file, "./log/%s/notes.txt", datalog.dir );
     if ( access( file , F_OK ) == -1 )  break;
   }
-  if(DEBUG)  printf( "%s \n\n", datalog.dir );
 
   // Create new directory
   sprintf( datalog.path, "./log/%s/", datalog.dir );
@@ -280,7 +278,6 @@ void log_record ( enum log_index index )  {
 //  Closes the data log file.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void log_exit ( void )  {
-  if(DEBUG)  printf("Closing log file \n");
 
   // Close files 
   fclose(datalog.gyro);
