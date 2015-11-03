@@ -64,27 +64,27 @@ void log_init ( void )  {
   datalog.gyro = fopen( file, "w" );
   sys_err( datalog.gyro == NULL, "Error (log_init): Cannot open 'gyro' file. \n" );
   fprintf( datalog.gyro, 
-    " Gtime,       Gdur,    Gperc, G,    \
-    Grx1,   Gry1,   Grz1,       \
-    Gax1,   Gay1,   Gaz1        ");
+    " Gtime,       Gdur,    Gperc, G,\
+    Grx1,   Gry1,   Grz1,  \
+    Gax1,      Gay1,      Gaz1   ");
 
   // Create accelerometer datalog file
   sprintf( file, "%sacc.txt", datalog.path );
   datalog.acc = fopen( file, "w" );
   sys_err( datalog.acc == NULL, "Error (log_init): Cannot open 'acc' file. \n" );
   fprintf( datalog.acc, 
-    " Atime,       Adur,    Aperc, A,    \
-    Arx1,   Ary1,   Arz1,       \
-    Aax1,   Aay1,   Aaz1,       ");
+    " Atime,       Adur,    Aperc, A,\
+    Arx1,   Ary1,   Arz1,  \
+    Aax1,      Aay1,      Aaz1,   ");
 
   // Create magnetometer datalog file
   sprintf( file, "%smag.txt", datalog.path );
   datalog.mag = fopen( file, "w" );
   sys_err( datalog.mag == NULL, "Error (log_init): Cannot open 'mag' file. \n" );
   fprintf( datalog.mag, 
-    " Mtime,       Mdur,    Mperc, M,    \
-    Mrx1, Mry1, Mrz1,     \
-    Max1, May1, Maz1,     ");
+    " Mtime,       Mdur,    Mperc, M,\
+    Mrx1, Mry1, Mrz1,\
+    Max1,    May1,    Maz1,   ");
 
   // Determine start second
   struct timespec timeval;
