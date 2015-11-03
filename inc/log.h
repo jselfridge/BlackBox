@@ -10,8 +10,13 @@
 
 // Log structure
 typedef struct {
-  FILE* file;
-  char* name;
+  FILE *note;
+  FILE *acc;
+  FILE *gyro;
+  FILE *mag;
+  //char *name;
+  char *dir;
+  char *path;
   bool  open;
   bool  enabled;
   long  offset;

@@ -19,15 +19,17 @@ int main ( void )  {
   // Initial structure values   === Move to ***_init() functions ===
   datalog.open     = false;
   datalog.enabled  = true;  //--- DEBUG ---// false;
-  imu1.bus = 2;  //imu1.rot[0] = 1;  imu1.rot[4] = 1;  imu1.rot[8] = 1;  // Add this later
+  //imu1.bus = 2;  //imu1.rot[0] = 1;  imu1.rot[4] = 1;  imu1.rot[8] = 1;  // Add this later
   //imu2.bus = 2;  //imu2.rot[0] = 1;  imu2.rot[4] = 1;  imu2.rot[8] = 1;
 
   // Initialize subsystems
   sys_init();
   log_init();  //--- DEBUG ---//
 
-  imu_init(&imu1);
-  thread_init();
+  //imu_init(&imu1);
+  //thread_init();
+
+
 
   //timer_init();
   //pru_init();
@@ -42,9 +44,12 @@ int main ( void )  {
   //gpio_set_val( IO_SWITCH, HIGH );
   //if(DEBUG)  printf("Switching on power to I/O bus \n");
 
+
+
+
   // Continuous loop and then exit
-  while(sys.running);
-  sys_exit();
+  //while(sys.running);
+  //sys_exit();
 
   return 0;
 }

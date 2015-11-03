@@ -26,6 +26,80 @@ void log_init ( void )  {
 
   // Find next available log file
   int i = 0;
+  datalog.dir  = malloc(16);
+  datalog.path = malloc(32);
+  char *file   = malloc(64);
+  while (true) {
+    i++;
+    if      ( i<10   )  sprintf( datalog.dir, "Log_00%d", i );
+    else if ( i<100  )  sprintf( datalog.dir, "Log_0%d",  i );
+    else if ( i<1000 )  sprintf( datalog.dir, "Log_%d",   i );
+    else  sys_err( true, "Error (log_init): Exceeded maximum number of log directories." );
+    sprintf( file, "./log/%s/notes.txt", datalog.dir );
+    if ( access( file , F_OK ) == -1 )  break;
+  }
+  if(DEBUG)  printf( "%s \n\n", datalog.dir );
+
+  // Create new directory
+  sprintf( datalog.path, "./log/%s/", datalog.dir );
+  mkdir( datalog.path, 222 );
+  datalog.open = true;
+
+  // Create notes file
+  sprintf( file, "%snotes.txt", datalog.path );
+  printf("file: %s \n", file);
+  datalog.note = fopen( file, "w" );
+  sys_err( datalog.note == NULL, "Error (log_init): Cannot open 'note' file. \n" );
+  fprintf( datalog.note, "%s \n", datalog.dir );
+  fprintf( datalog.note, "Add some more content... \n");
+  fprintf( datalog.note, "About the system parameters... ");
+
+  // Create gyroscope datalog file
+  sprintf( file, "%sgyro.txt", datalog.path );
+  datalog.gyro = fopen( file, "w" );
+  sys_err( datalog.gyro == NULL, "Error (log_init): Cannot open 'gyro' file. \n" );
+  fprintf( datalog.gyro, "rGx1, rGy1, rGz1, ");
+
+  // Create accelerometer datalog file
+  sprintf( file, "%sacc.txt", datalog.path );
+  datalog.acc = fopen( file, "w" );
+  sys_err( datalog.acc == NULL, "Error (log_init): Cannot open 'acc' file. \n" );
+  fprintf( datalog.acc, "rAx1, rAy1, rAz, ");
+
+  // Create magnetometer datalog file
+  sprintf( file, "%smag.txt", datalog.path );
+  datalog.mag = fopen( file, "w" );
+  sys_err( datalog.mag == NULL, "Error (log_init): Cannot open 'mag' file. \n" );
+  fprintf( datalog.mag, "rMx1, rMy1, rMz1, ");
+
+
+
+  fclose(datalog.note);
+  fclose(datalog.gyro);
+  fclose(datalog.acc);
+  fclose(datalog.mag);
+
+
+  // Determine start second
+  //struct timespec timeval;
+  //clock_gettime( CLOCK_MONOTONIC, &timeval );
+  //datalog.offset = timeval.tv_sec;  
+
+  return;
+}
+
+
+/*
+//--- ORIGINAL ---//
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  log_init
+//  Initalizes next sequential log file and populates the header.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void log_init ( void )  {
+  if(DEBUG)  printf("Initializing log file: \t");
+
+  // Find next available log file
+  int i = 0;
   datalog.name = malloc(32);
   while (true) {
     i++;
@@ -97,14 +171,14 @@ void log_init ( void )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  log_record
 //  Records the data to the log file.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void log_record ( void )  {
-
+  /*
   // Increment counter
   ushort i;
 
@@ -185,7 +259,7 @@ void log_record ( void )  {
   //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%6.3f, ",    ctrl.err[Y][i] );  fprintf( datalog.file, "   " );
   //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%6.3f, ",    ctrl.err[Z][i] );  fprintf( datalog.file, "   " );
   //for ( i=0; i<4; i++ )  fprintf( datalog.file, "%07.2f, ",   ctrl.input[i]  );  fprintf( datalog.file, "   " );
-
+  */
   return;
 }
 
@@ -196,9 +270,9 @@ void log_record ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void log_exit ( void )  {
   if(DEBUG)  printf("  Closing log file \n");
-  fclose(datalog.file);
-  free(datalog.name);
-  datalog.open = false;
+  //fclose(datalog.file);
+  //free(datalog.name);
+  //datalog.open = false;
   return;
 }
 

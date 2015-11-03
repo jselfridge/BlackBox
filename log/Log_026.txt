@@ -1,1 +1,0 @@
- time, start,  dur,     perc,  X,    rMx1, rMy1, rMz1,    
