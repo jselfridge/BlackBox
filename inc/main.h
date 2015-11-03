@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
+#include <sys/timerfd.h>
 #include <time.h>
 #include <unistd.h>
 
