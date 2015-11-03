@@ -218,7 +218,7 @@ void *thread_stab ( )  {
 
     gpio_set_val( thr_stab.pin, LOW );
     thread_finish(&thr_stab);
-    //log_write();
+    log_write();
     thread_pause(&thr_stab);
   }
   pthread_exit(NULL);

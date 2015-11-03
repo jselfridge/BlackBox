@@ -14,6 +14,7 @@ typedef struct {
   char* name;
   bool  open;
   bool  enabled;
+  long  offset;
 } log_struct;
 log_struct datalog; 
 

@@ -43,7 +43,7 @@ void log_init ( void )  {
   datalog.open = true;
 
   // Timing header
-  fprintf( datalog.file, " time, start,  dur,     perc,  X,    ");
+  fprintf( datalog.file, " timestamp,   dur,     perc,  X,    ");
 
   // Input/Output header
   //fprintf( datalog.file, "R1,     R2,     R3,     R4,     R5,     R6,        ");
@@ -90,6 +90,11 @@ void log_init ( void )  {
   //fprintf( datalog.file, "ZPerr,  ZIerr,  ZDerr,    ");
   //fprintf( datalog.file, "Xin,     Yin,     Zin,     Tin,  ");
 
+  // Determine start second
+  struct timespec timeval;
+  clock_gettime( CLOCK_MONOTONIC, &timeval );
+  datalog.offset = timeval.tv_sec;  
+
   return;
 }
 
@@ -103,9 +108,10 @@ void log_record ( void )  {
   // Increment counter
   ushort i;
 
-  // Time values
-  fprintf( datalog.file, "\n %04d, %06ld, %06ld, %6.3f, ", 
-    thr_stab.start_sec, thr_stab.start_usec, thr_stab.dur, thr_stab.perc );
+  // Record the timestamp
+  float timestamp = (float)( thr_stab.start_sec + ( thr_stab.start_usec / 1000000.0f ) - datalog.offset );
+  fprintf( datalog.file, "\n %011.6f, %06ld, %6.3f, ", 
+    timestamp, thr_stab.dur, thr_stab.perc );
   if (thr_stab.perc<1.0)  fprintf( datalog.file, "_,    ");
   else                    fprintf( datalog.file, "X,    ");
 
