@@ -17,20 +17,25 @@ void thread_init ( void )  {
   pthread_attr_t attr;
   struct sched_param param;
 
+  // Gyroscope
+  thr_gyro.priority  =     99;
+  thr_gyro.pin       =     60;
+  thr_gyro.period    =   1000;
+
   // Stabilization
-  thr_stab.priority  =     99;
-  thr_stab.pin       =     60;
-  thr_stab.period    =   1000;
+  //thr_stab.priority  =     XX;
+  //thr_stab.pin       =     XX;
+  //thr_stab.period    =  XXXXX;
 
   // Navigation
-  //thr_nav.priority   =     80;
-  //thr_nav.pin        =     50;
-  //thr_nav.period     =  10000;
+  //thr_nav.priority   =     XX;
+  //thr_nav.pin        =     XX;
+  //thr_nav.period     =  XXXXX;
 
   // Telemetry
-  //thr_telem.priority =     70;
-  //thr_telem.pin      =     51;
-  //thr_telem.period   =  50000;
+  //thr_telem.priority =     XX;
+  //thr_telem.pin      =     XX;
+  //thr_telem.period   =  XXXXX;
 
   // Initialize attribute variable
   pthread_attr_init(&attr);
@@ -47,12 +52,19 @@ void thread_init ( void )  {
   sys.ret = pthread_attr_setschedpolicy( &attr, SCHED_FIFO );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'FIFO' attribute." );
 
-  // Initialize 'stabilization' thread
-  param.sched_priority = thr_stab.priority;
+  // Initialize 'gyroscope' thread
+  param.sched_priority = thr_gyro.priority;
   sys.ret = pthread_attr_setschedparam( &attr, &param );
-  sys_err( sys.ret, "Error (thread_init): Failed to set 'stab' priority." );
-  sys.ret = pthread_create ( &thr_stab.id, &attr, thread_stab, (void *)NULL );
-  sys_err( sys.ret, "Error (thread_init): Failed to create 'stab' thread." );
+  sys_err( sys.ret, "Error (thread_init): Failed to set 'gyro' priority." );
+  sys.ret = pthread_create ( &thr_gyro.id, &attr, thread_gyro, (void *)NULL );
+  sys_err( sys.ret, "Error (thread_init): Failed to create 'gyro' thread." );
+
+  // Initialize 'stabilization' thread
+  //param.sched_priority = thr_stab.priority;
+  //sys.ret = pthread_attr_setschedparam( &attr, &param );
+  //sys_err( sys.ret, "Error (thread_init): Failed to set 'stab' priority." );
+  //sys.ret = pthread_create ( &thr_stab.id, &attr, thread_stab, (void *)NULL );
+  //sys_err( sys.ret, "Error (thread_init): Failed to create 'stab' thread." );
 
   // Initialize 'navigation' thread
   //param.sched_priority = thr_nav.priority;
@@ -179,10 +191,15 @@ void thread_exit ( void )  {
   printf("Closing threads  \n");
   void *status;
 
+  // Exit 'gyroscope' thread
+  sys.ret = pthread_join ( thr_gyro.id, &status );
+  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'gyro' thread." );
+  if(DEBUG)  printf( "  Status %ld for 'gyroscope' thread \n", (long)status );
+
   // Exit 'stabilization' thread
-  sys.ret = pthread_join ( thr_stab.id, &status );
-  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'stab' thread." );
-  if(DEBUG)  printf( "  Status %ld for 'stabilization' thread \n", (long)status );
+  //sys.ret = pthread_join ( thr_stab.id, &status );
+  //sys_err( sys.ret, "Error (thread_exit): Failed to exit 'stab' thread." );
+  //if(DEBUG)  printf( "  Status %ld for 'stabilization' thread \n", (long)status );
 
   // Exit 'navigation' thread
   //sys.ret = pthread_join ( thr_nav.id, &status );
@@ -198,6 +215,29 @@ void thread_exit ( void )  {
 }
 
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  thread_gyro
+//  Run the 'gyroscope' thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void *thread_gyro ( )  {
+  printf("  Running 'gyroscope' thread \n");
+  gpio_export(thr_gyro.pin);
+  gpio_set_dir( thr_gyro.pin, OUTPUT_PIN );
+  thread_periodic (&thr_gyro);
+  while (sys.running) {
+    thread_start(&thr_gyro);
+    gpio_set_val( thr_gyro.pin, HIGH );
+    imu_raw(&imu1);
+    gpio_set_val( thr_gyro.pin, LOW );
+    thread_finish(&thr_gyro);
+    log_write();
+    thread_pause(&thr_gyro);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_stab
 //  Run the 'stabilization' thread.
@@ -224,7 +264,7 @@ void *thread_stab ( )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_nav

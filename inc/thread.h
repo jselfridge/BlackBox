@@ -23,7 +23,8 @@ typedef struct thread_struct {
   ulong     dur;
   double    perc;
 } thread_struct;
-thread_struct thr_stab; 
+thread_struct thr_gyro; 
+//thread_struct thr_stab; 
 //thread_struct thr_nav; 
 //thread_struct thr_telem; 
 
@@ -35,7 +36,8 @@ void  thread_pause     ( thread_struct *thr );
 void  thread_start     ( thread_struct *thr );
 void  thread_finish    ( thread_struct *thr );
 void  thread_exit      ( void );
-void *thread_stab      ( );
+void *thread_gyro      ( );
+//void *thread_stab      ( );
 //void *thread_nav       ( );
 //void *thread_telem     ( );
 

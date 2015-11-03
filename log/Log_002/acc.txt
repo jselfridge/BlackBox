@@ -1,1 +1,1 @@
-rAx1, rAy1, rAz, 
+timeA, rAx1, rAy1, rAz, 

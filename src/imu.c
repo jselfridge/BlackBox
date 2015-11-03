@@ -36,9 +36,9 @@ void imu_init ( imu_struct* imu )  {
 //  Terminate an MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_exit ( void )  {
-  if(DEBUG)  printf("  Closing IMU \n");
-  sys.ret = mpu_set_dmp_state(0);
-  sys_err( sys.ret, "Error (imu_exit): 'mpu_set_dmp_state' failed." );
+  if(DEBUG)  printf("Closing IMU \n");
+  //sys.ret = mpu_set_dmp_state(0);
+  //sys_err( sys.ret, "Error (imu_exit): 'mpu_set_dmp_state' failed." );
   return;
 }
 
@@ -63,9 +63,9 @@ void imu_param ( imu_struct* imu )  {
   if(DEBUG) {  printf(".");  fflush(stdout);  }
   sys_err( sys.ret, "Error (imu_init): 'mpu_set_sensors' failed." );
 
-  sys.ret = mpu_configure_fifo( INV_XYZ_GYRO | INV_XYZ_ACCEL );
-  if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( sys.ret, "Error (imu_init): 'mpu_configure_fifo' failed." );
+  //sys.ret = mpu_configure_fifo( INV_XYZ_GYRO | INV_XYZ_ACCEL );
+  //if(DEBUG) {  printf(".");  fflush(stdout);  }
+  //sys_err( sys.ret, "Error (imu_init): 'mpu_configure_fifo' failed." );
 
   sys.ret = mpu_set_sample_rate(1000);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
@@ -305,7 +305,6 @@ int imu_clear ( void )  {
 //  Obtains raw data from MPU sensor and maps to body frame.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_raw ( imu_struct* imu )  {
-
 
   sys.ret = mpu_get_gyro_reg( imu->rawGyro, NULL );
   sys_err( sys.ret!=0, "Error (imu_raw): 'mpu_get_gyro_reg' failed." );

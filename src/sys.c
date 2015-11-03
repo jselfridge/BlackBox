@@ -163,7 +163,7 @@ void sys_debug (  )  {
 //  Code that runs prior to exiting the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_exit (  )  {
-  if(DEBUG)  printf("\n\nExiting program \n");
+  if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   sys.running = false;
   usleep(500000);
   thread_exit();

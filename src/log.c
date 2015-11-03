@@ -24,11 +24,16 @@ void log_write ( void )  {
 void log_init ( void )  {
   if(DEBUG)  printf("Initializing log file: \t");
 
-  // Find next available log file
+  // Local varaibales
   int i = 0;
+  char *file;
+
+  // Allocate memory
   datalog.dir  = malloc(16);
   datalog.path = malloc(32);
-  char *file   = malloc(64);
+  file         = malloc(64);
+
+  // Find next available log directory
   while (true) {
     i++;
     if      ( i<10   )  sprintf( datalog.dir, "Log_00%d", i );
@@ -47,43 +52,35 @@ void log_init ( void )  {
 
   // Create notes file
   sprintf( file, "%snotes.txt", datalog.path );
-  printf("file: %s \n", file);
   datalog.note = fopen( file, "w" );
   sys_err( datalog.note == NULL, "Error (log_init): Cannot open 'note' file. \n" );
   fprintf( datalog.note, "%s \n", datalog.dir );
   fprintf( datalog.note, "Add some more content... \n");
   fprintf( datalog.note, "About the system parameters... ");
+  fclose(datalog.note);
 
   // Create gyroscope datalog file
   sprintf( file, "%sgyro.txt", datalog.path );
   datalog.gyro = fopen( file, "w" );
   sys_err( datalog.gyro == NULL, "Error (log_init): Cannot open 'gyro' file. \n" );
-  fprintf( datalog.gyro, "rGx1, rGy1, rGz1, ");
+  fprintf( datalog.gyro, " Gtime,       Gdur,    Gperc, G,    Grx1,   Gry1,   Grz1,       ");
 
   // Create accelerometer datalog file
   sprintf( file, "%sacc.txt", datalog.path );
   datalog.acc = fopen( file, "w" );
   sys_err( datalog.acc == NULL, "Error (log_init): Cannot open 'acc' file. \n" );
-  fprintf( datalog.acc, "rAx1, rAy1, rAz, ");
+  fprintf( datalog.acc, "timeA, rAx1, rAy1, rAz, ");
 
   // Create magnetometer datalog file
   sprintf( file, "%smag.txt", datalog.path );
   datalog.mag = fopen( file, "w" );
   sys_err( datalog.mag == NULL, "Error (log_init): Cannot open 'mag' file. \n" );
-  fprintf( datalog.mag, "rMx1, rMy1, rMz1, ");
-
-
-
-  fclose(datalog.note);
-  fclose(datalog.gyro);
-  fclose(datalog.acc);
-  fclose(datalog.mag);
-
+  fprintf( datalog.mag, "timeM, rMx1, rMy1, rMz1, ");
 
   // Determine start second
-  //struct timespec timeval;
-  //clock_gettime( CLOCK_MONOTONIC, &timeval );
-  //datalog.offset = timeval.tv_sec;  
+  struct timespec timeval;
+  clock_gettime( CLOCK_MONOTONIC, &timeval );
+  datalog.offset = timeval.tv_sec;
 
   return;
 }
@@ -178,16 +175,16 @@ void log_init ( void )  {
 //  Records the data to the log file.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void log_record ( void )  {
-  /*
+
   // Increment counter
   ushort i;
 
   // Record the timestamp
-  float timestamp = (float)( thr_stab.start_sec + ( thr_stab.start_usec / 1000000.0f ) - datalog.offset );
-  fprintf( datalog.file, "\n %011.6f, %06ld, %6.3f, ", 
-    timestamp, thr_stab.dur, thr_stab.perc );
-  if (thr_stab.perc<1.0)  fprintf( datalog.file, "_,    ");
-  else                    fprintf( datalog.file, "X,    ");
+  float timestamp = (float)( thr_gyro.start_sec + ( thr_gyro.start_usec / 1000000.0f ) - datalog.offset );
+  fprintf( datalog.gyro, "\n %011.6f, %06ld, %6.3f, ", 
+    timestamp, thr_gyro.dur, thr_gyro.perc );
+  if (thr_gyro.perc<1.0)  fprintf( datalog.gyro, "_,    ");
+  else                    fprintf( datalog.gyro, "X,    ");
 
   // Inputs and outputs
   //for ( i=0; i<6; i++ )  fprintf( datalog.file, "%06.1f, ", sys.input[i]  );     fprintf( datalog.file, "   " );
@@ -196,7 +193,7 @@ void log_record ( void )  {
   // Raw sensors data (IMU1)
   //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%04d, ",   imu1.rawMag[i]  );   fprintf( datalog.file, "   " );
   //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   imu1.rawAcc[i]  );   fprintf( datalog.file, "   " );
-  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   imu1.rawGyro[i] );   fprintf( datalog.file, "   " );
+  for ( i=0; i<3; i++ )  fprintf( datalog.gyro, "%06d, ",   imu1.rawGyro[i] );   fprintf( datalog.gyro, "   " );
   //for ( i=0; i<4; i++ )  fprintf( datalog.file, "%012ld, ", imu1.rawQuat[i] );   fprintf( datalog.file, "   " );
 
   // Moving average data (IMU1)
@@ -259,7 +256,7 @@ void log_record ( void )  {
   //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%6.3f, ",    ctrl.err[Y][i] );  fprintf( datalog.file, "   " );
   //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%6.3f, ",    ctrl.err[Z][i] );  fprintf( datalog.file, "   " );
   //for ( i=0; i<4; i++ )  fprintf( datalog.file, "%07.2f, ",   ctrl.input[i]  );  fprintf( datalog.file, "   " );
-  */
+
   return;
 }
 
@@ -269,10 +266,22 @@ void log_record ( void )  {
 //  Closes the data log file.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void log_exit ( void )  {
-  if(DEBUG)  printf("  Closing log file \n");
-  //fclose(datalog.file);
-  //free(datalog.name);
-  //datalog.open = false;
+  if(DEBUG)  printf("Closing log file \n");
+
+  // Close files 
+  fclose(datalog.gyro);
+  //fclose(datalog.acc);
+  //fclose(datalog.mag);
+
+  // Free resources
+  //free(datalog.note);
+  //free(datalog.gyro);
+  //free(datalog.acc);
+  //free(datalog.mag);
+
+  // Adjust flag
+  datalog.open = false;
+
   return;
 }
 
