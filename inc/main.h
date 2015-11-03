@@ -28,7 +28,7 @@
 #include <gpio.h>
 //#include <imu.h>
 #include <led.h>
-//#include <log.h>
+#include <log.h>
 //#include <pru.h>
 #include <sys.h>
 #include <thread.h>
