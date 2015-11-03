@@ -20,9 +20,9 @@ void imu_init ( imu_struct* imu )  {
 
   // Init functions
   imu_param(imu);
-  imu_setcal(imu);
-  imu_conv(imu);
-  imu_setic(imu);
+  //imu_setcal(imu);
+  //imu_conv(imu);
+  //imu_setic(imu);
 
   // Indicate init completed
   led_on(LED_MPU);
@@ -37,8 +37,8 @@ void imu_init ( imu_struct* imu )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_exit ( void )  {
   if(DEBUG)  printf("  Closing IMU \n");
-  ret = mpu_set_dmp_state(0);
-  sys_err( ret, "Error (imu_exit): 'mpu_set_dmp_state' failed." );
+  sys.ret = mpu_set_dmp_state(0);
+  sys_err( sys.ret, "Error (imu_exit): 'mpu_set_dmp_state' failed." );
   return;
 }
 
@@ -50,73 +50,73 @@ void imu_exit ( void )  {
 void imu_param ( imu_struct* imu )  {
 
   // Modify this later
-  const signed char R[9] = { 1,0,0, 0,1,0, 0,0,1 };
+  //const signed char R[9] = { 1,0,0, 0,1,0, 0,0,1 };
 
   if(DEBUG) {  printf("  Assigning IMU parameters ");  fflush(stdout);  }
   linux_set_i2c_bus(imu->bus);
 
-  ret = mpu_init_master(NULL);
+  sys.ret = mpu_init_master(NULL);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (imu_init): 'mpu_init_master' failed." );
+  sys_err( sys.ret, "Error (imu_init): 'mpu_init_master' failed." );
 
-  ret = mpu_set_sensors( INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS );
+  sys.ret = mpu_set_sensors( INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS );
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (imu_init): 'mpu_set_sensors' failed." );
+  sys_err( sys.ret, "Error (imu_init): 'mpu_set_sensors' failed." );
 
-  ret = mpu_configure_fifo( INV_XYZ_GYRO | INV_XYZ_ACCEL );
+  sys.ret = mpu_configure_fifo( INV_XYZ_GYRO | INV_XYZ_ACCEL );
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (imu_init): 'mpu_configure_fifo' failed." );
+  sys_err( sys.ret, "Error (imu_init): 'mpu_configure_fifo' failed." );
 
-  ret = mpu_set_sample_rate((int)SYS_FREQ);
+  sys.ret = mpu_set_sample_rate(1000);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (imu_init): 'mpu_set_sample_rate' failed." );
+  sys_err( sys.ret, "Error (imu_init): 'mpu_set_sample_rate' failed." );
 
-  ret = mpu_set_compass_sample_rate((int)SYS_FREQ);
+  sys.ret = mpu_set_compass_sample_rate(100);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (imu_init): 'mpu_set_compass_sample_rate' failed." );
+  sys_err( sys.ret, "Error (imu_init): 'mpu_set_compass_sample_rate' failed." );
 
-  ret = mpu_set_lpf(5);
-  if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (imu_init): 'mpu_set_lpf' failed." );
+  //sys.ret = mpu_set_lpf(5);
+  //if(DEBUG) {  printf(".");  fflush(stdout);  }
+  //sys_err( sys.ret, "Error (imu_init): 'mpu_set_lpf' failed." );
 
-  ret = dmp_load_motion_driver_firmware();
-  if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (imu_init): 'dmp_load_motion_driver_firmware' failed." );
+  //sys.ret = dmp_load_motion_driver_firmware();
+  //if(DEBUG) {  printf(".");  fflush(stdout);  }
+  //sys_err( sys.ret, "Error (imu_init): 'dmp_load_motion_driver_firmware' failed." );
 
-  //ret = dmp_set_orientation( mpu_orient(mpu->rot) );
-  ret = dmp_set_orientation( imu_orient(R) );
-  if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (imu_init): 'dmp_set_orientation' failed." );
+  //sys.ret = dmp_set_orientation( mpu_orient(mpu->rot) );
+  //sys.ret = dmp_set_orientation( imu_orient(R) );
+  //if(DEBUG) {  printf(".");  fflush(stdout);  }
+  //sys_err( sys.ret, "Error (imu_init): 'dmp_set_orientation' failed." );
 
-  ret = dmp_enable_feature( 
-          DMP_FEATURE_6X_LP_QUAT | 
-          DMP_FEATURE_SEND_RAW_ACCEL | 
-	  DMP_FEATURE_SEND_CAL_GYRO | 
-          DMP_FEATURE_GYRO_CAL );
-  if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (imu_init): 'dmp_enable_feature' failed." );
+  //sys.ret = dmp_enable_feature( 
+    //DMP_FEATURE_6X_LP_QUAT | 
+    //DMP_FEATURE_SEND_RAW_ACCEL | 
+    //DMP_FEATURE_SEND_CAL_GYRO | 
+    //DMP_FEATURE_GYRO_CAL );
+  //if(DEBUG) {  printf(".");  fflush(stdout);  }
+  //sys_err( sys.ret, "Error (imu_init): 'dmp_enable_feature' failed." );
 
-  ret = dmp_set_fifo_rate(SYS_FREQ);
-  if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (imu_init): 'dmp_set_fifo_rate' failed." );
+  //sys.ret = dmp_set_fifo_rate(200);
+  //if(DEBUG) {  printf(".");  fflush(stdout);  }
+  //sys_err( sys.ret, "Error (imu_init): 'dmp_set_fifo_rate' failed." );
 
-  ret = mpu_set_dmp_state(1);
-  if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (imu_init): 'mpu_set_dmp_state' failed." );
+  //sys.ret = mpu_set_dmp_state(1);
+  //if(DEBUG) {  printf(".");  fflush(stdout);  }
+  //sys_err( sys.ret, "Error (imu_init): 'mpu_set_dmp_state' failed." );
 
-  ret = mpu_set_gyro_fsr(500);
+  sys.ret = mpu_set_gyro_fsr(500);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (imu_init): 'mpu_set_gyro_fsr' failed." );
+  sys_err( sys.ret, "Error (imu_init): 'mpu_set_gyro_fsr' failed." );
 
-  ret = mpu_set_accel_fsr(4);
+  sys.ret = mpu_set_accel_fsr(4);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( ret, "Error (imu_init): 'mpu_set_accel_fsr' failed." );
+  sys_err( sys.ret, "Error (imu_init): 'mpu_set_accel_fsr' failed." );
 
   if(DEBUG)  printf(" complete \n");
   return;
 }
 
-
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_setcal
 //  Sets the calibration parameters for the MPU sensor.
@@ -185,15 +185,15 @@ void imu_setcal ( imu_struct* imu )  {
 
   return;
 }
-
-
+*/
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_conv
 //  Allows the sensor heading to converge after initialization. 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_conv ( imu_struct* imu )  {
   if(DEBUG)  printf("  Determining IMU heading:    "); 
-
+*/
   /*
   double magx, magy;
   ushort loop = 1000;
@@ -218,14 +218,14 @@ void imu_conv ( imu_struct* imu )  {
   if(DEBUG) {  printf(" ...... locked \n");  fflush(stdout);  }
   led_on(LED_MPU);
   */
-
+/*
   ctrl.heading = -45* (PI/180.0);
   if(DEBUG)  printf("hard coded as %6.3f \n", ctrl.heading*(180.0/PI) );
 
   return;
 }
-
-
+*/
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_setic
 //  Sets the initial conditions for the MPU sensor.
@@ -266,8 +266,8 @@ void imu_setic ( imu_struct* imu )  {
 
   return;
 }
-
-
+*/
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_avail
 //  Check the MPU interupt to see if new data is avialable.
@@ -278,7 +278,7 @@ int imu_avail ( void )  {
   sys_err( ret<0, "Error (imu_avail): 'mpu_get_int_status' failed." );
   return ( status == ( MPU_INT_STATUS_DATA_READY | MPU_INT_STATUS_DMP | MPU_INT_STATUS_DMP_0 ) );
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_clear
@@ -299,7 +299,7 @@ int imu_clear ( void )  {
 }
 */
 
-
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_raw
 //  Obtains raw data from MPU sensor and maps to body frame.
@@ -326,8 +326,8 @@ void imu_raw ( imu_struct* imu )  {
   }
   return;
 }
-
-
+*/
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_avg
 //  Applies a moving average to the raw data.
@@ -367,8 +367,8 @@ void imu_avg ( imu_struct* imu )  {
   }
   return;
 }
-
-
+*/
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_norm
 //  Generates normalized sensor data.
@@ -398,8 +398,8 @@ void imu_norm ( imu_struct* imu )  {
 
   return;
 }
-
-
+*/
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_fusion
 //  Applies sensor data fusion algorithm. 
@@ -566,8 +566,8 @@ void imu_fusion ( imu_struct* imu )  {
 
   return;
 }
-
-
+*/
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_sample
 //  Generates a sample of the MPU sensor data.
@@ -579,8 +579,8 @@ void imu_sample ( imu_struct* imu )  {
   imu_fusion(imu);
   return;
 }
-
-
+*/
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_row_map
 //  Maps rows so the DMP can define proper orientation.
@@ -596,8 +596,8 @@ short imu_row_map ( const signed char* row )  {
   else                   b = 7;
   return b;
 }
-
-
+*/
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_orient
 //  Returns a scalar the DMP uses to define orientation.
@@ -609,6 +609,6 @@ short imu_orient ( const signed char* mtx )  {
   scalar |= imu_row_map(mtx + 6) << 6;
   return scalar;
 }
-
+*/
 
 

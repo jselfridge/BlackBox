@@ -4,6 +4,4 @@ thread.c:114:6:thread_pause	24	static
 thread.c:134:6:thread_start	24	static
 thread.c:152:6:thread_finish	24	static
 thread.c:178:6:thread_exit	16	static
-thread.c:202:7:thread_stab	8	static
-thread.c:222:7:thread_nav	8	static
-thread.c:239:7:thread_telem	8	static
+thread.c:205:7:thread_stab	8	static

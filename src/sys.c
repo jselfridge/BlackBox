@@ -42,15 +42,6 @@ void sys_init ( void )  {
   mallopt( M_MMAP_MAX, 0 );
   sys_memory(SYS_STACK);
 
-  // Establish realtime priority
-  //if(!DEBUG) {
-  //struct sched_param sys_priority;
-  //memset( &sys_priority, 0, sizeof(sys_priority) );
-  //sys_priority.sched_priority = 99;
-  //ret = sched_setscheduler( 0, SCHED_FIFO, &sys_priority );
-  //sys_err( ret == -1, "Error (sys_init): Function 'sched_setscheduler' failed." );
-  // }
-
   return;
 }
 
@@ -175,9 +166,9 @@ void sys_exit (  )  {
   if(DEBUG)  printf("\n\nExiting program \n");
   sys.running = false;
   usleep(500000);
-  thread_exit();
+  //thread_exit();
   //timer_exit();
-  //imu_exit();
+  imu_exit();
   //pru_exit();
   log_exit();  //--- DEBUG ---//
   led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
@@ -199,8 +190,6 @@ void sys_memory ( int size )  {
   buffer = malloc(size);
   for ( i=0; i<size; i += sysconf(_SC_PAGESIZE) )  {  buffer[i] = 0;  }
   free(buffer);
-  //unsigned char temp[size];
-  //memset( temp, 0, size );
   return;
 }
 

@@ -24,8 +24,8 @@ typedef struct thread_struct {
   double    perc;
 } thread_struct;
 thread_struct thr_stab; 
-thread_struct thr_nav; 
-thread_struct thr_telem; 
+//thread_struct thr_nav; 
+//thread_struct thr_telem; 
 
 
 // Thread functions
@@ -36,8 +36,8 @@ void  thread_start     ( thread_struct *thr );
 void  thread_finish    ( thread_struct *thr );
 void  thread_exit      ( void );
 void *thread_stab      ( );
-void *thread_nav       ( );
-void *thread_telem     ( );
+//void *thread_nav       ( );
+//void *thread_telem     ( );
 
 
 #endif

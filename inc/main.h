@@ -26,7 +26,7 @@
 // Custom includes
 //#include <ctrl.h>
 #include <gpio.h>
-//#include <imu.h>
+#include <imu.h>
 #include <led.h>
 #include <log.h>
 //#include <pru.h>
@@ -41,13 +41,9 @@
 
 
 // MPU includes
-//#include <inv_mpu.h>
-//#include <inv_mpu_dmp_motion_driver.h>
-//#include <inv_glue.h>
-
-
-// TEMP global variables and defines
-//uint ret;
+#include <inv_mpu.h>
+#include <inv_mpu_dmp_motion_driver.h>
+#include <inv_glue.h>
 
 
 #endif

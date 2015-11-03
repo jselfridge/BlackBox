@@ -20,17 +20,17 @@ void thread_init ( void )  {
   // Stabilization
   thr_stab.priority  =     90;
   thr_stab.pin       =     60;
-  thr_stab.period    =   2500;
+  thr_stab.period    =   1000;
 
   // Navigation
-  thr_nav.priority   =     80;
-  thr_nav.pin        =     50;
-  thr_nav.period     =  10000;
+  //thr_nav.priority   =     80;
+  //thr_nav.pin        =     50;
+  //thr_nav.period     =  10000;
 
   // Telemetry
-  thr_telem.priority =     70;
-  thr_telem.pin      =     51;
-  thr_telem.period   =  50000;
+  //thr_telem.priority =     70;
+  //thr_telem.pin      =     51;
+  //thr_telem.period   =  50000;
 
   // Initialize attribute variable
   pthread_attr_init(&attr);
@@ -55,18 +55,18 @@ void thread_init ( void )  {
   sys_err( sys.ret, "Error (thread_init): Failed to create 'stab' thread." );
 
   // Initialize 'navigation' thread
-  param.sched_priority = thr_nav.priority;
-  sys.ret = pthread_attr_setschedparam( &attr, &param );
-  sys_err( sys.ret, "Error (thread_init): Failed to set 'nav' priority." );
-  sys.ret = pthread_create ( &thr_nav.id, &attr, thread_nav, (void *)NULL );
-  sys_err( sys.ret, "Error (thread_init): Failed to create 'nav' thread." );
+  //param.sched_priority = thr_nav.priority;
+  //sys.ret = pthread_attr_setschedparam( &attr, &param );
+  //sys_err( sys.ret, "Error (thread_init): Failed to set 'nav' priority." );
+  //sys.ret = pthread_create ( &thr_nav.id, &attr, thread_nav, (void *)NULL );
+  //sys_err( sys.ret, "Error (thread_init): Failed to create 'nav' thread." );
 
   // Initialize 'telemetry' thread
-  param.sched_priority = thr_telem.priority;
-  sys.ret = pthread_attr_setschedparam( &attr, &param );
-  sys_err( sys.ret, "Error (thread_init): Failed to set 'telem' priority." );
-  sys.ret = pthread_create ( &thr_telem.id, &attr, thread_telem, (void *)NULL );
-  sys_err( sys.ret, "Error (thread_init): Failed to create 'telem' thread." );
+  //param.sched_priority = thr_telem.priority;
+  //sys.ret = pthread_attr_setschedparam( &attr, &param );
+  //sys_err( sys.ret, "Error (thread_init): Failed to set 'telem' priority." );
+  //sys.ret = pthread_create ( &thr_telem.id, &attr, thread_telem, (void *)NULL );
+  //sys_err( sys.ret, "Error (thread_init): Failed to create 'telem' thread." );
 
   return;
 }
@@ -185,20 +185,23 @@ void thread_exit ( void )  {
   if(DEBUG)  printf( "  Status %ld for 'stabilization' thread \n", (long)status );
 
   // Exit 'navigation' thread
-  sys.ret = pthread_join ( thr_nav.id, &status );
-  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'nav' thread." );
-  if(DEBUG)  printf( "  Status %ld for 'navigation' thread \n", (long)status );
+  //sys.ret = pthread_join ( thr_nav.id, &status );
+  //sys_err( sys.ret, "Error (thread_exit): Failed to exit 'nav' thread." );
+  //if(DEBUG)  printf( "  Status %ld for 'navigation' thread \n", (long)status );
 
   // Exit 'telemetry' thread
-  sys.ret = pthread_join ( thr_telem.id, &status );
-  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'telem' thread." );
-  if(DEBUG)  printf( "  Status %ld for 'telemetry' thread \n", (long)status );
+  //sys.ret = pthread_join ( thr_telem.id, &status );
+  //sys_err( sys.ret, "Error (thread_exit): Failed to exit 'telem' thread." );
+  //if(DEBUG)  printf( "  Status %ld for 'telemetry' thread \n", (long)status );
 
   return;
 }
 
 
-//----------------------------------------
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  thread_stab
+//  Run the 'stabilization' thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *thread_stab ( )  {
   printf("  Running 'stabilization' thread \n");
   gpio_export(thr_stab.pin);
@@ -217,8 +220,11 @@ void *thread_stab ( )  {
   return NULL;
 }
 
-
-//----------------------------------------
+/*
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  thread_nav
+//  Run the 'navigation' thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *thread_nav ( )  {
   printf("  Running 'navigation' thread \n");
   gpio_export(thr_nav.pin);
@@ -233,9 +239,12 @@ void *thread_nav ( )  {
   pthread_exit(NULL);
   return NULL;
 }
-
-
-//----------------------------------------
+*/
+/*
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  thread_telem
+//  Run the 'telemetry' thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *thread_telem ( )  {
   printf("  Running 'telemetry' thread \n");
   gpio_export(thr_telem.pin);
@@ -250,6 +259,6 @@ void *thread_telem ( )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 
