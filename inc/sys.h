@@ -9,7 +9,7 @@
 
 
 // Define statements
-#define DEBUG           true
+#define DEBUG           false
 #define NSEC_PER_SEC    1000000000u
 #define SYS_LOOP        10000000u
 #define SYS_FREQ        (double)( NSEC_PER_SEC / SYS_LOOP )
