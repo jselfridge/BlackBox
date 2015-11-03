@@ -27,7 +27,7 @@ int main ( void )  {
   log_init();  //--- DEBUG ---//
 
   imu_init(&imu1);
-  //thread_init();
+  thread_init();
 
   //timer_init();
   //pru_init();
@@ -43,7 +43,7 @@ int main ( void )  {
   //if(DEBUG)  printf("Switching on power to I/O bus \n");
 
   // Continuous loop and then exit
-  //while(sys.running);
+  while(sys.running);
   sys_exit();
 
   return 0;

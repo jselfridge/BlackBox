@@ -18,7 +18,7 @@ void thread_init ( void )  {
   struct sched_param param;
 
   // Stabilization
-  thr_stab.priority  =     90;
+  thr_stab.priority  =     99;
   thr_stab.pin       =     60;
   thr_stab.period    =   1000;
 
@@ -210,10 +210,15 @@ void *thread_stab ( )  {
   while (sys.running) {
     thread_start(&thr_stab);
     gpio_set_val( thr_stab.pin, HIGH );
-    usleep(2000);
+
+    //--- FUNCTION ---//
+    imu_raw(&imu1);
+    //usleep(10);
+    //--- FUNCTION ---//
+
     gpio_set_val( thr_stab.pin, LOW );
     thread_finish(&thr_stab);
-    log_write();
+    //log_write();
     thread_pause(&thr_stab);
   }
   pthread_exit(NULL);

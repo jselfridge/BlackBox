@@ -1,3 +1,4 @@
 imu.c:13:6:imu_init	24	static
 imu.c:38:6:imu_exit	8	static
 imu.c:50:6:imu_param	16	static
+imu.c:307:6:imu_raw	16	static

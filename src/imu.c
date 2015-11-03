@@ -299,34 +299,47 @@ int imu_clear ( void )  {
 }
 */
 
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_raw
 //  Obtains raw data from MPU sensor and maps to body frame.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_raw ( imu_struct* imu )  {
 
+
+  sys.ret = mpu_get_gyro_reg( imu->rawGyro, NULL );
+  sys_err( sys.ret!=0, "Error (imu_raw): 'mpu_get_gyro_reg' failed." );
+
+  //sys.ret = mpu_get_accel_reg( imu->rawAcc, NULL );
+  //sys_err( sys.ret!=0, "Error (imu_raw): 'mpu_get_accel_reg' failed." );
+
+  //sys.ret = mpu_get_compass_reg( imu->rawMag, NULL );
+  //sys_err( sys.ret!=0, "Error (imu_raw): 'mpu_get_compass_reg' failed." );
+
+  //--- ORIGINAL ---//
+
   // Local variables 
-  short sensors;
-  unsigned char more = 1;
+  //short sensors;
+  //unsigned char more = 1;
 
   // Check for new data
-  if ( imu_avail() ) {
+  //if ( imu_avail() ) {
 
     // Obtain magnetometer values
-    ret = mpu_get_compass_reg( imu->rawMag, &imu->magTime );
-    sys_err( ret<0, "Error (imu_raw): 'mpu_get_compass_reg' failed." );
+    //sys.ret = mpu_get_compass_reg( imu->rawMag, &imu->magTime );
+    //sys_err( sys.ret<0, "Error (imu_raw): 'mpu_get_compass_reg' failed." );
 
     // Obatin gyro, acc, and quat values
-    while (more) {
-      ret = dmp_read_fifo( imu->rawGyro, imu->rawAcc, imu->rawQuat, &imu->dmpTime, &sensors, &more );
-      sys_err( ret<0, "Error (imu_raw): 'dmp_read_fifo' failed. ");
+    //while (more) {
+      //sys.ret = dmp_read_fifo( imu->rawGyro, imu->rawAcc, imu->rawQuat, &imu->dmpTime, &sensors, &more );
+      //sys_err( sys.ret<0, "Error (imu_raw): 'dmp_read_fifo' failed. ");
 
-    }
-  }
+    //}
+  //}
+
   return;
 }
-*/
+
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_avg

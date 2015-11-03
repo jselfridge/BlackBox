@@ -166,7 +166,7 @@ void sys_exit (  )  {
   if(DEBUG)  printf("\n\nExiting program \n");
   sys.running = false;
   usleep(500000);
-  //thread_exit();
+  thread_exit();
   //timer_exit();
   imu_exit();
   //pru_exit();

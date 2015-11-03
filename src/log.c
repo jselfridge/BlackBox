@@ -52,7 +52,7 @@ void log_init ( void )  {
   // IMU1 header
   //fprintf( datalog.file, "rMx1, rMy1, rMz1,    ");
   //fprintf( datalog.file, "rAx1,   rAy1,   rAz1,      ");
-  //fprintf( datalog.file, "rGx1,   rGy1,   rGz1,      ");
+  fprintf( datalog.file, "rGx1,   rGy1,   rGz1,      ");
   //fprintf( datalog.file, "rQo1,         rQx1,         rQy1,         rQz1,            ");
   //fprintf( datalog.file, "aMx1,    aMy1,    aMz1,       ");
   //fprintf( datalog.file, "aAx1,      aAy1,      aAz1,         ");
@@ -101,7 +101,7 @@ void log_init ( void )  {
 void log_record ( void )  {
 
   // Increment counter
-  //ushort i;
+  ushort i;
 
   // Time values
   fprintf( datalog.file, "\n %04d, %06ld, %06ld, %6.3f, ", 
@@ -116,7 +116,7 @@ void log_record ( void )  {
   // Raw sensors data (IMU1)
   //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%04d, ",   imu1.rawMag[i]  );   fprintf( datalog.file, "   " );
   //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   imu1.rawAcc[i]  );   fprintf( datalog.file, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   imu1.rawGyro[i] );   fprintf( datalog.file, "   " );
+  for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   imu1.rawGyro[i] );   fprintf( datalog.file, "   " );
   //for ( i=0; i<4; i++ )  fprintf( datalog.file, "%012ld, ", imu1.rawQuat[i] );   fprintf( datalog.file, "   " );
 
   // Moving average data (IMU1)
