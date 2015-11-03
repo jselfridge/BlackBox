@@ -43,7 +43,7 @@ void log_init ( void )  {
   datalog.open = true;
 
   // Timing header
-  fprintf( datalog.file, " time,    start,     dur,        perc,  X,    ");
+  fprintf( datalog.file, " time, start,  dur,     perc,  X,    ");
 
   // Input/Output header
   //fprintf( datalog.file, "R1,     R2,     R3,     R4,     R5,     R6,        ");
@@ -104,10 +104,10 @@ void log_record ( void )  {
   //ushort i;
 
   // Time values
-  fprintf( datalog.file, "\n %07.3f, %09ld, %09ld, %6.3f, ", 
-    t.runtime, t.start_nano, t.dur, t.percent );
-  if (t.percent<1.0)  fprintf( datalog.file, "_,    ");
-  else                fprintf( datalog.file, "X,    ");
+  fprintf( datalog.file, "\n %04d, %06ld, %06ld, %6.3f, ", 
+    thr_stab.start_sec, thr_stab.start_usec, thr_stab.dur, thr_stab.perc );
+  if (thr_stab.perc<1.0)  fprintf( datalog.file, "_,    ");
+  else                    fprintf( datalog.file, "X,    ");
 
   // Inputs and outputs
   //for ( i=0; i<6; i++ )  fprintf( datalog.file, "%06.1f, ", sys.input[i]  );     fprintf( datalog.file, "   " );

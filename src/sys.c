@@ -179,6 +179,7 @@ void sys_exit (  )  {
   //timer_exit();
   //imu_exit();
   //pru_exit();
+  log_exit();  //--- DEBUG ---//
   led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
   if(DEBUG)  printf("Program complete \n\n");
   sys.ret = sigaction( SIGINT, &sys_signal, NULL );

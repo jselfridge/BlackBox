@@ -128,6 +128,50 @@ void thread_pause ( thread_struct *thr )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  thread_start
+//  Start code for a thread loop.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void thread_start ( thread_struct *thr )  {
+
+  // Get current time
+  struct timespec timeval;
+  clock_gettime( CLOCK_MONOTONIC, &timeval );
+
+  // Assign start time to thread
+  thr->start_sec  = timeval.tv_sec;
+  thr->start_usec = timeval.tv_nsec / 1000;
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  thread_finish
+//  Finish code for a thread loop.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void thread_finish ( thread_struct *thr )  {
+
+  // Get current time
+  struct timespec timeval;
+  clock_gettime( CLOCK_MONOTONIC, &timeval );
+
+  // Assign finish time to thread
+  thr->finish_sec  = timeval.tv_sec;
+  thr->finish_usec = timeval.tv_nsec /1000;
+
+  // Adjust for rollover
+  if ( thr->finish_sec == thr->start_sec )  thr->dur = 0;
+  else                                      thr->dur = 1000000;
+
+  // Calculate timing metrics
+  thr->dur += thr->finish_usec - thr->start_usec;
+  thr->perc = thr->dur / (double)thr->period;
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_exit
 //  Cleanly exits the threads.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -161,9 +205,12 @@ void *thread_stab ( )  {
   gpio_set_dir( thr_stab.pin, OUTPUT_PIN );
   thread_periodic (&thr_stab);
   while (sys.running) {
+    thread_start(&thr_stab);
     gpio_set_val( thr_stab.pin, HIGH );
     usleep(2000);
     gpio_set_val( thr_stab.pin, LOW );
+    thread_finish(&thr_stab);
+    log_write();
     thread_pause(&thr_stab);
   }
   pthread_exit(NULL);

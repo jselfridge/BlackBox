@@ -11,10 +11,6 @@
 // Define statements
 #define DEBUG           true
 #define SYS_STACK       ( 100 * 1024 * 1024 )
-//#define NSEC_PER_SEC    1000000000u
-//#define SYS_LOOP        10000000u
-//#define SYS_FREQ        (double)( NSEC_PER_SEC / SYS_LOOP )
-//#define SYS_DT          (double)( 1/SYS_FREQ )
 
 
 // System structure
