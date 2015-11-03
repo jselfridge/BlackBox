@@ -8,42 +8,46 @@
 
 
 // Standard includes
+#include <stdbool.h>
+#include <stdio.h>
+/*
 #include <fcntl.h>
 #include <sched.h>
 #include <signal.h>
-#include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
 #include <time.h>
 #include <unistd.h>
-
+*/
 
 // Custom includes
+#include <sys.h>
+/*
 #include <ctrl.h>
 #include <gpio.h>
 #include <imu.h>
 #include <led.h>
 #include <log.h>
 #include <pru.h>
-#include <sys.h>
 #include <timer.h>
-
+*/
 
 // PRU includes
+/*
 #include <prussdrv.h>
 #include <pruss_intc_mapping.h>
-
+*/
 
 // MPU includes
+/*
 #include <inv_mpu.h>
 #include <inv_mpu_dmp_motion_driver.h>
 #include <inv_glue.h>
-
+*/
 
 // Global variables
-uint ret;
+//uint ret;
 
 
 #endif

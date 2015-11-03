@@ -10,16 +10,17 @@
 //  sys_err
 //  If error condition is true, prints a warning and exits.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_err ( bool cond, char* msg )  {
+/*void sys_err ( bool cond, char* msg )  {
   if (cond) {  fprintf( stderr, "%s\n\n", msg );  exit(1);  }
 }
+*/
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_init
 //  Initializes the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_init ( void )  {
+/*void sys_init ( void )  {
   if(DEBUG)  printf("Initializing system \n");
 
   // Establish exit condition
@@ -49,13 +50,13 @@ void sys_init ( void )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_loop
 //  Executes instructions at timed intervals.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_loop ( void )  {
+/*void sys_loop ( void )  {
 
   ushort i;
   timer_start();
@@ -70,13 +71,13 @@ void sys_loop ( void )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_debug
 //  Prints system debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_debug (  )  {
+/*void sys_debug (  )  {
 
   // Loop counter
   ushort i;
@@ -161,13 +162,13 @@ void sys_debug (  )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_exit
 //  Code that runs prior to exiting the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_exit (  )  {
+/*void sys_exit (  )  {
   if(DEBUG)  printf("\n\nExiting program \n");
   timer_exit();
   usleep(200000);
@@ -180,18 +181,18 @@ void sys_exit (  )  {
   kill( 0, SIGINT );
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_memory
 //  Reserves a block of memory exclusively for the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_memory ( void )  {
+/*void sys_memory ( void )  {
   int size = 1024*1024;
   unsigned char temp[size];
   memset( temp, 0, size );
   return;
 }
-
+*/
 
 

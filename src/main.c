@@ -3,7 +3,7 @@
 //  main.c
 //  Justin M Selfridge
 //============================================================
-//#include "main.h"
+#include "main.h"
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -11,7 +11,7 @@
 //  Primary code that runs the UAV avionics.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int main ( void )  {
-//  if(DEBUG)  printf("Begin BlackBox program \n");
+  if(DEBUG)  printf("Begin BlackBox program \n");
 
   // Set LED indicators
 //  led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
