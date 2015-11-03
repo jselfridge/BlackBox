@@ -20,7 +20,7 @@ void imu_init ( imu_struct* imu )  {
 
   // Init functions
   imu_param(imu);
-  //imu_setcal(imu);
+  imu_setcal(imu);
   //imu_conv(imu);
   imu_setic(imu);
 
@@ -116,7 +116,7 @@ void imu_param ( imu_struct* imu )  {
   return;
 }
 
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_setcal
 //  Sets the calibration parameters for the MPU sensor.
@@ -134,9 +134,9 @@ void imu_setcal ( imu_struct* imu )  {
   // Set magnetometer offset
   sprintf( path, "cal/imu%d/moffset", imu->bus );
   f = fopen( path, "r" );
-  if (!f)  {  printf("Error (imu_setcal): File 'moffset' not found. \n");  return;  }
+  sys_err( !f, "Error (imu_setcal): File 'moffset' not found." );
   for ( i=0; i<3; i++ ) {
-    if ( !fgets( buff, 32, f ) )  printf("Error: Failed to read 'moffset' file. \n");
+    fgets( buff, 32, f );
     imu->moffset[i] = atoi(buff);
   }
   fclose(f);
@@ -144,9 +144,9 @@ void imu_setcal ( imu_struct* imu )  {
   // Set magnetometer range
   sprintf( path, "cal/imu%d/mrange", imu->bus );
   f = fopen( path, "r" );
-  if (!f)  {  printf("Error (imu_setcal): File 'mrange' not found. \n");  return;  }
+  sys_err( !f, "Error (imu_setcal): File 'mrange' not found." );
   for ( i=0; i<3; i++ ) {
-    if ( !fgets( buff, 32, f ) )  printf("Error: Failed to read 'mrange' file. \n");
+    fgets( buff, 32, f );
     imu->mrange[i] = atoi(buff);
   }
   fclose(f);
@@ -154,9 +154,9 @@ void imu_setcal ( imu_struct* imu )  {
   // Set acceleration offset
   sprintf( path, "cal/imu%d/aoffset", imu->bus );
   f = fopen( path, "r" );
-  if (!f)  {  printf("Error (imu_setcal): File 'aoffset' not found. \n");  return;  }
+  sys_err( !f, "Error (imu_setcal): File 'aoffset' not found." );
   for ( i=0; i<3; i++ ) {
-    if ( !fgets( buff, 32, f ) )  printf("Error: Failed to read 'aoffset' file. \n");
+    fgets( buff, 32, f );
     imu->aoffset[i] = atoi(buff);
   }
   fclose(f);
@@ -164,9 +164,9 @@ void imu_setcal ( imu_struct* imu )  {
   // Set acceleration range
   sprintf( path, "cal/imu%d/arange", imu->bus );
   f = fopen( path, "r" );
-  if (!f)  {  printf("Error (imu_setcal): File 'arange' not found. \n");  return;  }
+  sys_err( !f, "Error (imu_setcal): File 'arange' not found." );
   for ( i=0; i<3; i++ ) {
-    if ( !fgets( buff, 32, f ) )  printf("Error: Failed to read 'arange' file. \n");
+    fgets( buff, 32, f );
     imu->arange[i] = atoi(buff);
   }
   fclose(f);
@@ -185,7 +185,7 @@ void imu_setcal ( imu_struct* imu )  {
 
   return;
 }
-*/
+
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_conv
@@ -279,37 +279,6 @@ void imu_setic ( imu_struct* imu )  {
   return;
 }
 
-/*
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_avail
-//  Check the MPU interupt to see if new data is avialable.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int imu_avail ( void )  {
-  short status;
-  ret = mpu_get_int_status(&status);
-  sys_err( ret<0, "Error (imu_avail): 'mpu_get_int_status' failed." );
-  return ( status == ( MPU_INT_STATUS_DATA_READY | MPU_INT_STATUS_DMP | MPU_INT_STATUS_DMP_0 ) );
-}
-*/
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_clear
-//  Clears the FIFO buffer on the MPU sensor.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*
-int imu_clear ( void )  {
-  unsigned char ii;
-  unsigned char data;
-  for (ii = 0; ii < st.hw->num_reg; ii++) {
-    if (ii == st.reg->fifo_r_w || ii == st.reg->mem_r_w)
-      continue;
-    if (i2c_read(st.hw->addr, ii, 1, &data))
-      return -1;
-    log_i("%#5x: %#5x\r\n", ii, data);
-  }
-  return 0;
-}
-*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_gyro
@@ -331,6 +300,11 @@ void imu_gyro ( imu_struct* imu )  {
     imu->avgGyro[i] = 0;
     for ( j=0; j<12; j++ )  imu->avgGyro[i] += imu->histGyro[i][j] * imu->weight[j];
   }
+
+  // Scale and orient gyroscope readings
+  imu->calGyro[X] = -imu->avgGyro[Y] * GYRO_SCALE;
+  imu->calGyro[Y] = -imu->avgGyro[X] * GYRO_SCALE;
+  imu->calGyro[Z] = -imu->avgGyro[Z] * GYRO_SCALE;
 
   return;
 }
@@ -357,6 +331,11 @@ void imu_acc ( imu_struct* imu )  {
     for ( j=0; j<12; j++ )  imu->avgAcc[i] += imu->histAcc[i][j] * imu->weight[j];
   }
 
+  // Shift and orient accelerometer readings
+  imu->calAcc[X] = ( imu->avgAcc[Y] - imu->aoffset[Y] ) / (double)imu->arange[Y];
+  imu->calAcc[Y] = ( imu->avgAcc[X] - imu->aoffset[X] ) / (double)imu->arange[X];
+  imu->calAcc[Z] = ( imu->avgAcc[Z] - imu->aoffset[Z] ) / (double)imu->arange[Z];
+
   return;
 }
 
@@ -382,121 +361,14 @@ void imu_mag ( imu_struct* imu )  {
     for ( j=0; j<12; j++ )  imu->avgMag[i] += imu->histMag[i][j] * imu->weight[j];
   }
 
-  return;
-}
-
-/*
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_raw
-//  Obtains raw data from MPU sensor and maps to body frame.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_raw ( imu_struct* imu )  {
-
-  sys.ret = mpu_get_gyro_reg( imu->rawGyro, NULL );
-  sys_err( sys.ret!=0, "Error (imu_raw): 'mpu_get_gyro_reg' failed." );
-
-  //sys.ret = mpu_get_accel_reg( imu->rawAcc, NULL );
-  //sys_err( sys.ret!=0, "Error (imu_raw): 'mpu_get_accel_reg' failed." );
-
-  //sys.ret = mpu_get_compass_reg( imu->rawMag, NULL );
-  //sys_err( sys.ret!=0, "Error (imu_raw): 'mpu_get_compass_reg' failed." );
-
-  //--- ORIGINAL ---//
-
-  // Local variables 
-  //short sensors;
-  //unsigned char more = 1;
-
-  // Check for new data
-  //if ( imu_avail() ) {
-
-    // Obtain magnetometer values
-    //sys.ret = mpu_get_compass_reg( imu->rawMag, &imu->magTime );
-    //sys_err( sys.ret<0, "Error (imu_raw): 'mpu_get_compass_reg' failed." );
-
-    // Obatin gyro, acc, and quat values
-    //while (more) {
-      //sys.ret = dmp_read_fifo( imu->rawGyro, imu->rawAcc, imu->rawQuat, &imu->dmpTime, &sensors, &more );
-      //sys_err( sys.ret<0, "Error (imu_raw): 'dmp_read_fifo' failed. ");
-
-    //}
-  //}
-
-  return;
-}
-*/
-/*
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_avg
-//  Applies a moving average to the raw data.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_avg ( imu_struct* imu )  {
-
-  // Local variables
-  unsigned short i, j;
-
-  // Loop through elements
-  for ( i=0; i<3; i++ ) {
-
-    // Shift raw data history
-    for ( j=11; j>0; j-- ) {
-      imu->histMag[i][j]  = imu->histMag[i][j-1];
-      imu->histAcc[i][j]  = imu->histAcc[i][j-1];
-      imu->histGyro[i][j] = imu->histGyro[i][j-1];
-    }
-    
-    // Assign new data
-    imu->histMag[i][0]  = imu->rawMag[i];
-    imu->histAcc[i][0]  = imu->rawAcc[i];
-    imu->histGyro[i][0] = imu->rawGyro[i];
-
-    // Reset moving average
-    imu->avgMag[i]  = 0;
-    imu->avgAcc[i]  = 0;
-    imu->avgGyro[i] = 0;
-
-    // Calculate new moving average
-    for ( j=0; j<12; j++ ) {
-      imu->avgMag[i]  += imu->histMag[i][j]  * imu->weight[j];
-      imu->avgAcc[i]  += imu->histAcc[i][j]  * imu->weight[j];
-      imu->avgGyro[i] += imu->histGyro[i][j] * imu->weight[j];
-    }
-
-  }
-  return;
-}
-*/
-/*
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_norm
-//  Generates normalized sensor data.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_norm ( imu_struct* imu )  {
-
   // Shift and orient magnetometer readings
-  imu->normMag[X] = -( imu->avgMag[X] - imu->moffset[X] ) / (double)imu->mrange[X];
-  imu->normMag[Y] = -( imu->avgMag[Y] - imu->moffset[Y] ) / (double)imu->mrange[Y];
-  imu->normMag[Z] =  ( imu->avgMag[Z] - imu->moffset[Z] ) / (double)imu->mrange[Z];
-
-  // Shift and orient accelerometer readings
-  imu->normAcc[X] = ( imu->avgAcc[Y] - imu->aoffset[Y] ) / (double)imu->arange[Y];
-  imu->normAcc[Y] = ( imu->avgAcc[X] - imu->aoffset[X] ) / (double)imu->arange[X];
-  imu->normAcc[Z] = ( imu->avgAcc[Z] - imu->aoffset[Z] ) / (double)imu->arange[Z];
-
-  // Scale and orient gyro readings
-  imu->normGyro[X] = -imu->avgGyro[Y] * GYRO_SCALE;
-  imu->normGyro[Y] = -imu->avgGyro[X] * GYRO_SCALE;
-  imu->normGyro[Z] = -imu->avgGyro[Z] * GYRO_SCALE;
-
-  // Normalize raw quaternion values
-  double mag = 0.0;  unsigned short i = 1;
-  for ( i=0; i<4; i++ )  mag += imu->rawQuat[i] * imu->rawQuat[i];
-  mag = sqrt(mag);
-  for ( i=0; i<4; i++ )  imu->normQuat[i] = imu->rawQuat[i] / mag;
+  imu->calMag[X] = -( imu->avgMag[X] - imu->moffset[X] ) / (double)imu->mrange[X];
+  imu->calMag[Y] = -( imu->avgMag[Y] - imu->moffset[Y] ) / (double)imu->mrange[Y];
+  imu->calMag[Z] =  ( imu->avgMag[Z] - imu->moffset[Z] ) / (double)imu->mrange[Z];
 
   return;
 }
-*/
+
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_fusion
@@ -665,19 +537,7 @@ void imu_fusion ( imu_struct* imu )  {
   return;
 }
 */
-/*
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_sample
-//  Generates a sample of the MPU sensor data.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_sample ( imu_struct* imu )  {
-  imu_raw(imu);
-  imu_avg(imu);
-  imu_norm(imu);
-  imu_fusion(imu);
-  return;
-}
-*/
+
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_row_map

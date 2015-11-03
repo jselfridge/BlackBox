@@ -66,7 +66,8 @@ void log_init ( void )  {
   fprintf( datalog.gyro, 
     " Gtime,       Gdur,    Gperc, G,\
     Grx1,   Gry1,   Grz1,  \
-    Gax1,      Gay1,      Gaz1   ");
+    Gax1,      Gay1,      Gaz1      \
+    Gcx1,    Gcy1,    Gcz1   ");
 
   // Create accelerometer datalog file
   sprintf( file, "%sacc.txt", datalog.path );
@@ -75,7 +76,8 @@ void log_init ( void )  {
   fprintf( datalog.acc, 
     " Atime,       Adur,    Aperc, A,\
     Arx1,   Ary1,   Arz1,  \
-    Aax1,      Aay1,      Aaz1,   ");
+    Aax1,      Aay1,      Aaz1,     \
+    Acx1,    Acy1,    Acz1,   ");
 
   // Create magnetometer datalog file
   sprintf( file, "%smag.txt", datalog.path );
@@ -84,7 +86,8 @@ void log_init ( void )  {
   fprintf( datalog.mag, 
     " Mtime,       Mdur,    Mperc, M,\
     Mrx1, Mry1, Mrz1,\
-    Max1,    May1,    Maz1,   ");
+    Max1,    May1,    Maz1,   \
+    Mcx1,    Mcy1,    Mcz1,   ");
 
   // Determine start second
   struct timespec timeval;
@@ -199,6 +202,7 @@ void log_record ( enum log_index index )  {
     if (thr_gyro.perc<1.0)  fprintf( datalog.gyro, "_,    ");  else  fprintf( datalog.gyro, "X,    ");
     for ( i=0; i<3; i++ )  fprintf( datalog.gyro, "%06d, ",   imu1.rawGyro[i] );   fprintf( datalog.gyro, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.gyro, "%09.2f, ", imu1.avgGyro[i] );   fprintf( datalog.gyro, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.gyro, "%07.4f, ", imu1.calGyro[i] );   fprintf( datalog.gyro, "   " );
     return;
 
   // Record 'accelerometer' datalog
@@ -208,6 +212,7 @@ void log_record ( enum log_index index )  {
     if (thr_acc.perc<1.0)  fprintf( datalog.acc, "_,    ");  else  fprintf( datalog.acc, "X,    ");
     for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%06d, ",   imu1.rawAcc[i] );  fprintf( datalog.acc, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%09.2f, ", imu1.avgAcc[i] );  fprintf( datalog.acc, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%07.4f, ", imu1.calAcc[i] );  fprintf( datalog.acc, "   " );
     return;
 
   // Record 'magnetometer' datalog
@@ -217,6 +222,7 @@ void log_record ( enum log_index index )  {
     if (thr_mag.perc<1.0)  fprintf( datalog.mag, "_,    ");  else  fprintf( datalog.mag, "X,    ");
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%04d, ",   imu1.rawMag[i] );  fprintf( datalog.mag, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%07.2f, ", imu1.avgMag[i] );  fprintf( datalog.mag, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%07.4f, ", imu1.calMag[i] );  fprintf( datalog.mag, "   " );
     return;
 
   default :
@@ -229,11 +235,6 @@ void log_record ( enum log_index index )  {
   //for ( i=0; i<6; i++ )  fprintf( datalog.file, "%06.1f, ", sys.input[i]  );     fprintf( datalog.file, "   " );
   //for ( i=0; i<4; i++ )  fprintf( datalog.file, "%06.1f, ", sys.output[i] );     fprintf( datalog.file, "   " );
  
-  // Normalized sensor data (IMU1)
-  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ",  imu1.normMag[i]  );  fprintf( datalog.file, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ",  imu1.normAcc[i]  );  fprintf( datalog.file, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ",  imu1.normGyro[i] );  fprintf( datalog.file, "   " );
-
   // Internal fusion algorithm values (IMU1)
   //for ( i=0; i<3; i++ )  
   //fprintf( datalog.file, "%9.6f, ", imu1.bias[i] );
@@ -249,15 +250,6 @@ void log_record ( enum log_index index )  {
   //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ",  imu1.dEul[i]  );     fprintf( datalog.file, "   " );
 
 
-  // Moving average data (IMU2)
-  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%8.2f, ",   imu2.avgMag[i]  );  fprintf( datalog.file, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%8.2f, ",   imu2.avgAcc[i]  );  fprintf( datalog.file, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%8.2f, ",   imu2.avgGyro[i] );  fprintf( datalog.file, "   " );
-
-  // Calibrated sensors data (IMU2)
-  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", imu2.normMag[i]  );  fprintf( datalog.file, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", imu2.normAcc[i]  );  fprintf( datalog.file, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ", imu2.normGyro[i] );  fprintf( datalog.file, "   " );
 
   // Internal fusion algorithm values (IMU2)
   //for ( i=0; i<3; i++ )  
