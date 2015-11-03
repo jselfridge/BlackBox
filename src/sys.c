@@ -35,7 +35,7 @@ void sys_init ( void )  {
   if(!DEBUG) {
   struct sched_param sys_priority;
   memset( &sys_priority, 0, sizeof(sys_priority) );
-  sys_priority.sched_priority = 90;
+  sys_priority.sched_priority = 99;
   ret = sched_setscheduler( 0, SCHED_FIFO, &sys_priority );
   sys_err( ret == -1, "Error (sys_init): Function 'sched_setscheduler' failed." );
   }
