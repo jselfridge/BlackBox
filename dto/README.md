@@ -834,7 +834,7 @@ for robotic research capabilities.
     <td align="right"  > UART4_RX </td>
     <td align="right"  > P9_11 </td>
     <td align="left"   > P9_12 </td>
-    <td align="left"   > GPIO </td>
+    <td align="left"   > GPIO - Stab </td>
     <td align="center" > </td>
     <td align="right"  > GPIO </td>
     <td align="right"  > P8_11 </td>
@@ -844,7 +844,7 @@ for robotic research capabilities.
   <tr>
     <td align="right"  > UART4_TX </td>
     <td align="right"  > P9_13 </td>
-    <td align="left"   > P9_14 </td>
+    <td align="left"   > P9_14 - Nav </td>
     <td align="left"   > GPIO </td>
     <td align="center" > </td>
     <td align="right"  > PWM_2B </td>
@@ -856,7 +856,7 @@ for robotic research capabilities.
     <td align="right"  > GPIO </td>
     <td align="right"  > P9_15 </td>
     <td align="left"   > P9_16 </td>
-    <td align="left"   > GPIO </td>
+    <td align="left"   > GPIO - Telem </td>
     <td align="center" > </td>
     <td align="right"  > PRU0_r31_15 </td>
     <td align="right"  > P8_15 </td>
