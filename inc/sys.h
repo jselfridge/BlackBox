@@ -32,8 +32,8 @@ sys_struct sys;
 
 
 // Function declarations
-/*
 void sys_err    ( bool cond, char* msg );
+/*
 void sys_init   (  );
 void sys_loop   (  );
 void sys_debug  (  );

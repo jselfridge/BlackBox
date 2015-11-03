@@ -8,26 +8,26 @@
 
 
 // Standard includes
+#include <fcntl.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 /*
-#include <fcntl.h>
 #include <sched.h>
 #include <signal.h>
-#include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
 #include <time.h>
-#include <unistd.h>
 */
 
 // Custom includes
 #include <sys.h>
+#include <led.h>
 /*
 #include <ctrl.h>
 #include <gpio.h>
 #include <imu.h>
-#include <led.h>
 #include <log.h>
 #include <pru.h>
 #include <timer.h>

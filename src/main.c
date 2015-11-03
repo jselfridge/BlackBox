@@ -14,7 +14,7 @@ int main ( void )  {
   if(DEBUG)  printf("Begin BlackBox program \n");
 
   // Set LED indicators
-//  led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
+  led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
 
   // Initial structure values
 //  sys.running      = true;

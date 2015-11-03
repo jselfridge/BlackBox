@@ -10,10 +10,9 @@
 //  sys_err
 //  If error condition is true, prints a warning and exits.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void sys_err ( bool cond, char* msg )  {
+void sys_err ( bool cond, char* msg )  {
   if (cond) {  fprintf( stderr, "%s\n\n", msg );  exit(1);  }
 }
-*/
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
