@@ -122,6 +122,7 @@ for robotic research capabilities.
   </tr>
 </table>
 
+
 <table>
   <tr>
     <td colspan="8" align="center"> <b> PRU OUTPUTS (ESC/SERVO) [12CH] </b> </td>
@@ -238,6 +239,7 @@ for robotic research capabilities.
   </tr>
 </table>
 
+
 <table>
   <tr>
     <td colspan="8" align="center"> <b> GENERAL I/O </b> </td>
@@ -253,14 +255,128 @@ for robotic research capabilities.
     <th align="left"  > Description  </th>
   </tr>
   <tr>
-    <td align="center"> P9_12       </td>
-    <td align="center"> 30          </td>
-    <td align="center"> 878         </td>
-    <td align="center"> 078         </td>
-    <td align="center"> GPIO1_28    </td>
-    <td align="center"> gpio1[28]   </td>
+    <td align="center"> PX_XX       </td>
+    <td align="center"> XX          </td>
+    <td align="center"> XXX         </td>
+    <td align="center"> 0XX         </td>
+    <td align="center"> GPIOX_XX    </td>
+    <td align="center"> gpioX[XX]   </td>
+    <td align="center"> XX          </td>
+    <td align="left"  > XXXXXXXXXXX </td>
+  </tr>
+  <tr>
+    <td align="center"> PX_XX       </td>
+    <td align="center"> XX          </td>
+    <td align="center"> XXX         </td>
+    <td align="center"> 0XX         </td>
+    <td align="center"> GPIOX_XX    </td>
+    <td align="center"> gpioX[XX]   </td>
+    <td align="center"> XX          </td>
+    <td align="left"  > XXXXXXXXXXX </td>
+  </tr>
+  <tr>
+    <td align="center"> PX_XX       </td>
+    <td align="center"> XX          </td>
+    <td align="center"> XXX         </td>
+    <td align="center"> 0XX         </td>
+    <td align="center"> GPIOX_XX    </td>
+    <td align="center"> gpioX[XX]   </td>
+    <td align="center"> XX          </td>
+    <td align="left"  > XXXXXXXXXXX </td>
+  </tr>
+  <tr>
+    <td align="center"> PX_XX       </td>
+    <td align="center"> XX          </td>
+    <td align="center"> XXX         </td>
+    <td align="center"> 0XX         </td>
+    <td align="center"> GPIOX_XX    </td>
+    <td align="center"> gpioX[XX]   </td>
+    <td align="center"> XX          </td>
+    <td align="left"  > XXXXXXXXXXX </td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <td colspan="8" align="center"> <b> RESERVED FOR EMMC </b> </td>
+  </tr>
+  <tr>
+    <th align="center"> Header       </th>
+    <th align="center"> $PINS        </th>
+    <th align="center"> Address      </th>
+    <th align="center"> Offset       </th>
+    <th align="center"> GPIO         </th>
+  </tr>
+  <tr>
+    <td align="center"> P8_03       </td>
+    <td align="center"> 06          </td>
+    <td align="center"> 818         </td>
+    <td align="center"> 018         </td>
+    <td align="center"> gpio1[06]   </td>
+  </tr>
+  <tr>
+    <td align="center"> P8_04       </td>
     <td align="center"> 07          </td>
-    <td align="left"  > Rail Switch </td>
+    <td align="center"> 81C         </td>
+    <td align="center"> 01C         </td>
+    <td align="center"> gpio1[07]   </td>
+  </tr>
+  <tr>
+    <td align="center"> P8_05       </td>
+    <td align="center"> 02          </td>
+    <td align="center"> 808         </td>
+    <td align="center"> 008         </td>
+    <td align="center"> gpio1[02]   </td>
+  </tr>
+  <tr>
+    <td align="center"> P8_06       </td>
+    <td align="center"> 03          </td>
+    <td align="center"> 80C         </td>
+    <td align="center"> 00C         </td>
+    <td align="center"> gpio1[03]   </td>
+  </tr>
+  <tr>
+    <td align="center"> P8_20       </td>
+    <td align="center"> 33          </td>
+    <td align="center"> 884         </td>
+    <td align="center"> 004         </td>
+    <td align="center"> gpio1[31]   </td>
+  </tr>
+  <tr>
+    <td align="center"> P8_21       </td>
+    <td align="center"> 32          </td>
+    <td align="center"> 880         </td>
+    <td align="center"> 080         </td>
+    <td align="center"> gpio1[30]   </td>
+  </tr>
+  <tr>
+    <td align="center"> P8_22       </td>
+    <td align="center"> 05          </td>
+    <td align="center"> 814         </td>
+    <td align="center"> 014         </td>
+    <td align="center"> gpio1[05]   </td>
+  </tr>
+  <tr>
+    <td align="center"> P8_23       </td>
+    <td align="center"> 04          </td>
+    <td align="center"> 810         </td>
+    <td align="center"> 010         </td>
+    <td align="center"> gpio1[04]   </td>
+  </tr>
+  <tr>
+    <td align="center"> P8_24       </td>
+    <td align="center"> 01          </td>
+    <td align="center"> 804         </td>
+    <td align="center"> 004         </td>
+    <td align="center"> gpio1[01]   </td>
+  </tr>
+  <tr>
+    <td align="center"> P8_25       </td>
+    <td align="center"> 00          </td>
+    <td align="center"> 800         </td>
+    <td align="center"> 000         </td>
+    <td align="center"> gpio1[00]   </td>
   </tr>
 </table>
 
@@ -322,7 +438,6 @@ for robotic research capabilities.
 </table>
 
 
-<!--
 <table>
   <tr>
     <td colspan="8" align="center"> <b> UART DEVICES [4CH] </b> </td>
@@ -418,10 +533,8 @@ for robotic research capabilities.
     <td align="left"  > UART5_RX  </td>
   </tr>
 </table>
--->
 
 
-<!--
 <table>
   <tr>
     <td colspan="8" align="center"> <b> STANDARD PWM [XCH] </b> </td>
@@ -497,9 +610,8 @@ for robotic research capabilities.
     <td align="left"  > PWM_X        </td>
   </tr>
 </table>
--->
 
-<!--
+
 <table>
   <tr>
     <td colspan="8" align="center"> <b> TIMERS [XCH] </b> </td>
@@ -555,9 +667,8 @@ for robotic research capabilities.
     <td align="left"  > TIMER_X      </td>
   </tr>
 </table>
--->
 
-<!--
+
 <table>
   <tr>
     <td colspan="2" align="center"> <b> ANALOG TO DIGITAL [7CH] </b> </td>
@@ -603,7 +714,6 @@ for robotic research capabilities.
     <td align="center"> AIN6   </th>
   </tr>
 </table>
--->
 
 
 <table>
@@ -627,10 +737,10 @@ for robotic research capabilities.
     <td align="left"   > P9_04 </td>
     <td align="left"   > DC_3.3V </td>
     <td align="center" > </td>
-    <td align="right"  > N/A </td>
+    <td align="right"  > EMMC </td>
     <td align="right"  > P8_03 </td>
     <td align="left"   > P8_04 </td>
-    <td align="left"   > N/A </td>
+    <td align="left"   > EMMC </td>
   </tr>
   <tr>
     <td align="right"  > VDD_5V </td>
@@ -638,10 +748,10 @@ for robotic research capabilities.
     <td align="left"   > P9_06 </td>
     <td align="left"   > VDD_5V </td>
     <td align="center" > </td>
-    <td align="right"  > N/A </td>
+    <td align="right"  > EMMC </td>
     <td align="right"  > P8_05 </td>
     <td align="left"   > P8_06 </td>
-    <td align="left"   > N/A </td>
+    <td align="left"   > EMMC </td>
   </tr>
   <tr>
     <td align="right"  > SYS_5V </td>
@@ -718,7 +828,7 @@ for robotic research capabilities.
     <td align="right"  > PWM_2A </td>
     <td align="right"  > P8_19 </td>
     <td align="left"   > P8_20 </td>
-    <td align="left"   > PRU1_r30_13 </td>
+    <td align="left"   > EMMC </td>
   </tr>
   <tr>
     <td align="right"  > UART2_TX </td>
@@ -726,10 +836,10 @@ for robotic research capabilities.
     <td align="left"   > P9_22 </td>
     <td align="left"   > UART2_RX </td>
     <td align="center" > </td>
-    <td align="right"  > PRU1_r30_12 </td>
+    <td align="right"  > EMMC </td>
     <td align="right"  > P8_21 </td>
     <td align="left"   > P8_22 </td>
-    <td align="left"   > N/A </td>
+    <td align="left"   > EMMC </td>
   </tr>
   <tr>
     <td align="right"  > N/A </td>
@@ -737,10 +847,10 @@ for robotic research capabilities.
     <td align="left"   > P9_24 </td>
     <td align="left"   > UART1_TX </td>
     <td align="center" > </td>
-    <td align="right"  > N/A </td>
+    <td align="right"  > EMMC </td>
     <td align="right"  > P8_23 </td>
     <td align="left"   > P8_24 </td>
-    <td align="left"   > N/A </td>
+    <td align="left"   > EMMC </td>
   </tr>
   <tr>
     <td align="right"  > PRU0_r31_07 </td>
@@ -748,7 +858,7 @@ for robotic research capabilities.
     <td align="left"   > P9_26 </td>
     <td align="left"   > UART1_RX </td>
     <td align="center" > </td>
-    <td align="right"  > N/A </td>
+    <td align="right"  > EMMC </td>
     <td align="right"  > P8_25 </td>
     <td align="left"   > P8_26 </td>
     <td align="left"   > N/A </td>
