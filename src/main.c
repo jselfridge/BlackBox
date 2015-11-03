@@ -25,12 +25,12 @@ int main ( void )  {
 
   // Initialize subsystems
   sys_init();
-//  timer_init();  // Pass system process into function
+  timer_init();
 //  pru_init();
 //  imu_init(&imu1);
   //imu_init(&imu2);
 //  ctrl_init();
-//  timer_begin();
+  timer_begin();
 
   // Switch power to buses (relocate this code???)
   //ushort IO_SWITCH = 60;

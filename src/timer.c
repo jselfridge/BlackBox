@@ -27,7 +27,7 @@ void timer_init ( void )  {
   sev.sigev_notify = SIGEV_SIGNAL;
   sev.sigev_signo = SIGRTMIN;
   sev.sigev_value.sival_ptr = &timerid;
-  ret = timer_create( CLOCK_REALTIME, &sev, &timerid );
+  ret = timer_create( CLOCK_MONOTONIC, &sev, &timerid );
   sys_err( ret == -1, "Error (timer_init): Could not create timer." );
   if(DEBUG)  printf("complete \n");
 

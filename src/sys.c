@@ -57,18 +57,16 @@ void sys_init ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_loop ( void )  {
 
-  /*
-  ushort i;
+  //ushort i;
   timer_start();
-  for ( i=0; i<6; i++ )  sys.input[i] = pru_read_pulse(i);
-  imu_sample(&imu1);
-  ctrl_law();
+  //for ( i=0; i<6; i++ )  sys.input[i] = pru_read_pulse(i);
+  //imu_sample(&imu1);
+  //ctrl_law();
   //for ( i=0; i<4; i++ )  pru_send_pulse( i, 1000 );
-  for ( i=0; i<4; i++ )  pru_send_pulse( i, sys.output[i] );
+  //for ( i=0; i<4; i++ )  pru_send_pulse( i, sys.output[i] );
   timer_finish();
-  log_write();
+  //log_write();
   if (DEBUG)  sys_debug();
-  */
 
   return;
 }
@@ -80,18 +78,17 @@ void sys_loop ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_debug (  )  {
 
-  /*
   // Loop counter
-  ushort i;
+  //ushort i;
 
   // Time values
   printf("\r");  fflush(stdout);
   printf("%6.3f  ", t.runtime );  fflush(stdout);
-  //printf("%09ld  ", t.start_nano );  fflush(stdout);
-  //printf("%09ld  ", t.dur );  fflush(stdout);
-  //printf("%4.2f  ", t.percent );  fflush(stdout);
-  //if (t.percent<1.0) {  printf("_    ");  fflush(stdout);  }
-  //else               {  printf("X    ");  fflush(stdout);  }
+  printf("%09ld  ", t.start_nano );  fflush(stdout);
+  printf("%09ld  ", t.dur );  fflush(stdout);
+  printf("%4.2f  ", t.percent );  fflush(stdout);
+  if (t.percent<1.0) {  printf("_    ");  fflush(stdout);  }
+  else               {  printf("X    ");  fflush(stdout);  }
 
   // Input/Output values
   //for ( i=0; i<6; i++ )  printf("%06.1f ", sys.input[i]  );  printf("   ");
@@ -142,8 +139,8 @@ void sys_debug (  )  {
   // Data fusion values - IMU1
   //for ( i=0; i<4; i++ )  printf("%6.3f ", imu1.Quat[i]              );  printf("   ");
   //for ( i=0; i<4; i++ )  printf("%6.3f ", imu1.dQuat[i]             );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.Eul[i]  *(180.0f/PI) );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.dEul[i] *(180.0f/PI) );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.Eul[i]  *(180.0f/PI) );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.dEul[i] *(180.0f/PI) );  printf("   ");
 
   // Data fusion values - IMU2
   //for ( i=0; i<4; i++ )  printf("%6.3f ", imu2.Quat[i]              );  printf("   ");
@@ -152,16 +149,15 @@ void sys_debug (  )  {
   //for ( i=0; i<3; i++ )  printf("%6.1f ", imu2.dEul[i] *(180.0f/PI) );  printf("   ");
 
   // Control values
-  printf( "%6.3f      ", ctrl.heading*(180.0/PI) );
-  for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[X][i]*(180.0f/PI) );  printf("   ");
-  for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[Y][i]*(180.0f/PI) );  printf("   ");
-  for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[Z][i]*(180.0f/PI) );  printf("   ");
-  for ( i=0; i<3; i++ )  printf( "%07.2f ", ctrl.input[i] *(180.0f/PI) );  printf("   ");
+  //printf( "%6.3f      ", ctrl.heading*(180.0/PI) );
+  //for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[X][i]*(180.0f/PI) );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[Y][i]*(180.0f/PI) );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[Z][i]*(180.0f/PI) );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf( "%07.2f ", ctrl.input[i] *(180.0f/PI) );  printf("   ");
 
   // Finish print loop
   printf("    ");
   fflush(stdout);
-  */
 
   return;
 }
@@ -173,8 +169,8 @@ void sys_debug (  )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_exit (  )  {
   if(DEBUG)  printf("\n\nExiting program \n");
-  //timer_exit();
-  //usleep(200000);
+  timer_exit();
+  usleep(200000);
   //imu_exit();
   //pru_exit();
   led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);

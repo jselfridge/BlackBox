@@ -16,21 +16,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
-#include <unistd.h>
-/*
 #include <time.h>
-*/
+#include <unistd.h>
+
 
 // Custom includes
 #include <gpio.h>
 #include <sys.h>
 #include <led.h>
+#include <timer.h>
 /*
 #include <ctrl.h>
 #include <imu.h>
 #include <log.h>
 #include <pru.h>
-#include <timer.h>
 */
 
 // PRU includes
