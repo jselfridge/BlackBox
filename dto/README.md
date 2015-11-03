@@ -453,7 +453,7 @@ for robotic research capabilities.
 
 <table>
   <tr>
-    <td colspan="8" align="center"> <b> TIMERS [4 CH] </b> </td>
+    <td colspan="8" align="center"> <b> TIMERS [4 DEVICES] </b> </td>
   </tr>
   <tr>
     <th align="center"> Header      </th>
@@ -834,29 +834,29 @@ for robotic research capabilities.
     <td align="right"  > UART4_RX </td>
     <td align="right"  > P9_11 </td>
     <td align="left"   > P9_12 </td>
-    <td align="left"   > N/A </td>
+    <td align="left"   > GPIO </td>
     <td align="center" > </td>
-    <td align="right"  > N/A </td>
+    <td align="right"  > GPIO </td>
     <td align="right"  > P8_11 </td>
     <td align="left"   > P8_12 </td>
-    <td align="left"   > N/A </td>
+    <td align="left"   > GPIO </td>
   </tr>
   <tr>
     <td align="right"  > UART4_TX </td>
     <td align="right"  > P9_13 </td>
     <td align="left"   > P9_14 </td>
-    <td align="left"   > PWM_1A </td>
+    <td align="left"   > GPIO </td>
     <td align="center" > </td>
     <td align="right"  > PWM_2B </td>
     <td align="right"  > P8_13 </td>
     <td align="left"   > P8_14 </td>
-    <td align="left"   > N/A </td>
+    <td align="left"   > GPIO </td>
   </tr>
   <tr>
-    <td align="right"  > N/A </td>
+    <td align="right"  > GPIO </td>
     <td align="right"  > P9_15 </td>
     <td align="left"   > P9_16 </td>
-    <td align="left"   > PWM_1B </td>
+    <td align="left"   > GPIO </td>
     <td align="center" > </td>
     <td align="right"  > PRU0_r31_15 </td>
     <td align="right"  > P8_15 </td>
@@ -864,15 +864,15 @@ for robotic research capabilities.
     <td align="left"   > PRU0_r31_14 </td>
   </tr>
   <tr>
-    <td align="right"  > 12C1_SCL </td>
+    <td align="right"  > I2C1_SCL </td>
     <td align="right"  > P9_17 </td>
     <td align="left"   > P9_18 </td>
     <td align="left"   > I2C1_SDA </td>
     <td align="center" > </td>
-    <td align="right"  > N/A </td>
+    <td align="right"  > GPIO </td>
     <td align="right"  > P8_17 </td>
     <td align="left"   > P8_18 </td>
-    <td align="left"   > N/A </td>
+    <td align="left"   > GPIO </td>
   </tr>
   <tr>
     <td align="right"  > I2C2_SCL </td>
@@ -916,7 +916,7 @@ for robotic research capabilities.
     <td align="right"  > EMMC </td>
     <td align="right"  > P8_25 </td>
     <td align="left"   > P8_26 </td>
-    <td align="left"   > N/A </td>
+    <td align="left"   > GPIO </td>
   </tr>
   <tr>
     <td align="right"  > PRU0_r31_05 </td>
@@ -935,10 +935,10 @@ for robotic research capabilities.
     <td align="left"   > P9_30 </td>
     <td align="left"   > PRU0_r31_02 </td>
     <td align="center" > </td>
-    <td align="right"  > N/A </td>
+    <td align="right"  > GPIO </td>
     <td align="right"  > P8_29 </td>
     <td align="left"   > P8_30 </td>
-    <td align="left"   > N/A </td>
+    <td align="left"   > GPIO </td>
   </tr>
   <tr>
     <td align="right"  > PRU0_r31_00 </td>
@@ -946,10 +946,10 @@ for robotic research capabilities.
     <td align="left"   > P9_32 </td>
     <td align="left"   > VADC </td>
     <td align="center" > </td>
-    <td align="right"  > N/A </td>
+    <td align="right"  > GPIO </td>
     <td align="right"  > P8_31 </td>
     <td align="left"   > P8_32 </td>
-    <td align="left"   > N/A </td>
+    <td align="left"   > GPIO </td>
   </tr>
   <tr>
     <td align="right"  > AIN4 </td>
@@ -957,7 +957,7 @@ for robotic research capabilities.
     <td align="left"   > P9_34 </td>
     <td align="left"   > AGND </td>
     <td align="center" > </td>
-    <td align="right"  > N/A </td>
+    <td align="right"  > GPIO </td>
     <td align="right"  > P8_33 </td>
     <td align="left"   > P8_34 </td>
     <td align="left"   > PWM_1B </td>
@@ -968,7 +968,7 @@ for robotic research capabilities.
     <td align="left"   > P9_36 </td>
     <td align="left"   > AIN5 </td>
     <td align="center" > </td>
-    <td align="right"  > N/A </td>
+    <td align="right"  > GPIO </td>
     <td align="right"  > P8_35 </td>
     <td align="left"   > P8_36 </td>
     <td align="left"   > PWM_1A </td>
