@@ -9,6 +9,7 @@
 
 // Standard includes
 #include <fcntl.h>
+#include <malloc.h>
 #include <sched.h>
 #include <signal.h>
 #include <stdbool.h>
@@ -21,32 +22,30 @@
 
 
 // Custom includes
-#include <gpio.h>
+//#include <ctrl.h>
+//#include <gpio.h>
+//#include <imu.h>
 #include <led.h>
-#include <log.h>
+//#include <log.h>
+//#include <pru.h>
 #include <sys.h>
-#include <timer.h>
-/*
-#include <ctrl.h>
-#include <imu.h>
-#include <pru.h>
-*/
+#include <thread.h>
+//#include <timer.h>
+
 
 // PRU includes
-/*
-#include <prussdrv.h>
-#include <pruss_intc_mapping.h>
-*/
+//#include <prussdrv.h>
+//#include <pruss_intc_mapping.h>
+
 
 // MPU includes
-/*
-#include <inv_mpu.h>
-#include <inv_mpu_dmp_motion_driver.h>
-#include <inv_glue.h>
-*/
+//#include <inv_mpu.h>
+//#include <inv_mpu_dmp_motion_driver.h>
+//#include <inv_glue.h>
 
-// Global variables
-uint ret;
+
+// TEMP global variables and defines
+//uint ret;
 
 
 #endif

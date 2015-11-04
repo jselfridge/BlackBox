@@ -11,11 +11,15 @@
 // Custom definitions
 #define LED_PATH   "/sys/class/leds/beaglebone:green:usr"
 #define MAX_BUF     64
-#define LED_MOT     0
-#define LED_LOG     1
-#define LED_MPU     2
-#define LED_PRU     3
 
+
+// Enumerations
+enum LED {
+  LED_MOT = 0,
+  LED_LOG = 1,
+  LED_MPU = 2,
+  LED_PRU = 3
+};
 
 // LED functions
 int   led_rmtrig     ( unsigned int index );
