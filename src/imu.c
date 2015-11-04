@@ -22,7 +22,7 @@ void imu_init ( imu_struct* imu )  {
   imu_param(imu);
   //imu_setcal(imu);
   //imu_conv(imu);
-  //imu_setic(imu);
+  imu_setic(imu);
 
   // Indicate init completed
   led_on(LED_MPU);
@@ -225,7 +225,7 @@ void imu_conv ( imu_struct* imu )  {
   return;
 }
 */
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_setic
 //  Sets the initial conditions for the MPU sensor.
@@ -233,24 +233,36 @@ void imu_conv ( imu_struct* imu )  {
 void imu_setic ( imu_struct* imu )  {
   if(DEBUG)  printf("  Setting IMU initial conditions \n");
 
-  unsigned short i=1;
-  imu->fx = 0.5;  imu->fz = 0.866;
-  for ( i=0; i<4; i++ ) {
-    imu->dQuat[i] = 0;
-    if (i<3) {
-      imu->Eul[i]  = 0;
-      imu->dEul[i] = 0;
-      imu->bias[i] = 0;
+  // Local vsariable
+  ushort i, j;
+
+  //imu->fx = 0.5;  imu->fz = 0.866;
+  //for ( i=0; i<4; i++ ) {
+    //imu->dQuat[i] = 0;
+    //if (i<3) {
+      //imu->Eul[i]  = 0;
+      //imu->dEul[i] = 0;
+      //imu->bias[i] = 0;
+    //}
+  //}
+  //imu->Quat[0] = 1;
+  //imu->Eul[Z] = ctrl.heading;
+
+  //imu->Quat[0] = cos(ctrl.heading/2);
+  //imu->Quat[1] = 0;
+  //imu->Quat[2] = 0;
+  //imu->Quat[3] = sin(ctrl.heading/2);
+
+  // Clear moving average history
+  for ( i=0; i<3; i++ ) {
+    for ( j=0; j<12; j++ ) {
+      imu->histGyro[i][j] = 0;
+      imu->histAcc[i][j]  = 0;
+      imu->histMag[i][j]  = 0;
     }
   }
-  imu->Quat[0] = 1;
-  imu->Eul[Z] = ctrl.heading;
 
-  imu->Quat[0] = cos(ctrl.heading/2);
-  imu->Quat[1] = 0;
-  imu->Quat[2] = 0;
-  imu->Quat[3] = sin(ctrl.heading/2);
-
+  // Assign moving average weighting
   imu->weight[0]  = 0.203125;
   imu->weight[1]  = 0.203125;
   imu->weight[2]  = 0.125000;
@@ -266,7 +278,7 @@ void imu_setic ( imu_struct* imu )  {
 
   return;
 }
-*/
+
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_avail
@@ -305,12 +317,20 @@ int imu_clear ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_gyro ( imu_struct* imu )  {
 
+  // Local variables
+  ushort i, j;
+
   // Get raw data
   sys.ret = mpu_get_gyro_reg( imu->rawGyro, NULL );
   sys_err( sys.ret!=0, "Error (imu_gyro): 'mpu_get_gyro_reg' failed." );
 
-  // Apply moving average filter
-  // TO BE COMPLETED
+  // Apply weighted moving average
+  for ( i=0; i<3; i++ ) {
+    for ( j=11; j>0; j-- )  imu->histGyro[i][j] = imu->histGyro[i][j-1];
+    imu->histGyro[i][0] = imu->rawGyro[i];
+    imu->avgGyro[i] = 0;
+    for ( j=0; j<12; j++ )  imu->avgGyro[i] += imu->histGyro[i][j] * imu->weight[j];
+  }
 
   return;
 }
@@ -322,12 +342,20 @@ void imu_gyro ( imu_struct* imu )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_acc ( imu_struct* imu )  {
 
+  // Local variables
+  ushort i, j;
+
   // Get raw data
   sys.ret = mpu_get_accel_reg( imu->rawAcc, NULL );
   sys_err( sys.ret!=0, "Error (imu_acc): 'mpu_get_accel_reg' failed." );
 
-  // Apply moving average filter
-  // TO BE COMPLETED
+  // Apply weighted moving average
+  for ( i=0; i<3; i++ ) {
+    for ( j=11; j>0; j-- )  imu->histAcc[i][j] = imu->histAcc[i][j-1];
+    imu->histAcc[i][0] = imu->rawAcc[i];
+    imu->avgAcc[i] = 0;
+    for ( j=0; j<12; j++ )  imu->avgAcc[i] += imu->histAcc[i][j] * imu->weight[j];
+  }
 
   return;
 }
@@ -339,12 +367,20 @@ void imu_acc ( imu_struct* imu )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_mag ( imu_struct* imu )  {
 
+  // Local variables
+  ushort i, j;
+
   // Get raw data
   sys.ret = mpu_get_compass_reg( imu->rawMag, NULL );
   sys_err( sys.ret!=0, "Error (imu_raw): 'mpu_get_compass_reg' failed." );
 
-  // Apply moving average filter
-  // TO BE COMPLETED
+  // Apply weighted moving average
+  for ( i=0; i<3; i++ ) {
+    for ( j=11; j>0; j-- )  imu->histMag[i][j] = imu->histMag[i][j-1];
+    imu->histMag[i][0] = imu->rawMag[i];
+    imu->avgMag[i] = 0;
+    for ( j=0; j<12; j++ )  imu->avgMag[i] += imu->histMag[i][j] * imu->weight[j];
+  }
 
   return;
 }

@@ -1,6 +1,7 @@
 imu.c:13:6:imu_init	24	static
 imu.c:38:6:imu_exit	8	static
 imu.c:50:6:imu_param	16	static
-imu.c:306:6:imu_gyro	16	static
-imu.c:323:6:imu_acc	16	static
-imu.c:340:6:imu_mag	16	static
+imu.c:233:6:imu_setic	24	static
+imu.c:318:6:imu_gyro	32	static
+imu.c:343:6:imu_acc	32	static
+imu.c:368:6:imu_mag	32	static

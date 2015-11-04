@@ -24,7 +24,7 @@ int main ( void )  {
 
   // Initialize subsystems
   sys_init();
-  log_init();  //--- DEBUG ---//
+  log_init();   //--- DEBUG ---//
   imu_init(&imu1);
   thread_init();
 

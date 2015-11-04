@@ -63,19 +63,28 @@ void log_init ( void )  {
   sprintf( file, "%sgyro.txt", datalog.path );
   datalog.gyro = fopen( file, "w" );
   sys_err( datalog.gyro == NULL, "Error (log_init): Cannot open 'gyro' file. \n" );
-  fprintf( datalog.gyro, " Gtime,       Gdur,    Gperc, G,    Grx1,   Gry1,   Grz1,       ");
+  fprintf( datalog.gyro, 
+    " Gtime,       Gdur,    Gperc, G,    \
+    Grx1,   Gry1,   Grz1,       \
+    Gax1,   Gay1,   Gaz1        ");
 
   // Create accelerometer datalog file
   sprintf( file, "%sacc.txt", datalog.path );
   datalog.acc = fopen( file, "w" );
   sys_err( datalog.acc == NULL, "Error (log_init): Cannot open 'acc' file. \n" );
-  fprintf( datalog.acc, " Atime,       Adur,    Aperc, A,    Arx1,   Ary1,   Arz1,       ");
+  fprintf( datalog.acc, 
+    " Atime,       Adur,    Aperc, A,    \
+    Arx1,   Ary1,   Arz1,       \
+    Aax1,   Aay1,   Aaz1,       ");
 
   // Create magnetometer datalog file
   sprintf( file, "%smag.txt", datalog.path );
   datalog.mag = fopen( file, "w" );
   sys_err( datalog.mag == NULL, "Error (log_init): Cannot open 'mag' file. \n" );
-  fprintf( datalog.mag, " Mtime,       Mdur,    Mperc, M,    Mrx1, Mry1, Mrz1,     ");
+  fprintf( datalog.mag, 
+    " Mtime,       Mdur,    Mperc, M,    \
+    Mrx1, Mry1, Mrz1,     \
+    Max1, May1, Maz1,     ");
 
   // Determine start second
   struct timespec timeval;
@@ -188,8 +197,8 @@ void log_record ( enum log_index index )  {
     timestamp = (float)( thr_gyro.start_sec + ( thr_gyro.start_usec / 1000000.0f ) - datalog.offset );
     fprintf( datalog.gyro, "\n %011.6f, %06ld, %6.3f, ", timestamp, thr_gyro.dur, thr_gyro.perc );
     if (thr_gyro.perc<1.0)  fprintf( datalog.gyro, "_,    ");  else  fprintf( datalog.gyro, "X,    ");
-    for ( i=0; i<3; i++ )  fprintf( datalog.gyro, "%06d, ", imu1.rawGyro[i] );
-    fprintf( datalog.gyro, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.gyro, "%06d, ",   imu1.rawGyro[i] );   fprintf( datalog.gyro, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.gyro, "%09.2f, ", imu1.avgGyro[i] );   fprintf( datalog.gyro, "   " );
     return;
 
   // Record 'accelerometer' datalog
@@ -197,8 +206,8 @@ void log_record ( enum log_index index )  {
     timestamp = (float)( thr_acc.start_sec + ( thr_acc.start_usec / 1000000.0f ) - datalog.offset );
     fprintf( datalog.acc, "\n %011.6f, %06ld, %6.3f, ", timestamp, thr_acc.dur, thr_acc.perc );
     if (thr_acc.perc<1.0)  fprintf( datalog.acc, "_,    ");  else  fprintf( datalog.acc, "X,    ");
-    for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%06d, ", imu1.rawAcc[i] );
-    fprintf( datalog.acc, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%06d, ",   imu1.rawAcc[i] );  fprintf( datalog.acc, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%09.2f, ", imu1.avgAcc[i] );  fprintf( datalog.acc, "   " );
     return;
 
   // Record 'magnetometer' datalog
@@ -206,8 +215,8 @@ void log_record ( enum log_index index )  {
     timestamp = (float)( thr_mag.start_sec + ( thr_mag.start_usec / 1000000.0f ) - datalog.offset );
     fprintf( datalog.mag, "\n %011.6f, %06ld, %6.3f, ", timestamp, thr_mag.dur, thr_mag.perc );
     if (thr_mag.perc<1.0)  fprintf( datalog.mag, "_,    ");  else  fprintf( datalog.mag, "X,    ");
-    for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%04d, ", imu1.rawMag[i] );
-    fprintf( datalog.mag, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%04d, ",   imu1.rawMag[i] );  fprintf( datalog.mag, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%07.2f, ", imu1.avgMag[i] );  fprintf( datalog.mag, "   " );
     return;
 
   default :
@@ -220,11 +229,6 @@ void log_record ( enum log_index index )  {
   //for ( i=0; i<6; i++ )  fprintf( datalog.file, "%06.1f, ", sys.input[i]  );     fprintf( datalog.file, "   " );
   //for ( i=0; i<4; i++ )  fprintf( datalog.file, "%06.1f, ", sys.output[i] );     fprintf( datalog.file, "   " );
  
-  // Moving average data (IMU1)
-  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%07.2f, ", imu1.avgMag[i]  );   fprintf( datalog.file, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%09.2f, ", imu1.avgAcc[i]  );   fprintf( datalog.file, "   " );
-  //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%09.2f, ", imu1.avgGyro[i] );   fprintf( datalog.file, "   " );
-
   // Normalized sensor data (IMU1)
   //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ",  imu1.normMag[i]  );  fprintf( datalog.file, "   " );
   //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%7.4f, ",  imu1.normAcc[i]  );  fprintf( datalog.file, "   " );

@@ -33,13 +33,12 @@ typedef struct {
   short   rawGyro   [3];
   short   rawAcc    [3];
   short   rawMag    [3];
-  //long    rawQuat   [4];
-  //short   histMag   [3][12];
-  //short   histAcc   [3][12];
-  //short   histGyro  [3][12];
-  //double  avgMag    [3];
-  //double  avgAcc    [3];
-  //double  avgGyro   [3];
+  short   histGyro  [3][12];
+  short   histAcc   [3][12];
+  short   histMag   [3][12];
+  double  avgGyro   [3];
+  double  avgAcc    [3];
+  double  avgMag    [3];
   //double  normMag   [3];
   //double  normAcc   [3];
   //double  normGyro  [3];
@@ -51,7 +50,7 @@ typedef struct {
   //double  bias      [3];
   //double  fx;
   //double  fz;
-  //double  weight    [12];
+  double  weight    [12];
   //unsigned long magTime; 
   //unsigned long dmpTime;
   //signed char rot [9];  // Add this later
@@ -66,7 +65,7 @@ void    imu_exit     ( void );
 void    imu_param    ( imu_struct* imu );
 //void    imu_setcal   ( imu_struct* imu );
 //void    imu_conv     ( imu_struct* imu );
-//void    imu_setic    ( imu_struct* imu );
+void    imu_setic    ( imu_struct* imu );
 //int     imu_avail    ( void );
 void    imu_gyro      ( imu_struct* imu );
 void    imu_acc       ( imu_struct* imu );
