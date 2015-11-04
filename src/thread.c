@@ -20,17 +20,17 @@ void thread_init ( void )  {
   // Gyroscope
   thr_gyro.priority  =     99;
   thr_gyro.pin       =     60;
-  thr_gyro.period    =   3333;
+  thr_gyro.period    =   4000;
 
   // Accelerometer
   thr_acc.priority   =     99;
   thr_acc.pin        =     50;
-  thr_acc.period     =   3333;
+  thr_acc.period     =   4000;
 
   // Magnetometer
-  //thr_mag.priority   =     99;
-  //thr_mag.pin        =     48;
-  //thr_mag.period     =  10000;
+  thr_mag.priority   =     98;
+  thr_mag.pin        =     48;
+  thr_mag.period     =  10000;
 
   // Stabilization
   //thr_stab.priority  =     XX;
@@ -77,11 +77,11 @@ void thread_init ( void )  {
   sys_err( sys.ret, "Error (thread_init): Failed to create 'acc' thread." );
 
   // Initialize 'magnetometer' thread
-  //param.sched_priority = thr_mag.priority;
-  //sys.ret = pthread_attr_setschedparam( &attr, &param );
-  //sys_err( sys.ret, "Error (thread_init): Failed to set 'mag' priority." );
-  //sys.ret = pthread_create ( &thr_mag.id, &attr, thread_mag, (void *)NULL );
-  //sys_err( sys.ret, "Error (thread_init): Failed to create 'mag' thread." );
+  param.sched_priority = thr_mag.priority;
+  sys.ret = pthread_attr_setschedparam( &attr, &param );
+  sys_err( sys.ret, "Error (thread_init): Failed to set 'mag' priority." );
+  sys.ret = pthread_create ( &thr_mag.id, &attr, thread_mag, (void *)NULL );
+  sys_err( sys.ret, "Error (thread_init): Failed to create 'mag' thread." );
 
   // Initialize 'stabilization' thread
   //param.sched_priority = thr_stab.priority;
@@ -226,9 +226,9 @@ void thread_exit ( void )  {
   if(DEBUG)  printf( "  Status %ld for 'accelerometer' thread \n", (long)status );
 
   // Exit 'magnetometer' thread
-  //sys.ret = pthread_join ( thr_mag.id, &status );
-  //sys_err( sys.ret, "Error (thread_exit): Failed to exit 'mag' thread." );
-  //if(DEBUG)  printf( "  Status %ld for 'magnetometer' thread \n", (long)status );
+  sys.ret = pthread_join ( thr_mag.id, &status );
+  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'mag' thread." );
+  if(DEBUG)  printf( "  Status %ld for 'magnetometer' thread \n", (long)status );
 
   // Exit 'stabilization' thread
   //sys.ret = pthread_join ( thr_stab.id, &status );
@@ -294,7 +294,7 @@ void *thread_acc ( )  {
   return NULL;
 }
 
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_mag
 //  Run the 'magnetomter' thread.
@@ -316,7 +316,7 @@ void *thread_mag ( )  {
   pthread_exit(NULL);
   return NULL;
 }
-*/
+
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_stab

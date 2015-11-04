@@ -6,3 +6,4 @@ thread.c:188:6:thread_finish	24	static
 thread.c:214:6:thread_exit	16	static
 thread.c:256:7:thread_gyro	8	static
 thread.c:279:7:thread_acc	8	static
+thread.c:302:7:thread_mag	8	static
