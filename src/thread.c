@@ -20,17 +20,17 @@ void thread_init ( void )  {
   // Gyroscope
   thr_gyro.priority  =     99;
   thr_gyro.pin       =     60;
-  thr_gyro.period    =   4000;
+  thr_gyro.period    =  10000;
 
   // Accelerometer
   thr_acc.priority   =     99;
   thr_acc.pin        =     50;
-  thr_acc.period     =   4000;
+  thr_acc.period     =  10000;
 
   // Magnetometer
   thr_mag.priority   =     98;
   thr_mag.pin        =     48;
-  thr_mag.period     =  10000;
+  thr_mag.period     =  50000;
 
   // Stabilization
   //thr_stab.priority  =     XX;
