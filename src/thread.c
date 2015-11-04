@@ -20,7 +20,17 @@ void thread_init ( void )  {
   // Gyroscope
   thr_gyro.priority  =     99;
   thr_gyro.pin       =     60;
-  thr_gyro.period    =   1000;
+  thr_gyro.period    =   3333;
+
+  // Accelerometer
+  thr_acc.priority   =     99;
+  thr_acc.pin        =     50;
+  thr_acc.period     =   3333;
+
+  // Magnetometer
+  //thr_mag.priority   =     99;
+  //thr_mag.pin        =     48;
+  //thr_mag.period     =  10000;
 
   // Stabilization
   //thr_stab.priority  =     XX;
@@ -58,6 +68,20 @@ void thread_init ( void )  {
   sys_err( sys.ret, "Error (thread_init): Failed to set 'gyro' priority." );
   sys.ret = pthread_create ( &thr_gyro.id, &attr, thread_gyro, (void *)NULL );
   sys_err( sys.ret, "Error (thread_init): Failed to create 'gyro' thread." );
+
+  // Initialize 'accelerometer' thread
+  param.sched_priority = thr_acc.priority;
+  sys.ret = pthread_attr_setschedparam( &attr, &param );
+  sys_err( sys.ret, "Error (thread_init): Failed to set 'acc' priority." );
+  sys.ret = pthread_create ( &thr_acc.id, &attr, thread_acc, (void *)NULL );
+  sys_err( sys.ret, "Error (thread_init): Failed to create 'acc' thread." );
+
+  // Initialize 'magnetometer' thread
+  //param.sched_priority = thr_mag.priority;
+  //sys.ret = pthread_attr_setschedparam( &attr, &param );
+  //sys_err( sys.ret, "Error (thread_init): Failed to set 'mag' priority." );
+  //sys.ret = pthread_create ( &thr_mag.id, &attr, thread_mag, (void *)NULL );
+  //sys_err( sys.ret, "Error (thread_init): Failed to create 'mag' thread." );
 
   // Initialize 'stabilization' thread
   //param.sched_priority = thr_stab.priority;
@@ -196,6 +220,16 @@ void thread_exit ( void )  {
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'gyro' thread." );
   if(DEBUG)  printf( "  Status %ld for 'gyroscope' thread \n", (long)status );
 
+  // Exit 'accelerometer' thread
+  sys.ret = pthread_join ( thr_acc.id, &status );
+  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'acc' thread." );
+  if(DEBUG)  printf( "  Status %ld for 'accelerometer' thread \n", (long)status );
+
+  // Exit 'magnetometer' thread
+  //sys.ret = pthread_join ( thr_mag.id, &status );
+  //sys_err( sys.ret, "Error (thread_exit): Failed to exit 'mag' thread." );
+  //if(DEBUG)  printf( "  Status %ld for 'magnetometer' thread \n", (long)status );
+
   // Exit 'stabilization' thread
   //sys.ret = pthread_join ( thr_stab.id, &status );
   //sys_err( sys.ret, "Error (thread_exit): Failed to exit 'stab' thread." );
@@ -227,16 +261,62 @@ void *thread_gyro ( )  {
   while (sys.running) {
     thread_start(&thr_gyro);
     gpio_set_val( thr_gyro.pin, HIGH );
-    imu_raw(&imu1);
+    imu_gyro(&imu1);
     gpio_set_val( thr_gyro.pin, LOW );
     thread_finish(&thr_gyro);
-    log_write();
+    log_write(LOG_GYRO);
     thread_pause(&thr_gyro);
   }
   pthread_exit(NULL);
   return NULL;
 }
 
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  thread_acc
+//  Run the 'accelerometer' thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void *thread_acc ( )  {
+  printf("  Running 'accelerometer' thread \n");
+  gpio_export(thr_acc.pin);
+  gpio_set_dir( thr_acc.pin, OUTPUT_PIN );
+  thread_periodic (&thr_acc);
+  while (sys.running) {
+    thread_start(&thr_acc);
+    gpio_set_val( thr_acc.pin, HIGH );
+    imu_acc(&imu1);
+    gpio_set_val( thr_acc.pin, LOW );
+    thread_finish(&thr_acc);
+    log_write(LOG_ACC);
+    thread_pause(&thr_acc);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+/*
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  thread_mag
+//  Run the 'magnetomter' thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void *thread_mag ( )  {
+  printf("  Running 'magnetometer' thread \n");
+  gpio_export(thr_mag.pin);
+  gpio_set_dir( thr_mag.pin, OUTPUT_PIN );
+  thread_periodic (&thr_mag);
+  while (sys.running) {
+    thread_start(&thr_mag);
+    gpio_set_val( thr_mag.pin, HIGH );
+    imu_mag(&imu1);
+    gpio_set_val( thr_mag.pin, LOW );
+    thread_finish(&thr_mag);
+    log_write(LOG_MAG);
+    thread_pause(&thr_mag);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+*/
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_stab

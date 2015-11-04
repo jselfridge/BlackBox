@@ -10,8 +10,8 @@
 //  log_write
 //  Top level function for writing data log commands.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void log_write ( void )  {
-  if (datalog.enabled) {  if (!datalog.open)  log_init();  log_record();  }
+void log_write ( enum log_index index )  {
+  if (datalog.enabled) {  if (!datalog.open)  log_init();  log_record(index);  }
   else                 {  if (datalog.open)   log_exit();  }
   return;
 }
@@ -69,7 +69,7 @@ void log_init ( void )  {
   sprintf( file, "%sacc.txt", datalog.path );
   datalog.acc = fopen( file, "w" );
   sys_err( datalog.acc == NULL, "Error (log_init): Cannot open 'acc' file. \n" );
-  fprintf( datalog.acc, "timeA, rAx1, rAy1, rAz, ");
+  fprintf( datalog.acc, " Atime,       Adur,    Aperc, A,    Arx1,   Ary1,   Arz1,       ");
 
   // Create magnetometer datalog file
   sprintf( file, "%smag.txt", datalog.path );
@@ -174,17 +174,47 @@ void log_init ( void )  {
 //  log_record
 //  Records the data to the log file.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void log_record ( void )  {
+void log_record ( enum log_index index )  {
 
-  // Increment counter
+  // Local variables
   ushort i;
+  float timestamp;
 
-  // Record the timestamp
-  float timestamp = (float)( thr_gyro.start_sec + ( thr_gyro.start_usec / 1000000.0f ) - datalog.offset );
-  fprintf( datalog.gyro, "\n %011.6f, %06ld, %6.3f, ", 
-    timestamp, thr_gyro.dur, thr_gyro.perc );
-  if (thr_gyro.perc<1.0)  fprintf( datalog.gyro, "_,    ");
-  else                    fprintf( datalog.gyro, "X,    ");
+  // Jump to appropriate log 
+  switch(index) {
+
+  // Record 'gyroscope' datalog
+  case LOG_GYRO :
+    timestamp = (float)( thr_gyro.start_sec + ( thr_gyro.start_usec / 1000000.0f ) - datalog.offset );
+    fprintf( datalog.gyro, "\n %011.6f, %06ld, %6.3f, ", timestamp, thr_gyro.dur, thr_gyro.perc );
+    if (thr_gyro.perc<1.0)  fprintf( datalog.gyro, "_,    ");  else  fprintf( datalog.gyro, "X,    ");
+    for ( i=0; i<3; i++ )  fprintf( datalog.gyro, "%06d, ", imu1.rawGyro[i] );
+    fprintf( datalog.gyro, "   " );
+    return;
+
+  // Record 'accelerometer' datalog
+  case LOG_ACC :
+    timestamp = (float)( thr_acc.start_sec + ( thr_acc.start_usec / 1000000.0f ) - datalog.offset );
+    fprintf( datalog.acc, "\n %011.6f, %06ld, %6.3f, ", timestamp, thr_acc.dur, thr_acc.perc );
+    if (thr_acc.perc<1.0)  fprintf( datalog.acc, "_,    ");  else  fprintf( datalog.acc, "X,    ");
+    for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%06d, ", imu1.rawAcc[i] );
+    fprintf( datalog.acc, "   " );
+    return;
+
+  // Record 'magnetometer' datalog
+  //case LOG_MAG :
+    //timestamp = (float)( thr_mag.start_sec + ( thr_mag.start_usec / 1000000.0f ) - datalog.offset );
+    //fprintf( datalog.mag, "\n %011.6f, %06ld, %6.3f, ", timestamp, thr_mag.dur, thr_mag.perc );
+    //if (thr_mag.perc<1.0)  fprintf( datalog.mag, "_,    ");  else  fprintf( datalog.mag, "X,    ");
+    //for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%06d, ", imu1.rawMag[i] );
+    //fprintf( datalog.mag, "   " );
+    //return;
+
+  default :
+    return;
+  }
+
+
 
   // Inputs and outputs
   //for ( i=0; i<6; i++ )  fprintf( datalog.file, "%06.1f, ", sys.input[i]  );     fprintf( datalog.file, "   " );
@@ -193,7 +223,6 @@ void log_record ( void )  {
   // Raw sensors data (IMU1)
   //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%04d, ",   imu1.rawMag[i]  );   fprintf( datalog.file, "   " );
   //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%06d, ",   imu1.rawAcc[i]  );   fprintf( datalog.file, "   " );
-  for ( i=0; i<3; i++ )  fprintf( datalog.gyro, "%06d, ",   imu1.rawGyro[i] );   fprintf( datalog.gyro, "   " );
   //for ( i=0; i<4; i++ )  fprintf( datalog.file, "%012ld, ", imu1.rawQuat[i] );   fprintf( datalog.file, "   " );
 
   // Moving average data (IMU1)
@@ -257,7 +286,6 @@ void log_record ( void )  {
   //for ( i=0; i<3; i++ )  fprintf( datalog.file, "%6.3f, ",    ctrl.err[Z][i] );  fprintf( datalog.file, "   " );
   //for ( i=0; i<4; i++ )  fprintf( datalog.file, "%07.2f, ",   ctrl.input[i]  );  fprintf( datalog.file, "   " );
 
-  return;
 }
 
 
@@ -270,8 +298,8 @@ void log_exit ( void )  {
 
   // Close files 
   fclose(datalog.gyro);
-  //fclose(datalog.acc);
-  //fclose(datalog.mag);
+  fclose(datalog.acc);
+  fclose(datalog.mag);
 
   // Free resources
   //free(datalog.note);

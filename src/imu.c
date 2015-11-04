@@ -299,7 +299,57 @@ int imu_clear ( void )  {
 }
 */
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  imu_gyro
+//  Processes raw gyroscope data.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void imu_gyro ( imu_struct* imu )  {
 
+  // Get raw data
+  sys.ret = mpu_get_gyro_reg( imu->rawGyro, NULL );
+  sys_err( sys.ret!=0, "Error (imu_gyro): 'mpu_get_gyro_reg' failed." );
+
+  // Apply moving average filter
+  // TO BE COMPLETED
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  imu_acc
+//  Processes raw accelerometer data.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void imu_acc ( imu_struct* imu )  {
+
+  // Get raw data
+  sys.ret = mpu_get_accel_reg( imu->rawAcc, NULL );
+  sys_err( sys.ret!=0, "Error (imu_acc): 'mpu_get_accel_reg' failed." );
+
+  // Apply moving average filter
+  // TO BE COMPLETED
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  imu_mag
+//  Processes raw magnetometer data.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void imu_mag ( imu_struct* imu )  {
+
+  // Get raw data
+  sys.ret = mpu_get_compass_reg( imu->rawMag, NULL );
+  sys_err( sys.ret!=0, "Error (imu_raw): 'mpu_get_compass_reg' failed." );
+
+  // Apply moving average filter
+  // TO BE COMPLETED
+
+  return;
+}
+
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_raw
 //  Obtains raw data from MPU sensor and maps to body frame.
@@ -338,7 +388,7 @@ void imu_raw ( imu_struct* imu )  {
 
   return;
 }
-
+*/
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_avg

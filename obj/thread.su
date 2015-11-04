@@ -1,7 +1,8 @@
 thread.c:13:6:thread_init	48	static
-thread.c:91:6:thread_periodic	48	static
-thread.c:126:6:thread_pause	24	static
-thread.c:146:6:thread_start	24	static
-thread.c:164:6:thread_finish	24	static
-thread.c:190:6:thread_exit	16	static
-thread.c:222:7:thread_gyro	8	static
+thread.c:115:6:thread_periodic	48	static
+thread.c:150:6:thread_pause	24	static
+thread.c:170:6:thread_start	24	static
+thread.c:188:6:thread_finish	24	static
+thread.c:214:6:thread_exit	16	static
+thread.c:256:7:thread_gyro	8	static
+thread.c:279:7:thread_acc	8	static
