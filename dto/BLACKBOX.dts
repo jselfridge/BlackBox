@@ -1,11 +1,14 @@
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  BLACKBOX.dts
+//  Gradient Consulting, LLC
 //  Justin M Selfridge
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
 /dts-v1/;
 /plugin/;
+
 
 / {
 
@@ -14,11 +17,13 @@
     compatible   = "ti,beaglebone", "ti,beaglebone-black";
     part-number  = "BLACKBOX";
     version      = "00A0";
+    //board-name   = "BLACKBOX";
+    //manufacturer = "GRADIENT";
 
 
     //--  Allocate hardware and pins  --//
     exclusive-use = 
-
+/*
         //--  INPUTS  --//
         "P8.15",
         "P8.16",
@@ -30,7 +35,9 @@
         "P9.31",
         "P9.41",
         "P9.42",
+*/
 
+/*
         //--  OUTPUTS  --//
 	"P8.27",
 	"P8.28",
@@ -42,16 +49,14 @@
         "P8.44",
         "P8.45",
         "P8.46",
-
-	//--  GPIO  --//
-	"P9.12",
+*/
 
         //--  I2C  --//
         "P9.17",
         "P9.18",
         "P9.19",
         "P9.20",
-/*
+
         //--  SERIAL  --//
         "P8.37",
         "P8.38",
@@ -61,17 +66,23 @@
         "P9.22",
         "P9.24",
         "P9.26",
+
+
+/*
+	//--  GPIO  --//
+	"P9.12",
 */
+
         //--  HARDWARE  --//
-        //"uart1",
-        //"uart2",
-        //"uart4",
-        //"uart5",
+        "uart1",
+        "uart2",
+        "uart4",
+        "uart5",
         "i2c1",
-        "i2c2",
-        "pru0",
-        "pru1",
-        "pruss";
+        "i2c2";  //,
+//        "pru0",
+//        "pru1",
+//        "pruss";
 
 
     //--  Primary fragment  --//
@@ -79,6 +90,7 @@
         target = <&am33xx_pinmux>;
         __overlay__ {
 
+/*
             //--  PRU pins  --//
             pru_pins: pinmux_pru_pins {
                 pinctrl-single,pins = <
@@ -111,21 +123,13 @@
 
                 >;
             };
-
-
-            //--  GPIO pins  --//
-            gpio_pins: pinmux_gpio_pins {
-                pinctrl-single,pins = <
-                    0x078  0x07      //  P9.12 | GPIO1_28 | OUTPUT | PULL DOWN | MODE 7 | I/O bus  //
-                >;
-            };
-
+*/
 
             //--  I2C1 pins  --//
             i2c1_pins: pinmux_i2c1_pins {
                 pinctrl-single,pins = <
-                    0x15C  0x72      //  P9.17 | I2C1_SCL | MODE 2  //
-                    0x158  0x72      //  P9.18 | I2C1_SDA | MODE 2  //
+                    0x15C  0x32      //  P9.17 | I2C1_SCL | MODE 2  //
+                    0x158  0x32      //  P9.18 | I2C1_SDA | MODE 2  //
                 >;
             };
 
@@ -133,12 +137,12 @@
             //--  I2C2 pins  --//
             i2c2_pins: pinmux_i2c2_pins {
                 pinctrl-single,pins = <
-                    0x17C  0x73      //  P9.19 | I2C2_SCL | MODE 3  //
-                    0x178  0x73      //  P9.20 | I2C2_SDA | MODE 3  //
+                    0x17C  0x33      //  P9.19 | I2C2_SCL | MODE 3  //
+                    0x178  0x33      //  P9.20 | I2C2_SDA | MODE 3  //
                 >;
             };
 
-/*
+
             //--  UART1 pins  --//
             uart1_pins: pinmux_uart1_pins {
                 pinctrl-single,pins = <
@@ -146,8 +150,8 @@
                     0x180  0x20      //  P9.26 | UART1_RX | MODE 0  //
                 >;
             };
-*/
-/*
+
+
             //--  UART2 pins  --//
             uart2_pins: pinmux_uart2_pins {
                 pinctrl-single,pins = <
@@ -155,8 +159,8 @@
                     0x150  0x21      //  P9.22 | UART2_RX | MODE 1  //
                 >;
             };
-*/
-/*
+
+
             //--  UART4 pins  --//
             uart4_pins: pinmux_uart4_pins {
                 pinctrl-single,pins = <
@@ -164,8 +168,8 @@
                     0x070  0x26      //  P9.11 | UART4_RX | MODE 6  //
                 >;
             };
-*/
-/*
+
+
             //--  UART5 pins  --//
             uart5_pins: pinmux_uart5_pins {
                 pinctrl-single,pins = <
@@ -173,12 +177,21 @@
                     0x0C4  0x24      //  P8.38 | UART5_RX | MODE 4  //
                 >;
             };
+
+
+/*
+            //--  GPIO pins  --//
+            gpio_pins: pinmux_gpio_pins {
+                pinctrl-single,pins = <
+                    0x078  0x07      //  P9.12 | GPIO1_28 | OUTPUT | PULL DOWN | MODE 7 | I/O bus  //
+                >;
+            };
 */
 
         };
     };
 
-
+/*
     //--  PRU  --//
     fragment@1 {
         target = <&pruss>;
@@ -188,24 +201,10 @@
             pinctrl-0 = <&pru_pins>;
         };
     };
-
-
-    //--  GENERAL I/O  --//
-    fragment@2 {
-        target = <&ocp>;
-        __overlay__ {
-	    test_helper: helper {
-	        compatible = "bone-pinmux-helper";
-                status = "okay";
-                pinctrl-names = "default";
-                pinctrl-0 = <&gpio_pins>;
-            };
-        };
-    };
-
+*/
 
     //--  I2C1  --//
-    fragment@3 {
+    fragment@2 {
         target = <&i2c1>;
         __overlay__ {
             status = "okay";
@@ -216,7 +215,7 @@
 
 
     //--  I2C2  --//
-    fragment@4 {
+    fragment@3 {
         target = <&i2c2>;
         __overlay__ {
             status = "okay";
@@ -225,47 +224,66 @@
         };
     };
 
-/*
+
     //--  UART1  --//
-    fragment@2 {
-        target = <&uart2>;
+    fragment@4 {
+        target = <&uart1>;
+        //target = <&uart2>;
         __overlay__ {
             status = "okay";
             pinctrl-names = "default";
             pinctrl-0 = <&uart1_pins>;
         };
     };
-*/
-/*
+
+
     //--  UART2  --//
-    fragment@3 {
-        target = <&uart3>;
+    fragment@5 {
+        target = <&uart2>;
+        //target = <&uart3>;
         __overlay__ {
             status = "okay";
             pinctrl-names = "default";
             pinctrl-0 = <&uart2_pins>;
         };
     };
-*/
-/*
+
+
     //--  UART4  --//
-    fragment@4 {
-        target = <&uart5>;
+    fragment@6 {
+        target = <&uart4>;
+        //target = <&uart5>;
         __overlay__ {
             status = "okay";
             pinctrl-names = "default";
             pinctrl-0 = <&uart4_pins>;
         };
     };
-*/
-/*
+
+
     //--  UART5  --//
-    fragment@5 {
-        target = <&uart6>;
+    fragment@7 {
+        target = <&uart5>;
+        //target = <&uart6>;
         __overlay__ {
             status = "okay";
             pinctrl-names = "default";
             pinctrl-0 = <&uart5_pins>;
+        };
+    };
+
+
+/*
+    //--  GENERAL I/O  --//
+    fragment@2 {
+        target = <&ocp>;
+        __overlay__ {
+	    test_helper: helper {
+	        compatible = "bone-pinmux-helper";
+                status = "okay";
+                pinctrl-names = "default";
+                pinctrl-0 = <&gpio_pins>;
+            };
         };
     };
 */
