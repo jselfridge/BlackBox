@@ -566,7 +566,7 @@ for robotic research capabilities.
     <th align="center"> Offset      </th>
     <th align="center"> GPIO        </th>
     <th align="center"> Num         </th>
-    <td align="center"> Use         </td>
+    <th align="center"> Use         </th>
   </tr>
   <tr>
     <td align="center"> P8_11       </td>
