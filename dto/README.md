@@ -6,6 +6,9 @@ This overlay is for the Black Box cape which enables functionality
 for robotic research capabilities.
 
 
+<center>
+
+
 <table>
   <tr>
     <td colspan="8" align="center"> <b> PRU INPUTS (RADIO) [10 CH] {Mode 6} </b> </td>
@@ -1046,6 +1049,9 @@ for robotic research capabilities.
     <td align="left"   > PRU1_r30_01 </td>
   </tr>
 </table>
+
+
+</center>
 
 
 
