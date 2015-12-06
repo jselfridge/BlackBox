@@ -870,10 +870,10 @@ for robotic research capabilities.
     <td align="left"   > GPIO </td>
   </tr>
   <tr>
-    <td align="right"  > GPIO: I2C1-INT </td>
+    <td align="right"  > GPIO: I2C1_INT </td>
     <td align="right"  > P9_15 </td>
     <td align="left"   > P9_16 </td>
-    <td align="left"   > GPIO: I2C2-INT </td>
+    <td align="left"   > GPIO: I2C2_INT </td>
     <td align="center" > </td>
     <td align="right"  > PRU0_r31_15 </td>
     <td align="right"  > P8_15 </td>
