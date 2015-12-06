@@ -557,7 +557,7 @@ for robotic research capabilities.
 
 <table>
   <tr>
-    <td colspan="8" align="center"> <b> GENERAL I/O </b> </td>
+    <td colspan="7" align="center"> <b> GENERAL I/O </b> </td>
   </tr>
   <tr>
     <th align="center"> Header      </th>
@@ -566,6 +566,7 @@ for robotic research capabilities.
     <th align="center"> Offset      </th>
     <th align="center"> GPIO        </th>
     <th align="center"> Num         </th>
+    <td align="center"> Use         </td>
   </tr>
   <tr>
     <td align="center"> P8_11       </td>
@@ -574,6 +575,7 @@ for robotic research capabilities.
     <td align="center"> 034         </td>
     <td align="center"> gpio1[13]   </td>
     <td align="center"> 45          </td>
+    <td align="center">             </td>
   </tr>
   <tr>
     <td align="center"> P8_12       </td>
@@ -582,6 +584,7 @@ for robotic research capabilities.
     <td align="center"> 030         </td>
     <td align="center"> gpio1[12]   </td>
     <td align="center"> 44          </td>
+    <td align="center">             </td>
   </tr>
   <tr>
     <td align="center"> P8_14       </td>
@@ -590,6 +593,7 @@ for robotic research capabilities.
     <td align="center"> 028         </td>
     <td align="center"> gpio0[26]   </td>
     <td align="center"> 26          </td>
+    <td align="center">             </td>
   </tr>
   <tr>
     <td align="center"> P8_17       </td>
@@ -598,6 +602,7 @@ for robotic research capabilities.
     <td align="center"> 02C         </td>
     <td align="center"> gpio0[27]   </td>
     <td align="center"> 27          </td>
+    <td align="center">             </td>
   </tr>
   <tr>
     <td align="center"> P8_18       </td>
@@ -606,6 +611,7 @@ for robotic research capabilities.
     <td align="center"> 08C         </td>
     <td align="center"> gpio2[01]   </td>
     <td align="center"> 65          </td>
+    <td align="center">             </td>
   </tr>
   <tr>
     <td align="center"> P8_26       </td>
@@ -614,6 +620,7 @@ for robotic research capabilities.
     <td align="center"> 07C         </td>
     <td align="center"> gpio1[29]   </td>
     <td align="center"> 61          </td>
+    <td align="center">             </td>
   </tr>
   <tr>
     <td align="center"> P8_29       </td>
@@ -622,6 +629,7 @@ for robotic research capabilities.
     <td align="center"> 0E4         </td>
     <td align="center"> gpio2[23]   </td>
     <td align="center"> 87          </td>
+    <td align="center">             </td>
   </tr>
   <tr>
     <td align="center"> P8_30       </td>
@@ -630,6 +638,7 @@ for robotic research capabilities.
     <td align="center"> 0EC         </td>
     <td align="center"> gpio2[25]   </td>
     <td align="center"> 89          </td>
+    <td align="center">             </td>
   </tr>
   <tr>
     <td align="center"> P8_31       </td>
@@ -638,6 +647,7 @@ for robotic research capabilities.
     <td align="center"> 0D8         </td>
     <td align="center"> gpio0[10]   </td>
     <td align="center"> 10          </td>
+    <td align="center">             </td>
   </tr>
   <tr>
     <td align="center"> P8_32       </td>
@@ -646,6 +656,7 @@ for robotic research capabilities.
     <td align="center"> 0DC         </td>
     <td align="center"> gpio0[11]   </td>
     <td align="center"> 11          </td>
+    <td align="center">             </td>
   </tr>
   <tr>
     <td align="center"> P8_33       </td>
@@ -654,6 +665,7 @@ for robotic research capabilities.
     <td align="center"> 0D4         </td>
     <td align="center"> gpio0[09]   </td>
     <td align="center"> 09          </td>
+    <td align="center">             </td>
   </tr>
   <tr>
     <td align="center"> P8_35       </td>
@@ -662,6 +674,7 @@ for robotic research capabilities.
     <td align="center"> 0D0         </td>
     <td align="center"> gpio0[08]   </td>
     <td align="center"> 08          </td>
+    <td align="center">             </td>
   </tr>
   <tr>
     <td align="center"> P9_12       </td>
@@ -670,6 +683,7 @@ for robotic research capabilities.
     <td align="center"> 078         </td>
     <td align="center"> gpio1[28]   </td>
     <td align="center"> 60          </td>
+    <td align="center">             </td>
   </tr>
   <tr>
     <td align="center"> P9_14       </td>
@@ -678,6 +692,7 @@ for robotic research capabilities.
     <td align="center"> 048         </td>
     <td align="center"> gpio1[18]   </td>
     <td align="center"> 50          </td>
+    <td align="center">             </td>
   </tr>
   <tr>
     <td align="center"> P9_15       </td>
@@ -686,6 +701,7 @@ for robotic research capabilities.
     <td align="center"> 040         </td>
     <td align="center"> gpio1[16]   </td>
     <td align="center"> 48          </td>
+    <td align="center"> I2C1_INT    </td>
   </tr>
   <tr>
     <td align="center"> P9_16       </td>
@@ -694,13 +710,14 @@ for robotic research capabilities.
     <td align="center"> 04C         </td>
     <td align="center"> gpio1[19]   </td>
     <td align="center"> 51          </td>
+    <td align="center"> I2C2_INT    </td>
   </tr>
 </table>
 
 
 <table>
   <tr>
-    <td colspan="8" align="center"> <b> RESERVED FOR EMMC </b> </td>
+    <td colspan="4" align="center"> <b> RESERVED FOR EMMC </b> </td>
   </tr>
   <tr>
     <th align="center"> Header      </th>
@@ -834,7 +851,7 @@ for robotic research capabilities.
     <td align="right"  > UART4_RX </td>
     <td align="right"  > P9_11 </td>
     <td align="left"   > P9_12 </td>
-    <td align="left"   > GPIO - Stab </td>
+    <td align="left"   > GPIO </td>
     <td align="center" > </td>
     <td align="right"  > GPIO </td>
     <td align="right"  > P8_11 </td>
@@ -845,7 +862,7 @@ for robotic research capabilities.
     <td align="right"  > UART4_TX </td>
     <td align="right"  > P9_13 </td>
     <td align="left"   > P9_14 </td>
-    <td align="left"   > GPIO - Nav </td>
+    <td align="left"   > GPIO </td>
     <td align="center" > </td>
     <td align="right"  > PWM_2B </td>
     <td align="right"  > P8_13 </td>
@@ -853,10 +870,10 @@ for robotic research capabilities.
     <td align="left"   > GPIO </td>
   </tr>
   <tr>
-    <td align="right"  > GPIO </td>
+    <td align="right"  > GPIO: I2C1-INT </td>
     <td align="right"  > P9_15 </td>
     <td align="left"   > P9_16 </td>
-    <td align="left"   > GPIO - Telem </td>
+    <td align="left"   > GPIO: I2C2-INT </td>
     <td align="center" > </td>
     <td align="right"  > PRU0_r31_15 </td>
     <td align="right"  > P8_15 </td>
