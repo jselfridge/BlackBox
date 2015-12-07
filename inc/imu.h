@@ -13,11 +13,11 @@
 #define MEMS_HZ   1000
 #define COMP_HZ    100
 
-#define MEMS_HIST  20
+#define MEMS_HIST  5
 #define COMP_HIST  10
 
-#define MEMS_TC   (100.0f)
-#define COMP_TC   (0.0f)
+#define MEMS_LPF  (0.5f)
+#define COMP_LPF  (0.0f)
 
 #define GYRO_FSR  500
 #define ACC_FSR  4
@@ -43,6 +43,8 @@ typedef struct {
   ushort  comp_hz;
   float   mems_dt;
   float   comp_dt;
+  float   mems_lpf;
+  float   comp_lpf;
   float   mems_tc;
   float   comp_tc;
   float   mems_gain;

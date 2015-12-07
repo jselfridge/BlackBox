@@ -49,9 +49,6 @@ void imu_exit ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_param ( imu_struct* imu )  {
 
-  // Modify this later
-  //const signed char R[9] = { 1,0,0, 0,1,0, 0,0,1 };
-
   if(DEBUG) {  printf("  Assigning IMU parameters ");  fflush(stdout);  }
   linux_set_i2c_bus(imu->bus);
 
@@ -78,6 +75,9 @@ void imu_param ( imu_struct* imu )  {
   sys.ret = mpu_set_accel_fsr(ACC_FSR);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
   sys_err( sys.ret, "Error (imu_init): 'mpu_set_accel_fsr' failed." );
+
+  // Modify this later
+  //const signed char R[9] = { 1,0,0, 0,1,0, 0,0,1 };
 
   //sys.ret = mpu_configure_fifo( INV_XYZ_GYRO | INV_XYZ_ACCEL );
   //if(DEBUG) {  printf(".");  fflush(stdout);  }
@@ -240,22 +240,34 @@ void imu_setic ( imu_struct* imu )  {
   // Local vsariable
   ushort i, j;
 
-  // Timing values
-  imu->mems_hz = MEMS_HZ;  imu->mems_dt = 1.0/MEMS_HZ;
-  imu->comp_hz = COMP_HZ;  imu->comp_dt = 1.0/COMP_HZ;
+  // Assign sample rate
+  imu->mems_hz = MEMS_HZ;
+  imu->comp_hz = COMP_HZ;
 
-  // Filter parameters
-  imu->mems_tc = MEMS_TC;  imu->mems_gain = imu->mems_dt / ( imu->mems_tc + imu->mems_dt );
-  imu->comp_tc = COMP_TC;  imu->comp_gain = imu->comp_dt / ( imu->comp_tc + imu->comp_dt );
+  // Calculate time steps
+  imu->mems_dt = 1.0/MEMS_HZ;
+  imu->comp_dt = 1.0/COMP_HZ;
+
+  // Assign low pass filter values
+  imu->mems_lpf = MEMS_LPF;
+  imu->comp_lpf = COMP_LPF;
+
+  // Determine time constants
+  imu->mems_tc = 1.0/MEMS_LPF;
+  imu->comp_tc = 1.0/COMP_LPF;
+
+  // Calculate filter gain values
+  imu->mems_gain = imu->mems_dt / ( imu->mems_tc + imu->mems_dt );
+  imu->comp_gain = imu->comp_dt / ( imu->comp_tc + imu->comp_dt );
 
   // Display IMU settings
   if (DEBUG) {
     printf("    MEMS device    \
-    HZ: %4d    DT: %5.3f    TC: %5.2f    gain: %7.4f  \n", \
-    imu->mems_hz, imu->mems_dt, imu->mems_tc, imu->mems_gain );
+    HZ: %4d    DT: %5.3f    LPF: %6.2f    TC: %5.2f    gain: %7.4f  \n", \
+    imu->mems_hz, imu->mems_dt, imu->mems_lpf, imu->mems_tc, imu->mems_gain );
     printf("    COMP device    \
-    HZ: %4d    DT: %5.3f    TC: %5.2f    gain: %7.4f  \n", \
-    imu->comp_hz, imu->comp_dt, imu->comp_tc, imu->comp_gain );
+    HZ: %4d    DT: %5.3f    LPF: %6.2f    TC: %5.2f    gain: %7.4f  \n", \
+    imu->comp_hz, imu->comp_dt, imu->comp_lpf, imu->comp_tc, imu->comp_gain );
   }
 
   // Clear moving average history

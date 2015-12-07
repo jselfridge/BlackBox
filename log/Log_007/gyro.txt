@@ -1,0 +1,1 @@
+ Gtime,       Gdur,    Gperc, G,    Grx1,   Gry1,   Grz1,      Gax1,      Gay1,      Gaz1          Gcx1,    Gcy1,    Gcz1   

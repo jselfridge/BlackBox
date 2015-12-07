@@ -1,0 +1,1 @@
+ Atime,       Adur,    Aperc, A,    Arx1,   Ary1,   Arz1,      Aax1,      Aay1,      Aaz1,         Acx1,    Acy1,    Acz1,   
