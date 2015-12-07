@@ -17,6 +17,8 @@
 //#define R_BIAS      -3.9f * ( PI / 180.0 )
 //#define P_BIAS      -1.0f * ( PI / 180.0 )
 //#define Y_BIAS       0.0f * ( PI / 180.0 )
+#define I2C1_INT_PIN  48
+#define I2C2_INT_PIN  51
 #define X   0
 #define Y   1
 #define Z   2
@@ -49,10 +51,9 @@ typedef struct {
   //double  bias      [3];
   //double  fx;
   //double  fz;
-  double  weight    [12];
+  //double  weight    [12];
 } imu_struct;
 imu_struct imu1;
-//imu_struct imu2;
 
 
 // IMU functions
@@ -62,10 +63,11 @@ void    imu_param    ( imu_struct* imu );
 void    imu_setcal   ( imu_struct* imu );
 //void    imu_conv     ( imu_struct* imu );
 void    imu_setic    ( imu_struct* imu );
-void    imu_avail    ( imu_struct* imu );
-void    imu_gyro     ( imu_struct* imu );
-void    imu_acc      ( imu_struct* imu );
-void    imu_mag      ( imu_struct* imu );
+bool    imu_avail    ( imu_struct* imu );
+void    imu_raw      ( imu_struct* imu );
+//void    imu_gyro     ( imu_struct* imu );
+//void    imu_acc      ( imu_struct* imu );
+//void    imu_mag      ( imu_struct* imu );
 //void    imu_fusion   ( imu_struct* imu );
 //short   imu_row_map  ( const signed char* row );
 //short   imu_orient   ( const signed char* mtx );

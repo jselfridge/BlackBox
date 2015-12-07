@@ -17,20 +17,23 @@ void thread_init ( void )  {
   pthread_attr_t attr;
   struct sched_param param;
 
+  // IMU
+  thr_raw.priority   =  99;
+
   // Gyroscope
-  thr_gyro.priority  =     99;
-  thr_gyro.pin       =     60;
-  thr_gyro.period    =   5000;
+  //thr_gyro.priority  =     99;
+  //thr_gyro.pin       =     60;
+  //thr_gyro.period    =   5000;
 
   // Accelerometer
-  thr_acc.priority   =     99;
-  thr_acc.pin        =     50;
-  thr_acc.period     =   5000;
+  //thr_acc.priority   =     99;
+  //thr_acc.pin        =     50;
+  //thr_acc.period     =   5000;
 
   // Magnetometer
-  thr_mag.priority   =     98;
-  thr_mag.pin        =     48;
-  thr_mag.period     =  20000;
+  //thr_mag.priority   =     98;
+  //thr_mag.pin        =     48;
+  //thr_mag.period     =  20000;
 
   // Stabilization
   //thr_stab.priority  =     XX;
@@ -67,26 +70,33 @@ void thread_init ( void )  {
   sys.ret = pthread_attr_setschedpolicy( &attr, SCHED_FIFO );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'FIFO' attribute." );
 
-  // Initialize 'gyroscope' thread
-  param.sched_priority = thr_gyro.priority;
+  // Initialize 'raw' thread
+  param.sched_priority = thr_raw.priority;
   sys.ret = pthread_attr_setschedparam( &attr, &param );
-  sys_err( sys.ret, "Error (thread_init): Failed to set 'gyro' priority." );
-  sys.ret = pthread_create ( &thr_gyro.id, &attr, thread_gyro, (void *)NULL );
-  sys_err( sys.ret, "Error (thread_init): Failed to create 'gyro' thread." );
+  sys_err( sys.ret, "Error (thread_init): Failed to set 'raw' priority." );
+  sys.ret = pthread_create ( &thr_raw.id, &attr, thread_raw, (void *)NULL );
+  sys_err( sys.ret, "Error (thread_init): Failed to create 'raw' thread." );
+
+  // Initialize 'gyroscope' thread
+  //param.sched_priority = thr_gyro.priority;
+  //sys.ret = pthread_attr_setschedparam( &attr, &param );
+  //sys_err( sys.ret, "Error (thread_init): Failed to set 'gyro' priority." );
+  //sys.ret = pthread_create ( &thr_gyro.id, &attr, thread_gyro, (void *)NULL );
+  //sys_err( sys.ret, "Error (thread_init): Failed to create 'gyro' thread." );
 
   // Initialize 'accelerometer' thread
-  param.sched_priority = thr_acc.priority;
-  sys.ret = pthread_attr_setschedparam( &attr, &param );
-  sys_err( sys.ret, "Error (thread_init): Failed to set 'acc' priority." );
-  sys.ret = pthread_create ( &thr_acc.id, &attr, thread_acc, (void *)NULL );
-  sys_err( sys.ret, "Error (thread_init): Failed to create 'acc' thread." );
+  //param.sched_priority = thr_acc.priority;
+  //sys.ret = pthread_attr_setschedparam( &attr, &param );
+  //sys_err( sys.ret, "Error (thread_init): Failed to set 'acc' priority." );
+  //sys.ret = pthread_create ( &thr_acc.id, &attr, thread_acc, (void *)NULL );
+  //sys_err( sys.ret, "Error (thread_init): Failed to create 'acc' thread." );
 
   // Initialize 'magnetometer' thread
-  param.sched_priority = thr_mag.priority;
-  sys.ret = pthread_attr_setschedparam( &attr, &param );
-  sys_err( sys.ret, "Error (thread_init): Failed to set 'mag' priority." );
-  sys.ret = pthread_create ( &thr_mag.id, &attr, thread_mag, (void *)NULL );
-  sys_err( sys.ret, "Error (thread_init): Failed to create 'mag' thread." );
+  //param.sched_priority = thr_mag.priority;
+  //sys.ret = pthread_attr_setschedparam( &attr, &param );
+  //sys_err( sys.ret, "Error (thread_init): Failed to set 'mag' priority." );
+  //sys.ret = pthread_create ( &thr_mag.id, &attr, thread_mag, (void *)NULL );
+  //sys_err( sys.ret, "Error (thread_init): Failed to create 'mag' thread." );
 
   // Initialize 'stabilization' thread
   //param.sched_priority = thr_stab.priority;
@@ -230,20 +240,25 @@ void thread_exit ( void )  {
   printf("Closing threads  \n");
   void *status;
 
+  // Exit 'raw' thread
+  sys.ret = pthread_join ( thr_raw.id, &status );
+  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'raw' thread." );
+  if(DEBUG)  printf( "  Status %ld for 'raw' thread \n", (long)status );
+
   // Exit 'gyroscope' thread
-  sys.ret = pthread_join ( thr_gyro.id, &status );
-  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'gyro' thread." );
-  if(DEBUG)  printf( "  Status %ld for 'gyroscope' thread \n", (long)status );
+  //sys.ret = pthread_join ( thr_gyro.id, &status );
+  //sys_err( sys.ret, "Error (thread_exit): Failed to exit 'gyro' thread." );
+  //if(DEBUG)  printf( "  Status %ld for 'gyroscope' thread \n", (long)status );
 
   // Exit 'accelerometer' thread
-  sys.ret = pthread_join ( thr_acc.id, &status );
-  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'acc' thread." );
-  if(DEBUG)  printf( "  Status %ld for 'accelerometer' thread \n", (long)status );
+  //sys.ret = pthread_join ( thr_acc.id, &status );
+  //sys_err( sys.ret, "Error (thread_exit): Failed to exit 'acc' thread." );
+  //if(DEBUG)  printf( "  Status %ld for 'accelerometer' thread \n", (long)status );
 
   // Exit 'magnetometer' thread
-  sys.ret = pthread_join ( thr_mag.id, &status );
-  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'mag' thread." );
-  if(DEBUG)  printf( "  Status %ld for 'magnetometer' thread \n", (long)status );
+  //sys.ret = pthread_join ( thr_mag.id, &status );
+  //sys_err( sys.ret, "Error (thread_exit): Failed to exit 'mag' thread." );
+  //if(DEBUG)  printf( "  Status %ld for 'magnetometer' thread \n", (long)status );
 
   // Exit 'stabilization' thread
   //sys.ret = pthread_join ( thr_stab.id, &status );
@@ -272,6 +287,58 @@ void thread_exit ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  thread_raw
+//  Run the 'raw' thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void *thread_raw ( )  {
+  printf("  Running 'raw' thread \n");
+
+  // Local variables
+  struct pollfd fdset[1];
+  char buf[MAX_BUF];
+  int imu_gpio_fd = gpio_fd_open(I2C1_INT_PIN);
+
+  // Set poll parameters
+  fdset[0].fd = imu_gpio_fd;
+  fdset[0].events = POLLPRI;
+
+  // Execute loop
+  while (sys.running) {
+    poll( fdset, 1, 1 );
+    if ( fdset[0].revents & POLLPRI ) {
+      thread_start(&thr_raw);
+      lseek( fdset[0].fd, 0, SEEK_SET );
+      read( fdset[0].fd, buf, MAX_BUF );
+      imu_raw(&imu1);
+      thread_finish(&thr_raw);
+      log_write(LOG_RAW);
+    }
+  }
+
+  // Close interrupt file
+  gpio_fd_close(imu_gpio_fd);
+
+  //-------------------------------------------
+  //gpio_export(thr_gyro.pin);
+  //gpio_set_dir( thr_gyro.pin, OUTPUT_PIN );
+  //thread_periodic (&thr_gyro);
+  //while (sys.running) {
+    //thread_start(&thr_gyro);
+    //gpio_set_val( thr_gyro.pin, HIGH );
+    //imu_gyro(&imu1);
+    //gpio_set_val( thr_gyro.pin, LOW );
+    //thread_finish(&thr_gyro);
+    //log_write(LOG_GYRO);
+    //thread_pause(&thr_gyro);
+  //}
+  //------------------------------------------
+
+  pthread_exit(NULL);
+  return NULL;
+}
+
+/*
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_gyro
 //  Run the 'gyroscope' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -292,8 +359,8 @@ void *thread_gyro ( )  {
   pthread_exit(NULL);
   return NULL;
 }
-
-
+*/
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_acc
 //  Run the 'accelerometer' thread.
@@ -315,8 +382,8 @@ void *thread_acc ( )  {
   pthread_exit(NULL);
   return NULL;
 }
-
-
+*/
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_mag
 //  Run the 'magnetomter' thread.
@@ -338,7 +405,7 @@ void *thread_mag ( )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_stab
@@ -417,10 +484,8 @@ void *thread_debug ( )  {
   thread_periodic (&thr_debug);
   while (sys.running) {
     thread_start(&thr_debug);
-
     usleep(10000);
     sys_debug();
-
     thread_finish(&thr_debug);
     thread_pause(&thr_debug);
   }

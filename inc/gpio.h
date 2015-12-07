@@ -31,7 +31,7 @@ void  gpio_set_dir   ( unsigned int gpio, enum PIN_DIR dir );
 void  gpio_set_val   ( unsigned int gpio, enum PIN_VAL val );
 void  gpio_get_val   ( unsigned int gpio, unsigned int *val );
 void  gpio_set_edge  ( unsigned int gpio, char *edge );
-void  gpio_fd_open   ( unsigned int gpio );
+int   gpio_fd_open   ( unsigned int gpio );
 void  gpio_fd_close  ( int fd );
 
 

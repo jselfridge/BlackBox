@@ -112,6 +112,10 @@ void imu_param ( imu_struct* imu )  {
   if(DEBUG) {  printf(".");  fflush(stdout);  }
   sys_err( sys.ret, "Error (imu_init): 'mpu_set_accel_fsr' failed." );
 
+  gpio_export(I2C1_INT_PIN);
+  gpio_set_dir( I2C1_INT_PIN, INPUT_PIN );
+  gpio_set_edge( I2C1_INT_PIN, "falling" );
+
   if(DEBUG)  printf(" complete \n");
   return;
 }
@@ -261,7 +265,7 @@ void imu_setic ( imu_struct* imu )  {
       imu->histMag[i][j]  = 0;
     }
   }
-
+/*
   // Assign moving average weighting
   imu->weight[0]  = 0.203125;
   imu->weight[1]  = 0.203125;
@@ -275,6 +279,7 @@ void imu_setic ( imu_struct* imu )  {
   imu->weight[9]  = 0.031250;
   imu->weight[10] = 0.015625;
   imu->weight[11] = 0.015625;
+*/
 
   return;
 }
@@ -284,19 +289,49 @@ void imu_setic ( imu_struct* imu )  {
 //  imu_avail
 //  Checks for new available data. 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_avail ( imu_struct* imu )  {
+bool imu_avail ( imu_struct* imu )  {
 
   short status;
 
   sys.ret = mpu_get_int_status(&status);
-  printf( "%x \n", status );
+  sys_err( sys.ret<0, "Error (imu_avail): 'mpu_get_int_status' failed." );
 
-  //sys_err( sys.ret<0, "Error (imu_avail): 'mpu_get_int_status' failed." );
-  //return ( status == ( MPU_INT_STATUS_DATA_READY | MPU_INT_STATUS_DMP ) ) ;
-
+  return ( status == ( MPU_INT_STATUS_DATA_READY | MPU_INT_STATUS_DMP ) ) ;
 }
 
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  imu_raw
+//  Processes raw imu data.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void imu_raw ( imu_struct* imu )  {
+
+  // Local variables
+  //ushort i, j;
+
+  // Get raw data
+  sys.ret = mpu_get_gyro_reg( imu->rawGyro, NULL );
+  sys_err( sys.ret!=0, "Error (imu_gyro): 'mpu_get_gyro_reg' failed." );
+
+  /*
+  // Apply weighted moving average
+  for ( i=0; i<3; i++ ) {
+    for ( j=11; j>0; j-- )  imu->histGyro[i][j] = imu->histGyro[i][j-1];
+    imu->histGyro[i][0] = imu->rawGyro[i];
+    imu->avgGyro[i] = 0;
+    for ( j=0; j<12; j++ )  imu->avgGyro[i] += imu->histGyro[i][j] * imu->weight[j];
+  }
+
+  // Scale and orient gyroscope readings
+  imu->calGyro[X] = -imu->avgGyro[Y] * GYRO_SCALE;
+  imu->calGyro[Y] = -imu->avgGyro[X] * GYRO_SCALE;
+  imu->calGyro[Z] = -imu->avgGyro[Z] * GYRO_SCALE;
+  */
+
+  return;
+}
+
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_gyro
 //  Processes raw gyroscope data.
@@ -325,8 +360,8 @@ void imu_gyro ( imu_struct* imu )  {
 
   return;
 }
-
-
+*/
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_acc
 //  Processes raw accelerometer data.
@@ -355,8 +390,8 @@ void imu_acc ( imu_struct* imu )  {
 
   return;
 }
-
-
+*/
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_mag
 //  Processes raw magnetometer data.
@@ -385,7 +420,7 @@ void imu_mag ( imu_struct* imu )  {
 
   return;
 }
-
+*/
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_fusion

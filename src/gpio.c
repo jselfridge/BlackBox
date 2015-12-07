@@ -147,7 +147,7 @@ void gpio_set_edge ( unsigned int gpio, char *edge )  {
 //  gpio_fd_open
 //  Opens a GPIO file description.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void gpio_fd_open ( unsigned int gpio )  {
+int gpio_fd_open ( unsigned int gpio )  {
 
   int fd, len;
   char buf[MAX_BUF];
@@ -158,7 +158,7 @@ void gpio_fd_open ( unsigned int gpio )  {
   fd = open( buf, O_RDONLY | O_NONBLOCK );
   sys_err( fd <0, "Error (gpio_fd_open): Failed to open file." );
     
-  return;
+  return fd;
 }
 
 
