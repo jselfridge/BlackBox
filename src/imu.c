@@ -281,6 +281,23 @@ void imu_setic ( imu_struct* imu )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  imu_avail
+//  Checks for new available data. 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void imu_avail ( imu_struct* imu )  {
+
+  short status;
+
+  sys.ret = mpu_get_int_status(&status);
+  printf( "%x \n", status );
+
+  //sys_err( sys.ret<0, "Error (imu_avail): 'mpu_get_int_status' failed." );
+  //return ( status == ( MPU_INT_STATUS_DATA_READY | MPU_INT_STATUS_DMP ) ) ;
+
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_gyro
 //  Processes raw gyroscope data.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -3,6 +3,7 @@ imu.c:38:6:imu_exit	8	static
 imu.c:50:6:imu_param	16	static
 imu.c:124:6:imu_setcal	88	static
 imu.c:233:6:imu_setic	24	static
-imu.c:287:6:imu_gyro	32	static
-imu.c:317:6:imu_acc	32	static
-imu.c:347:6:imu_mag	32	static
+imu.c:287:6:imu_avail	24	static
+imu.c:304:6:imu_gyro	32	static
+imu.c:334:6:imu_acc	32	static
+imu.c:364:6:imu_mag	32	static

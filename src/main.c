@@ -17,17 +17,24 @@ int main ( void )  {
   led_on(LED_MPU);  led_on(LED_PRU);  led_on(LED_LOG);  led_on(LED_MOT);
 
   // Initial structure values   === Move to ***_init() functions ===
-  datalog.open     = false;
-  datalog.enabled  = true;  //--- DEBUG ---// false;
+  //datalog.open     = false;
+  //datalog.enabled  = true;  //--- DEBUG ---// false;
   imu1.bus = 2;  //imu1.rot[0] = 1;  imu1.rot[4] = 1;  imu1.rot[8] = 1;  // Add this later
   //imu2.bus = 2;  //imu2.rot[0] = 1;  imu2.rot[4] = 1;  imu2.rot[8] = 1;
 
   // Initialize subsystems
   sys_init();
-  log_init();   //--- DEBUG ---//
+  //log_init();   //--- DEBUG ---//
   imu_init(&imu1);
-  thread_init();
+  //thread_init();
 
+
+  while(1) {
+    //if ( 
+    imu_avail(&imu1);
+    // )  {  printf("X");  mpu_reset_fifo();  }
+    //else                     {  printf(".");  }
+  }
 
 
   //timer_init();
