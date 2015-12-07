@@ -57,16 +57,6 @@ void log_init ( void )  {
   fprintf( datalog.note, "About the system parameters... ");
   fclose(datalog.note);
 
-  // Create raw datalog file
-  sprintf( file, "%sraw.txt", datalog.path );
-  datalog.raw = fopen( file, "w" );
-  sys_err( datalog.raw == NULL, "Error (log_init): Cannot open 'raw' file. \n" );
-  fprintf( datalog.raw, 
-    " Gtime,       Gdur,    Gperc, G,\
-    Grx1,   Gry1,   Grz1,  \
-    Gax1,      Gay1,      Gaz1      \
-    Gcx1,    Gcy1,    Gcz1   ");
-  /*
   // Create gyroscope datalog file
   sprintf( file, "%sgyro.txt", datalog.path );
   datalog.gyro = fopen( file, "w" );
@@ -87,7 +77,7 @@ void log_init ( void )  {
     Aax1,      Aay1,      Aaz1,     \
     Acx1,    Acy1,    Acz1,   ");
 
-  // Create magnetometer datalog file
+/*  // Create magnetometer datalog file
   sprintf( file, "%smag.txt", datalog.path );
   datalog.mag = fopen( file, "w" );
   sys_err( datalog.mag == NULL, "Error (log_init): Cannot open 'mag' file. \n" );
@@ -96,7 +86,7 @@ void log_init ( void )  {
     Mrx1, Mry1, Mrz1,\
     Max1,    May1,    Maz1,   \
     Mcx1,    Mcy1,    Mcz1,   ");
-  */
+*/
   // Determine start second
   struct timespec timeval;
   clock_gettime( CLOCK_MONOTONIC, &timeval );
@@ -119,36 +109,26 @@ void log_record ( enum log_index index )  {
   // Jump to appropriate log 
   switch(index) {
 
-  // Record 'raw' datalog
-  case LOG_RAW :
-    timestamp = (float)( thr_raw.start_sec + ( thr_raw.start_usec / 1000000.0f ) - datalog.offset );
-    fprintf( datalog.raw, "\n %011.6f, %06ld, %6.3f, ", timestamp, thr_raw.dur, thr_raw.perc );
-    if (thr_raw.perc<1.0)  fprintf( datalog.raw, "_,    ");  else  fprintf( datalog.raw, "X,    ");
-    for ( i=0; i<3; i++ )  fprintf( datalog.raw, "%06d, ",   imu1.rawGyro[i] );   fprintf( datalog.raw, "   " );
-    //for ( i=0; i<3; i++ )  fprintf( datalog.raw, "%09.2f, ", imu1.avgGyro[i] );   fprintf( datalog.raw, "   " );
-    //for ( i=0; i<3; i++ )  fprintf( datalog.raw, "%07.4f, ", imu1.calGyro[i] );   fprintf( datalog.raw, "   " );
-    return;
-/*
   // Record 'gyroscope' datalog
   case LOG_GYRO :
-    timestamp = (float)( thr_gyro.start_sec + ( thr_gyro.start_usec / 1000000.0f ) - datalog.offset );
-    fprintf( datalog.gyro, "\n %011.6f, %06ld, %6.3f, ", timestamp, thr_gyro.dur, thr_gyro.perc );
-    if (thr_gyro.perc<1.0)  fprintf( datalog.gyro, "_,    ");  else  fprintf( datalog.gyro, "X,    ");
+    timestamp = (float)( thr_mems.start_sec + ( thr_mems.start_usec / 1000000.0f ) - datalog.offset );
+    fprintf( datalog.gyro, "\n %011.6f, %06ld, %6.3f, ", timestamp, thr_mems.dur, thr_mems.perc );
+    if (thr_mems.perc<1.0) fprintf( datalog.gyro, "_,    ");  else  fprintf( datalog.gyro, "X,    ");
     for ( i=0; i<3; i++ )  fprintf( datalog.gyro, "%06d, ",   imu1.rawGyro[i] );   fprintf( datalog.gyro, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.gyro, "%09.2f, ", imu1.avgGyro[i] );   fprintf( datalog.gyro, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.gyro, "%07.4f, ", imu1.calGyro[i] );   fprintf( datalog.gyro, "   " );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.gyro, "%07.4f, ", imu1.calGyro[i] );   fprintf( datalog.gyro, "   " );
     return;
 
   // Record 'accelerometer' datalog
   case LOG_ACC :
-    timestamp = (float)( thr_acc.start_sec + ( thr_acc.start_usec / 1000000.0f ) - datalog.offset );
-    fprintf( datalog.acc, "\n %011.6f, %06ld, %6.3f, ", timestamp, thr_acc.dur, thr_acc.perc );
-    if (thr_acc.perc<1.0)  fprintf( datalog.acc, "_,    ");  else  fprintf( datalog.acc, "X,    ");
+    timestamp = (float)( thr_mems.start_sec + ( thr_mems.start_usec / 1000000.0f ) - datalog.offset );
+    fprintf( datalog.acc, "\n %011.6f, %06ld, %6.3f, ", timestamp, thr_mems.dur, thr_mems.perc );
+    if (thr_mems.perc<1.0) fprintf( datalog.acc, "_,    ");  else  fprintf( datalog.acc, "X,    ");
     for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%06d, ",   imu1.rawAcc[i] );  fprintf( datalog.acc, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%09.2f, ", imu1.avgAcc[i] );  fprintf( datalog.acc, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%07.4f, ", imu1.calAcc[i] );  fprintf( datalog.acc, "   " );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%07.4f, ", imu1.calAcc[i] );  fprintf( datalog.acc, "   " );
     return;
-
+/*
   // Record 'magnetometer' datalog
   case LOG_MAG :
     timestamp = (float)( thr_mag.start_sec + ( thr_mag.start_usec / 1000000.0f ) - datalog.offset );
@@ -173,9 +153,8 @@ void log_record ( enum log_index index )  {
 void log_exit ( void )  {
 
   // Close files 
-  fclose(datalog.raw);
-  //fclose(datalog.gyro);
-  //fclose(datalog.acc);
+  fclose(datalog.gyro);
+  fclose(datalog.acc);
   //fclose(datalog.mag);
 
   // Adjust flag

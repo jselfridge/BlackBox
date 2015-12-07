@@ -45,27 +45,6 @@ void sys_init ( void )  {
   return;
 }
 
-/*
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_loop
-//  Executes instructions at timed intervals.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_loop ( void )  {
-
-  //ushort i;
-  timer_start();
-  //for ( i=0; i<6; i++ )  sys.input[i] = pru_read_pulse(i);
-  //imu_sample(&imu1);
-  //ctrl_law();
-  //for ( i=0; i<4; i++ )  pru_send_pulse( i, 1000 );
-  //for ( i=0; i<4; i++ )  pru_send_pulse( i, sys.output[i] );
-  timer_finish();
-  log_write();
-  if (DEBUG)  sys_debug();
-
-  return;
-}
-*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_debug

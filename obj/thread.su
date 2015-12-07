@@ -1,8 +1,8 @@
 thread.c:13:6:thread_init	48	static
-thread.c:140:6:thread_periodic	48	static
-thread.c:175:6:thread_pause	24	static
-thread.c:195:6:thread_start	24	static
-thread.c:213:6:thread_finish	24	static
-thread.c:239:6:thread_exit	16	static
-thread.c:293:7:thread_raw	96	dynamic,bounded
-thread.c:482:7:thread_debug	8	static
+thread.c:120:6:thread_periodic	48	static
+thread.c:155:6:thread_pause	24	static
+thread.c:175:6:thread_start	24	static
+thread.c:193:6:thread_finish	24	static
+thread.c:219:6:thread_exit	16	static
+thread.c:263:7:thread_mems	8	static
+thread.c:374:7:thread_debug	8	static

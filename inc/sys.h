@@ -30,7 +30,6 @@ struct sigaction sys_signal;
 // Function declarations
 void sys_err    ( bool cond, char* msg );
 void sys_init   (  );
-//void sys_loop   (  );
 void sys_debug  (  );
 void sys_exit   (  );
 void sys_memory ( int size );

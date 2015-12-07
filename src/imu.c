@@ -63,17 +63,25 @@ void imu_param ( imu_struct* imu )  {
   if(DEBUG) {  printf(".");  fflush(stdout);  }
   sys_err( sys.ret, "Error (imu_init): 'mpu_set_sensors' failed." );
 
-  //sys.ret = mpu_configure_fifo( INV_XYZ_GYRO | INV_XYZ_ACCEL );
-  //if(DEBUG) {  printf(".");  fflush(stdout);  }
-  //sys_err( sys.ret, "Error (imu_init): 'mpu_configure_fifo' failed." );
-
-  sys.ret = mpu_set_sample_rate(1000);
+  sys.ret = mpu_set_sample_rate(MEMS_HZ);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
   sys_err( sys.ret, "Error (imu_init): 'mpu_set_sample_rate' failed." );
 
-  sys.ret = mpu_set_compass_sample_rate(100);
+  sys.ret = mpu_set_compass_sample_rate(COMP_HZ);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
   sys_err( sys.ret, "Error (imu_init): 'mpu_set_compass_sample_rate' failed." );
+
+  sys.ret = mpu_set_gyro_fsr(GYRO_FSR);
+  if(DEBUG) {  printf(".");  fflush(stdout);  }
+  sys_err( sys.ret, "Error (imu_init): 'mpu_set_gyro_fsr' failed." );
+
+  sys.ret = mpu_set_accel_fsr(ACC_FSR);
+  if(DEBUG) {  printf(".");  fflush(stdout);  }
+  sys_err( sys.ret, "Error (imu_init): 'mpu_set_accel_fsr' failed." );
+
+  //sys.ret = mpu_configure_fifo( INV_XYZ_GYRO | INV_XYZ_ACCEL );
+  //if(DEBUG) {  printf(".");  fflush(stdout);  }
+  //sys_err( sys.ret, "Error (imu_init): 'mpu_configure_fifo' failed." );
 
   //sys.ret = mpu_set_lpf(5);
   //if(DEBUG) {  printf(".");  fflush(stdout);  }
@@ -104,17 +112,9 @@ void imu_param ( imu_struct* imu )  {
   //if(DEBUG) {  printf(".");  fflush(stdout);  }
   //sys_err( sys.ret, "Error (imu_init): 'mpu_set_dmp_state' failed." );
 
-  sys.ret = mpu_set_gyro_fsr(500);
-  if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( sys.ret, "Error (imu_init): 'mpu_set_gyro_fsr' failed." );
-
-  sys.ret = mpu_set_accel_fsr(4);
-  if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( sys.ret, "Error (imu_init): 'mpu_set_accel_fsr' failed." );
-
-  gpio_export(I2C1_INT_PIN);
-  gpio_set_dir( I2C1_INT_PIN, INPUT_PIN );
-  gpio_set_edge( I2C1_INT_PIN, "falling" );
+  //gpio_export(I2C1_INT_PIN);
+  //gpio_set_dir( I2C1_INT_PIN, INPUT_PIN );
+  //gpio_set_edge( I2C1_INT_PIN, "falling" );
 
   if(DEBUG)  printf(" complete \n");
   return;
@@ -240,6 +240,31 @@ void imu_setic ( imu_struct* imu )  {
   // Local vsariable
   ushort i, j;
 
+  // Timing values
+  imu->mems_hz = MEMS_HZ;  imu->mems_dt = 1.0/MEMS_HZ;
+  imu->comp_hz = COMP_HZ;  imu->comp_dt = 1.0/COMP_HZ;
+
+  // Filter parameters
+  imu->mems_tc = MEMS_TC;  imu->mems_gain = imu->mems_dt / ( imu->mems_tc + imu->mems_dt );
+  imu->comp_tc = COMP_TC;  imu->comp_gain = imu->comp_dt / ( imu->comp_tc + imu->comp_dt );
+
+  // Display IMU settings
+  if (DEBUG) {
+    printf("    MEMS device    \
+    HZ: %4d    DT: %5.3f    TC: %5.2f    gain: %7.4f  \n", \
+    imu->mems_hz, imu->mems_dt, imu->mems_tc, imu->mems_gain );
+    printf("    COMP device    \
+    HZ: %4d    DT: %5.3f    TC: %5.2f    gain: %7.4f  \n", \
+    imu->comp_hz, imu->comp_dt, imu->comp_tc, imu->comp_gain );
+  }
+
+  // Clear moving average history
+  for ( i=0; i<3; i++ ) {
+    for ( j=0; j<MEMS_HIST; j++ )  imu->histGyro[i][j] = 0;
+    for ( j=0; j<MEMS_HIST; j++ )  imu->histAcc[i][j]  = 0;
+    for ( j=0; j<COMP_HIST; j++ )  imu->histMag[i][j]  = 0;
+  }
+
   //imu->fx = 0.5;  imu->fz = 0.866;
   //for ( i=0; i<4; i++ ) {
     //imu->dQuat[i] = 0;
@@ -256,30 +281,6 @@ void imu_setic ( imu_struct* imu )  {
   //imu->Quat[1] = 0;
   //imu->Quat[2] = 0;
   //imu->Quat[3] = sin(ctrl.heading/2);
-
-  // Clear moving average history
-  for ( i=0; i<3; i++ ) {
-    for ( j=0; j<12; j++ ) {
-      imu->histGyro[i][j] = 0;
-      imu->histAcc[i][j]  = 0;
-      imu->histMag[i][j]  = 0;
-    }
-  }
-/*
-  // Assign moving average weighting
-  imu->weight[0]  = 0.203125;
-  imu->weight[1]  = 0.203125;
-  imu->weight[2]  = 0.125000;
-  imu->weight[3]  = 0.125000;
-  imu->weight[4]  = 0.078125;
-  imu->weight[5]  = 0.078125;
-  imu->weight[6]  = 0.046875;
-  imu->weight[7]  = 0.046875;
-  imu->weight[8]  = 0.031250;
-  imu->weight[9]  = 0.031250;
-  imu->weight[10] = 0.015625;
-  imu->weight[11] = 0.015625;
-*/
 
   return;
 }
@@ -301,102 +302,72 @@ bool imu_avail ( imu_struct* imu )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_raw
-//  Processes raw imu data.
+//  imu_mems
+//  Processes MEMS device data.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_raw ( imu_struct* imu )  {
+void imu_mems ( imu_struct* imu )  {
 
   // Local variables
-  //ushort i, j;
+  ushort i, j, k = MEMS_HIST;
+  short g, a;
 
   // Get raw data
   sys.ret = mpu_get_gyro_reg( imu->rawGyro, NULL );
-  sys_err( sys.ret!=0, "Error (imu_gyro): 'mpu_get_gyro_reg' failed." );
-
-  /*
-  // Apply weighted moving average
-  for ( i=0; i<3; i++ ) {
-    for ( j=11; j>0; j-- )  imu->histGyro[i][j] = imu->histGyro[i][j-1];
-    imu->histGyro[i][0] = imu->rawGyro[i];
-    imu->avgGyro[i] = 0;
-    for ( j=0; j<12; j++ )  imu->avgGyro[i] += imu->histGyro[i][j] * imu->weight[j];
-  }
-
-  // Scale and orient gyroscope readings
-  imu->calGyro[X] = -imu->avgGyro[Y] * GYRO_SCALE;
-  imu->calGyro[Y] = -imu->avgGyro[X] * GYRO_SCALE;
-  imu->calGyro[Z] = -imu->avgGyro[Z] * GYRO_SCALE;
-  */
-
-  return;
-}
-
-/*
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_gyro
-//  Processes raw gyroscope data.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_gyro ( imu_struct* imu )  {
-
-  // Local variables
-  ushort i, j;
-
-  // Get raw data
-  sys.ret = mpu_get_gyro_reg( imu->rawGyro, NULL );
-  sys_err( sys.ret!=0, "Error (imu_gyro): 'mpu_get_gyro_reg' failed." );
-
-  // Apply weighted moving average
-  for ( i=0; i<3; i++ ) {
-    for ( j=11; j>0; j-- )  imu->histGyro[i][j] = imu->histGyro[i][j-1];
-    imu->histGyro[i][0] = imu->rawGyro[i];
-    imu->avgGyro[i] = 0;
-    for ( j=0; j<12; j++ )  imu->avgGyro[i] += imu->histGyro[i][j] * imu->weight[j];
-  }
-
-  // Scale and orient gyroscope readings
-  imu->calGyro[X] = -imu->avgGyro[Y] * GYRO_SCALE;
-  imu->calGyro[Y] = -imu->avgGyro[X] * GYRO_SCALE;
-  imu->calGyro[Z] = -imu->avgGyro[Z] * GYRO_SCALE;
-
-  return;
-}
-*/
-/*
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_acc
-//  Processes raw accelerometer data.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_acc ( imu_struct* imu )  {
-
-  // Local variables
-  ushort i, j;
-
-  // Get raw data
+  sys_err( sys.ret, "Error (imu_mems): 'mpu_get_gyro_reg' failed." );
   sys.ret = mpu_get_accel_reg( imu->rawAcc, NULL );
-  sys_err( sys.ret!=0, "Error (imu_acc): 'mpu_get_accel_reg' failed." );
+  sys_err( sys.ret, "Error (imu_mems): 'mpu_get_accel_reg' failed." );
 
-  // Apply weighted moving average
+  // Cycle through elements
   for ( i=0; i<3; i++ ) {
-    for ( j=11; j>0; j-- )  imu->histAcc[i][j] = imu->histAcc[i][j-1];
-    imu->histAcc[i][0] = imu->rawAcc[i];
-    imu->avgAcc[i] = 0;
-    for ( j=0; j<12; j++ )  imu->avgAcc[i] += imu->histAcc[i][j] * imu->weight[j];
+
+    // Advance history data
+    for ( j=1; j<k; j++ ) {
+      imu->histGyro[i][j-1] = imu->histGyro[i][j];
+      imu->histAcc[i][j-1]  = imu->histAcc[i][j];
+    }
+
+    // Assign current value
+    imu->histGyro[i][k-1] = imu->rawGyro[i];
+    imu->histAcc[i][k-1]  = imu->rawAcc[i];
+
+    // Initialize filter value
+    g = imu->histGyro[i][0];
+    a = imu->histAcc[i][0];
+
+    // Implement low-pass filter
+    for ( j=1; j<k; j++ ) {
+      g = g + imu->mems_gain * ( imu->histGyro[i][j] - g );
+      a = a + imu->mems_gain * ( imu->histAcc[i][j]  - a );
+    }
+
+    // Store averaged value
+    imu->avgGyro[i] = g;
+    imu->avgAcc[i]  = a;
+
   }
 
+
+/*
+  // Scale and orient gyroscope readings
+  imu->calGyro[X] = -imu->avgGyro[Y] * GYRO_SCALE;
+  imu->calGyro[Y] = -imu->avgGyro[X] * GYRO_SCALE;
+  imu->calGyro[Z] = -imu->avgGyro[Z] * GYRO_SCALE;
   // Shift and orient accelerometer readings
   imu->calAcc[X] = ( imu->avgAcc[Y] - imu->aoffset[Y] ) / (double)imu->arange[Y];
   imu->calAcc[Y] = ( imu->avgAcc[X] - imu->aoffset[X] ) / (double)imu->arange[X];
   imu->calAcc[Z] = ( imu->avgAcc[Z] - imu->aoffset[Z] ) / (double)imu->arange[Z];
+*/
 
   return;
 }
-*/
+
+
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_mag
-//  Processes raw magnetometer data.
+//  imu_comp
+//  Processes raw compass data.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_mag ( imu_struct* imu )  {
+void imu_comp ( imu_struct* imu )  {
 
   // Local variables
   ushort i, j;

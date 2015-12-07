@@ -10,21 +10,18 @@
 
 // Log enumerations
 enum log_index {
-  //LOG_GYRO = 0,
-  //LOG_ACC  = 1,
-  //LOG_MAG  = 2
-  LOG_RAW  = 0
+  LOG_GYRO = 0,
+  LOG_ACC  = 1,
+  LOG_MAG  = 2
 } log_index;
 
 
 // Log structure
 typedef struct {
   FILE* note;
-  FILE* raw;
-  //FILE* acc;
-  //FILE* gyro;
-  //FILE* mag;
-  //char* name;
+  FILE* gyro;
+  FILE* acc;
+  FILE* mag;
   char* dir;
   char* path;
   bool  open;

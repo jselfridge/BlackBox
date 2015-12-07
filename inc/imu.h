@@ -9,6 +9,19 @@
 
 
 // Define statements
+
+#define MEMS_HZ   1000
+#define COMP_HZ    100
+
+#define MEMS_HIST  20
+#define COMP_HIST  10
+
+#define MEMS_TC   (100.0f)
+#define COMP_TC   (0.0f)
+
+#define GYRO_FSR  500
+#define ACC_FSR  4
+
 #define GYRO_SCALE  ( 500.0f / 32768.0f ) * ( PI / 180.0f )
 //#define GYRO_ERROR  5.0f * ( PI / 180.0 )
 //#define GYRO_DRIFT  0.2f * ( PI / 180.0 )
@@ -17,8 +30,6 @@
 //#define R_BIAS      -3.9f * ( PI / 180.0 )
 //#define P_BIAS      -1.0f * ( PI / 180.0 )
 //#define Y_BIAS       0.0f * ( PI / 180.0 )
-#define I2C1_INT_PIN  48
-#define I2C2_INT_PIN  51
 #define X   0
 #define Y   1
 #define Z   2
@@ -28,6 +39,14 @@
 // IMU structure
 typedef struct {
   int     bus;
+  ushort  mems_hz;
+  ushort  comp_hz;
+  float   mems_dt;
+  float   comp_dt;
+  float   mems_tc;
+  float   comp_tc;
+  float   mems_gain;
+  float   comp_gain;
   int     moffset   [3];
   int     aoffset   [3];
   int     mrange    [3];
@@ -35,9 +54,9 @@ typedef struct {
   short   rawGyro   [3];
   short   rawAcc    [3];
   short   rawMag    [3];
-  short   histGyro  [3][12];
-  short   histAcc   [3][12];
-  short   histMag   [3][12];
+  short   histGyro  [3][MEMS_HIST];
+  short   histAcc   [3][MEMS_HIST];
+  short   histMag   [3][COMP_HIST];
   double  avgGyro   [3];
   double  avgAcc    [3];
   double  avgMag    [3];
@@ -51,7 +70,6 @@ typedef struct {
   //double  bias      [3];
   //double  fx;
   //double  fz;
-  //double  weight    [12];
 } imu_struct;
 imu_struct imu1;
 
@@ -64,10 +82,8 @@ void    imu_setcal   ( imu_struct* imu );
 //void    imu_conv     ( imu_struct* imu );
 void    imu_setic    ( imu_struct* imu );
 bool    imu_avail    ( imu_struct* imu );
-void    imu_raw      ( imu_struct* imu );
-//void    imu_gyro     ( imu_struct* imu );
-//void    imu_acc      ( imu_struct* imu );
-//void    imu_mag      ( imu_struct* imu );
+void    imu_mems     ( imu_struct* imu );
+//void    imu_comp     ( imu_struct* imu );
 //void    imu_fusion   ( imu_struct* imu );
 //short   imu_row_map  ( const signed char* row );
 //short   imu_orient   ( const signed char* mtx );

@@ -27,19 +27,11 @@ int main ( void )  {
   imu_init(&imu1);
   thread_init();
 
-
   //timer_init();
   //pru_init();
   //imu_init(&imu2);
   //ctrl_init();
   //timer_begin();
-
-  // Switch power to buses (relocate this code???)
-  //ushort IO_SWITCH = 60;
-  //gpio_export(IO_SWITCH);
-  //gpio_set_dir( IO_SWITCH, OUTPUT_PIN );
-  //gpio_set_val( IO_SWITCH, HIGH );
-  //if(DEBUG)  printf("Switching on power to I/O bus \n");
 
   // Continuous loop and then exit
   while(sys.running);

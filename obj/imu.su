@@ -2,6 +2,6 @@ imu.c:13:6:imu_init	24	static
 imu.c:38:6:imu_exit	8	static
 imu.c:50:6:imu_param	16	static
 imu.c:128:6:imu_setcal	88	static
-imu.c:237:6:imu_setic	24	static
-imu.c:292:6:imu_avail	24	static
-imu.c:307:6:imu_raw	16	static
+imu.c:237:6:imu_setic	40	static
+imu.c:293:6:imu_avail	24	static
+imu.c:308:6:imu_mems	40	static

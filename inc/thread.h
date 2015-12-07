@@ -14,7 +14,6 @@ typedef struct thread_struct {
   int       fd;
   int       missed;
   ushort    priority;
-  ushort    pin;
   ulong     period;
   uint      start_sec;
   ulong     start_usec;
@@ -23,7 +22,8 @@ typedef struct thread_struct {
   ulong     dur;
   double    perc;
 } thread_struct;
-thread_struct thr_raw;
+thread_struct thr_mems;
+//thread_struct thr_comp;
 //thread_struct thr_gyro;
 //thread_struct thr_acc;
 //thread_struct thr_mag;
@@ -40,7 +40,12 @@ void  thread_pause     ( thread_struct *thr );
 void  thread_start     ( thread_struct *thr );
 void  thread_finish    ( thread_struct *thr );
 void  thread_exit      ( void );
-void *thread_raw       ( );
+
+
+// Thread handlers
+void *thread_mems       ( );
+//void *thread_comp       ( );
+//void *thread_raw       ( );
 //void *thread_gyro      ( );
 //void *thread_acc       ( );
 //void *thread_mag       ( );
