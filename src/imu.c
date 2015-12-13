@@ -381,7 +381,6 @@ void imu_mems ( imu_struct* imu )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_comp ( imu_struct* imu )  {
 
-  /*
   // Local variables
   ushort i, j, k = COMP_HIST;
   float m;
@@ -389,7 +388,8 @@ void imu_comp ( imu_struct* imu )  {
   // Get raw data
   sys.ret = mpu_get_compass_reg( imu->rawMag, NULL );
   sys_err( sys.ret, "Error (imu_comp): 'mpu_get_compass_reg' failed." );
-
+  printf("imu->rawMag: %d \n", imu->rawMag[1] );
+  /*
   // Cycle through elements
   for ( i=0; i<3; i++ ) {
 
@@ -418,7 +418,6 @@ void imu_comp ( imu_struct* imu )  {
   imu->calMag[X] = -( imu->avgMag[X] - imu->moffset[X] ) / (double)imu->mrange[X];
   imu->calMag[Y] = -( imu->avgMag[Y] - imu->moffset[Y] ) / (double)imu->mrange[Y];
   imu->calMag[Z] =  ( imu->avgMag[Z] - imu->moffset[Z] ) / (double)imu->mrange[Z];
-
   */
   return;
 }

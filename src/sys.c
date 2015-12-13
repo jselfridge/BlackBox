@@ -80,9 +80,9 @@ void sys_debug (  )  {
   //printf("%6.1f ", heading *(180.0f/PI) );  printf("   ");
 
   // Raw sensor values - IMU1
-  //for ( i=0; i<3; i++ )  printf("%04d ",   imu1.rawMag[i]  );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%04d ",   imu1.rawMag[i]  );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%06d ",   imu1.rawAcc[i]  );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%6d ",   imu1.rawGyro[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%6d ",    imu1.rawGyro[i] );  printf("   ");
   //for ( i=0; i<4; i++ )  printf("%012ld ", imu1.rawQuat[i] );  printf("   ");
 
   // Raw sensor values - IMU2

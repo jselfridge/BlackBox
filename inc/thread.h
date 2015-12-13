@@ -24,12 +24,6 @@ typedef struct thread_struct {
 } thread_struct;
 thread_struct thr_mems;
 thread_struct thr_comp;
-//thread_struct thr_gyro;
-//thread_struct thr_acc;
-//thread_struct thr_mag;
-//thread_struct thr_stab; 
-//thread_struct thr_nav; 
-//thread_struct thr_telem; 
 thread_struct thr_debug;
 
 
@@ -45,13 +39,6 @@ void  thread_exit      ( void );
 // Thread handlers
 void *thread_mems       ( );
 void *thread_comp       ( );
-//void *thread_raw       ( );
-//void *thread_gyro      ( );
-//void *thread_acc       ( );
-//void *thread_mag       ( );
-//void *thread_stab      ( );
-//void *thread_nav       ( );
-//void *thread_telem     ( );
 void *thread_debug     ( );
 
 
