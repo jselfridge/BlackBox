@@ -32,8 +32,9 @@ log_struct datalog;
 
 
 // Log functions
-void  log_write  ( enum log_index index );
 void  log_init   ( void );
+void  log_write  ( enum log_index index );
+void  log_open   ( void );
 void  log_record ( enum log_index index );
 void  log_exit   ( void );
 

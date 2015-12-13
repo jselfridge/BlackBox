@@ -19,7 +19,11 @@ void thread_init ( void )  {
 
   // MEMS devices
   thr_mems.priority  =    99;
-  thr_mems.period    =  1000;
+  thr_mems.period    =  MEMS_HZ;
+
+  // Compass readings
+  thr_comp.priority  =    98;
+  thr_comp.period    =   COMP_HZ;
 
   // Gyroscope
   //thr_gyro.priority  =     99;
@@ -71,12 +75,12 @@ void thread_init ( void )  {
   sys.ret = pthread_create ( &thr_mems.id, &attr, thread_mems, (void *)NULL );
   sys_err( sys.ret, "Error (thread_init): Failed to create 'mems' thread." );
 
-  // Initialize 'magnetometer' thread
-  //param.sched_priority = thr_mag.priority;
-  //sys.ret = pthread_attr_setschedparam( &attr, &param );
-  //sys_err( sys.ret, "Error (thread_init): Failed to set 'mag' priority." );
-  //sys.ret = pthread_create ( &thr_mag.id, &attr, thread_mag, (void *)NULL );
-  //sys_err( sys.ret, "Error (thread_init): Failed to create 'mag' thread." );
+  // Initialize 'compass' thread
+  param.sched_priority = thr_comp.priority;
+  sys.ret = pthread_attr_setschedparam( &attr, &param );
+  sys_err( sys.ret, "Error (thread_init): Failed to set 'comp' priority." );
+  sys.ret = pthread_create ( &thr_comp.id, &attr, thread_comp, (void *)NULL );
+  sys_err( sys.ret, "Error (thread_init): Failed to create 'comp' thread." );
 
   // Initialize 'stabilization' thread
   //param.sched_priority = thr_stab.priority;
@@ -225,10 +229,10 @@ void thread_exit ( void )  {
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'mems' thread." );
   if(DEBUG)  printf( "  Status %ld for 'mems' thread \n", (long)status );
 
-  // Exit 'magnetometer' thread
-  //sys.ret = pthread_join ( thr_mag.id, &status );
-  //sys_err( sys.ret, "Error (thread_exit): Failed to exit 'mag' thread." );
-  //if(DEBUG)  printf( "  Status %ld for 'magnetometer' thread \n", (long)status );
+  // Exit 'compass' thread
+  sys.ret = pthread_join ( thr_comp.id, &status );
+  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'comp' thread." );
+  if(DEBUG)  printf( "  Status %ld for 'compass' thread \n", (long)status );
 
   // Exit 'stabilization' thread
   //sys.ret = pthread_join ( thr_stab.id, &status );
@@ -275,29 +279,28 @@ void *thread_mems ( )  {
   return NULL;
 }
 
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thread_mag
-//  Run the 'magnetomter' thread.
+//  thread_comp
+//  Run the 'compass' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void *thread_mag ( )  {
-  printf("  Running 'magnetometer' thread \n");
-  gpio_export(thr_mag.pin);
-  gpio_set_dir( thr_mag.pin, OUTPUT_PIN );
-  thread_periodic (&thr_mag);
+void *thread_comp ( )  {
+  printf("  Running 'compass' thread \n");
+
+  thread_periodic (&thr_comp);
+
   while (sys.running) {
-    thread_start(&thr_mag);
-    gpio_set_val( thr_mag.pin, HIGH );
-    imu_mag(&imu1);
-    gpio_set_val( thr_mag.pin, LOW );
-    thread_finish(&thr_mag);
+
+    thread_start(&thr_comp);
+    imu_comp(&imu1);
+    thread_finish(&thr_comp);
     log_write(LOG_MAG);
-    thread_pause(&thr_mag);
+    thread_pause(&thr_comp);
   }
   pthread_exit(NULL);
   return NULL;
 }
-*/
+
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_stab
@@ -369,7 +372,7 @@ void *thread_telem ( )  {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_debug
-//  Run the 'magnetomter' thread.
+//  Run the 'debug' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *thread_debug ( )  {
   printf("  Running 'debug' thread \n");

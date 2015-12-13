@@ -23,7 +23,7 @@ typedef struct thread_struct {
   double    perc;
 } thread_struct;
 thread_struct thr_mems;
-//thread_struct thr_comp;
+thread_struct thr_comp;
 //thread_struct thr_gyro;
 //thread_struct thr_acc;
 //thread_struct thr_mag;
@@ -44,7 +44,7 @@ void  thread_exit      ( void );
 
 // Thread handlers
 void *thread_mems       ( );
-//void *thread_comp       ( );
+void *thread_comp       ( );
 //void *thread_raw       ( );
 //void *thread_gyro      ( );
 //void *thread_acc       ( );

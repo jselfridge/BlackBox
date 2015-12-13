@@ -16,15 +16,10 @@ int main ( void )  {
   // Set LED indicators
   led_on(LED_MPU);  led_on(LED_PRU);  led_on(LED_LOG);  led_on(LED_MOT);
 
-  // Initial structure values   === Move to ***_init() functions ===
-  datalog.open     = false;
-  datalog.enabled  = true;  //--- DEBUG ---// false;
-  imu1.bus = 1;
-
   // Initialize subsystems
   sys_init();
-  log_init();   //--- DEBUG ---//
-  imu_init(&imu1);
+  log_init();
+  imu_init(&imu1,1);
   thread_init();
 
   //timer_init();

@@ -10,13 +10,13 @@
 
 // Define statements
 
-#define MEMS_HZ   1000
-#define COMP_HZ    100
+#define MEMS_HZ   200
+#define COMP_HZ    50
 
-#define MEMS_HIST  5
-#define COMP_HIST  10
+#define MEMS_HIST  1
+#define COMP_HIST  1
 
-#define MEMS_LPF  (0.5f)
+#define MEMS_LPF  (0.0f)
 #define COMP_LPF  (0.0f)
 
 #define GYRO_FSR  500
@@ -38,7 +38,7 @@
 
 // IMU structure
 typedef struct {
-  int     bus;
+  ushort  bus;
   ushort  mems_hz;
   ushort  comp_hz;
   float   mems_dt;
@@ -59,12 +59,12 @@ typedef struct {
   short   histGyro  [3][MEMS_HIST];
   short   histAcc   [3][MEMS_HIST];
   short   histMag   [3][COMP_HIST];
-  double  avgGyro   [3];
-  double  avgAcc    [3];
-  double  avgMag    [3];
-  double  calGyro   [3];
-  double  calAcc    [3];
-  double  calMag    [3];
+  float   avgGyro   [3];
+  float   avgAcc    [3];
+  float   avgMag    [3];
+  float   calGyro   [3];
+  float   calAcc    [3];
+  float   calMag    [3];
   //double  Quat      [4];
   //double  dQuat     [4];
   //double  Eul       [3];
@@ -77,7 +77,7 @@ imu_struct imu1;
 
 
 // IMU functions
-void    imu_init     ( imu_struct* imu );
+void    imu_init     ( imu_struct* imu, ushort bus );
 void    imu_exit     ( void );
 void    imu_param    ( imu_struct* imu );
 void    imu_setcal   ( imu_struct* imu );
@@ -85,7 +85,7 @@ void    imu_setcal   ( imu_struct* imu );
 void    imu_setic    ( imu_struct* imu );
 bool    imu_avail    ( imu_struct* imu );
 void    imu_mems     ( imu_struct* imu );
-//void    imu_comp     ( imu_struct* imu );
+void    imu_comp     ( imu_struct* imu );
 //void    imu_fusion   ( imu_struct* imu );
 //short   imu_row_map  ( const signed char* row );
 //short   imu_orient   ( const signed char* mtx );

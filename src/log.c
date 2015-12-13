@@ -7,21 +7,32 @@
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  log_init
+//  Initalizes the datalog structure attributes.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void log_init ( void )  {
+  datalog.open     = false;
+  datalog.enabled  = true;  //-- DEBUG --//  false;
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  log_write
 //  Top level function for writing data log commands.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void log_write ( enum log_index index )  {
-  if (datalog.enabled) {  if (!datalog.open)  log_init();  log_record(index);  }
+  if (datalog.enabled) {  if (!datalog.open)  log_open();  log_record(index);  }
   else                 {  if (datalog.open)   log_exit();  }
   return;
 }
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  log_init
-//  Initalizes next sequential log file and populates the header.
+//  log_open
+//  Opens the next sequential log file and populates the header.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void log_init ( void )  {
+void log_open ( void )  {
 
   // Local varaibales
   int i = 0;
@@ -116,7 +127,7 @@ void log_record ( enum log_index index )  {
     if (thr_mems.perc<1.0) fprintf( datalog.gyro, "_,    ");  else  fprintf( datalog.gyro, "X,    ");
     for ( i=0; i<3; i++ )  fprintf( datalog.gyro, "%06d, ",   imu1.rawGyro[i] );   fprintf( datalog.gyro, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.gyro, "%09.2f, ", imu1.avgGyro[i] );   fprintf( datalog.gyro, "   " );
-    //for ( i=0; i<3; i++ )  fprintf( datalog.gyro, "%07.4f, ", imu1.calGyro[i] );   fprintf( datalog.gyro, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.gyro, "%07.4f, ", imu1.calGyro[i] );   fprintf( datalog.gyro, "   " );
     return;
 
   // Record 'accelerometer' datalog
@@ -126,19 +137,19 @@ void log_record ( enum log_index index )  {
     if (thr_mems.perc<1.0) fprintf( datalog.acc, "_,    ");  else  fprintf( datalog.acc, "X,    ");
     for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%06d, ",   imu1.rawAcc[i] );  fprintf( datalog.acc, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%09.2f, ", imu1.avgAcc[i] );  fprintf( datalog.acc, "   " );
-    //for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%07.4f, ", imu1.calAcc[i] );  fprintf( datalog.acc, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%07.4f, ", imu1.calAcc[i] );  fprintf( datalog.acc, "   " );
     return;
-/*
+
   // Record 'magnetometer' datalog
   case LOG_MAG :
-    timestamp = (float)( thr_mag.start_sec + ( thr_mag.start_usec / 1000000.0f ) - datalog.offset );
-    fprintf( datalog.mag, "\n %011.6f, %06ld, %6.3f, ", timestamp, thr_mag.dur, thr_mag.perc );
-    if (thr_mag.perc<1.0)  fprintf( datalog.mag, "_,    ");  else  fprintf( datalog.mag, "X,    ");
+    timestamp = (float)( thr_comp.start_sec + ( thr_comp.start_usec / 1000000.0f ) - datalog.offset );
+    fprintf( datalog.mag, "\n %011.6f, %06ld, %6.3f, ", timestamp, thr_comp.dur, thr_comp.perc );
+    if (thr_comp.perc<1.0)  fprintf( datalog.mag, "_,    ");  else  fprintf( datalog.mag, "X,    ");
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%04d, ",   imu1.rawMag[i] );  fprintf( datalog.mag, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%07.2f, ", imu1.avgMag[i] );  fprintf( datalog.mag, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%07.4f, ", imu1.calMag[i] );  fprintf( datalog.mag, "   " );
     return;
-*/
+
   default :
     return;
   }
@@ -155,7 +166,7 @@ void log_exit ( void )  {
   // Close files 
   fclose(datalog.gyro);
   fclose(datalog.acc);
-  //fclose(datalog.mag);
+  fclose(datalog.mag);
 
   // Adjust flag
   datalog.open = false;
