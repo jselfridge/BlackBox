@@ -23,22 +23,22 @@ typedef struct thread_struct {
   double    perc;
 } thread_struct;
 thread_struct thr_mems;
-thread_struct thr_comp;
+//thread_struct thr_comp;
 thread_struct thr_debug;
 
 
 // Thread functions
-void  thread_init      ( void );
-void  thread_periodic  ( thread_struct *thr );
-void  thread_pause     ( thread_struct *thr );
-void  thread_start     ( thread_struct *thr );
-void  thread_finish    ( thread_struct *thr );
-void  thread_exit      ( void );
+void  thr_init      ( void );
+void  thr_periodic  ( thread_struct *thr );
+void  thr_pause     ( thread_struct *thr );
+void  thr_start     ( thread_struct *thr );
+void  thr_finish    ( thread_struct *thr );
+void  thr_exit      ( void );
 
 
 // Thread handlers
 void *thread_mems       ( );
-void *thread_comp       ( );
+//void *thread_comp       ( );
 void *thread_debug     ( );
 
 

@@ -324,14 +324,16 @@ void imu_mems ( imu_struct* imu )  {
 
   // Local variables
   ushort i, j, k = MEMS_HIST;
-  float g, a;
+  float g, a, m;
 
   // Get raw data
   sys.ret = mpu_get_gyro_reg( imu->rawGyro, NULL );
   sys_err( sys.ret, "Error (imu_mems): 'mpu_get_gyro_reg' failed." );
   sys.ret = mpu_get_accel_reg( imu->rawAcc, NULL );
   sys_err( sys.ret, "Error (imu_mems): 'mpu_get_accel_reg' failed." );
-
+  //sys.ret = mpu_get_compass_reg( imu->rawMag, NULL );
+  //sys_err( sys.ret, "Error (imu_mems): 'mpu_get_compass_reg' failed." );
+  /*
   // Cycle through elements
   for ( i=0; i<3; i++ ) {
 
@@ -339,37 +341,47 @@ void imu_mems ( imu_struct* imu )  {
     for ( j=1; j<k; j++ ) {
       imu->histGyro[i][j-1] = imu->histGyro[i][j];
       imu->histAcc[i][j-1]  = imu->histAcc[i][j];
+      //imu->histMag[i][j-1]  = imu->histMag[i][j];
     }
 
     // Assign current value
     imu->histGyro[i][k-1] = imu->rawGyro[i];
     imu->histAcc[i][k-1]  = imu->rawAcc[i];
+    //imu->histMag[i][k-1]  = imu->rawMag[i];
 
     // Initialize filter value
     g = (float) (imu->histGyro[i][0]);
     a = (float) (imu->histAcc[i][0]);
+    //m = (float) (imu->histMag[i][0]);
 
     // Implement low-pass filter
     for ( j=1; j<k; j++ ) {
       g = g + imu->mems_gain * (float) ( imu->histGyro[i][j] - g );
       a = a + imu->mems_gain * (float) ( imu->histAcc[i][j]  - a );
+      //m = m + imu->comp_gain * (float) ( imu->histMag[i][j]  - m );
     }
 
     // Store averaged values
     imu->avgGyro[i] = g;
     imu->avgAcc[i]  = a;
+    //imu->avgMag[i]  = m;
 
   }
-
+  */
   // Scale and orient gyroscope readings
-  imu->calGyro[X] = -imu->avgGyro[Y] * GYRO_SCALE;
-  imu->calGyro[Y] = -imu->avgGyro[X] * GYRO_SCALE;
-  imu->calGyro[Z] = -imu->avgGyro[Z] * GYRO_SCALE;
+  //imu->calGyro[X] = -imu->avgGyro[Y] * GYRO_SCALE;
+  //imu->calGyro[Y] = -imu->avgGyro[X] * GYRO_SCALE;
+  //imu->calGyro[Z] = -imu->avgGyro[Z] * GYRO_SCALE;
 
   // Shift and orient accelerometer readings
-  imu->calAcc[X] = ( imu->avgAcc[Y] - imu->aoffset[Y] ) / (double)imu->arange[Y];
-  imu->calAcc[Y] = ( imu->avgAcc[X] - imu->aoffset[X] ) / (double)imu->arange[X];
-  imu->calAcc[Z] = ( imu->avgAcc[Z] - imu->aoffset[Z] ) / (double)imu->arange[Z];
+  //imu->calAcc[X] = ( imu->avgAcc[Y] - imu->aoffset[Y] ) / (double)imu->arange[Y];
+  //imu->calAcc[Y] = ( imu->avgAcc[X] - imu->aoffset[X] ) / (double)imu->arange[X];
+  //imu->calAcc[Z] = ( imu->avgAcc[Z] - imu->aoffset[Z] ) / (double)imu->arange[Z];
+
+  // Shift and orient magnetometer readings
+  //imu->calMag[X] = -( imu->avgMag[X] - imu->moffset[X] ) / (double)imu->mrange[X];
+  //imu->calMag[Y] = -( imu->avgMag[Y] - imu->moffset[Y] ) / (double)imu->mrange[Y];
+  //imu->calMag[Z] =  ( imu->avgMag[Z] - imu->moffset[Z] ) / (double)imu->mrange[Z];
 
   return;
 }
@@ -382,13 +394,13 @@ void imu_mems ( imu_struct* imu )  {
 void imu_comp ( imu_struct* imu )  {
 
   // Local variables
-  ushort i, j, k = COMP_HIST;
-  float m;
+  //ushort i, j, k = COMP_HIST;
+  //float m;
 
   // Get raw data
-  sys.ret = mpu_get_compass_reg( imu->rawMag, NULL );
-  sys_err( sys.ret, "Error (imu_comp): 'mpu_get_compass_reg' failed." );
-  printf("imu->rawMag: %d \n", imu->rawMag[1] );
+  //sys.ret = mpu_get_compass_reg( imu->rawMag, NULL );
+  //sys_err( sys.ret, "Error (imu_comp): 'mpu_get_compass_reg' failed." );
+  //printf("imu->rawMag: %d \n", imu->rawMag[1] );
   /*
   // Cycle through elements
   for ( i=0; i<3; i++ ) {

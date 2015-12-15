@@ -2,4 +2,4 @@ sys.c:13:6:sys_err	16	static
 sys.c:22:6:sys_init	176	dynamic,bounded
 sys.c:53:6:sys_debug	16	static
 sys.c:147:6:sys_exit	8	static
-sys.c:169:6:sys_memory	24	static
+sys.c:168:6:sys_memory	24	static

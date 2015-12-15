@@ -18,15 +18,13 @@ int main ( void )  {
 
   // Initialize subsystems
   sys_init();
-  log_init();
   imu_init(&imu1,1);
-  thread_init();
-
-  //timer_init();
+  usleep(500000);
+  log_init();
   //pru_init();
-  //imu_init(&imu2);
   //ctrl_init();
-  //timer_begin();
+  thr_init();
+
 
   // Continuous loop and then exit
   while(sys.running);

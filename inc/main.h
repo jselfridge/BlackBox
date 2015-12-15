@@ -34,7 +34,6 @@
 //#include <pru.h>
 #include <sys.h>
 #include <thread.h>
-//#include <timer.h>
 
 
 // PRU includes

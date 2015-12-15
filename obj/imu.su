@@ -4,5 +4,5 @@ imu.c:49:6:imu_param	16	static
 imu.c:127:6:imu_setcal	88	static
 imu.c:236:6:imu_setic	48	static
 imu.c:304:6:imu_avail	24	static
-imu.c:323:6:imu_mems	40	static
-imu.c:382:6:imu_comp	24	static
+imu.c:323:6:imu_mems	24	static
+imu.c:394:6:imu_comp	16	static

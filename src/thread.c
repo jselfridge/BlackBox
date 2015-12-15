@@ -7,10 +7,10 @@
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thread_init
+//  thr_init
 //  Initializes the various threads.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thread_init ( void )  {
+void thr_init ( void )  {
   if(DEBUG)  printf("Initializing threads \n");
 
   // Local variables
@@ -22,8 +22,8 @@ void thread_init ( void )  {
   thr_mems.period    =  MEMS_HZ;
 
   // Compass readings
-  thr_comp.priority  =       98;
-  thr_comp.period    =  COMP_HZ;
+  //thr_comp.priority  =       98;
+  //thr_comp.period    =  COMP_HZ;
 
   // Debugging
   thr_debug.priority =     94;
@@ -52,11 +52,11 @@ void thread_init ( void )  {
   sys_err( sys.ret, "Error (thread_init): Failed to create 'mems' thread." );
 
   // Initialize 'compass' thread
-  param.sched_priority = thr_comp.priority;
-  sys.ret = pthread_attr_setschedparam( &attr, &param );
-  sys_err( sys.ret, "Error (thread_init): Failed to set 'comp' priority." );
-  sys.ret = pthread_create ( &thr_comp.id, &attr, thread_comp, (void *)NULL );
-  sys_err( sys.ret, "Error (thread_init): Failed to create 'comp' thread." );
+  //param.sched_priority = thr_comp.priority;
+  //sys.ret = pthread_attr_setschedparam( &attr, &param );
+  //sys_err( sys.ret, "Error (thread_init): Failed to set 'comp' priority." );
+  //sys.ret = pthread_create ( &thr_comp.id, &attr, thread_comp, (void *)NULL );
+  //sys_err( sys.ret, "Error (thread_init): Failed to create 'comp' thread." );
 
   // Initialize 'debug' thread
   if(DEBUG) {
@@ -73,10 +73,10 @@ void thread_init ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thread_periodic
+//  thr_periodic
 //  Establishes the periodic attributes for a thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thread_periodic ( thread_struct *thr )  {
+void thr_periodic ( thread_struct *thr )  {
 
   // Local variables
   unsigned int fd, sec, nsec;
@@ -108,10 +108,10 @@ void thread_periodic ( thread_struct *thr )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thread_pause
+//  thr_pause
 //  Implements the pause before starting the next loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thread_pause ( thread_struct *thr )  {
+void thr_pause ( thread_struct *thr )  {
 
   // Local variables
   unsigned long long missed;
@@ -128,10 +128,10 @@ void thread_pause ( thread_struct *thr )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thread_start
+//  thr_start
 //  Start code for a thread loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thread_start ( thread_struct *thr )  {
+void thr_start ( thread_struct *thr )  {
 
   // Get current time
   struct timespec timeval;
@@ -146,10 +146,10 @@ void thread_start ( thread_struct *thr )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thread_finish
+//  thr_finish
 //  Finish code for a thread loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thread_finish ( thread_struct *thr )  {
+void thr_finish ( thread_struct *thr )  {
 
   // Get current time
   struct timespec timeval;
@@ -172,10 +172,10 @@ void thread_finish ( thread_struct *thr )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thread_exit
+//  thr_exit
 //  Cleanly exits the threads.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thread_exit ( void )  {
+void thr_exit ( void )  {
   printf("Closing threads  \n");
   void *status;
 
@@ -185,9 +185,9 @@ void thread_exit ( void )  {
   if(DEBUG)  printf( "  Status %ld for 'mems' thread \n", (long)status );
 
   // Exit 'compass' thread
-  sys.ret = pthread_join ( thr_comp.id, &status );
-  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'comp' thread." );
-  if(DEBUG)  printf( "  Status %ld for 'compass' thread \n", (long)status );
+  //sys.ret = pthread_join ( thr_comp.id, &status );
+  //sys_err( sys.ret, "Error (thread_exit): Failed to exit 'comp' thread." );
+  //if(DEBUG)  printf( "  Status %ld for 'compass' thread \n", (long)status );
 
   // Exit 'debug' thread
   if(DEBUG) {
@@ -206,38 +206,39 @@ void thread_exit ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *thread_mems ( )  {
   printf("  Running 'mems' thread \n");
-  thread_periodic (&thr_mems);
+  thr_periodic (&thr_mems);
   while (sys.running) {
-    thread_start(&thr_mems);
+    thr_start(&thr_mems);
     imu_mems(&imu1);
-    thread_finish(&thr_mems);
+    thr_finish(&thr_mems);
     log_write(LOG_GYRO);
     log_write(LOG_ACC);
-    thread_pause(&thr_mems);
+    log_write(LOG_MAG);
+    thr_pause(&thr_mems);
   }
   pthread_exit(NULL);
   return NULL;
 }
 
-
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_comp
 //  Run the 'compass' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *thread_comp ( )  {
   printf("  Running 'compass' thread \n");
-  thread_periodic (&thr_comp);
+  thr_periodic (&thr_comp);
   while (sys.running) {
-    thread_start(&thr_comp);
+    thr_start(&thr_comp);
     imu_comp(&imu1);
-    thread_finish(&thr_comp);
+    thr_finish(&thr_comp);
     //log_write(LOG_MAG);
-    thread_pause(&thr_comp);
+    thr_pause(&thr_comp);
   }
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_debug
@@ -245,13 +246,13 @@ void *thread_comp ( )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *thread_debug ( )  {
   printf("  Running 'debug' thread \n");
-  thread_periodic (&thr_debug);
+  thr_periodic (&thr_debug);
   while (sys.running) {
-    thread_start(&thr_debug);
+    thr_start(&thr_debug);
     usleep(10000);
     sys_debug();
-    thread_finish(&thr_debug);
-    thread_pause(&thr_debug);
+    thr_finish(&thr_debug);
+    thr_pause(&thr_debug);
   }
   pthread_exit(NULL);
   return NULL;

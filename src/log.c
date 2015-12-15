@@ -87,7 +87,7 @@ void log_open ( void )  {
     Arx1,   Ary1,   Arz1,  \
     Aax1,      Aay1,      Aaz1,     \
     Acx1,    Acy1,    Acz1,   ");
-  /*
+
   // Create magnetometer datalog file
   sprintf( file, "%smag.txt", datalog.path );
   datalog.mag = fopen( file, "w" );
@@ -97,7 +97,7 @@ void log_open ( void )  {
     Mrx1, Mry1, Mrz1,\
     Max1,    May1,    Maz1,   \
     Mcx1,    Mcy1,    Mcz1,   ");
-  */
+
   // Determine start second
   struct timespec timeval;
   clock_gettime( CLOCK_MONOTONIC, &timeval );
@@ -139,17 +139,17 @@ void log_record ( enum log_index index )  {
     for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%09.2f, ", imu1.avgAcc[i] );  fprintf( datalog.acc, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%07.4f, ", imu1.calAcc[i] );  fprintf( datalog.acc, "   " );
     return;
-    /*
+
   // Record 'magnetometer' datalog
   case LOG_MAG :
-    timestamp = (float)( thr_comp.start_sec + ( thr_comp.start_usec / 1000000.0f ) - datalog.offset );
-    fprintf( datalog.mag, "\n %011.6f, %06ld, %6.3f, ", timestamp, thr_comp.dur, thr_comp.perc );
-    if (thr_comp.perc<1.0)  fprintf( datalog.mag, "_,    ");  else  fprintf( datalog.mag, "X,    ");
+    timestamp = (float)( thr_mems.start_sec + ( thr_mems.start_usec / 1000000.0f ) - datalog.offset );
+    fprintf( datalog.mag, "\n %011.6f, %06ld, %6.3f, ", timestamp, thr_mems.dur, thr_mems.perc );
+    if (thr_mems.perc<1.0) fprintf( datalog.mag, "_,    ");  else  fprintf( datalog.mag, "X,    ");
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%04d, ",   imu1.rawMag[i] );  fprintf( datalog.mag, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%07.2f, ", imu1.avgMag[i] );  fprintf( datalog.mag, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%07.4f, ", imu1.calMag[i] );  fprintf( datalog.mag, "   " );
     return;
-    */
+
   default :
     return;
   }

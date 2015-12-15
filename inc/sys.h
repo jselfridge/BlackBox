@@ -23,11 +23,11 @@ typedef struct sys_struct {
 sys_struct sys;
 
 
-// Global variables
+// Global variables  { Move into struct? }
 struct sigaction sys_signal;
 
 
-// Function declarations
+// Function declarations  { Add void? }
 void sys_err    ( bool cond, char* msg );
 void sys_init   (  );
 void sys_debug  (  );

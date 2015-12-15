@@ -1,1 +1,0 @@
- Mtime,       Mdur,    Mperc, M,    Mrx1, Mry1, Mrz1,    Max1,    May1,    Maz1,       Mcx1,    Mcy1,    Mcz1,   

@@ -10,8 +10,8 @@
 
 // Define statements
 
-#define MEMS_HZ   200
-#define COMP_HZ    50
+#define MEMS_HZ   100
+#define COMP_HZ   100
 
 #define MEMS_HIST  1
 #define COMP_HIST  1
