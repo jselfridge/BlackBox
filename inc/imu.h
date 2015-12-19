@@ -10,11 +10,12 @@
 
 // Define statements
 
-#define MEMS_HZ   100
-#define COMP_HZ   100
+#define MEMS_HZ    1000
+#define COMP_HZ     100
+#define FUSION_HZ    50
 
-#define MEMS_HIST  1
-#define COMP_HIST  1
+#define MEMS_HIST  20
+#define COMP_HIST   6
 
 #define MEMS_LPF  (0.0f)
 #define COMP_LPF  (0.0f)
@@ -23,13 +24,14 @@
 #define ACC_FSR  4
 
 #define GYRO_SCALE  ( 500.0f / 32768.0f ) * ( PI / 180.0f )
-//#define GYRO_ERROR  5.0f * ( PI / 180.0 )
-//#define GYRO_DRIFT  0.2f * ( PI / 180.0 )
-//#define IMU_BETA    sqrt( 3.0f / 4.0f ) * GYRO_ERROR
-//#define IMU_ZETA    sqrt( 3.0f / 4.0f ) * GYRO_DRIFT
-//#define R_BIAS      -3.9f * ( PI / 180.0 )
-//#define P_BIAS      -1.0f * ( PI / 180.0 )
-//#define Y_BIAS       0.0f * ( PI / 180.0 )
+#define GYRO_ERROR  5.0f * ( PI / 180.0 )
+#define GYRO_DRIFT  0.2f * ( PI / 180.0 )
+#define IMU_BETA    sqrt( 3.0f / 4.0f ) * GYRO_ERROR
+#define IMU_ZETA    sqrt( 3.0f / 4.0f ) * GYRO_DRIFT
+#define R_BIAS      -3.9f * ( PI / 180.0 )
+#define P_BIAS      -1.0f * ( PI / 180.0 )
+#define Y_BIAS       0.0f * ( PI / 180.0 )
+
 #define X   0
 #define Y   1
 #define Z   2
@@ -41,8 +43,10 @@ typedef struct {
   ushort  bus;
   ushort  mems_hz;
   ushort  comp_hz;
+  ushort  fusion_hz;
   float   mems_dt;
   float   comp_dt;
+  float   fusion_dt;
   float   mems_lpf;
   float   comp_lpf;
   float   mems_tc;
@@ -65,13 +69,13 @@ typedef struct {
   float   calGyro   [3];
   float   calAcc    [3];
   float   calMag    [3];
-  //double  Quat      [4];
-  //double  dQuat     [4];
-  //double  Eul       [3];
-  //double  dEul      [3];
-  //double  bias      [3];
-  //double  fx;
-  //double  fz;
+  double  Quat      [4];
+  double  dQuat     [4];
+  double  Eul       [3];
+  double  dEul      [3];
+  double  bias      [3];
+  double  fx;
+  double  fz;
 } imu_struct;
 imu_struct imu1;
 
@@ -86,7 +90,7 @@ void    imu_setic    ( imu_struct* imu );
 bool    imu_avail    ( imu_struct* imu );
 void    imu_mems     ( imu_struct* imu );
 void    imu_comp     ( imu_struct* imu );
-//void    imu_fusion   ( imu_struct* imu );
+void    imu_fusion   ( imu_struct* imu );
 //short   imu_row_map  ( const signed char* row );
 //short   imu_orient   ( const signed char* mtx );
 

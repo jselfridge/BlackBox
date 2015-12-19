@@ -18,16 +18,20 @@ void thr_init ( void )  {
   struct sched_param param;
 
   // MEMS devices
-  thr_mems.priority  =       99;
-  thr_mems.period    =  MEMS_HZ;
+  thr_mems.priority    =  99;
+  thr_mems.period      =  1000000 / MEMS_HZ;
 
   // Compass readings
-  //thr_comp.priority  =       98;
-  //thr_comp.period    =  COMP_HZ;
+  thr_comp.priority    =  98;
+  thr_comp.period      =  1000000 / COMP_HZ;
+
+  // Data fusion algorithm
+  thr_fusion.priority  =  97;
+  thr_fusion.period    =  1000000 / FUSION_HZ;
 
   // Debugging
-  thr_debug.priority =     94;
-  thr_debug.period   = 100000;
+  thr_debug.priority =  94;
+  thr_debug.period   =  1000000 / DEBUG_HZ;
 
   // Initialize attribute variable
   pthread_attr_init(&attr);
@@ -52,11 +56,18 @@ void thr_init ( void )  {
   sys_err( sys.ret, "Error (thread_init): Failed to create 'mems' thread." );
 
   // Initialize 'compass' thread
-  //param.sched_priority = thr_comp.priority;
-  //sys.ret = pthread_attr_setschedparam( &attr, &param );
-  //sys_err( sys.ret, "Error (thread_init): Failed to set 'comp' priority." );
-  //sys.ret = pthread_create ( &thr_comp.id, &attr, thread_comp, (void *)NULL );
-  //sys_err( sys.ret, "Error (thread_init): Failed to create 'comp' thread." );
+  param.sched_priority = thr_comp.priority;
+  sys.ret = pthread_attr_setschedparam( &attr, &param );
+  sys_err( sys.ret, "Error (thread_init): Failed to set 'comp' priority." );
+  sys.ret = pthread_create ( &thr_comp.id, &attr, thread_comp, (void *)NULL );
+  sys_err( sys.ret, "Error (thread_init): Failed to create 'comp' thread." );
+
+  // Initialize 'fusion' thread
+  param.sched_priority = thr_fusion.priority;
+  sys.ret = pthread_attr_setschedparam( &attr, &param );
+  sys_err( sys.ret, "Error (thread_init): Failed to set 'fusion' priority." );
+  sys.ret = pthread_create ( &thr_fusion.id, &attr, thread_fusion, (void *)NULL );
+  sys_err( sys.ret, "Error (thread_init): Failed to create 'fusion' thread." );
 
   // Initialize 'debug' thread
   if(DEBUG) {
@@ -165,7 +176,6 @@ void thr_finish ( thread_struct *thr )  {
 
   // Calculate timing metrics
   thr->dur += thr->finish_usec - thr->start_usec;
-  thr->perc = thr->dur / (double)thr->period;
 
   return;
 }
@@ -185,9 +195,14 @@ void thr_exit ( void )  {
   if(DEBUG)  printf( "  Status %ld for 'mems' thread \n", (long)status );
 
   // Exit 'compass' thread
-  //sys.ret = pthread_join ( thr_comp.id, &status );
-  //sys_err( sys.ret, "Error (thread_exit): Failed to exit 'comp' thread." );
-  //if(DEBUG)  printf( "  Status %ld for 'compass' thread \n", (long)status );
+  sys.ret = pthread_join ( thr_comp.id, &status );
+  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'comp' thread." );
+  if(DEBUG)  printf( "  Status %ld for 'compass' thread \n", (long)status );
+
+  // Exit 'fusion' thread
+  sys.ret = pthread_join ( thr_fusion.id, &status );
+  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'fusion' thread." );
+  if(DEBUG)  printf( "  Status %ld for 'fusion' thread \n", (long)status );
 
   // Exit 'debug' thread
   if(DEBUG) {
@@ -213,14 +228,13 @@ void *thread_mems ( )  {
     thr_finish(&thr_mems);
     log_write(LOG_GYRO);
     log_write(LOG_ACC);
-    log_write(LOG_MAG);
     thr_pause(&thr_mems);
   }
   pthread_exit(NULL);
   return NULL;
 }
 
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_comp
 //  Run the 'compass' thread.
@@ -232,13 +246,32 @@ void *thread_comp ( )  {
     thr_start(&thr_comp);
     imu_comp(&imu1);
     thr_finish(&thr_comp);
-    //log_write(LOG_MAG);
+    log_write(LOG_MAG);
     thr_pause(&thr_comp);
   }
   pthread_exit(NULL);
   return NULL;
 }
-*/
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  thread_fusion
+//  Run the 'fusion' thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void *thread_fusion ( )  {
+  printf("  Running 'fusion' thread \n");
+  thr_periodic (&thr_fusion);
+  while (sys.running) {
+    thr_start(&thr_fusion);
+    imu_fusion(&imu1);
+    thr_finish(&thr_fusion);
+    log_write(LOG_FUSION);
+    thr_pause(&thr_fusion);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_debug

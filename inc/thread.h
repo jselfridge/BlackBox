@@ -20,10 +20,10 @@ typedef struct thread_struct {
   uint      finish_sec;
   ulong     finish_usec;
   ulong     dur;
-  double    perc;
 } thread_struct;
 thread_struct thr_mems;
-//thread_struct thr_comp;
+thread_struct thr_comp;
+thread_struct thr_fusion;
 thread_struct thr_debug;
 
 
@@ -37,9 +37,10 @@ void  thr_exit      ( void );
 
 
 // Thread handlers
-void *thread_mems       ( );
-//void *thread_comp       ( );
-void *thread_debug     ( );
+void *thread_mems    ( );
+void *thread_comp    ( );
+void *thread_fusion  ( );
+void *thread_debug   ( );
 
 
 #endif

@@ -239,13 +239,15 @@ void imu_setic ( imu_struct* imu )  {
   // Local vsariable
   ushort i, j;
 
-  // Assign sample rate
-  imu->mems_hz = MEMS_HZ;
-  imu->comp_hz = COMP_HZ;
+  // Assign sample rates
+  imu->mems_hz   = MEMS_HZ;
+  imu->comp_hz   = COMP_HZ;
+  imu->fusion_hz = FUSION_HZ;
 
   // Calculate time steps
-  imu->mems_dt = 1.0/MEMS_HZ;
-  imu->comp_dt = 1.0/COMP_HZ;
+  imu->mems_dt   = 1.0/MEMS_HZ;
+  imu->comp_dt   = 1.0/COMP_HZ;
+  imu->fusion_dt = 1.0/FUSION_HZ;
 
   // Assign low pass filter cutoff
   imu->mems_lpf = MEMS_LPF;
@@ -267,6 +269,9 @@ void imu_setic ( imu_struct* imu )  {
     printf("    COMP device    \
     HZ: %4d    DT: %5.3f    LPF: %6.2f    TC: %5.2f    gain: %7.4f  \n", \
     imu->comp_hz, imu->comp_dt, imu->comp_lpf, imu->comp_tc, imu->comp_gain );
+    printf("    Data Fusion:   \
+    HZ: %4d    DT: %5.3f  \n", \
+    imu->fusion_hz, imu->fusion_dt ); 
   }
 
   // Clear moving average history
@@ -324,64 +329,43 @@ void imu_mems ( imu_struct* imu )  {
 
   // Local variables
   ushort i, j, k = MEMS_HIST;
-  float g, a, m;
+  float g, a;
 
   // Get raw data
   sys.ret = mpu_get_gyro_reg( imu->rawGyro, NULL );
   sys_err( sys.ret, "Error (imu_mems): 'mpu_get_gyro_reg' failed." );
   sys.ret = mpu_get_accel_reg( imu->rawAcc, NULL );
   sys_err( sys.ret, "Error (imu_mems): 'mpu_get_accel_reg' failed." );
-  //sys.ret = mpu_get_compass_reg( imu->rawMag, NULL );
-  //sys_err( sys.ret, "Error (imu_mems): 'mpu_get_compass_reg' failed." );
-  /*
+
   // Cycle through elements
   for ( i=0; i<3; i++ ) {
 
     // Advance history data
-    for ( j=1; j<k; j++ ) {
-      imu->histGyro[i][j-1] = imu->histGyro[i][j];
-      imu->histAcc[i][j-1]  = imu->histAcc[i][j];
-      //imu->histMag[i][j-1]  = imu->histMag[i][j];
-    }
+    for ( j=1; j<k; j++ ) {  imu->histGyro[i][j-1] = imu->histGyro[i][j];  imu->histAcc[i][j-1] = imu->histAcc[i][j];  }
 
     // Assign current value
-    imu->histGyro[i][k-1] = imu->rawGyro[i];
-    imu->histAcc[i][k-1]  = imu->rawAcc[i];
-    //imu->histMag[i][k-1]  = imu->rawMag[i];
+    imu->histGyro[i][k-1] = imu->rawGyro[i];  imu->histAcc[i][k-1] = imu->rawAcc[i];
 
     // Initialize filter value
-    g = (float) (imu->histGyro[i][0]);
-    a = (float) (imu->histAcc[i][0]);
-    //m = (float) (imu->histMag[i][0]);
+    g = (float) (imu->histGyro[i][0]);  a = (float) (imu->histAcc[i][0]);
 
     // Implement low-pass filter
-    for ( j=1; j<k; j++ ) {
-      g = g + imu->mems_gain * (float) ( imu->histGyro[i][j] - g );
-      a = a + imu->mems_gain * (float) ( imu->histAcc[i][j]  - a );
-      //m = m + imu->comp_gain * (float) ( imu->histMag[i][j]  - m );
-    }
+    for ( j=1; j<k; j++ ) {  g = g + imu->mems_gain * (float) ( imu->histGyro[i][j] - g );  a = a + imu->mems_gain * (float) ( imu->histAcc[i][j] - a );  }
 
     // Store averaged values
-    imu->avgGyro[i] = g;
-    imu->avgAcc[i]  = a;
-    //imu->avgMag[i]  = m;
+    imu->avgGyro[i] = g;  imu->avgAcc[i] = a;
 
   }
-  */
+
   // Scale and orient gyroscope readings
-  //imu->calGyro[X] = -imu->avgGyro[Y] * GYRO_SCALE;
-  //imu->calGyro[Y] = -imu->avgGyro[X] * GYRO_SCALE;
-  //imu->calGyro[Z] = -imu->avgGyro[Z] * GYRO_SCALE;
+  imu->calGyro[X] = -imu->avgGyro[Y] * GYRO_SCALE;
+  imu->calGyro[Y] = -imu->avgGyro[X] * GYRO_SCALE;
+  imu->calGyro[Z] = -imu->avgGyro[Z] * GYRO_SCALE;
 
   // Shift and orient accelerometer readings
-  //imu->calAcc[X] = ( imu->avgAcc[Y] - imu->aoffset[Y] ) / (double)imu->arange[Y];
-  //imu->calAcc[Y] = ( imu->avgAcc[X] - imu->aoffset[X] ) / (double)imu->arange[X];
-  //imu->calAcc[Z] = ( imu->avgAcc[Z] - imu->aoffset[Z] ) / (double)imu->arange[Z];
-
-  // Shift and orient magnetometer readings
-  //imu->calMag[X] = -( imu->avgMag[X] - imu->moffset[X] ) / (double)imu->mrange[X];
-  //imu->calMag[Y] = -( imu->avgMag[Y] - imu->moffset[Y] ) / (double)imu->mrange[Y];
-  //imu->calMag[Z] =  ( imu->avgMag[Z] - imu->moffset[Z] ) / (double)imu->mrange[Z];
+  imu->calAcc[X] = ( imu->avgAcc[Y] - imu->aoffset[Y] ) / (double)imu->arange[Y];
+  imu->calAcc[Y] = ( imu->avgAcc[X] - imu->aoffset[X] ) / (double)imu->arange[X];
+  imu->calAcc[Z] = ( imu->avgAcc[Z] - imu->aoffset[Z] ) / (double)imu->arange[Z];
 
   return;
 }
@@ -394,21 +378,18 @@ void imu_mems ( imu_struct* imu )  {
 void imu_comp ( imu_struct* imu )  {
 
   // Local variables
-  //ushort i, j, k = COMP_HIST;
-  //float m;
+  ushort i, j, k = COMP_HIST;
+  float m;
 
   // Get raw data
-  //sys.ret = mpu_get_compass_reg( imu->rawMag, NULL );
-  //sys_err( sys.ret, "Error (imu_comp): 'mpu_get_compass_reg' failed." );
-  //printf("imu->rawMag: %d \n", imu->rawMag[1] );
-  /*
+  sys.ret = mpu_get_compass_reg( imu->rawMag, NULL );
+  sys_err( sys.ret, "Error (imu_comp): 'mpu_get_compass_reg' failed." );
+
   // Cycle through elements
   for ( i=0; i<3; i++ ) {
 
     // Advance history data
-    for ( j=1; j<k; j++ ) {
-      imu->histMag[i][j-1] = imu->histMag[i][j];
-    }
+    for ( j=1; j<k; j++ ) {  imu->histMag[i][j-1] = imu->histMag[i][j];  }
 
     // Assign current value
     imu->histMag[i][k-1] = imu->rawMag[i];
@@ -417,9 +398,7 @@ void imu_comp ( imu_struct* imu )  {
     m = (float) (imu->histMag[i][0]);
 
     // Implement low-pass filter
-    for ( j=1; j<k; j++ ) {
-      m = m + imu->comp_gain * (float) ( imu->histMag[i][j] - m );
-    }
+    for ( j=1; j<k; j++ ) {  m = m + imu->comp_gain * (float) ( imu->histMag[i][j] - m );  }
 
     // Store averaged values
     imu->avgMag[i] = m;
@@ -430,11 +409,11 @@ void imu_comp ( imu_struct* imu )  {
   imu->calMag[X] = -( imu->avgMag[X] - imu->moffset[X] ) / (double)imu->mrange[X];
   imu->calMag[Y] = -( imu->avgMag[Y] - imu->moffset[Y] ) / (double)imu->mrange[Y];
   imu->calMag[Z] =  ( imu->avgMag[Z] - imu->moffset[Z] ) / (double)imu->mrange[Z];
-  */
+
   return;
 }
 
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_fusion
 //  Applies sensor data fusion algorithm. 
@@ -449,14 +428,14 @@ void imu_fusion ( imu_struct* imu )  {
   unsigned short w=0, x=1, y=2, z=3;
 
   // Get values from mpu structure
-  double q[4], m[3], a[3], g[3], b[3], fx, fz;
-  fx = imu->fx;  fz = imu->fz;
+  double q[4], m[3], a[3], g[3], b[3], fx, fz, dt;
+  fx = imu->fx;  fz = imu->fz;  dt = imu->fusion_dt;
   for ( i=0; i<4; i++ ) {
     q[i] = imu->Quat[i];
     if (i<3) {
-      m[i] = imu->normMag[i];
-      a[i] = imu->normAcc[i];
-      g[i] = imu->normGyro[i];
+      m[i] = imu->calMag[i];
+      a[i] = imu->calAcc[i];
+      g[i] = imu->calGyro[i];
       b[i] = imu->bias[i];
     }
   }
@@ -484,7 +463,7 @@ void imu_fusion ( imu_struct* imu )  {
     if(i<3)  twom[i] = 2.0f * m[i];
   }
 
-  // Quaternion  multiplication values 
+  // Quaternion multiplication values 
   double qwx, qwy, qwz, qxy, qxz, qyz, qxx, qyy, qzz;
   qwx = q[w] * q[x];  qwy = q[w] * q[y];  qwz = q[w] * q[z];
   qxy = q[x] * q[y];  qxz = q[x] * q[z];  qyz = q[y] * q[z];
@@ -495,12 +474,9 @@ void imu_fusion ( imu_struct* imu )  {
   F1 =        twoq[x] * q[z] - twoq[w] * q[y] - a[X];
   F2 =        twoq[w] * q[x] + twoq[y] * q[z] - a[Y];
   F3 = 1.0f - twoq[x] * q[x] - twoq[y] * q[y] - a[Z];
-  F4 = twofx * ( 0.5f - q[y] * q[y] - q[z] * q[z] ) 
-     + twofz * ( qxz - qwy ) - m[X]; 
-  F5 = twofx * ( q[x] * q[y] - q[w] * q[z] ) 
-     + twofz * ( q[w] * q[x] + q[y] * q[z] ) - m[Y];
-  F6 = twofx * ( qwy + qxz )
-     + twofz * ( 0.5f - q[x] * q[x] - q[y] * q[y] ) - m[Z];
+  F4 = twofx * ( 0.5f - qyy - qzz ) + twofz * (        qxz - qwy ) - m[X]; 
+  F5 = twofx * (        qxy - qwz ) + twofz * (        qwx + qyz ) - m[Y];
+  F6 = twofx * (        qwy + qxz ) + twofz * ( 0.5f - qxx - qyy ) - m[Z];
 
   // Calculate jacobian matrix
   double J11J24, J12J23, J13J22, J14J21, J32, J33;
@@ -533,7 +509,7 @@ void imu_fusion ( imu_struct* imu )  {
   qdf[y] = - J13J22 * F1 + J12J23 * F2 - J33 * F3 - J43 * F4 + J53 * F5 + J63 * F6;
   qdf[z] =   J14J21 * F1 + J11J24 * F2            - J44 * F4 - J54 * F5 + J64 * F6;
 
-  // Normalise gradient (create function)
+  // Normalize gradient
   mag = 0.0;
   for ( i=0; i<4; i++ )  mag += qdf[i] * qdf[i];
   mag = sqrt(mag);
@@ -547,7 +523,7 @@ void imu_fusion ( imu_struct* imu )  {
 
   // Adjust for gyroscope baises
   for ( i=0; i<3; i++ ) {
-    b[i] += err[i] * SYS_DT * IMU_ZETA;
+    b[i] += err[i] * dt * IMU_ZETA;
     g[i] -= b[i];
   }
 
@@ -562,7 +538,7 @@ void imu_fusion ( imu_struct* imu )  {
   double qd[4];
   for ( i=0; i<4; i++ ) {
     qd[i] = qdr[i] - ( IMU_BETA * qdf[i] );
-    q[i] += qd[i] * SYS_DT;
+    q[i] += qd[i] * dt;
   }
 
   // Normalise quaternion
@@ -601,7 +577,6 @@ void imu_fusion ( imu_struct* imu )  {
 
   return;
 }
-*/
 
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

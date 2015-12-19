@@ -80,10 +80,9 @@ void sys_debug (  )  {
   //printf("%6.1f ", heading *(180.0f/PI) );  printf("   ");
 
   // Raw sensor values - IMU1
-  for ( i=0; i<3; i++ )  printf("%6d ",    imu1.rawGyro[i] );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%06d ",   imu1.rawAcc[i]  );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%04d ",   imu1.rawMag[i]  );  printf("   ");
-  //for ( i=0; i<4; i++ )  printf("%012ld ", imu1.rawQuat[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%6d ",    imu1.rawGyro[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%06d ",   imu1.rawAcc[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%04d ",   imu1.rawMag[i]  );  printf("   ");
 
   // Raw sensor values - IMU2
   //for ( i=0; i<3; i++ )  printf("%04d ",   imu2.rawMag[i]  );  printf("   ");
@@ -101,20 +100,18 @@ void sys_debug (  )  {
   //for ( i=0; i<3; i++ )  printf("%09.2f ",   imu2.avgAcc[i]  );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%09.2f ",   imu2.avgGyro[i] );  printf("   ");
 
-  // Normalized sensor values - IMU1
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.normMag[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.normAcc[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.normGyro[i] );  printf("   ");
-  //for ( i=0; i<4; i++ )  printf("%7.4f ", imu1.normQuat[i] );  printf("   ");
+  // Calibrated sensor values - IMU1
+  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calMag[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calAcc[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calGyro[i] );  printf("   ");
 
-  // Normalized sensor values - IMU2
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.normMag[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.normAcc[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.normGyro[i] );  printf("   ");
-  //for ( i=0; i<4; i++ )  printf("%7.4f ", imu2.normQuat[i] );  printf("   ");
+  // Calibrated sensor values - IMU2
+  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.calMag[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.calAcc[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.calGyro[i] );  printf("   ");
 
   // Data fusion values - IMU1
-  //for ( i=0; i<4; i++ )  printf("%6.3f ", imu1.Quat[i]              );  printf("   ");
+  for ( i=0; i<4; i++ )  printf("%6.3f ", imu1.Quat[i]              );  printf("   ");
   //for ( i=0; i<4; i++ )  printf("%6.3f ", imu1.dQuat[i]             );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.Eul[i]  *(180.0f/PI) );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.dEul[i] *(180.0f/PI) );  printf("   ");
@@ -145,9 +142,9 @@ void sys_debug (  )  {
 //  Code that runs prior to exiting the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_exit (  )  {
-  if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   sys.running = false;
   usleep(500000);
+  if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   thr_exit();
   imu_exit();
   //pru_exit();

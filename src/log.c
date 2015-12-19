@@ -73,7 +73,7 @@ void log_open ( void )  {
   datalog.gyro = fopen( file, "w" );
   sys_err( datalog.gyro == NULL, "Error (log_init): Cannot open 'gyro' file. \n" );
   fprintf( datalog.gyro, 
-    " Gtime,       Gdur,    Gperc, G,\
+    " Gtime,       Gdur,  \
     Grx1,   Gry1,   Grz1,  \
     Gax1,      Gay1,      Gaz1      \
     Gcx1,    Gcy1,    Gcz1   ");
@@ -83,7 +83,7 @@ void log_open ( void )  {
   datalog.acc = fopen( file, "w" );
   sys_err( datalog.acc == NULL, "Error (log_init): Cannot open 'acc' file. \n" );
   fprintf( datalog.acc, 
-    " Atime,       Adur,    Aperc, A,\
+    " Atime,       Adur,  \
     Arx1,   Ary1,   Arz1,  \
     Aax1,      Aay1,      Aaz1,     \
     Acx1,    Acy1,    Acz1,   ");
@@ -93,10 +93,21 @@ void log_open ( void )  {
   datalog.mag = fopen( file, "w" );
   sys_err( datalog.mag == NULL, "Error (log_init): Cannot open 'mag' file. \n" );
   fprintf( datalog.mag, 
-    " Mtime,       Mdur,    Mperc, M,\
+    " Mtime,       Mdur,  \
     Mrx1, Mry1, Mrz1,\
     Max1,    May1,    Maz1,   \
     Mcx1,    Mcy1,    Mcz1,   ");
+
+  // Create data fusion datalog file
+  sprintf( file, "%sfusion.txt", datalog.path );
+  datalog.fusion = fopen( file, "w" );
+  sys_err( datalog.fusion == NULL, "Error (log_init): Cannot open 'fusion' file. \n" );
+  fprintf( datalog.fusion, 
+    " Ftime,       Fdur,  \
+    Qw1,   Qx1,   Qy1,   Qz1,  \
+    Ex1, Ey1, Ez1,\
+    dEx1, dEy1, dEz1,\
+    XXXX,    XXXX,    XXXX,   ");
 
   // Determine start second
   struct timespec timeval;
@@ -123,8 +134,7 @@ void log_record ( enum log_index index )  {
   // Record 'gyroscope' datalog
   case LOG_GYRO :
     timestamp = (float)( thr_mems.start_sec + ( thr_mems.start_usec / 1000000.0f ) - datalog.offset );
-    fprintf( datalog.gyro, "\n %011.6f, %06ld, %6.3f, ", timestamp, thr_mems.dur, thr_mems.perc );
-    if (thr_mems.perc<1.0) fprintf( datalog.gyro, "_,    ");  else  fprintf( datalog.gyro, "X,    ");
+    fprintf( datalog.gyro, "\n %011.6f, %06ld,    ", timestamp, thr_mems.dur );
     for ( i=0; i<3; i++ )  fprintf( datalog.gyro, "%06d, ",   imu1.rawGyro[i] );   fprintf( datalog.gyro, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.gyro, "%09.2f, ", imu1.avgGyro[i] );   fprintf( datalog.gyro, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.gyro, "%07.4f, ", imu1.calGyro[i] );   fprintf( datalog.gyro, "   " );
@@ -133,8 +143,7 @@ void log_record ( enum log_index index )  {
   // Record 'accelerometer' datalog
   case LOG_ACC :
     timestamp = (float)( thr_mems.start_sec + ( thr_mems.start_usec / 1000000.0f ) - datalog.offset );
-    fprintf( datalog.acc, "\n %011.6f, %06ld, %6.3f, ", timestamp, thr_mems.dur, thr_mems.perc );
-    if (thr_mems.perc<1.0) fprintf( datalog.acc, "_,    ");  else  fprintf( datalog.acc, "X,    ");
+    fprintf( datalog.acc, "\n %011.6f, %06ld,    ", timestamp, thr_mems.dur );
     for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%06d, ",   imu1.rawAcc[i] );  fprintf( datalog.acc, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%09.2f, ", imu1.avgAcc[i] );  fprintf( datalog.acc, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%07.4f, ", imu1.calAcc[i] );  fprintf( datalog.acc, "   " );
@@ -142,12 +151,20 @@ void log_record ( enum log_index index )  {
 
   // Record 'magnetometer' datalog
   case LOG_MAG :
-    timestamp = (float)( thr_mems.start_sec + ( thr_mems.start_usec / 1000000.0f ) - datalog.offset );
-    fprintf( datalog.mag, "\n %011.6f, %06ld, %6.3f, ", timestamp, thr_mems.dur, thr_mems.perc );
-    if (thr_mems.perc<1.0) fprintf( datalog.mag, "_,    ");  else  fprintf( datalog.mag, "X,    ");
+    timestamp = (float)( thr_comp.start_sec + ( thr_comp.start_usec / 1000000.0f ) - datalog.offset );
+    fprintf( datalog.mag, "\n %011.6f, %06ld,    ", timestamp, thr_comp.dur );
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%04d, ",   imu1.rawMag[i] );  fprintf( datalog.mag, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%07.2f, ", imu1.avgMag[i] );  fprintf( datalog.mag, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%07.4f, ", imu1.calMag[i] );  fprintf( datalog.mag, "   " );
+    return;
+
+  // Record 'data fusion' datalog
+  case LOG_FUSION :
+    timestamp = (float)( thr_fusion.start_sec + ( thr_fusion.start_usec / 1000000.0f ) - datalog.offset );
+    fprintf( datalog.fusion, "\n %011.6f, %06ld,    ", timestamp, thr_fusion.dur );
+    for ( i=0; i<4; i++ )  fprintf( datalog.fusion, "%07.4f, ", imu1.Quat[i] );  fprintf( datalog.fusion, "   " );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%07.2f, ", imu1.avgMag[i] );  fprintf( datalog.mag, "   " );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%07.4f, ", imu1.calMag[i] );  fprintf( datalog.mag, "   " );
     return;
 
   default :
@@ -167,6 +184,7 @@ void log_exit ( void )  {
   fclose(datalog.gyro);
   fclose(datalog.acc);
   fclose(datalog.mag);
+  fclose(datalog.fusion);
 
   // Adjust flag
   datalog.open = false;
