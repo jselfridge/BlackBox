@@ -88,22 +88,21 @@ void sys_debug (  )  {
   //for ( i=0; i<3; i++ )  printf("%04d ",   imu2.rawMag[i]  );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%06d ",   imu2.rawAcc[i]  );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%06d ",   imu2.rawGyro[i] );  printf("   ");
-  //for ( i=0; i<4; i++ )  printf("%012ld ", imu2.rawQuat[i] );  printf("   ");
 
-  // Moving average sensor values - IMU1
+  // Filtered sensor values - IMU1
   //for ( i=0; i<3; i++ )  printf("%07.2f ",   imu1.avgMag[i]  );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%09.2f ",   imu1.avgAcc[i]  );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%09.2f ",   imu1.avgGyro[i] );  printf("   ");
 
-  // Moving average sensor values - IMU2
+  // Filtered sensor values - IMU2
   //for ( i=0; i<3; i++ )  printf("%07.2f ",   imu2.avgMag[i]  );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%09.2f ",   imu2.avgAcc[i]  );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%09.2f ",   imu2.avgGyro[i] );  printf("   ");
 
   // Calibrated sensor values - IMU1
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calMag[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calAcc[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calGyro[i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calMag[i]  );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calAcc[i]  );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calGyro[i] );  printf("   ");
 
   // Calibrated sensor values - IMU2
   //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.calMag[i]  );  printf("   ");

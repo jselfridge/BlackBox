@@ -281,18 +281,18 @@ void imu_setic ( imu_struct* imu )  {
     for ( j=0; j<COMP_HIST; j++ )  imu->histMag[i][j]  = 0;
   }
 
-  //imu->fx = 0.5;  imu->fz = 0.866;
-  //for ( i=0; i<4; i++ ) {
-    //imu->dQuat[i] = 0;
-    //if (i<3) {
-      //imu->Eul[i]  = 0;
-      //imu->dEul[i] = 0;
-      //imu->bias[i] = 0;
-    //}
-  //}
-  //imu->Quat[0] = 1;
-  //imu->Eul[Z] = ctrl.heading;
+  imu->fx = 0.5;  imu->fz = 0.866;
+  for ( i=0; i<4; i++ ) {
+    imu->dQuat[i] = 0;
+    if (i<3) {
+      imu->Eul[i]  = 0;
+      imu->dEul[i] = 0;
+      imu->bias[i] = 0;
+    }
+  }
+  imu->Quat[0] = 1;
 
+  //imu->Eul[Z] = ctrl.heading;
   //imu->Quat[0] = cos(ctrl.heading/2);
   //imu->Quat[1] = 0;
   //imu->Quat[2] = 0;
