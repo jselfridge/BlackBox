@@ -466,8 +466,6 @@ void imu_fusion ( imu_struct* imu )  {
   qxy = q[x] * q[y];  qxz = q[x] * q[z];  qyz = q[y] * q[z];
   qxx = q[x] * q[x];  qyy = q[y] * q[y];  qzz = q[z] * q[z];
 
-  printf( "debug: %f \n", q[w] );
-
   // Calculate objective function
   double F1, F2, F3, F4, F5, F6;
   F1 =        twoq[x] * q[z] - twoq[w] * q[y] - a[X];

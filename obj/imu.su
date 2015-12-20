@@ -5,4 +5,4 @@ imu.c:127:6:imu_setcal	88	static
 imu.c:236:6:imu_setic	48	static
 imu.c:317:6:imu_avail	24	static
 imu.c:336:6:imu_data	48	static
-imu.c:418:6:imu_fusion	792	static
+imu.c:418:6:imu_fusion	784	static

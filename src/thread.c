@@ -226,6 +226,7 @@ void *thread_imu ( )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *thread_fusion ( )  {
   printf("  Running 'fusion' thread \n");
+  usleep(500000);
   thr_periodic (&thr_fusion);
   while (sys.running) {
     thr_start(&thr_fusion);
@@ -245,6 +246,7 @@ void *thread_fusion ( )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *thread_debug ( )  {
   printf("  Running 'debug' thread \n");
+  usleep(500000);
   thr_periodic (&thr_debug);
   while (sys.running) {
     thr_start(&thr_debug);

@@ -19,7 +19,7 @@ int main ( void )  {
   // Initialize subsystems
   sys_init();
   imu_init(&imu1,1);
-  usleep(200000);
+  usleep(500000);
   log_init();
   //pru_init();
   //ctrl_init();
