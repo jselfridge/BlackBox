@@ -17,13 +17,9 @@ void thr_init ( void )  {
   pthread_attr_t attr;
   struct sched_param param;
 
-  // MEMS devices
-  thr_mems.priority    =  99;
-  thr_mems.period      =  1000000 / MEMS_HZ;
-
-  // Compass readings
-  thr_comp.priority    =  98;
-  thr_comp.period      =  1000000 / COMP_HZ;
+  // IMU data
+  thr_imu.priority     =  99;
+  thr_imu.period       =  1000000 / FAST_HZ;
 
   // Data fusion algorithm
   thr_fusion.priority  =  97;
@@ -48,19 +44,12 @@ void thr_init ( void )  {
   sys.ret = pthread_attr_setschedpolicy( &attr, SCHED_FIFO );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'FIFO' attribute." );
 
-  // Initialize 'mems' thread
-  param.sched_priority = thr_mems.priority;
+  // Initialize 'imu' thread
+  param.sched_priority = thr_imu.priority;
   sys.ret = pthread_attr_setschedparam( &attr, &param );
-  sys_err( sys.ret, "Error (thread_init): Failed to set 'mems' priority." );
-  sys.ret = pthread_create ( &thr_mems.id, &attr, thread_mems, (void *)NULL );
-  sys_err( sys.ret, "Error (thread_init): Failed to create 'mems' thread." );
-
-  // Initialize 'compass' thread
-  param.sched_priority = thr_comp.priority;
-  sys.ret = pthread_attr_setschedparam( &attr, &param );
-  sys_err( sys.ret, "Error (thread_init): Failed to set 'comp' priority." );
-  sys.ret = pthread_create ( &thr_comp.id, &attr, thread_comp, (void *)NULL );
-  sys_err( sys.ret, "Error (thread_init): Failed to create 'comp' thread." );
+  sys_err( sys.ret, "Error (thread_init): Failed to set 'imu' priority." );
+  sys.ret = pthread_create ( &thr_imu.id, &attr, thread_imu, (void *)NULL );
+  sys_err( sys.ret, "Error (thread_init): Failed to create 'imu' thread." );
 
   // Initialize 'fusion' thread
   param.sched_priority = thr_fusion.priority;
@@ -189,15 +178,10 @@ void thr_exit ( void )  {
   printf("Closing threads  \n");
   void *status;
 
-  // Exit 'mems' thread
-  sys.ret = pthread_join ( thr_mems.id, &status );
-  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'mems' thread." );
-  if(DEBUG)  printf( "  Status %ld for 'mems' thread \n", (long)status );
-
-  // Exit 'compass' thread
-  sys.ret = pthread_join ( thr_comp.id, &status );
-  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'comp' thread." );
-  if(DEBUG)  printf( "  Status %ld for 'compass' thread \n", (long)status );
+  // Exit 'imu' thread
+  sys.ret = pthread_join ( thr_imu.id, &status );
+  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'imu' thread." );
+  if(DEBUG)  printf( "  Status %ld for 'imu' thread \n", (long)status );
 
   // Exit 'fusion' thread
   sys.ret = pthread_join ( thr_fusion.id, &status );
@@ -216,38 +200,20 @@ void thr_exit ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thread_mems
-//  Run the 'mems' thread.
+//  thread_imu
+//  Run the 'imu' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void *thread_mems ( )  {
-  printf("  Running 'mems' thread \n");
-  thr_periodic (&thr_mems);
+void *thread_imu ( )  {
+  printf("  Running 'imu' thread \n");
+  thr_periodic (&thr_imu);
   while (sys.running) {
-    thr_start(&thr_mems);
-    imu_mems(&imu1);
-    thr_finish(&thr_mems);
-    log_write(LOG_GYRO);
+    thr_start(&thr_imu);
+    imu_data(&imu1);
+    thr_finish(&thr_imu);
+    log_write(LOG_GYR);
     log_write(LOG_ACC);
-    thr_pause(&thr_mems);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thread_comp
-//  Run the 'compass' thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void *thread_comp ( )  {
-  printf("  Running 'compass' thread \n");
-  thr_periodic (&thr_comp);
-  while (sys.running) {
-    thr_start(&thr_comp);
-    imu_comp(&imu1);
-    thr_finish(&thr_comp);
-    log_write(LOG_MAG);
-    thr_pause(&thr_comp);
+    if (!imu1.count)  log_write(LOG_MAG);
+    thr_pause(&thr_imu);
   }
   pthread_exit(NULL);
   return NULL;

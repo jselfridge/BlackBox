@@ -57,8 +57,8 @@ void sys_debug (  )  {
 
   // Time values
   printf("\r");  fflush(stdout);
-  if (datalog.enabled)  printf(" %s: ", datalog.dir );
-  else                  printf(" - - - -  ");
+  if (datalog.enabled)  printf(" %s:   ", datalog.dir );
+  else                  printf(" - - - -    ");
 
   //printf("%6.3f  ", t.runtime );  fflush(stdout);
   //printf("%09ld  ", t.start_nano );  fflush(stdout);
@@ -71,43 +71,35 @@ void sys_debug (  )  {
   //for ( i=0; i<6; i++ )  printf("%06.1f ", sys.input[i]  );  printf("   ");
   //for ( i=0; i<4; i++ )  printf("%06.1f ", sys.output[i] );  printf("   ");
 
-  // IMU1 heading status
-  //printf("%012ld ", imu1.rawQuat[0] );  printf("   ");
-  //printf("%6.1f ", heading *(180.0f/PI) );  printf("   ");
-
-  // IMU2 heading status
-  //printf("%012ld ", imu2.rawQuat[0] );  printf("   ");
-  //printf("%6.1f ", heading *(180.0f/PI) );  printf("   ");
-
   // Raw sensor values - IMU1
-  //for ( i=0; i<3; i++ )  printf("%6d ",    imu1.rawGyro[i] );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%06d ",   imu1.rawAcc[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%04d ",   imu1.rawMag[i]  );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawGyr[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawAcc[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%04d ", imu1.rawMag[i] );  printf("   ");
 
   // Raw sensor values - IMU2
-  //for ( i=0; i<3; i++ )  printf("%04d ",   imu2.rawMag[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%06d ",   imu2.rawAcc[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%06d ",   imu2.rawGyro[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%06d ", imu2.rawGyr[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%04d ", imu2.rawMag[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%06d ", imu2.rawAcc[i] );  printf("   ");
 
   // Filtered sensor values - IMU1
-  //for ( i=0; i<3; i++ )  printf("%07.2f ",   imu1.avgMag[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%09.2f ",   imu1.avgAcc[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%09.2f ",   imu1.avgGyro[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%09.2f ", imu1.avgGyr[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%09.2f ", imu1.avgAcc[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%07.2f ", imu1.avgMag[i] );  printf("   ");
 
   // Filtered sensor values - IMU2
-  //for ( i=0; i<3; i++ )  printf("%07.2f ",   imu2.avgMag[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%09.2f ",   imu2.avgAcc[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%09.2f ",   imu2.avgGyro[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%09.2f ", imu2.avgGyr[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%09.2f ", imu2.avgAcc[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%07.2f ", imu2.avgMag[i] );  printf("   ");
 
   // Calibrated sensor values - IMU1
-  for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calMag[i]  );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calAcc[i]  );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calGyro[i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calGyr[i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calAcc[i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calMag[i] );  printf("   ");
 
   // Calibrated sensor values - IMU2
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.calMag[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.calAcc[i]  );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.calGyro[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.calGyr[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.calAcc[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.calMag[i] );  printf("   ");
 
   // Data fusion values - IMU1
   for ( i=0; i<4; i++ )  printf("%6.3f ", imu1.Quat[i]              );  printf("   ");

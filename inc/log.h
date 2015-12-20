@@ -10,7 +10,7 @@
 
 // Log enumerations
 enum log_index {
-  LOG_GYRO   = 0,
+  LOG_GYR    = 0,
   LOG_ACC    = 1,
   LOG_MAG    = 2,
   LOG_FUSION = 3
@@ -20,7 +20,7 @@ enum log_index {
 // Log structure
 typedef struct {
   FILE* note;
-  FILE* gyro;
+  FILE* gyr;
   FILE* acc;
   FILE* mag;
   FILE* fusion;
