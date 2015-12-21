@@ -5,5 +5,4 @@ thread.c:134:6:thr_start	24	static
 thread.c:152:6:thr_finish	24	static
 thread.c:177:6:thr_exit	16	static
 thread.c:206:7:thread_imu	8	static
-thread.c:227:7:thread_fusion	8	static
 thread.c:247:7:thread_debug	8	static

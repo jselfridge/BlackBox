@@ -241,36 +241,36 @@ void imu_setic ( imu_struct* imu )  {
 
   // Determine timing loops
   sys_err ( ( FAST_HZ % SLOW_HZ   != 0 ), "Error (imu_setic): 'FAST_HZ' must be a multiple of 'SLOW_HZ'."   );
-  sys_err ( ( SLOW_HZ % FUSION_HZ != 0 ), "Error (imu_setic): 'SLOW_HZ' must be a multiple of 'FUSION_HZ'." );
+  //sys_err ( ( SLOW_HZ % FUSION_HZ != 0 ), "Error (imu_setic): 'SLOW_HZ' must be a multiple of 'FUSION_HZ'." );
   imu->count = 0;
   imu->loops = FAST_HZ / SLOW_HZ;
 
   // Assign sample rates
   imu->gyr_hz = FAST_HZ;
   imu->acc_hz = FAST_HZ;
-  imu->mag_hz = SLOW_HZ;
-  imu->fus_hz = FUSION_HZ;
+  //imu->mag_hz = SLOW_HZ;
+  //imu->fus_hz = FUSION_HZ;
 
   // Calculate time steps
   imu->gyr_dt = 1.0/FAST_HZ;
   imu->acc_dt = 1.0/FAST_HZ;
-  imu->mag_dt = 1.0/SLOW_HZ;
-  imu->fus_dt = 1.0/FUSION_HZ;
+  //imu->mag_dt = 1.0/SLOW_HZ;
+  //imu->fus_dt = 1.0/FUSION_HZ;
 
   // Assign low pass filter cutoff
   imu->gyr_lpf = GYR_LPF;
   imu->acc_lpf = ACC_LPF;
-  imu->mag_lpf = MAG_LPF;
+  //imu->mag_lpf = MAG_LPF;
 
   // Determine time constants
   if ( GYR_LPF !=0.0 )  imu->gyr_tc = 1.0/GYR_LPF;  else imu->gyr_tc = 0.0;
   if ( ACC_LPF !=0.0 )  imu->acc_tc = 1.0/ACC_LPF;  else imu->acc_tc = 0.0;
-  if ( MAG_LPF !=0.0 )  imu->mag_tc = 1.0/MAG_LPF;  else imu->mag_tc = 0.0;
+  //if ( MAG_LPF !=0.0 )  imu->mag_tc = 1.0/MAG_LPF;  else imu->mag_tc = 0.0;
 
   // Calculate filter gain values
   imu->gyr_gain = imu->gyr_dt / ( imu->gyr_tc + imu->gyr_dt );
   imu->acc_gain = imu->acc_dt / ( imu->acc_tc + imu->acc_dt );
-  imu->mag_gain = imu->mag_dt / ( imu->mag_tc + imu->mag_dt );
+  //imu->mag_gain = imu->mag_dt / ( imu->mag_tc + imu->mag_dt );
 
   // Display IMU settings
   if (DEBUG) {
@@ -280,21 +280,26 @@ void imu_setic ( imu_struct* imu )  {
     printf("    Accelerometer:   \
     HZ: %4d    DT: %5.3f    LPF: %6.2f    TC: %5.2f    gain: %7.4f  \n", \
     imu->acc_hz, imu->acc_dt, imu->acc_lpf, imu->acc_tc, imu->acc_gain );
+    /*
     printf("    Magnetometer:    \
     HZ: %4d    DT: %5.3f    LPF: %6.2f    TC: %5.2f    gain: %7.4f  \n", \
     imu->mag_hz, imu->mag_dt, imu->mag_lpf, imu->mag_tc, imu->mag_gain );
-    printf("    Data Fusion:     \
-    HZ: %4d    DT: %5.3f  \n", \
-    imu->fus_hz, imu->fus_dt ); 
+    */
+    /*
+    printf("    Data Fusion: \
+    HZ: %4d    DT: %5.3f  \n",		\
+    imu->fus_hz, imu->fus_dt );
+    */ 
   }
 
   // Clear moving average history
   for ( i=0; i<3; i++ ) {
     for ( j=0; j<GYR_HIST; j++ )  imu->histGyr[i][j] = 0;
     for ( j=0; j<ACC_HIST; j++ )  imu->histAcc[i][j] = 0;
-    for ( j=0; j<MAG_HIST; j++ )  imu->histMag[i][j] = 0;
+    //for ( j=0; j<MAG_HIST; j++ )  imu->histMag[i][j] = 0;
   }
 
+/*
   imu->fx = 0.5;  imu->fz = 0.866;
   for ( i=0; i<4; i++ ) {
     imu->dQuat[i] = 0;
@@ -305,11 +310,11 @@ void imu_setic ( imu_struct* imu )  {
     }
   }
   imu->Quat[0] = 1;
-
+*/
   return;
 }
 
-
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_avail
 //  Checks for new available data. 
@@ -327,7 +332,7 @@ bool imu_avail ( imu_struct* imu )  {
 
   return ret;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_data
@@ -336,11 +341,12 @@ bool imu_avail ( imu_struct* imu )  {
 void imu_data ( imu_struct* imu )  {
 
   // Local variables
-  short avail = 0;
+  //short avail = 0;
   ushort i, j, k;
-  float g, a, m;
-  bool mag;
+  float g, a;
+  //bool mag;
 
+  /*
   // Increment counter
   mag = false;
   imu->count++;
@@ -348,19 +354,20 @@ void imu_data ( imu_struct* imu )  {
     mag = true;
     imu->count = 0;
   }
+  */
 
   // Check for new data
-  while (!avail) {  mpu_get_int_status(&avail);  }
+  //while (!avail) {  mpu_get_int_status(&avail);  }
 
   // Get raw data
   sys.ret = mpu_get_gyro_reg( imu->rawGyr, NULL );
   sys_err( sys.ret, "Error (imu_mems): 'mpu_get_gyro_reg' failed." );
   sys.ret = mpu_get_accel_reg( imu->rawAcc, NULL );
   sys_err( sys.ret, "Error (imu_mems): 'mpu_get_accel_reg' failed." );
-  if (mag) {
-  sys.ret = mpu_get_compass_reg( imu->rawMag, NULL );
-  sys_err( sys.ret, "Error (imu_mems): 'mpu_get_compass_reg' failed." );
-  }
+  //if (mag) {
+  //sys.ret = mpu_get_compass_reg( imu->rawMag, NULL );
+  //sys_err( sys.ret, "Error (imu_mems): 'mpu_get_compass_reg' failed." );
+  //}
 
   // Gyroscope
   k = GYR_HIST;
@@ -382,6 +389,7 @@ void imu_data ( imu_struct* imu )  {
     imu->avgAcc[i] = a;
   }
 
+  /*
   // Magnetometer
   if(mag) {
   k = MAG_HIST;
@@ -393,6 +401,7 @@ void imu_data ( imu_struct* imu )  {
     imu->avgMag[i] = m;
   }
   }
+  */
 
   // Scale and orient gyroscope readings
   imu->calGyr[X] = -imu->avgGyr[Y] * GYR_SCALE;
@@ -404,17 +413,19 @@ void imu_data ( imu_struct* imu )  {
   imu->calAcc[Y] = ( imu->avgAcc[X] - imu->aoffset[X] ) / (double)imu->arange[X];
   imu->calAcc[Z] = ( imu->avgAcc[Z] - imu->aoffset[Z] ) / (double)imu->arange[Z];
 
+  /*
   // Shift and orient magnetometer readings
   if (mag) {
   imu->calMag[X] = -( imu->avgMag[X] - imu->moffset[X] ) / (double)imu->mrange[X];
   imu->calMag[Y] = -( imu->avgMag[Y] - imu->moffset[Y] ) / (double)imu->mrange[Y];
   imu->calMag[Z] =  ( imu->avgMag[Z] - imu->moffset[Z] ) / (double)imu->mrange[Z];
   }
+  */
 
   return;
 }
 
-
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_fusion
 //  Applies sensor data fusion algorithm. 
@@ -578,7 +589,7 @@ void imu_fusion ( imu_struct* imu )  {
 
   return;
 }
-
+*/
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_row_map

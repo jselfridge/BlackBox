@@ -12,8 +12,8 @@
 enum log_index {
   LOG_GYR    = 0,
   LOG_ACC    = 1,
-  LOG_MAG    = 2,
-  LOG_FUSION = 3
+  LOG_MAG    = 2
+  //LOG_FUSION = 3
 } log_index;
 
 
@@ -23,7 +23,7 @@ typedef struct {
   FILE* gyr;
   FILE* acc;
   FILE* mag;
-  FILE* fusion;
+  //FILE* fusion;
   char* dir;
   char* path;
   bool  open;

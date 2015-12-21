@@ -22,7 +22,7 @@ typedef struct thread_struct {
   ulong     dur;
 } thread_struct;
 thread_struct thr_imu;
-thread_struct thr_fusion;
+//thread_struct thr_fusion;
 thread_struct thr_debug;
 
 
@@ -37,7 +37,7 @@ void  thr_exit      ( void );
 
 // Thread handlers
 void *thread_imu    ( );
-void *thread_fusion  ( );
+//void *thread_fusion  ( );
 void *thread_debug   ( );
 
 
