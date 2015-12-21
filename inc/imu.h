@@ -10,9 +10,9 @@
 
 // Define statements
 
-#define FAST_HZ     500
-#define SLOW_HZ     100
-#define FUSION_HZ   100
+#define FAST_HZ    300
+#define SLOW_HZ     50
+#define FUSION_HZ   50
 
 #define GYR_HIST   20
 #define ACC_HIST   20

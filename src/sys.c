@@ -57,10 +57,11 @@ void sys_debug (  )  {
 
   // Time values
   printf("\r");  fflush(stdout);
-  if (datalog.enabled)  printf(" %s:   ", datalog.dir );
-  else                  printf(" - - - -    ");
+  if (datalog.enabled)  printf(" %s: ", datalog.dir );
+  else                  printf(" - - - -  ");
 
-  //printf("%6.3f  ", t.runtime );  fflush(stdout);
+  float timestamp = (float)( thr_debug.start_sec + ( thr_debug.start_usec / 1000000.0f ) - datalog.offset );
+  printf("%6.1f    ", timestamp );  fflush(stdout);
   //printf("%09ld  ", t.start_nano );  fflush(stdout);
   //printf("%09ld  ", t.dur );  fflush(stdout);
   //printf("%4.2f  ", t.percent );  fflush(stdout);

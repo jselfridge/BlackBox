@@ -283,7 +283,7 @@ void imu_setic ( imu_struct* imu )  {
     printf("    Magnetometer:    \
     HZ: %4d    DT: %5.3f    LPF: %6.2f    TC: %5.2f    gain: %7.4f  \n", \
     imu->mag_hz, imu->mag_dt, imu->mag_lpf, imu->mag_tc, imu->mag_gain );
-    printf("    Data Fusion:   \
+    printf("    Data Fusion:     \
     HZ: %4d    DT: %5.3f  \n", \
     imu->fus_hz, imu->fus_dt ); 
   }
@@ -336,6 +336,7 @@ bool imu_avail ( imu_struct* imu )  {
 void imu_data ( imu_struct* imu )  {
 
   // Local variables
+  short avail = 0;
   ushort i, j, k;
   float g, a, m;
   bool mag;
@@ -347,6 +348,9 @@ void imu_data ( imu_struct* imu )  {
     mag = true;
     imu->count = 0;
   }
+
+  // Check for new data
+  while (!avail) {  mpu_get_int_status(&avail);  }
 
   // Get raw data
   sys.ret = mpu_get_gyro_reg( imu->rawGyr, NULL );
