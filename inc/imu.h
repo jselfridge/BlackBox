@@ -10,17 +10,17 @@
 
 // Define statements
 
-#define FAST_HZ    300
-#define SLOW_HZ     50
+#define FAST_HZ    1000
+#define SLOW_HZ     100
 //#define FUSION_HZ   50
 
-#define GYR_HIST   1
-#define ACC_HIST   1
-//#define MAG_HIST   1
+#define GYR_HIST   10
+#define ACC_HIST   10
+#define MAG_HIST   10
 
 #define GYR_LPF   (0.0f)
 #define ACC_LPF   (0.0f)
-//#define MAG_LPF   (0.0f)
+#define MAG_LPF   (0.0f)
 
 #define GYR_FSR   500
 #define ACC_FSR   4
@@ -47,37 +47,37 @@ typedef struct {
   ushort  loops;
   ushort  gyr_hz;
   ushort  acc_hz;
-  //ushort  mag_hz;
+  ushort  mag_hz;
   //ushort  fus_hz;
   float   gyr_dt;
   float   acc_dt;
-  //float   mag_dt;
+  float   mag_dt;
   //float   fus_dt;
   float   gyr_lpf;
   float   acc_lpf;
-  //float   mag_lpf;
+  float   mag_lpf;
   float   gyr_tc;
   float   acc_tc;
-  //float   mag_tc;
+  float   mag_tc;
   float   gyr_gain;
   float   acc_gain;
-  //float   mag_gain;
+  float   mag_gain;
   int     moffset   [3];
   int     aoffset   [3];
   int     mrange    [3];
   int     arange    [3];
   short   rawGyr    [3];
   short   rawAcc    [3];
-  //short   rawMag    [3];
+  short   rawMag    [3];
   short   histGyr   [3][GYR_HIST];
   short   histAcc   [3][ACC_HIST];
-  //short   histMag   [3][MAG_HIST];
+  short   histMag   [3][MAG_HIST];
   float   avgGyr    [3];
   float   avgAcc    [3];
-  //float   avgMag    [3];
+  float   avgMag    [3];
   float   calGyr    [3];
   float   calAcc    [3];
-  //float   calMag    [3];
+  float   calMag    [3];
   //double  Quat      [4];
   //double  dQuat     [4];
   //double  Eul       [3];
@@ -96,7 +96,6 @@ void    imu_param    ( imu_struct* imu );
 void    imu_setcal   ( imu_struct* imu );
 //void    imu_conv     ( imu_struct* imu );
 void    imu_setic    ( imu_struct* imu );
-//bool    imu_avail    ( imu_struct* imu );
 void    imu_data     ( imu_struct* imu );
 //void    imu_fusion   ( imu_struct* imu );
 //short   imu_row_map  ( const signed char* row );

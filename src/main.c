@@ -20,10 +20,10 @@ int main ( void )  {
   sys_init();
   imu_init(&imu1,1);
   //usleep(500000);
-  //log_init();
+  log_init();
   //pru_init();
   //ctrl_init();
-  //thr_init();
+  thr_init();
 
 
   // Continuous loop and then exit

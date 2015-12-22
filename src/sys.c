@@ -73,8 +73,8 @@ void sys_debug (  )  {
   //for ( i=0; i<4; i++ )  printf("%06.1f ", sys.output[i] );  printf("   ");
 
   // Raw sensor values - IMU1
-  for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawGyr[i] );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawAcc[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawGyr[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawAcc[i] );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%04d ", imu1.rawMag[i] );  printf("   ");
 
   // Raw sensor values - IMU2
@@ -93,9 +93,9 @@ void sys_debug (  )  {
   //for ( i=0; i<3; i++ )  printf("%07.2f ", imu2.avgMag[i] );  printf("   ");
 
   // Calibrated sensor values - IMU1
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calGyr[i] );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calAcc[i] );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calMag[i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calGyr[i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calAcc[i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calMag[i] );  printf("   ");
 
   // Calibrated sensor values - IMU2
   //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.calGyr[i] );  printf("   ");

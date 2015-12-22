@@ -3,4 +3,4 @@ imu.c:37:6:imu_exit	8	static
 imu.c:49:6:imu_param	16	static
 imu.c:127:6:imu_setcal	88	static
 imu.c:236:6:imu_setic	48	static
-imu.c:341:6:imu_data	40	static
+imu.c:320:6:imu_data	48	static
