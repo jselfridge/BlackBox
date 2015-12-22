@@ -21,9 +21,15 @@ typedef struct thread_struct {
   ulong     finish_usec;
   ulong     dur;
 } thread_struct;
+
+// Thread instances
 thread_struct thr_imu;
 //thread_struct thr_fusion;
 thread_struct thr_debug;
+
+
+// Mutex variables
+pthread_mutex_t mutex_cal;
 
 
 // Thread functions

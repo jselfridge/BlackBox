@@ -17,7 +17,7 @@ void thr_init ( void )  {
   pthread_attr_t attr;
   struct sched_param param;
 
-  // IMU data
+  // IMU thread
   thr_imu.priority     =  99;
   thr_imu.period       =  1000000 / FAST_HZ;
 
@@ -25,9 +25,12 @@ void thr_init ( void )  {
   //thr_fusion.priority  =  97;
   //thr_fusion.period    =  1000000 / FUSION_HZ;
 
-  // Debugging
+  // Debugging thread
   thr_debug.priority =  94;
   thr_debug.period   =  1000000 / DEBUG_HZ;
+
+  // Mutex initialization
+  pthread_mutex_init( &mutex_cal, NULL );
 
   // Initialize attribute variable
   pthread_attr_init(&attr);

@@ -370,6 +370,9 @@ void imu_data ( imu_struct* imu )  {
   }
   }
 
+  // Lock 'calibrated' variables
+  pthread_mutex_lock(&mutex_cal);
+
   // Scale and orient gyroscope readings
   imu->calGyr[X] = -imu->avgGyr[Y] * GYR_SCALE;
   imu->calGyr[Y] = -imu->avgGyr[X] * GYR_SCALE;
@@ -386,6 +389,9 @@ void imu_data ( imu_struct* imu )  {
   imu->calMag[Y] = -( imu->avgMag[Y] - imu->moffset[Y] ) / (double)imu->mrange[Y];
   imu->calMag[Z] =  ( imu->avgMag[Z] - imu->moffset[Z] ) / (double)imu->mrange[Z];
   }
+
+  // Unlock 'calibrated' variables
+  pthread_mutex_unlock(&mutex_cal);
 
   return;
 }
