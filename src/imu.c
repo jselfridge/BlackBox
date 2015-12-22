@@ -240,10 +240,10 @@ void imu_setic ( imu_struct* imu )  {
   ushort i, j;
 
   // Determine timing loops
-  sys_err ( ( FAST_HZ % SLOW_HZ   != 0 ), "Error (imu_setic): 'FAST_HZ' must be a multiple of 'SLOW_HZ'."   );
+  //sys_err ( ( FAST_HZ % SLOW_HZ   != 0 ), "Error (imu_setic): 'FAST_HZ' must be a multiple of 'SLOW_HZ'."   );
   //sys_err ( ( SLOW_HZ % FUSION_HZ != 0 ), "Error (imu_setic): 'SLOW_HZ' must be a multiple of 'FUSION_HZ'." );
-  imu->count = 0;
-  imu->loops = FAST_HZ / SLOW_HZ;
+  //imu->count = 0;
+  //imu->loops = FAST_HZ / SLOW_HZ;
 
   // Assign sample rates
   imu->gyr_hz = FAST_HZ;
