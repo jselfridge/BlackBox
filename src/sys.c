@@ -103,10 +103,9 @@ void sys_debug (  )  {
   //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.calMag[i] );  printf("   ");
 
   // Data fusion values - IMU1
-  //for ( i=0; i<4; i++ )  printf("%6.3f ", imu1.Quat[i]              );  printf("   ");
-  //for ( i=0; i<4; i++ )  printf("%6.3f ", imu1.dQuat[i]             );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.Eul[i]  *(180.0f/PI) );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.dEul[i] *(180.0f/PI) );  printf("   ");
+  for ( i=0; i<4; i++ )  printf("%6.3f ", imu1.Quat[i]              );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.Eul[i]  *(180.0f/PI) );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.dEul[i] *(180.0f/PI) );  printf("   ");
 
   // Data fusion values - IMU2
   //for ( i=0; i<4; i++ )  printf("%6.3f ", imu2.Quat[i]              );  printf("   ");

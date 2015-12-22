@@ -295,9 +295,10 @@ void imu_setic ( imu_struct* imu )  {
     for ( j=0; j<MAG_HIST; j++ )  imu->histMag[i][j] = 0;
   }
 
-/*
+  // Data fusion variables
   imu->fx = 0.5;  imu->fz = 0.866;
   for ( i=0; i<4; i++ ) {
+    imu->Quat[i]  = 0;
     imu->dQuat[i] = 0;
     if (i<3) {
       imu->Eul[i]  = 0;
@@ -306,7 +307,7 @@ void imu_setic ( imu_struct* imu )  {
     }
   }
   imu->Quat[0] = 1;
-*/
+
   return;
 }
 
@@ -369,7 +370,7 @@ void imu_data ( imu_struct* imu )  {
   }
 
   // Lock 'calibrated' variables
-  //pthread_mutex_lock(&mutex_cal);
+  pthread_mutex_lock(&mutex_cal);
 
   // Scale and orient gyroscope readings
   imu->calGyr[X] = -imu->avgGyr[Y] * GYR_SCALE;
@@ -389,7 +390,7 @@ void imu_data ( imu_struct* imu )  {
   }
 
   // Unlock 'calibrated' variables
-  //pthread_mutex_unlock(&mutex_cal);
+  pthread_mutex_unlock(&mutex_cal);
 
   return;
 }
@@ -545,11 +546,11 @@ void imu_fusion ( imu_struct* imu )  {
   e[X] = atan2 ( ( 2* ( qwx + qyz ) ), ( 1- 2* ( qxx + qyy ) ) ) - R_BIAS;
   e[Y] = asin  (   2* ( qwy - qxz ) )                            - P_BIAS;
   e[Z] = atan2 ( ( 2* ( qwz + qxy ) ), ( 1- 2* ( qyy + qzz ) ) ) - Y_BIAS;
-  /*
-  // Update mpu structure
+
+  // Update imu structure
   imu->fx = fx;  imu->fz = fz;
   for ( i=0; i<4; i++ ) {
-    imu->Quat[i] = q[i];
+    imu->Quat[i]  = q[i];
     imu->dQuat[i] = qd[i];
     if(i<3) {
       imu->Eul[i]  = e[i];
@@ -557,7 +558,7 @@ void imu_fusion ( imu_struct* imu )  {
       imu->bias[i] = b[i];
     }
   }
-*/
+
   return;
 }
 
