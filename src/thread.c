@@ -229,6 +229,7 @@ void *thread_imu ( )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *thread_fusion ( )  {
   printf("  Running 'fusion' thread \n");
+  /*
   usleep(500000);
   thr_periodic (&thr_fusion);
   while (sys.running) {
@@ -239,6 +240,7 @@ void *thread_fusion ( )  {
     thr_pause(&thr_fusion);
   }
   pthread_exit(NULL);
+  */
   return NULL;
 }
 

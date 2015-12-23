@@ -19,8 +19,7 @@ void imu_init ( imu_struct* imu, ushort bus )  {
 
   // Init functions
   imu_param(imu);
-  imu_setcal(imu);
-  //imu_conv(imu);
+  imu_getcal(imu);
   imu_setic(imu);
 
   // Indicate init completed
@@ -121,10 +120,10 @@ void imu_param ( imu_struct* imu )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_setcal
-//  Sets the calibration parameters for the MPU sensor.
+//  imu_getcal
+//  Gets the calibration parameters for the MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_setcal ( imu_struct* imu )  {
+void imu_getcal ( imu_struct* imu )  {
   if(DEBUG)  printf("  IMU calibration values: \n");
 
   // Local variables
@@ -137,7 +136,7 @@ void imu_setcal ( imu_struct* imu )  {
   // Set magnetometer offset
   sprintf( path, "cal/imu%d/moffset", imu->bus );
   f = fopen( path, "r" );
-  sys_err( !f, "Error (imu_setcal): File 'moffset' not found." );
+  sys_err( !f, "Error (imu_getcal): File 'moffset' not found." );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
     imu->moffset[i] = atoi(buff);
@@ -147,7 +146,7 @@ void imu_setcal ( imu_struct* imu )  {
   // Set magnetometer range
   sprintf( path, "cal/imu%d/mrange", imu->bus );
   f = fopen( path, "r" );
-  sys_err( !f, "Error (imu_setcal): File 'mrange' not found." );
+  sys_err( !f, "Error (imu_getcal): File 'mrange' not found." );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
     imu->mrange[i] = atoi(buff);
@@ -157,7 +156,7 @@ void imu_setcal ( imu_struct* imu )  {
   // Set acceleration offset
   sprintf( path, "cal/imu%d/aoffset", imu->bus );
   f = fopen( path, "r" );
-  sys_err( !f, "Error (imu_setcal): File 'aoffset' not found." );
+  sys_err( !f, "Error (imu_getcal): File 'aoffset' not found." );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
     imu->aoffset[i] = atoi(buff);
@@ -167,7 +166,7 @@ void imu_setcal ( imu_struct* imu )  {
   // Set acceleration range
   sprintf( path, "cal/imu%d/arange", imu->bus );
   f = fopen( path, "r" );
-  sys_err( !f, "Error (imu_setcal): File 'arange' not found." );
+  sys_err( !f, "Error (imu_getcal): File 'arange' not found." );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
     imu->arange[i] = atoi(buff);
@@ -189,45 +188,6 @@ void imu_setcal ( imu_struct* imu )  {
   return;
 }
 
-/*
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_conv
-//  Allows the sensor heading to converge after initialization. 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_conv ( imu_struct* imu )  {
-  if(DEBUG)  printf("  Determining IMU heading:    "); 
-*/
-  /*
-  double magx, magy;
-  ushort loop = 1000;
-  while(loop--) {  mpu_raw();  mpu_cal();  }
-  magx = mpu.calMag[X];  magy = mpu.calMag[Y];
-  heading = -atan2(magy,magx);
-  printf("magx: %6.3f   magy: %6.3f   angle: %6.3f \n", magx, magy, heading*(180.0f/PI) );
-  led_on(LED_MPU);
-  */
-  /*
-  led_blink( LED_MPU, 500, 500 );
-  while( counter < FREQ ) {
-    mpu_sample();
-    curr_head = mpu.Eul[Z];
-    factor = curr_head / prev_head;
-    if ( fabs(1.0-factor) < DT/30.0 ) counter++;
-    prev_head = curr_head;
-    if(DEBUG) {  printf("\b\b\b\b\b\b\b\b");  printf( "%8.3f", curr_head*(180.0f/PI) );  fflush(stdout);  }
-    usleep(DT*1000000);
-  }
-  heading = curr_head;
-  if(DEBUG) {  printf(" ...... locked \n");  fflush(stdout);  }
-  led_on(LED_MPU);
-  */
-/*
-  ctrl.heading = -45* (PI/180.0);
-  if(DEBUG)  printf("hard coded as %6.3f \n", ctrl.heading*(180.0/PI) );
-
-  return;
-}
-*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_setic

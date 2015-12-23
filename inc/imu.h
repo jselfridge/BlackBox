@@ -93,13 +93,10 @@ imu_struct imu1;
 void    imu_init     ( imu_struct* imu, ushort bus );
 void    imu_exit     ( void );
 void    imu_param    ( imu_struct* imu );
-void    imu_setcal   ( imu_struct* imu );
-//void    imu_conv     ( imu_struct* imu );
+void    imu_getcal   ( imu_struct* imu );
 void    imu_setic    ( imu_struct* imu );
 void    imu_data     ( imu_struct* imu );
 void    imu_fusion   ( imu_struct* imu );
-//short   imu_row_map  ( const signed char* row );
-//short   imu_orient   ( const signed char* mtx );
 
 
 #endif
