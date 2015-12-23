@@ -10,10 +10,18 @@ Pending
 -------
 The following list outlines proposed upcoming changes 
 <ul>
-  <li>Ctrl struct</li>
-  <li>IMU halts until data is available</li>
+  <li>Mutex on pthread variables</li>
+  <li>Enable max I2C rate of 400kHz</li>
+  <li>Test pull up resistors on Sparkfun breakout board</li>
+  <li>IMU interrupt when data is available</li>
   <li>IMU convergence on start up</li>
   <li>IMU indicator for successful convergence</li>
+  <li>Mavlink serial output</li>
+  <li>Develop GCS</li>
+  <li>Second IMU sensor on second I2C channel</li>
+  <li>Second IMU sensor on single I2C channel</li>
+  <li>Add altitude sensor</li>
+  <li>Ctrl struct</li>
   <li>Tune PID gains</li>
   <li>System identification</li>
   <li>State feedback controller</li>
@@ -21,14 +29,7 @@ The following list outlines proposed upcoming changes
   <li>Kalman filter</li>
   <li>Transistor power distribution</li> 
   <li>Multithread independent loops</li>
-  <li>Add second IMU</li>
-  <li>Run second IMU on single I2C channel</li>
-  <li>Add altitude sensor</li>
   <li>Incorporate altitude hold</li> 
-  <li>Review RT_PREEMPT patch</li>
-  <li>Review Xenomai capabilities</li>
-  <li>Mavlink serial output</li>
-  <li>Develop GCS</li>
 </ul>
 
 
