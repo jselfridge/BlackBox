@@ -290,7 +290,7 @@ void imu_data ( imu_struct* imu )  {
   }
 
   // Lock 'calibrated' variables
-  //pthread_mutex_lock(&mutex_cal);
+  //pthread_mutex_lock(&mutex_cal);  
 
   // Scale and orient gyroscope readings
   imu->calGyr[X] = -imu->avgGyr[Y] * GYR_SCALE;
@@ -310,7 +310,7 @@ void imu_data ( imu_struct* imu )  {
   }
 
   // Unlock 'calibrated' variables
-  //pthread_mutex_unlock(&mutex_cal);
+  //pthread_mutex_unlock(&mutex_cal);  
 
   return;
 }
