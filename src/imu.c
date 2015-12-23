@@ -342,7 +342,7 @@ void imu_fusion ( imu_struct* imu )  {
       b[i] = imu->bias[i];
     }
   }
-  pthread_mutex_lock(&mutex_cal);
+  pthread_mutex_unlock(&mutex_cal);
 
   // Normalize magnetometer
   norm = 0.0;
@@ -468,6 +468,7 @@ void imu_fusion ( imu_struct* imu )  {
   e[Z] = atan2 ( ( 2* ( qwz + qxy ) ), ( 1- 2* ( qyy + qzz ) ) ) - Y_BIAS;
 
   // Update imu structure
+  pthread_mutex_lock(&mutex_fusion);
   imu->fx = fx;  imu->fz = fz;
   for ( i=0; i<4; i++ ) {
     imu->Quat[i]  = q[i];
@@ -478,6 +479,7 @@ void imu_fusion ( imu_struct* imu )  {
       imu->bias[i] = b[i];
     }
   }
+  pthread_mutex_unlock(&mutex_fusion);
 
   return;
 }

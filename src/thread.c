@@ -31,6 +31,7 @@ void thr_init ( void )  {
 
   // Mutex initialization
   pthread_mutex_init( &mutex_cal, NULL );
+  pthread_mutex_init( &mutex_fusion, NULL );
 
   // Initialize attribute variable
   pthread_attr_init(&attr);
@@ -200,6 +201,7 @@ void thr_exit ( void )  {
 
   // Destroy mutex
   pthread_mutex_destroy(&mutex_cal);
+  pthread_mutex_destroy(&mutex_fusion);
 
   return;
 }
