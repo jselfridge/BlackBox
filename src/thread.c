@@ -22,8 +22,8 @@ void thr_init ( void )  {
   thr_imu.period       =  1000000 / FAST_HZ;
 
   // Data fusion algorithm
-  //thr_fusion.priority  =  96;
-  //thr_fusion.period    =  1000000 / FUSION_HZ;
+  thr_fusion.priority  =  96;
+  thr_fusion.period    =  1000000 / FUSION_HZ;
 
   // Debugging thread
   thr_debug.priority =  94;
@@ -54,14 +54,12 @@ void thr_init ( void )  {
   sys.ret = pthread_create ( &thr_imu.id, &attr, thread_imu, (void *)NULL );
   sys_err( sys.ret, "Error (thread_init): Failed to create 'imu' thread." );
 
-  /*
   // Initialize 'fusion' thread
   param.sched_priority = thr_fusion.priority;
   sys.ret = pthread_attr_setschedparam( &attr, &param );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'fusion' priority." );
   sys.ret = pthread_create ( &thr_fusion.id, &attr, thread_fusion, (void *)NULL );
   sys_err( sys.ret, "Error (thread_init): Failed to create 'fusion' thread." );
-  */
 
   // Initialize 'debug' thread
   if(DEBUG) {
@@ -188,12 +186,10 @@ void thr_exit ( void )  {
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'imu' thread." );
   if(DEBUG)  printf( "  Status %ld for 'imu' thread \n", (long)status );
 
-  /*
   // Exit 'fusion' thread
   sys.ret = pthread_join ( thr_fusion.id, &status );
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'fusion' thread." );
   if(DEBUG)  printf( "  Status %ld for 'fusion' thread \n", (long)status );
-  */
 
   // Exit 'debug' thread
   if(DEBUG) {
@@ -226,14 +222,13 @@ void *thread_imu ( )  {
   return NULL;
 }
 
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_fusion
 //  Run the 'fusion' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *thread_fusion ( )  {
   printf("  Running 'fusion' thread \n");
-
   usleep(500000);
   thr_periodic (&thr_fusion);
   while (sys.running) {
@@ -247,7 +242,7 @@ void *thread_fusion ( )  {
 
   return NULL;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_debug
