@@ -18,6 +18,8 @@ The following list outlines proposed upcoming changes
   <li>IMU indicator for successful convergence</li>
   <li>Mavlink serial output</li>
   <li>Develop GCS</li>
+  <li>Add notes section to data log</li>
+  <li>Add warning for missed timing on thread</li>
   <li>Second IMU sensor on second I2C channel</li>
   <li>Second IMU sensor on single I2C channel</li>
   <li>Add altitude sensor</li>

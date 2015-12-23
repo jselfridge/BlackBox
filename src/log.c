@@ -98,6 +98,7 @@ void log_open ( void )  {
     Max1,    May1,    Maz1,   \
     Mcx1,    Mcy1,    Mcz1,   ");
 
+  /*
   // Create data fusion datalog file
   sprintf( file, "%sfusion.txt", datalog.path );
   datalog.fusion = fopen( file, "w" );
@@ -108,6 +109,7 @@ void log_open ( void )  {
     Ex1,     Ey1,     Ez1,  \
     dEx1, dEy1, dEz1,\
     XXXX,    XXXX,    XXXX,   ");
+  */
 
   // Determine start second
   struct timespec timeval;
@@ -157,7 +159,8 @@ void log_record ( enum log_index index )  {
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%07.2f, ", imu1.avgMag[i] );  fprintf( datalog.mag, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%07.4f, ", imu1.calMag[i] );  fprintf( datalog.mag, "   " );
     return;
-    /*
+
+  /*
   // Record 'data fusion' datalog
   case LOG_FUSION :
     timestamp = (float)( thr_fusion.start_sec + ( thr_fusion.start_usec / 1000000.0f ) - datalog.offset );
@@ -165,7 +168,8 @@ void log_record ( enum log_index index )  {
     //for ( i=0; i<4; i++ )  fprintf( datalog.fusion, "%07.4f, ", imu1.Quat[i] );  fprintf( datalog.fusion, "   " );
     //for ( i=0; i<3; i++ )  fprintf( datalog.fusion, "%07.4f, ", imu1.Eul[i]  );  fprintf( datalog.fusion, "   " );
     return;
-    */
+  */
+
   default :
     return;
   }

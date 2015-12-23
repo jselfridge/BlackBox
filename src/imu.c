@@ -74,46 +74,6 @@ void imu_param ( imu_struct* imu )  {
   if(DEBUG) {  printf(".");  fflush(stdout);  }
   sys_err( sys.ret, "Error (imu_init): 'mpu_set_accel_fsr' failed." );
 
-  // Modify this later
-  //const signed char R[9] = { 1,0,0, 0,1,0, 0,0,1 };
-
-  //sys.ret = mpu_configure_fifo( INV_XYZ_GYRO | INV_XYZ_ACCEL );
-  //if(DEBUG) {  printf(".");  fflush(stdout);  }
-  //sys_err( sys.ret, "Error (imu_init): 'mpu_configure_fifo' failed." );
-
-  //sys.ret = mpu_set_lpf(5);
-  //if(DEBUG) {  printf(".");  fflush(stdout);  }
-  //sys_err( sys.ret, "Error (imu_init): 'mpu_set_lpf' failed." );
-
-  //sys.ret = dmp_load_motion_driver_firmware();
-  //if(DEBUG) {  printf(".");  fflush(stdout);  }
-  //sys_err( sys.ret, "Error (imu_init): 'dmp_load_motion_driver_firmware' failed." );
-
-  //sys.ret = dmp_set_orientation( mpu_orient(mpu->rot) );
-  //sys.ret = dmp_set_orientation( imu_orient(R) );
-  //if(DEBUG) {  printf(".");  fflush(stdout);  }
-  //sys_err( sys.ret, "Error (imu_init): 'dmp_set_orientation' failed." );
-
-  //sys.ret = dmp_enable_feature( 
-    //DMP_FEATURE_6X_LP_QUAT | 
-    //DMP_FEATURE_SEND_RAW_ACCEL | 
-    //DMP_FEATURE_SEND_CAL_GYRO | 
-    //DMP_FEATURE_GYRO_CAL );
-  //if(DEBUG) {  printf(".");  fflush(stdout);  }
-  //sys_err( sys.ret, "Error (imu_init): 'dmp_enable_feature' failed." );
-
-  //sys.ret = dmp_set_fifo_rate(200);
-  //if(DEBUG) {  printf(".");  fflush(stdout);  }
-  //sys_err( sys.ret, "Error (imu_init): 'dmp_set_fifo_rate' failed." );
-
-  //sys.ret = mpu_set_dmp_state(1);
-  //if(DEBUG) {  printf(".");  fflush(stdout);  }
-  //sys_err( sys.ret, "Error (imu_init): 'mpu_set_dmp_state' failed." );
-
-  //gpio_export(I2C1_INT_PIN);
-  //gpio_set_dir( I2C1_INT_PIN, INPUT_PIN );
-  //gpio_set_edge( I2C1_INT_PIN, "falling" );
-
   if(DEBUG)  printf(" complete \n");
   return;
 }
@@ -201,7 +161,7 @@ void imu_setic ( imu_struct* imu )  {
 
   // Determine timing loops
   sys_err ( ( FAST_HZ % SLOW_HZ   != 0 ), "Error (imu_setic): 'FAST_HZ' must be a multiple of 'SLOW_HZ'."   );
-  sys_err ( ( SLOW_HZ % FUSION_HZ != 0 ), "Error (imu_setic): 'SLOW_HZ' must be a multiple of 'FUSION_HZ'." );
+  //sys_err ( ( SLOW_HZ % FUSION_HZ != 0 ), "Error (imu_setic): 'SLOW_HZ' must be a multiple of 'FUSION_HZ'." );
   imu->count = 0;
   imu->loops = FAST_HZ / SLOW_HZ;
 
@@ -209,13 +169,13 @@ void imu_setic ( imu_struct* imu )  {
   imu->gyr_hz = FAST_HZ;
   imu->acc_hz = FAST_HZ;
   imu->mag_hz = SLOW_HZ;
-  imu->fus_hz = FUSION_HZ;
+  //imu->fus_hz = FUSION_HZ;
 
   // Calculate time steps
   imu->gyr_dt = 1.0/FAST_HZ;
   imu->acc_dt = 1.0/FAST_HZ;
   imu->mag_dt = 1.0/SLOW_HZ;
-  imu->fus_dt = 1.0/FUSION_HZ;
+  //imu->fus_dt = 1.0/FUSION_HZ;
 
   // Assign low pass filter cutoff
   imu->gyr_lpf = GYR_LPF;
@@ -243,9 +203,11 @@ void imu_setic ( imu_struct* imu )  {
     printf("    Magnetometer:    \
     HZ: %4d    DT: %5.3f    LPF: %6.2f    TC: %5.2f    gain: %7.4f  \n", \
     imu->mag_hz, imu->mag_dt, imu->mag_lpf, imu->mag_tc, imu->mag_gain );
-    printf("    Data Fusion:     \
-    HZ: %4d    DT: %5.3f  \n", \
+    /*
+    printf("    Data Fusion: \
+    HZ: %4d    DT: %5.3f  \n",		\
     imu->fus_hz, imu->fus_dt );
+    */
   }
 
   // Clear moving average history
@@ -254,7 +216,7 @@ void imu_setic ( imu_struct* imu )  {
     for ( j=0; j<ACC_HIST; j++ )  imu->histAcc[i][j] = 0;
     for ( j=0; j<MAG_HIST; j++ )  imu->histMag[i][j] = 0;
   }
-
+  /*
   // Data fusion variables
   imu->fx = 0.5;  imu->fz = 0.866;
   for ( i=0; i<4; i++ ) {
@@ -267,6 +229,7 @@ void imu_setic ( imu_struct* imu )  {
     }
   }
   imu->Quat[0] = 1;
+  */
 
   return;
 }
@@ -330,7 +293,7 @@ void imu_data ( imu_struct* imu )  {
   }
 
   // Lock 'calibrated' variables
-  pthread_mutex_lock(&mutex_cal);
+  //pthread_mutex_lock(&mutex_cal);
 
   // Scale and orient gyroscope readings
   imu->calGyr[X] = -imu->avgGyr[Y] * GYR_SCALE;
@@ -350,12 +313,12 @@ void imu_data ( imu_struct* imu )  {
   }
 
   // Unlock 'calibrated' variables
-  pthread_mutex_unlock(&mutex_cal);
+  //pthread_mutex_unlock(&mutex_cal);
 
   return;
 }
 
-
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_fusion
 //  Applies sensor data fusion algorithm. 
@@ -520,36 +483,6 @@ void imu_fusion ( imu_struct* imu )  {
   }
 
   return;
-}
-
-/*
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_row_map
-//  Maps rows so the DMP can define proper orientation.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-short imu_row_map ( const signed char* row )  {
-  short b;
-  if      ( row[0] >0 )  b = 0;
-  else if ( row[0] <0 )  b = 4;
-  else if ( row[1] >0 )  b = 1;
-  else if ( row[1] <0 )  b = 5;
-  else if ( row[2] >0 )  b = 2;
-  else if ( row[2] <0 )  b = 6;
-  else                   b = 7;
-  return b;
-}
-*/
-/*
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_orient
-//  Returns a scalar the DMP uses to define orientation.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-short imu_orient ( const signed char* mtx )  {
-  short scalar;
-  scalar  = imu_row_map(mtx);
-  scalar |= imu_row_map(mtx + 3) << 3;
-  scalar |= imu_row_map(mtx + 6) << 6;
-  return scalar;
 }
 */
 

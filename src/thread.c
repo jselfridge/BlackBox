@@ -22,15 +22,15 @@ void thr_init ( void )  {
   thr_imu.period       =  1000000 / FAST_HZ;
 
   // Data fusion algorithm
-  thr_fusion.priority  =  96;
-  thr_fusion.period    =  1000000 / FUSION_HZ;
+  //thr_fusion.priority  =  96;
+  //thr_fusion.period    =  1000000 / FUSION_HZ;
 
   // Debugging thread
   thr_debug.priority =  94;
   thr_debug.period   =  1000000 / DEBUG_HZ;
 
   // Mutex initialization
-  pthread_mutex_init( &mutex_cal, NULL );
+  //pthread_mutex_init( &mutex_cal, NULL );
 
   // Initialize attribute variable
   pthread_attr_init(&attr);
@@ -54,12 +54,14 @@ void thr_init ( void )  {
   sys.ret = pthread_create ( &thr_imu.id, &attr, thread_imu, (void *)NULL );
   sys_err( sys.ret, "Error (thread_init): Failed to create 'imu' thread." );
 
+  /*
   // Initialize 'fusion' thread
   param.sched_priority = thr_fusion.priority;
   sys.ret = pthread_attr_setschedparam( &attr, &param );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'fusion' priority." );
   sys.ret = pthread_create ( &thr_fusion.id, &attr, thread_fusion, (void *)NULL );
   sys_err( sys.ret, "Error (thread_init): Failed to create 'fusion' thread." );
+  */
 
   // Initialize 'debug' thread
   if(DEBUG) {
@@ -124,7 +126,7 @@ void thr_pause ( thread_struct *thr )  {
   sys_err( sys.ret == -1, "Error (thread_pause): Failed to read timer file." );
 
   // Play around with the "missed" feature some more...
-  if ( missed > 0 )  {  thr->missed += (missed - 1);  }
+  //if ( missed > 0 )  {  thr->missed += (missed - 1);  }
 
   return;
 }
@@ -186,10 +188,12 @@ void thr_exit ( void )  {
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'imu' thread." );
   if(DEBUG)  printf( "  Status %ld for 'imu' thread \n", (long)status );
 
+  /*
   // Exit 'fusion' thread
   sys.ret = pthread_join ( thr_fusion.id, &status );
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'fusion' thread." );
   if(DEBUG)  printf( "  Status %ld for 'fusion' thread \n", (long)status );
+  */
 
   // Exit 'debug' thread
   if(DEBUG) {
@@ -222,14 +226,14 @@ void *thread_imu ( )  {
   return NULL;
 }
 
-
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_fusion
 //  Run the 'fusion' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *thread_fusion ( )  {
   printf("  Running 'fusion' thread \n");
-  /*
+
   usleep(500000);
   thr_periodic (&thr_fusion);
   while (sys.running) {
@@ -240,10 +244,10 @@ void *thread_fusion ( )  {
     thr_pause(&thr_fusion);
   }
   pthread_exit(NULL);
-  */
+
   return NULL;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_debug
@@ -255,7 +259,6 @@ void *thread_debug ( )  {
   thr_periodic (&thr_debug);
   while (sys.running) {
     thr_start(&thr_debug);
-    usleep(10000);
     sys_debug();
     thr_finish(&thr_debug);
     thr_pause(&thr_debug);

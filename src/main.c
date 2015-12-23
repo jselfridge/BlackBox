@@ -16,7 +16,7 @@ int main ( void )  {
   // Set LED indicators
   led_on(LED_MPU);  led_on(LED_PRU);  led_on(LED_LOG);  led_on(LED_MOT);
 
-  // Initialize subsystems
+  // Initialize subsystems { Move under 'sys_init' ??? }
   sys_init();
   imu_init(&imu1,1);
   log_init();

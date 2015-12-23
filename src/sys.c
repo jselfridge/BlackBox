@@ -93,9 +93,9 @@ void sys_debug (  )  {
   //for ( i=0; i<3; i++ )  printf("%07.2f ", imu2.avgMag[i] );  printf("   ");
 
   // Calibrated sensor values - IMU1
-  for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calGyr[i] );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calAcc[i] );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%7.4f ", imu1.calMag[i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calGyr[i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calAcc[i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calMag[i] );  printf("   ");
 
   // Calibrated sensor values - IMU2
   //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.calGyr[i] );  printf("   ");

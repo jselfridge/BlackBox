@@ -12,7 +12,7 @@
 typedef struct thread_struct {
   pthread_t id;
   int       fd;
-  int       missed;
+  //int       missed;
   ushort    priority;
   ulong     period;
   uint      start_sec;
@@ -24,12 +24,12 @@ typedef struct thread_struct {
 
 // Thread instances
 thread_struct thr_imu;
-thread_struct thr_fusion;
+//thread_struct thr_fusion;
 thread_struct thr_debug;
 
 
 // Mutex variables
-pthread_mutex_t mutex_cal;
+//pthread_mutex_t mutex_cal;
 
 
 // Thread functions
@@ -43,7 +43,7 @@ void  thr_exit      ( void );
 
 // Thread handlers
 void *thread_imu    ( );
-void *thread_fusion  ( );
+//void *thread_fusion  ( );
 void *thread_debug   ( );
 
 
