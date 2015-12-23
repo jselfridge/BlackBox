@@ -331,24 +331,8 @@ void imu_fusion ( imu_struct* imu )  {
 
   // Get values from mpu structure
   double q[4], m[3], a[3], g[3], b[3], fx, fz, dt;
-
-  fx = 0.5; fz = 0.866; dt = imu->fus_dt;
-  //fx = imu->fx;  fz = imu->fz;  dt = imu->fus_dt;
-
+  fx = imu->fx;  fz = imu->fz;  dt = imu->fus_dt;
   //pthread_mutex_lock(&mutex_cal);
-  
-  for ( i=0; i<4; i++ ) {
-    q[i] = 0;
-    if (i<3) {
-      g[i] = 0;
-      a[i] = 0;
-      m[i] = 0;
-      b[i] = 0;
-    }
-  }
-  q[0] = 1;
-
-  /*
   for ( i=0; i<4; i++ ) {
     q[i] = imu->Quat[i];
     if (i<3) {
@@ -358,7 +342,6 @@ void imu_fusion ( imu_struct* imu )  {
       b[i] = imu->bias[i];
     }
   }
-  */
   //pthread_mutex_lock(&mutex_cal);
 
   // Normalize magnetometer
@@ -484,7 +467,6 @@ void imu_fusion ( imu_struct* imu )  {
   e[Y] = asin  (   2* ( qwy - qxz ) )                            - P_BIAS;
   e[Z] = atan2 ( ( 2* ( qwz + qxy ) ), ( 1- 2* ( qyy + qzz ) ) ) - Y_BIAS;
 
-  /*
   // Update imu structure
   imu->fx = fx;  imu->fz = fz;
   for ( i=0; i<4; i++ ) {
@@ -496,7 +478,6 @@ void imu_fusion ( imu_struct* imu )  {
       imu->bias[i] = b[i];
     }
   }
-  */
 
   return;
 }
