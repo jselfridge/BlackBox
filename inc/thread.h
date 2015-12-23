@@ -12,7 +12,6 @@
 typedef struct thread_struct {
   pthread_t id;
   int       fd;
-  //int       missed;
   ushort    priority;
   ulong     period;
   uint      start_sec;
@@ -29,7 +28,7 @@ thread_struct thr_debug;
 
 
 // Mutex variables
-//pthread_mutex_t mutex_cal;
+pthread_mutex_t mutex_cal;
 
 
 // Thread functions

@@ -4,6 +4,6 @@ thread.c:117:6:thr_pause	24	static
 thread.c:137:6:thr_start	24	static
 thread.c:155:6:thr_finish	24	static
 thread.c:180:6:thr_exit	16	static
-thread.c:209:7:thread_imu	8	static
-thread.c:230:7:thread_fusion	8	static
-thread.c:251:7:thread_debug	8	static
+thread.c:212:7:thread_imu	8	static
+thread.c:233:7:thread_fusion	8	static
+thread.c:254:7:thread_debug	8	static

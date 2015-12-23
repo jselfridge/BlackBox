@@ -30,7 +30,7 @@ void thr_init ( void )  {
   thr_debug.period   =  1000000 / DEBUG_HZ;
 
   // Mutex initialization
-  //pthread_mutex_init( &mutex_cal, NULL );
+  pthread_mutex_init( &mutex_cal, NULL );
 
   // Initialize attribute variable
   pthread_attr_init(&attr);
@@ -197,6 +197,9 @@ void thr_exit ( void )  {
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'debug' thread." );
   printf( "  Status %ld for 'debug' thread \n", (long)status );
   }
+
+  // Destroy mutex
+  pthread_mutex_destroy(&mutex_cal);
 
   return;
 }

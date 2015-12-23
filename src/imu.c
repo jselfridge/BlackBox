@@ -290,7 +290,7 @@ void imu_data ( imu_struct* imu )  {
   }
 
   // Lock 'calibrated' variables
-  //pthread_mutex_lock(&mutex_cal);  
+  pthread_mutex_lock(&mutex_cal);  
 
   // Scale and orient gyroscope readings
   imu->calGyr[X] = -imu->avgGyr[Y] * GYR_SCALE;
@@ -310,7 +310,7 @@ void imu_data ( imu_struct* imu )  {
   }
 
   // Unlock 'calibrated' variables
-  //pthread_mutex_unlock(&mutex_cal);  
+  pthread_mutex_unlock(&mutex_cal);  
 
   return;
 }
@@ -332,7 +332,7 @@ void imu_fusion ( imu_struct* imu )  {
   // Get values from mpu structure
   double q[4], m[3], a[3], g[3], b[3], fx, fz, dt;
   fx = imu->fx;  fz = imu->fz;  dt = imu->fus_dt;
-  //pthread_mutex_lock(&mutex_cal);
+  pthread_mutex_lock(&mutex_cal);
   for ( i=0; i<4; i++ ) {
     q[i] = imu->Quat[i];
     if (i<3) {
@@ -342,7 +342,7 @@ void imu_fusion ( imu_struct* imu )  {
       b[i] = imu->bias[i];
     }
   }
-  //pthread_mutex_lock(&mutex_cal);
+  pthread_mutex_lock(&mutex_cal);
 
   // Normalize magnetometer
   norm = 0.0;
