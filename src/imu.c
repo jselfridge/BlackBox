@@ -483,18 +483,30 @@ void imu_fusion ( imu_struct* imu )  {
   }
   pthread_mutex_unlock(&mutex_fusion);
 
+  /*
   //~~~  MOVE TO 'IMU_CONV' FUNCTION  ~~~//
   
-  // Find delta
-  //delta = Quat - Prev
+  double temp[3];
+  for( i=0; i<3; i++ )  temp[i] = imu->Eul[i] - imu->Prev[i];
 
-  // Add to running total
-  //sum += delta;
+  // Norm of delta
+  norm = 0.0;
+  for ( i=0; i<3; i++ )  norm += temp[i] * temp[i];
+  norm = sqrt(norm);
 
-  // Compare something meaningful
-  
+  // Debugging statements
+  printf("E: %7.4f %7.4f %7.4f    ", imu->Eul[0], imu->Eul[1], imu->Eul[2] );
+  printf("D: %7.4f %7.4f %7.4f    ", temp[0], temp[1], temp[2] );
+  printf("N: %7.4f", norm);
+  //printf("E: %7.4f  A: %7.4f    ", imu->Eul[0], temp );
+  printf("\n");
+  fflush(stdout);
+
+  // Assign previous value
+  for ( i=0; i<3; i++ )  imu->Prev[i] = imu->Eul[i];
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+  */
 
   return;
 }

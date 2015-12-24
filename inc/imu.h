@@ -16,11 +16,11 @@
 
 #define GYR_HIST   10
 #define ACC_HIST   10
-#define MAG_HIST   10
+#define MAG_HIST    4
 
-#define GYR_LPF   (0.0f)
-#define ACC_LPF   (0.0f)
-#define MAG_LPF   (0.0f)
+#define GYR_LPF   (20.0f)
+#define ACC_LPF   (20.0f)
+#define MAG_LPF   (20.0f)
 
 #define GYR_FSR   500
 #define ACC_FSR   4

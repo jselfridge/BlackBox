@@ -117,6 +117,9 @@ void sys_debug (  )  {
   //for ( i=0; i<3; i++ )  printf("%6.1f ", imu2.Eul[i]  *(180.0f/PI) );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%6.1f ", imu2.dEul[i] *(180.0f/PI) );  printf("   ");
 
+  // Data fusion convergence
+  //for ( i=0; i<4; i++ )  printf("%6.3f ", imu1.Prev[i] );  printf("   ");  
+
   // Control values
   //printf( "%6.3f      ", ctrl.heading*(180.0/PI) );
   //for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[X][i]*(180.0f/PI) );  printf("   ");
