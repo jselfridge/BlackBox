@@ -14,9 +14,9 @@ int main ( void )  {
   if(DEBUG)  printf("\n--- Begin BlackBox program ---\n");
 
   // Set LED indicators
-  led_on(LED_MPU);  led_on(LED_PRU);  led_on(LED_LOG);  led_on(LED_MOT);
+  led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
 
-  // Initialize subsystems { Move under 'sys_init' ??? }
+  // Initialize subsystems
   sys_init();
   imu_init(&imu1,1);
   log_init();

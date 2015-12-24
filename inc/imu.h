@@ -78,6 +78,7 @@ typedef struct {
   float   calGyr    [3];
   float   calAcc    [3];
   float   calMag    [3];
+  double  Prev      [4];
   double  Quat      [4];
   double  dQuat     [4];
   double  Eul       [3];

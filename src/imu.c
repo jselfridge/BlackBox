@@ -15,7 +15,7 @@ void imu_init ( imu_struct* imu, ushort bus )  {
   // Start initialization
   imu->bus = bus;
   if(DEBUG)  printf( "Initializing IMU%d \n", bus );
-  led_blink( LED_MPU, 500, 500 );
+  led_blink( LED_IMU, 500, 500 );
 
   // Init functions
   imu_param(imu);
@@ -23,7 +23,7 @@ void imu_init ( imu_struct* imu, ushort bus )  {
   imu_setic(imu);
 
   // Indicate init completed
-  led_on(LED_MPU);
+  led_on(LED_IMU);
 
   return;
 }
@@ -203,8 +203,8 @@ void imu_setic ( imu_struct* imu )  {
     printf("    Magnetometer:    \
     HZ: %4d    DT: %5.3f    LPF: %6.2f    TC: %5.2f    gain: %7.4f  \n", \
     imu->mag_hz, imu->mag_dt, imu->mag_lpf, imu->mag_tc, imu->mag_gain );
-    printf("    Data Fusion: \
-    HZ: %4d    DT: %5.3f  \n",		\
+    printf("    Data Fusion:     \
+    HZ: %4d    DT: %5.3f  \n", \
     imu->fus_hz, imu->fus_dt );
   }
 
@@ -218,6 +218,7 @@ void imu_setic ( imu_struct* imu )  {
   // Data fusion variables
   imu->fx = 0.5;  imu->fz = 0.866;
   for ( i=0; i<4; i++ ) {
+    imu->Prev[i]  = 0;
     imu->Quat[i]  = 0;
     imu->dQuat[i] = 0;
     if (i<3) {
@@ -226,6 +227,7 @@ void imu_setic ( imu_struct* imu )  {
       imu->bias[i] = 0;
     }
   }
+  imu->Prev[0] = 1;
   imu->Quat[0] = 1;
 
   return;
@@ -480,6 +482,19 @@ void imu_fusion ( imu_struct* imu )  {
     }
   }
   pthread_mutex_unlock(&mutex_fusion);
+
+  //~~~  MOVE TO 'IMU_CONV' FUNCTION  ~~~//
+  
+  // Find delta
+  //delta = Quat - Prev
+
+  // Add to running total
+  //sum += delta;
+
+  // Compare something meaningful
+  
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
   return;
 }

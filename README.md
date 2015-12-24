@@ -10,12 +10,10 @@ Pending
 -------
 The following list outlines proposed upcoming changes 
 <ul>
-  <li>Mutex on pthread variables</li>
-  <li>Enable max I2C rate of 400kHz</li>
-  <li>Test pull up resistors on Sparkfun breakout board</li>
-  <li>IMU interrupt when data is available</li>
   <li>IMU convergence on start up</li>
   <li>IMU indicator for successful convergence</li>
+  <li>Test pull up resistors on Sparkfun breakout board</li>
+  <li>IMU interrupt when data is available</li>
   <li>Mavlink serial output</li>
   <li>Develop GCS</li>
   <li>Add notes section to data log</li>

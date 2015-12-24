@@ -93,11 +93,11 @@ void sys_debug (  )  {
   //for ( i=0; i<3; i++ )  printf("%07.2f ", imu2.avgMag[i] );  printf("   ");
 
   // Calibrated sensor values - IMU1
-  pthread_mutex_lock(&mutex_cal);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calGyr[i] );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calAcc[i] );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calMag[i] );  printf("   ");
-  pthread_mutex_unlock(&mutex_cal);
+  //pthread_mutex_lock(&mutex_cal);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calGyr[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calAcc[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calMag[i] );  printf("   ");
+  //pthread_mutex_unlock(&mutex_cal);
 
   // Calibrated sensor values - IMU2
   //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.calGyr[i] );  printf("   ");
@@ -144,7 +144,7 @@ void sys_exit (  )  {
   imu_exit();
   //pru_exit();
   log_exit();  //--- DEBUG ---//
-  led_off(LED_MPU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
+  led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
   if(DEBUG)  printf("Program complete \n");
   sys.ret = sigaction( SIGINT, &sys_signal, NULL );
   sys_err( sys.ret == -1, "Error (sys_exit): Function 'sigaction' failed." );
