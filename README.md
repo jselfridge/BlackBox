@@ -11,11 +11,13 @@ Pending
 The following list outlines proposed upcoming changes 
 <ul>
   <li><b>Priority</b></li>
-  <li>Reestablish PRU functionality</li>
-  <li>Reestablish controller code</li>
-  <li>Add health/status monitoring thread</li>
+  <li>Code to TX/RX serial data</li>
+  <li>Integrate serial transmission into thread</li>
   <li>Mavlink serial output</li>
   <li>Develop GCS</li>
+  <li>Add health/status monitoring thread</li>
+  <li>Reestablish PRU functionality</li>
+  <li>Reestablish controller code</li>
   <li>Ctrl struct</li>
   <li>Tune PID gains</li>
   <li>System identification</li>
