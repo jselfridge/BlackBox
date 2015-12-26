@@ -24,6 +24,7 @@ The following list outlines proposed upcoming changes
   <li>Kalman filter</li>
   <li>Add altitude sensor</li>
   <li><b>Sooner than later</b></li>
+  <li>Butterworth filter</li>
   <li>Test pull up resistors on Sparkfun breakout board</li>
   <li>IMU interrupt when data is available</li>
   <li>Add notes section to data log</li>
