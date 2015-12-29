@@ -1,0 +1,6 @@
+pru.c:13:6:pru_init	400	dynamic,bounded
+pru.c:51:6:pru_exit	8	static
+pru.c:64:7:pru_read_pulse	16	static
+pru.c:75:7:pru_read_norm	24	static
+pru.c:89:6:pru_send_pulse	16	static
+pru.c:101:6:pru_send_norm	24	static

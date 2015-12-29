@@ -32,14 +32,14 @@
 #include <imu.h>
 #include <led.h>
 #include <log.h>
-//#include <pru.h>
+#include <pru.h>
 #include <sys.h>
 #include <thread.h>
 
 
 // PRU includes
-//#include <prussdrv.h>
-//#include <pruss_intc_mapping.h>
+#include <prussdrv.h>
+#include <pruss_intc_mapping.h>
 
 
 // MPU includes

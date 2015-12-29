@@ -17,8 +17,8 @@ void pru_init ( void )  {
   prussdrv_init();
   
   // Open interrupt
-  ret = prussdrv_open(PRU_EVTOUT_0);
-  sys_err( ret, "Error (pru_init): prussdrv_open open failed" );
+  sys.ret = prussdrv_open(PRU_EVTOUT_0);
+  sys_err( sys.ret, "Error (pru_init): prussdrv_open open failed" );
 
   //Initialise interrupt
   tpruss_intc_initdata pruss_intc_initdata = PRUSS_INTC_INITDATA;
@@ -49,7 +49,7 @@ void pru_init ( void )  {
 //  Exits the PRU subsystems.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void pru_exit ( void )  {
-  if(DEBUG)  printf("  Exiting PRU \n");
+  if(DEBUG)  printf("Closing PRU \n");
   prussdrv_pru_disable(0);
   prussdrv_pru_disable(1);
   prussdrv_exit(); 

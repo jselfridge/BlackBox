@@ -21,12 +21,16 @@ void thr_init ( void )  {
   thr_imu.priority     =  98;
   thr_imu.period       =  1000000 / FAST_HZ;
 
-  // Data fusion algorithm
+  // Data fusion thread
   thr_fusion.priority  =  96;
   thr_fusion.period    =  1000000 / FUSION_HZ;
 
+  // System input/output thread
+  thr_sysio.priority  =  94;
+  thr_sysio.period    =  1000000 / SYSIO_HZ;
+
   // Debugging thread
-  thr_debug.priority =  94;
+  thr_debug.priority =  92;
   thr_debug.period   =  1000000 / DEBUG_HZ;
 
   // Mutex initialization
@@ -61,6 +65,13 @@ void thr_init ( void )  {
   sys_err( sys.ret, "Error (thread_init): Failed to set 'fusion' priority." );
   sys.ret = pthread_create ( &thr_fusion.id, &attr, thread_fusion, (void *)NULL );
   sys_err( sys.ret, "Error (thread_init): Failed to create 'fusion' thread." );
+
+  // Initialize 'sysio' thread
+  param.sched_priority = thr_sysio.priority;
+  sys.ret = pthread_attr_setschedparam( &attr, &param );
+  sys_err( sys.ret, "Error (thread_init): Failed to set 'sysio' priority." );
+  sys.ret = pthread_create ( &thr_sysio.id, &attr, thread_sysio, (void *)NULL );
+  sys_err( sys.ret, "Error (thread_init): Failed to create 'sysio' thread." );
 
   // Initialize 'debug' thread
   if(DEBUG) {
@@ -242,6 +253,27 @@ void *thread_fusion ( )  {
     thr_finish(&thr_fusion);
     log_write(LOG_FUSION);
     thr_pause(&thr_fusion);
+  }
+  pthread_exit(NULL);
+
+  return NULL;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  thread_sysio
+//  Run the 'sysio' thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void *thread_sysio ( )  {
+  printf("  Running 'sysio' thread \n");
+  //usleep(500000);
+  thr_periodic (&thr_sysio);
+  while (sys.running) {
+    thr_start(&thr_sysio);
+    //imu_fusion(&imu1);
+    thr_finish(&thr_sysio);
+    //log_write(LOG_SYSIO);
+    thr_pause(&thr_sysio);
   }
   pthread_exit(NULL);
 

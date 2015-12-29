@@ -24,6 +24,7 @@ typedef struct thread_struct {
 // Thread instances
 thread_struct thr_imu;
 thread_struct thr_fusion;
+thread_struct thr_sysio;
 thread_struct thr_debug;
 
 
@@ -43,8 +44,9 @@ void  thr_exit      ( void );
 
 // Thread handlers
 void *thread_imu    ( );
-void *thread_fusion  ( );
-void *thread_debug   ( );
+void *thread_fusion ( );
+void *thread_sysio  ( );
+void *thread_debug  ( );
 
 
 #endif
