@@ -6,5 +6,5 @@ thread.c:167:6:thr_finish	24	static
 thread.c:192:6:thr_exit	16	static
 thread.c:225:7:thread_imu	8	static
 thread.c:246:7:thread_fusion	8	static
-thread.c:267:7:thread_sysio	8	static
-thread.c:288:7:thread_debug	8	static
+thread.c:267:7:thread_sysio	16	static
+thread.c:301:7:thread_debug	8	static

@@ -266,13 +266,26 @@ void *thread_fusion ( )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *thread_sysio ( )  {
   printf("  Running 'sysio' thread \n");
-  //usleep(500000);
   thr_periodic (&thr_sysio);
   while (sys.running) {
     thr_start(&thr_sysio);
-    //imu_fusion(&imu1);
+
+    // Debugging
+    static int pwm = 900;
+    pwm += 100;
+    if ( pwm > 2000) pwm = 1000;
+    int j;
+    for ( j=0; j<10; j++ )  sys.output[j] = pwm;
+
+    // Function
+    int i;
+    for ( i=0; i<10; i++ ) {
+      sys.input[i] = pru_read_pulse(i);
+      pru_send_pulse(i,sys.output[i]);      
+    }
+
     thr_finish(&thr_sysio);
-    //log_write(LOG_SYSIO);
+    log_write(LOG_SYSIO);
     thr_pause(&thr_sysio);
   }
   pthread_exit(NULL);

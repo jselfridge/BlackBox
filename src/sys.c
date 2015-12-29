@@ -68,9 +68,9 @@ void sys_debug (  )  {
   //if (t.percent<1.0) {  printf("_    ");  fflush(stdout);  }
   //else               {  printf("X    ");  fflush(stdout);  }
 
-  // Input/Output values
-  //for ( i=0; i<6; i++ )  printf("%06.1f ", sys.input[i]  );  printf("   ");
-  //for ( i=0; i<4; i++ )  printf("%06.1f ", sys.output[i] );  printf("   ");
+  // System Input/Output values
+  for ( i=0; i<5; i++ )  printf("%06.1f ", sys.input[i]  );  printf("   ");
+  for ( i=0; i<5; i++ )  printf("%06.1f ", sys.output[i] );  printf("   ");
 
   // Raw sensor values - IMU1
   //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawGyr[i] );  printf("   ");

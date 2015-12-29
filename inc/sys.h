@@ -11,14 +11,14 @@
 // Define statements
 #define DEBUG           true
 #define DEBUG_HZ        10
-#define SYSIO_HZ        100
+#define SYSIO_HZ        5
 #define SYS_STACK       ( 100 * 1024 * 1024 )
 
 
 // System structure
 typedef struct sys_struct {
-  bool  running;
-  int   ret;
+  bool   running;
+  int    ret;
   double input[10];
   double output[10];
 } sys_struct;

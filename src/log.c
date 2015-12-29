@@ -108,6 +108,15 @@ void log_open ( void )  {
     Ex1,     Ey1,     Ez1,  \
     dEx1, dEy1, dEz1  ");
 
+  // Create system input/output file
+  sprintf( file, "%ssysio.txt", datalog.path );
+  datalog.sysio = fopen( file, "w" );
+  sys_err( datalog.sysio == NULL, "Error (log_init): Cannot open 'sysio' file. \n" );
+  fprintf( datalog.sysio, 
+    " Stime,       Sdur,  \
+    I1,     I2,     I3,     I4,     I5,     I6,     I7,     I8,     I9,     I0,    \
+    O1,     O2,     O3,     O4,     O5,     O6,     O7,     O8,     O9,     O0,  ");
+
   // Determine start second
   struct timespec timeval;
   clock_gettime( CLOCK_MONOTONIC, &timeval );
@@ -166,6 +175,14 @@ void log_record ( enum log_index index )  {
     for ( i=0; i<3; i++ )  fprintf( datalog.fusion, "%07.4f, ", imu1.dEul[i] );  fprintf( datalog.fusion, "   " );
     return;
 
+  // Record 'system input/output' datalog
+  case LOG_SYSIO :
+    timestamp = (float)( thr_sysio.start_sec + ( thr_sysio.start_usec / 1000000.0f ) - datalog.offset );
+    fprintf( datalog.sysio, "\n %011.6f, %06ld,    ", timestamp, thr_sysio.dur );
+    for ( i=0; i<10; i++ )  fprintf( datalog.sysio, "%6.1f, ", sys.input[i]  );  fprintf( datalog.sysio, "   " );
+    for ( i=0; i<10; i++ )  fprintf( datalog.sysio, "%6.1f, ", sys.output[i] );  fprintf( datalog.sysio, "   " );
+    return;
+
   default :
     return;
   }
@@ -184,6 +201,7 @@ void log_exit ( void )  {
   fclose(datalog.acc);
   fclose(datalog.mag);
   fclose(datalog.fusion);
+  fclose(datalog.sysio);
 
   // Adjust flag
   datalog.open = false;
