@@ -64,10 +64,10 @@
         "P9.24",
         "P9.26",
 */
-	//--  GPIO  --//
+/*        //--  GPIO  --//
 	"P9.15",
 	"P9.16",
-
+*/
         //--  HARDWARE  --//
         //"uart1",
         //"uart2",
@@ -173,7 +173,7 @@
                 >;
             };
 */
-
+/*
             //--  GPIO pins  --//
             gpio_pins: pinmux_gpio_pins {
                 pinctrl-single,pins = <
@@ -181,7 +181,7 @@
                     0x04C  0x37      //  P9.16 | GPIO1_19 | INPUT | PULL UP | MODE 7  //
                 >;
             };
-
+*/
 
         };
     };
@@ -266,7 +266,7 @@
         };
     };
 */
-
+/*
     //--  GENERAL I/O  --//
     fragment@2 {
         target = <&ocp>;
@@ -279,7 +279,7 @@
             };
         };
     };
-
+*/
 
 };
 

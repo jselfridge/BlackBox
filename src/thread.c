@@ -203,6 +203,11 @@ void thr_exit ( void )  {
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'fusion' thread." );
   if(DEBUG)  printf( "  Status %ld for 'fusion' thread \n", (long)status );
 
+  // Exit 'sysio' thread
+  sys.ret = pthread_join ( thr_sysio.id, &status );
+  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'sysio' thread." );
+  if(DEBUG)  printf( "  Status %ld for 'sysio' thread \n", (long)status );
+
   // Exit 'debug' thread
   if(DEBUG) {
   sys.ret = pthread_join ( thr_debug.id, &status );
@@ -281,7 +286,7 @@ void *thread_sysio ( )  {
     int i;
     for ( i=0; i<10; i++ ) {
       sys.input[i] = pru_read_pulse(i);
-      pru_send_pulse(i,sys.output[i]);      
+      pru_send_pulse(i,(int)(sys.output[i]));      
     }
 
     thr_finish(&thr_sysio);
