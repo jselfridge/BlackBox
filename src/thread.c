@@ -276,17 +276,28 @@ void *thread_sysio ( )  {
     thr_start(&thr_sysio);
 
     // Debugging
-    static int pwm = 900;
-    pwm += 100;
-    if ( pwm > 2000) pwm = 1000;
-    int j;
-    for ( j=0; j<10; j++ )  sys.output[j] = pwm;
+    //static int pwm = 900;
+    //pwm += 100;
+    //if ( pwm > 2000) pwm = 1000;
+    //int j;
+    //for ( j=0; j<10; j++ )  sys.output[j] = pwm;
+
+    sys.output[0] = 1000;
+    sys.output[1] = 1100;
+    sys.output[2] = 1200;
+    sys.output[3] = 1300;
+    sys.output[4] = 1400;
+    sys.output[5] = 1500;
+    sys.output[6] = 1600;
+    sys.output[7] = 1700;
+    sys.output[8] = 1800;
+    sys.output[9] = 1900;
 
     // Function
     int i;
     for ( i=0; i<10; i++ ) {
       sys.input[i] = pru_read_pulse(i);
-      pru_send_pulse(i,(int)(sys.output[i]));      
+      pru_send_pulse( i, sys.output[i] );      
     }
 
     thr_finish(&thr_sysio);

@@ -7,4 +7,4 @@ thread.c:192:6:thr_exit	16	static
 thread.c:230:7:thread_imu	8	static
 thread.c:251:7:thread_fusion	8	static
 thread.c:272:7:thread_sysio	16	static
-thread.c:306:7:thread_debug	8	static
+thread.c:317:7:thread_debug	8	static
