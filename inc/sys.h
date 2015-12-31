@@ -17,10 +17,10 @@
 
 // System structure
 typedef struct sys_struct {
-  bool   running;
-  int    ret;
-  double input[10];
-  double output[10];
+  bool  running;
+  int   ret;
+  uint  input[10];    // Normalize -1:1 ???
+  uint  output[10];   // Normalize -1:1 ???
 } sys_struct;
 sys_struct sys;
 

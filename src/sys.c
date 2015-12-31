@@ -69,8 +69,8 @@ void sys_debug (  )  {
   //else               {  printf("X    ");  fflush(stdout);  }
 
   // System Input/Output values
-  for ( i=0; i<5; i++ )  printf("%06.1f ", sys.input[i]  );  printf("   ");
-  for ( i=0; i<5; i++ )  printf("%06.1f ", sys.output[i] );  printf("   ");
+  for ( i=0; i<5; i++ )  printf("%04d ", sys.input[i]  );  printf("   ");
+  for ( i=0; i<5; i++ )  printf("%04d ", sys.output[i] );  printf("   ");
 
   // Raw sensor values - IMU1
   //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawGyr[i] );  printf("   ");

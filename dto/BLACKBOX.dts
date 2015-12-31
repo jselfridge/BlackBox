@@ -187,7 +187,21 @@
     };
 
 
-    //--  PRU  --//
+    //--  PRU: 4.1.x kernel  --//
+    fragment@1 {
+        target = <&ocp>;
+        __overlay__ {
+            test_helper: helper {
+                compatible = "bone-pinmux-helper";
+                status = "okay";
+                pinctrl-names = "default";
+                pinctrl-0 = <&pru_pins>;
+            };
+        };
+    };
+
+
+/*    //--  PRU: 3.8.x kernel  --//
     fragment@1 {
         target = <&pruss>;
         __overlay__ {
@@ -196,7 +210,7 @@
             pinctrl-0 = <&pru_pins>;
         };
     };
-
+*/
 /*    //--  I2C1  --//
     fragment@2 {
         target = <&i2c1>;

@@ -114,8 +114,8 @@ void log_open ( void )  {
   sys_err( datalog.sysio == NULL, "Error (log_init): Cannot open 'sysio' file. \n" );
   fprintf( datalog.sysio, 
     " Stime,       Sdur,  \
-    I1,     I2,     I3,     I4,     I5,     I6,     I7,     I8,     I9,     I0,    \
-    O1,     O2,     O3,     O4,     O5,     O6,     O7,     O8,     O9,     O0,  ");
+    I1,   I2,   I3,   I4,   I5,   I6,   I7,   I8,   I9,   I0,  \
+    O1,   O2,   O3,   O4,   O5,   O6,   O7,   O8,   O9,   O0,  ");
 
   // Determine start second
   struct timespec timeval;
@@ -179,8 +179,8 @@ void log_record ( enum log_index index )  {
   case LOG_SYSIO :
     timestamp = (float)( thr_sysio.start_sec + ( thr_sysio.start_usec / 1000000.0f ) - datalog.offset );
     fprintf( datalog.sysio, "\n %011.6f, %06ld,    ", timestamp, thr_sysio.dur );
-    for ( i=0; i<10; i++ )  fprintf( datalog.sysio, "%6.1f, ", sys.input[i]  );  fprintf( datalog.sysio, "   " );
-    for ( i=0; i<10; i++ )  fprintf( datalog.sysio, "%6.1f, ", sys.output[i] );  fprintf( datalog.sysio, "   " );
+    for ( i=0; i<10; i++ )  fprintf( datalog.sysio, "%4d, ", sys.input[i]  );  fprintf( datalog.sysio, "   " );
+    for ( i=0; i<10; i++ )  fprintf( datalog.sysio, "%4d, ", sys.output[i] );  fprintf( datalog.sysio, "   " );
     return;
 
   default :
