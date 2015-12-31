@@ -69,12 +69,12 @@ void sys_debug (  )  {
   //else               {  printf("X    ");  fflush(stdout);  }
 
   // System Input/Output values
-  for ( i=5; i<10; i++ )  printf("%04d ", sys.input[i]  );  printf("   ");
-  for ( i=5; i<10; i++ )  printf("%04d ", sys.output[i] );  printf("   ");
+  //for ( i=5; i<10; i++ )  printf("%04d ", sys.input[i]  );  printf("   ");
+  //for ( i=5; i<10; i++ )  printf("%04d ", sys.output[i] );  printf("   ");
 
   // Raw sensor values - IMU1
   //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawGyr[i] );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawAcc[i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawAcc[i] );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%04d ", imu1.rawMag[i] );  printf("   ");
 
   // Raw sensor values - IMU2
