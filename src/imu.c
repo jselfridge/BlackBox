@@ -8,21 +8,17 @@
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_init
-//  Initializes an MPU sensor.
+//  Initializes the MPU sensors.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_init ( imu_struct* imu, ushort bus )  {
+void imu_init ( void )  {
 
-  // Start initialization
-  imu->bus = bus;
-  if(DEBUG)  printf( "Initializing IMU%d \n", bus );
+  if(DEBUG)  printf( "Initializing IMU \n" );
+
   led_blink( LED_IMU, 500, 500 );
 
-  // Init functions
-  imu_param(imu);
-  imu_getcal(imu);
-  imu_setic(imu);
+  imu1.id = 1;  imu1.addr = 0x68;  imu_setup(&imu1);
+  //imu2.id = 2;  imu2.addr = 0x69;  imu_setup(&imu2);
 
-  // Indicate init completed
   led_on(LED_IMU);
 
   return;
@@ -30,13 +26,16 @@ void imu_init ( imu_struct* imu, ushort bus )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_exit
-//  Terminate an MPU sensor.
+//  imu_setup
+//  Setup functions for each MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_exit ( void )  {
-  if(DEBUG)  printf("Closing IMU \n");
-  //sys.ret = mpu_set_dmp_state(0);
-  //sys_err( sys.ret, "Error (imu_exit): 'mpu_set_dmp_state' failed." );
+void imu_setup ( imu_struct* imu )  {
+
+  // Init functions
+  imu_param(imu);
+  imu_getcal(imu);
+  imu_setic(imu);
+
   return;
 }
 
@@ -47,8 +46,8 @@ void imu_exit ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_param ( imu_struct* imu )  {
 
-  if(DEBUG) {  printf("  Assigning IMU parameters ");  fflush(stdout);  }
-  linux_set_i2c_bus(imu->bus);
+  if(DEBUG) {  printf( "  Assigning IMU%d parameters ", imu->id );  fflush(stdout);  }
+  linux_set_i2c_bus(1);
 
   sys.ret = mpu_init_master(NULL);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
@@ -84,7 +83,7 @@ void imu_param ( imu_struct* imu )  {
 //  Gets the calibration parameters for the MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_getcal ( imu_struct* imu )  {
-  if(DEBUG)  printf("  IMU calibration values: \n");
+  if(DEBUG)  printf( "  IMU%d calibration values: \n", imu->id );
 
   // Local variables
   int i;
@@ -94,7 +93,7 @@ void imu_getcal ( imu_struct* imu )  {
   memset( buff, 0, sizeof(buff) );
 
   // Set magnetometer offset
-  sprintf( path, "cal/imu%d/moffset", imu->bus );
+  sprintf( path, "cal/imu%d/moffset", imu->id );
   f = fopen( path, "r" );
   sys_err( !f, "Error (imu_getcal): File 'moffset' not found." );
   for ( i=0; i<3; i++ ) {
@@ -104,7 +103,7 @@ void imu_getcal ( imu_struct* imu )  {
   fclose(f);
 
   // Set magnetometer range
-  sprintf( path, "cal/imu%d/mrange", imu->bus );
+  sprintf( path, "cal/imu%d/mrange", imu->id );
   f = fopen( path, "r" );
   sys_err( !f, "Error (imu_getcal): File 'mrange' not found." );
   for ( i=0; i<3; i++ ) {
@@ -114,7 +113,7 @@ void imu_getcal ( imu_struct* imu )  {
   fclose(f);
 
   // Set acceleration offset
-  sprintf( path, "cal/imu%d/aoffset", imu->bus );
+  sprintf( path, "cal/imu%d/aoffset", imu->id );
   f = fopen( path, "r" );
   sys_err( !f, "Error (imu_getcal): File 'aoffset' not found." );
   for ( i=0; i<3; i++ ) {
@@ -124,7 +123,7 @@ void imu_getcal ( imu_struct* imu )  {
   fclose(f);
 
   // Set acceleration range
-  sprintf( path, "cal/imu%d/arange", imu->bus );
+  sprintf( path, "cal/imu%d/arange", imu->id );
   f = fopen( path, "r" );
   sys_err( !f, "Error (imu_getcal): File 'arange' not found." );
   for ( i=0; i<3; i++ ) {
@@ -154,7 +153,7 @@ void imu_getcal ( imu_struct* imu )  {
 //  Sets the initial conditions for the MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_setic ( imu_struct* imu )  {
-  if(DEBUG)  printf("  Setting IMU initial conditions \n");
+  if(DEBUG)  printf( "  Setting IMU%d initial conditions \n", imu->id );
 
   // Local vsariable
   ushort i, j;
@@ -508,6 +507,18 @@ void imu_fusion ( imu_struct* imu )  {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   */
 
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  imu_exit
+//  Terminate an MPU sensor.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void imu_exit ( void )  {
+  if(DEBUG)  printf("Closing IMU \n");
+  //sys.ret = mpu_set_dmp_state(0);
+  //sys_err( sys.ret, "Error (imu_exit): 'mpu_set_dmp_state' failed." );
   return;
 }
 

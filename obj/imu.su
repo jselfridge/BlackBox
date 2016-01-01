@@ -1,7 +1,8 @@
-imu.c:13:6:imu_init	16	static
-imu.c:36:6:imu_exit	8	static
-imu.c:48:6:imu_param	16	static
-imu.c:86:6:imu_getcal	88	static
-imu.c:156:6:imu_setic	48	static
-imu.c:241:6:imu_data	48	static
-imu.c:325:6:imu_fusion	784	static
+imu.c:13:6:imu_init	8	static
+imu.c:32:6:imu_setup	16	static
+imu.c:47:6:imu_param	16	static
+imu.c:85:6:imu_getcal	88	static
+imu.c:155:6:imu_setic	48	static
+imu.c:240:6:imu_data	48	static
+imu.c:324:6:imu_fusion	784	static
+imu.c:518:6:imu_exit	8	static

@@ -10,6 +10,10 @@
 
 // Define statements
 
+//#define IMU_BUS    1
+//#define ADDR1      0x68
+//#define ADDR2      0x69
+
 #define FAST_HZ    1000
 #define SLOW_HZ     100
 #define FUSION_HZ   100
@@ -42,7 +46,8 @@
 
 // IMU structure
 typedef struct {
-  ushort  bus;
+  ushort  id;
+  ushort  addr;
   ushort  count;
   ushort  loops;
   ushort  gyr_hz;
@@ -88,16 +93,18 @@ typedef struct {
   double  fz;
 } imu_struct;
 imu_struct imu1;
+//imu_struct imu2;
 
 
 // IMU functions
-void    imu_init     ( imu_struct* imu, ushort bus );
-void    imu_exit     ( void );
+void    imu_init     ( void );
+void    imu_setup    ( imu_struct* imu );
 void    imu_param    ( imu_struct* imu );
 void    imu_getcal   ( imu_struct* imu );
 void    imu_setic    ( imu_struct* imu );
 void    imu_data     ( imu_struct* imu );
 void    imu_fusion   ( imu_struct* imu );
+void    imu_exit     ( void );
 
 
 #endif
