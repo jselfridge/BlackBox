@@ -69,12 +69,14 @@ void sys_debug (  )  {
   //else               {  printf("X    ");  fflush(stdout);  }
 
   // System Input/Output values
-  //for ( i=5; i<10; i++ )  printf("%04d ", sys.input[i]  );  printf("   ");
-  //for ( i=5; i<10; i++ )  printf("%04d ", sys.output[i] );  printf("   ");
+  pthread_mutex_lock(&mutex_sysio);
+  for ( i=0; i<6; i++ )  printf("%04d ", sys.input[i]  );  printf("   ");
+  for ( i=0; i<4; i++ )  printf("%04d ", sys.output[i] );  printf("   ");
+  pthread_mutex_unlock(&mutex_sysio);
 
   // Raw sensor values - IMU1
   //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawGyr[i] );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawAcc[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawAcc[i] );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%04d ", imu1.rawMag[i] );  printf("   ");
 
   // Raw sensor values - IMU2
@@ -105,11 +107,11 @@ void sys_debug (  )  {
   //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.calMag[i] );  printf("   ");
 
   // Data fusion values - IMU1
-  //pthread_mutex_lock(&mutex_fusion);
+  pthread_mutex_lock(&mutex_fusion);
   //for ( i=0; i<4; i++ )  printf("%6.3f ", imu1.Quat[i]              );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.Eul[i]  *(180.0f/PI) );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.dEul[i] *(180.0f/PI) );  printf("   ");
-  //pthread_mutex_unlock(&mutex_fusion);
+  for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.Eul[i]  *(180.0f/PI) );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.dEul[i] *(180.0f/PI) );  printf("   ");
+  pthread_mutex_unlock(&mutex_fusion);
 
   // Data fusion values - IMU2
   //for ( i=0; i<4; i++ )  printf("%6.3f ", imu2.Quat[i]              );  printf("   ");

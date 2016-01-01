@@ -179,8 +179,8 @@ void log_record ( enum log_index index )  {
   case LOG_SYSIO :
     timestamp = (float)( thr_sysio.start_sec + ( thr_sysio.start_usec / 1000000.0f ) - datalog.offset );
     fprintf( datalog.sysio, "\n %011.6f, %06ld,    ", timestamp, thr_sysio.dur );
-    for ( i=0; i<10; i++ )  fprintf( datalog.sysio, "%4d, ", sys.input[i]  );  fprintf( datalog.sysio, "   " );
-    for ( i=0; i<10; i++ )  fprintf( datalog.sysio, "%4d, ", sys.output[i] );  fprintf( datalog.sysio, "   " );
+    for ( i=0; i<10; i++ )  fprintf( datalog.sysio, "%04d, ", sys.input[i]  );  fprintf( datalog.sysio, "   " );
+    for ( i=0; i<10; i++ )  fprintf( datalog.sysio, "%04d, ", sys.output[i] );  fprintf( datalog.sysio, "   " );
     return;
 
   default :

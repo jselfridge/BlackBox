@@ -29,8 +29,9 @@ thread_struct thr_debug;
 
 
 // Mutex variables
-pthread_mutex_t mutex_cal;
+pthread_mutex_t mutex_imu;
 pthread_mutex_t mutex_fusion;
+pthread_mutex_t mutex_sysio;
 
 
 // Thread functions

@@ -34,8 +34,9 @@ void thr_init ( void )  {
   thr_debug.period   =  1000000 / DEBUG_HZ;
 
   // Mutex initialization
-  pthread_mutex_init( &mutex_cal, NULL );
+  pthread_mutex_init( &mutex_imu,    NULL );
   pthread_mutex_init( &mutex_fusion, NULL );
+  pthread_mutex_init( &mutex_sysio,  NULL );
 
   // Initialize attribute variable
   pthread_attr_init(&attr);
@@ -216,8 +217,9 @@ void thr_exit ( void )  {
   }
 
   // Destroy mutex
-  pthread_mutex_destroy(&mutex_cal);
+  pthread_mutex_destroy(&mutex_imu);
   pthread_mutex_destroy(&mutex_fusion);
+  pthread_mutex_destroy(&mutex_sysio);
 
   return;
 }
@@ -272,40 +274,22 @@ void *thread_fusion ( )  {
 void *thread_sysio ( )  {
   printf("  Running 'sysio' thread \n");
   thr_periodic (&thr_sysio);
-  while (sys.running) {
+  ushort i;
+  while (sys.running) 
+  {
     thr_start(&thr_sysio);
-
-    // Debugging
-    //static int pwm = 900;
-    //pwm += 100;
-    //if ( pwm > 2000) pwm = 1000;
-    //int j;
-    //for ( j=0; j<10; j++ )  sys.output[j] = pwm;
-
-    sys.output[0] = 1000;
-    sys.output[1] = 1100;
-    sys.output[2] = 1200;
-    sys.output[3] = 1300;
-    sys.output[4] = 1400;
-    sys.output[5] = 1500;
-    sys.output[6] = 1600;
-    sys.output[7] = 1700;
-    sys.output[8] = 1800;
-    sys.output[9] = 1900;
-
-    // Function
-    int i;
-    for ( i=0; i<10; i++ ) {
+    pthread_mutex_lock(&mutex_sysio);
+    for ( i=0; i<10; i++ ) 
+    {
       sys.input[i] = pru_read_pulse(i);
       pru_send_pulse( i, sys.output[i] );      
     }
-
+    pthread_mutex_unlock(&mutex_sysio);
     thr_finish(&thr_sysio);
     log_write(LOG_SYSIO);
     thr_pause(&thr_sysio);
   }
   pthread_exit(NULL);
-
   return NULL;
 }
 
