@@ -9,6 +9,7 @@
 
 
 // Define misc items
+#define CTRL_HZ     100
 #define DEG2RAD     (PI/180.0f)
 #define RAD2DEG     (180.0f/PI)
 #define STICK_HOLD  3.0
@@ -80,6 +81,8 @@
 
 // CTRL structure
 typedef struct {
+  ushort  hz;
+  float   dt;
   double  norm[10];
   double  range[4];
   double  ref[4];

@@ -12,11 +12,12 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void ctrl_init ( void )  {
 
-  // Increment counter
-  ushort i, j;
-
   // Ensure motors are off
   ctrl_disarm();
+
+  // Set timing values
+  ctrl.hz = CTRL_HZ;
+  ctrl.dt = 1.0/CTRL_HZ;
 
   // Set reference ranges
   ctrl.range[CH_R] = R_RANGE;
@@ -29,12 +30,13 @@ void ctrl_init ( void )  {
     ctrl.fullStick[i][HIGH] = 0;
     ctrl.fullStick[i][LOW]  = 0;
   }
-  ctrl.stickHold = STICK_HOLD * SYS_FREQ;
+  ctrl.stickHold = STICK_HOLD * CTRL_HZ;
 
   // Set command flags
   ctrl.motorsArmed = false;
 
   // Set error values
+  ushort i, j;
   for ( i=0; i<3; i++ ) {
     for ( j=0; j<3; j++ ) {
       ctrl.err[i][j] = 0;
@@ -132,7 +134,7 @@ void ctrl_flags ( void )  {
     // Exit program: roll and yaw together to exit program
     if (  ctrl.fullStick[CH_Y][LEFT] >= ctrl.stickHold  &&  ctrl.fullStick[CH_R][RIGHT] >= ctrl.stickHold  ) {
       sys.running = false;
-      led_off(LED_MPU);
+      led_off(LED_IMU);
       led_off(LED_PRU);
       led_off(LED_LOG);
       led_off(LED_MOT);
@@ -159,7 +161,6 @@ void ctrl_switch ( void )  {
   //ctrl_mimo_sf();
   //ctrl_sysid();
   //ctrl_mrac();
-  //ctrl_L1();
 
   }
 
@@ -183,7 +184,7 @@ void ctrl_pid ( void )  {
   if ( R_KIreset < -I_RESET || R_KIreset > I_RESET )  
     ctrl.err[X][I] = 0; 
   else
-    ctrl.err[X][I] += ctrl.err[X][P] * SYS_DT;
+    ctrl.err[X][I] += ctrl.err[X][P] * ctrl.dt;
   ctrl.input[X] = ctrl.err[X][P] * ctrl.gain[X][P] + 
                   ctrl.err[X][I] * ctrl.gain[X][I] + 
                   ctrl.err[X][D] * ctrl.gain[X][D];
@@ -196,14 +197,14 @@ void ctrl_pid ( void )  {
   if ( P_KIreset < -I_RESET || P_KIreset > I_RESET )
     ctrl.err[Y][I] = 0; 
   else
-    ctrl.err[Y][I] += ctrl.err[Y][P] * SYS_DT;
+    ctrl.err[Y][I] += ctrl.err[Y][P] * ctrl.dt;
   ctrl.input[Y] = ctrl.err[Y][P] * ctrl.gain[Y][P] + 
                   ctrl.err[Y][I] * ctrl.gain[Y][I] + 
                   ctrl.err[Y][D] * ctrl.gain[Y][D];
 
   // Determine yaw (Z) adjustment
   double Y_KIreset;
-  if ( ctrl.norm[CH_T] > -0.9 && fabs(ctrl.norm[CH_Y]) > 0.15 )  ctrl.heading += ctrl.ref[CH_Y] * SYS_DT;
+  if ( ctrl.norm[CH_T] > -0.9 && fabs(ctrl.norm[CH_Y]) > 0.15 )  ctrl.heading += ctrl.ref[CH_Y] * ctrl.dt;
   while ( ctrl.heading >   PI )  ctrl.heading -= 2.0*PI;
   while ( ctrl.heading <= -PI )  ctrl.heading += 2.0*PI;
   ctrl.err[Z][P] = -imu1.Eul[Z] + ctrl.heading;
@@ -214,7 +215,7 @@ void ctrl_pid ( void )  {
   if ( Y_KIreset < -I_RESET || Y_KIreset > I_RESET )
     ctrl.err[Z][I] = 0; 
   else
-    ctrl.err[Z][I] += ctrl.err[Z][P] * SYS_DT;
+    ctrl.err[Z][I] += ctrl.err[Z][P] * ctrl.dt;
   ctrl.input[Z] = ctrl.err[Z][P] * ctrl.gain[Z][P] + 
                   ctrl.err[Z][I] * ctrl.gain[Z][I] + 
                   ctrl.err[Z][D] * ctrl.gain[Z][D];
