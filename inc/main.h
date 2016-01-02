@@ -32,9 +32,9 @@
 #include <imu.h>
 #include <led.h>
 #include <log.h>
-#include <param.h>
 #include <pru.h>
 #include <sys.h>
+#include <telem.h>
 #include <thread.h>
 
 

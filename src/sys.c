@@ -149,7 +149,7 @@ void sys_exit (  )  {
   imu_exit();
   pru_exit();
   log_exit();  //--- DEBUG ---//
-  //param_exit();
+  //telem_exit();
   //ctrl_exit();
   led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
   if(DEBUG)  printf("Program complete \n");

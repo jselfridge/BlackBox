@@ -117,15 +117,6 @@ void log_open ( void )  {
     I1,   I2,   I3,   I4,   I5,   I6,   I7,   I8,   I9,   I0,  \
     O1,   O2,   O3,   O4,   O5,   O6,   O7,   O8,   O9,   O0,  ");
 
-  // Create parameter datalog file
-  sprintf( file, "%sparam.txt", datalog.path );
-  datalog.param = fopen( file, "w" );
-  sys_err( datalog.param == NULL, "Error (log_init): Cannot open 'param' file. \n" );
-  fprintf( datalog.param, 
-    " Ptime,       Pdur,  \
-    XX,   XX,   \
-    XX,   XX,   ");
-
   // Determine start second
   struct timespec timeval;
   clock_gettime( CLOCK_MONOTONIC, &timeval );
@@ -192,14 +183,6 @@ void log_record ( enum log_index index )  {
     for ( i=0; i<10; i++ )  fprintf( datalog.sysio, "%04d, ", sys.output[i] );  fprintf( datalog.sysio, "   " );
     return;
 
-  // Record 'parameter' datalog
-  case LOG_PARAM :
-    timestamp = (float)( thr_param.start_sec + ( thr_param.start_usec / 1000000.0f ) - datalog.offset );
-    fprintf( datalog.param, "\n %011.6f, %06ld,    ", timestamp, thr_param.dur );
-    //for ( i=0; i<10; i++ )  fprintf( datalog.param, "%0Xd, ", XXXXX );  fprintf( datalog.param, "   " );
-    //for ( i=0; i<10; i++ )  fprintf( datalog.param, "%0Xd, ", XXXXX );  fprintf( datalog.param, "   " );
-    return;
-
   default :
     return;
   }
@@ -219,7 +202,6 @@ void log_exit ( void )  {
   fclose(datalog.mag);
   fclose(datalog.fusion);
   fclose(datalog.sysio);
-  fclose(datalog.param);
 
   // Adjust flag
   datalog.open = false;

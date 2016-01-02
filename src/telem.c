@@ -1,36 +1,36 @@
 
 //============================================================
-//  param.c
+//  telem.c
 //  Justin M Selfridge
 //============================================================
-#include "param.h"
+#include "telem.h"
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  param_init
-//  Initializes the parameter functionality.
+//  telem_init
+//  Initializes the telemetry system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void param_init ( void )  {
+void telem_init ( void )  {
 
   return;
 }
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  param_exit
-//  Exits the parameter functionality.
+//  telem_exit
+//  Exits the telemetry system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void param_exit ( void )  {
+void telem_exit ( void )  {
 
   return;
 }
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  param_update
-//  Updates the parameter settings.
+//  telem_update
+//  Updates the telemetry system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void param_update ( void )  {
+void telem_update ( void )  {
 
   return;
 }
