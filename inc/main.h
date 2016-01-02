@@ -27,11 +27,12 @@
 
 
 // Custom includes
-//#include <ctrl.h>
+#include <ctrl.h>
 #include <gpio.h>
 #include <imu.h>
 #include <led.h>
 #include <log.h>
+#include <param.h>
 #include <pru.h>
 #include <sys.h>
 #include <thread.h>

@@ -1,56 +1,40 @@
 
 //============================================================
-//  ctrl.c
+//  param.c
 //  Justin M Selfridge
 //============================================================
-#include "ctrl.h"
+#include "param.h"
 
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ctrl_init
-//  Initializes the control structure.
+//  param_init
+//  Initializes the parameter functionality.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ctrl_init ( void )  {
-
-  // Ensure motors are off
-  ctrl_disarm();
-
-  // Set timing values
-  ctrl.hz = CTRL_HZ;
-  ctrl.dt = 1.0/CTRL_HZ;
-
-  // Set reference ranges
-  ctrl.range[CH_R] = R_RANGE;
-  ctrl.range[CH_P] = P_RANGE;
-  ctrl.range[CH_Y] = Y_RANGE;
-  ctrl.range[CH_T] = T_RANGE;
-
-  // Set full stick counters
-  for ( i=0; i<4; i++ ) {
-    ctrl.fullStick[i][HIGH] = 0;
-    ctrl.fullStick[i][LOW]  = 0;
-  }
-  ctrl.stickHold = STICK_HOLD * CTRL_HZ;
-
-  // Set command flags
-  ctrl.motorsArmed = false;
-
-  // Set error values
-  ushort i, j;
-  for ( i=0; i<3; i++ ) {
-    for ( j=0; j<3; j++ ) {
-      ctrl.err[i][j] = 0;
-    }
-  }
-
-  // Set gain values
-  ctrl.gain[X][P] = 150.0;  ctrl.gain[Y][P] = 150.0;  ctrl.gain[Z][P] = 150.0;
-  ctrl.gain[X][I] =   0.0;  ctrl.gain[Y][I] =   0.0;  ctrl.gain[Z][I] =   0.0;
-  ctrl.gain[X][D] =  35.0;  ctrl.gain[Y][D] =  35.0;  ctrl.gain[Z][D] =  35.0;
+void param_init ( void )  {
 
   return;
 }
-*/
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  param_exit
+//  Exits the parameter functionality.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void param_exit ( void )  {
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  param_update
+//  Updates the parameter settings.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void param_update ( void )  {
+
+  return;
+}
+
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_disarm

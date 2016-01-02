@@ -29,8 +29,12 @@ void thr_init ( void )  {
   thr_sysio.priority  =  94;
   thr_sysio.period    =  1000000 / SYSIO_HZ;
 
+  // Parameter thread
+  thr_param.priority =  92;
+  thr_param.period   =  1000000 / PARAM_HZ;
+
   // Debugging thread
-  thr_debug.priority =  92;
+  thr_debug.priority =  90;
   thr_debug.period   =  1000000 / DEBUG_HZ;
 
   // Mutex initialization
@@ -73,6 +77,13 @@ void thr_init ( void )  {
   sys_err( sys.ret, "Error (thread_init): Failed to set 'sysio' priority." );
   sys.ret = pthread_create ( &thr_sysio.id, &attr, thread_sysio, (void *)NULL );
   sys_err( sys.ret, "Error (thread_init): Failed to create 'sysio' thread." );
+
+  // Initialize 'param' thread
+  param.sched_priority = thr_param.priority;
+  sys.ret = pthread_attr_setschedparam( &attr, &param );
+  sys_err( sys.ret, "Error (thread_init): Failed to set 'param' priority." );
+  sys.ret = pthread_create ( &thr_param.id, &attr, thread_param, (void *)NULL );
+  sys_err( sys.ret, "Error (thread_init): Failed to create 'param' thread." );
 
   // Initialize 'debug' thread
   if(DEBUG) {
@@ -209,6 +220,11 @@ void thr_exit ( void )  {
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'sysio' thread." );
   if(DEBUG)  printf( "  Status %ld for 'sysio' thread \n", (long)status );
 
+  // Exit 'param' thread
+  sys.ret = pthread_join ( thr_param.id, &status );
+  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'param' thread." );
+  if(DEBUG)  printf( "  Status %ld for 'param' thread \n", (long)status );
+
   // Exit 'debug' thread
   if(DEBUG) {
   sys.ret = pthread_join ( thr_debug.id, &status );
@@ -262,7 +278,6 @@ void *thread_fusion ( )  {
     thr_pause(&thr_fusion);
   }
   pthread_exit(NULL);
-
   return NULL;
 }
 
@@ -288,6 +303,26 @@ void *thread_sysio ( )  {
     thr_finish(&thr_sysio);
     log_write(LOG_SYSIO);
     thr_pause(&thr_sysio);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  thread_param
+//  Run the 'param' thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void *thread_param ( )  {
+  printf("  Running 'param' thread \n");
+  //usleep(500000);
+  thr_periodic (&thr_param);
+  while (sys.running) {
+    thr_start(&thr_param);
+    param_update();
+    thr_finish(&thr_param);
+    log_write(LOG_PARAM);
+    thr_pause(&thr_param);
   }
   pthread_exit(NULL);
   return NULL;

@@ -1,8 +1,0 @@
-ctrl.c:13:6:ctrl_init	16	static
-ctrl.c:61:6:ctrl_disarm	16	static
-ctrl.c:75:6:ctrl_law	8	static
-ctrl.c:88:6:ctrl_ref	16	static
-ctrl.c:104:6:ctrl_flags	24	static
-ctrl.c:155:6:ctrl_switch	8	static
-ctrl.c:179:6:ctrl_pid	64	static
-ctrl.c:251:6:ctrl_limit	16	static

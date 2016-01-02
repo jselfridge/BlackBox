@@ -87,6 +87,7 @@ int main ( void )  {
   imu_init();
   log_init();
   pru_init();
+  //param_init();
   //ctrl_init();
   thr_init();
 
