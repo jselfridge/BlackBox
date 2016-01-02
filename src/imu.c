@@ -294,20 +294,20 @@ void imu_data ( imu_struct* imu )  {
   pthread_mutex_lock(&mutex_imu);
 
   // Scale and orient gyroscope readings
-  imu->calGyr[X] = -imu->avgGyr[Y] * GYR_SCALE;
-  imu->calGyr[Y] = -imu->avgGyr[X] * GYR_SCALE;
+  imu->calGyr[X] =  imu->avgGyr[Y] * GYR_SCALE;
+  imu->calGyr[Y] =  imu->avgGyr[X] * GYR_SCALE;
   imu->calGyr[Z] = -imu->avgGyr[Z] * GYR_SCALE;
 
   // Shift and orient accelerometer readings
-  imu->calAcc[X] = ( imu->avgAcc[Y] - imu->aoffset[Y] ) / (double)imu->arange[Y];
-  imu->calAcc[Y] = ( imu->avgAcc[X] - imu->aoffset[X] ) / (double)imu->arange[X];
-  imu->calAcc[Z] = ( imu->avgAcc[Z] - imu->aoffset[Z] ) / (double)imu->arange[Z];
+  imu->calAcc[X] = ( -imu->avgAcc[Y] - imu->aoffset[Y] ) / (double)imu->arange[Y];
+  imu->calAcc[Y] = ( -imu->avgAcc[X] - imu->aoffset[X] ) / (double)imu->arange[X];
+  imu->calAcc[Z] = (  imu->avgAcc[Z] - imu->aoffset[Z] ) / (double)imu->arange[Z];
 
   // Shift and orient magnetometer readings
   if (mag) {
-  imu->calMag[X] = -( imu->avgMag[X] - imu->moffset[X] ) / (double)imu->mrange[X];
-  imu->calMag[Y] = -( imu->avgMag[Y] - imu->moffset[Y] ) / (double)imu->mrange[Y];
-  imu->calMag[Z] =  ( imu->avgMag[Z] - imu->moffset[Z] ) / (double)imu->mrange[Z];
+  imu->calMag[X] = ( imu->avgMag[X] - imu->moffset[X] ) / (double)imu->mrange[X];
+  imu->calMag[Y] = ( imu->avgMag[Y] - imu->moffset[Y] ) / (double)imu->mrange[Y];
+  imu->calMag[Z] = ( imu->avgMag[Z] - imu->moffset[Z] ) / (double)imu->mrange[Z];
   }
 
   // Unlock 'calibrated' variables

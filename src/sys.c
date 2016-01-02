@@ -95,11 +95,11 @@ void sys_debug (  )  {
   //for ( i=0; i<3; i++ )  printf("%07.2f ", imu2.avgMag[i] );  printf("   ");
 
   // Calibrated sensor values - IMU1
-  //pthread_mutex_lock(&mutex_cal);
+  //pthread_mutex_lock(&mutex_imu);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calGyr[i] );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calAcc[i] );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calMag[i] );  printf("   ");
-  //pthread_mutex_unlock(&mutex_cal);
+  //pthread_mutex_unlock(&mutex_imu);
 
   // Calibrated sensor values - IMU2
   //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.calGyr[i] );  printf("   ");
@@ -124,7 +124,7 @@ void sys_debug (  )  {
 
   // Control values
   //printf( "%6.3f      ", ctrl.heading*(180.0/PI) );
-  for ( i=0; i<4; i++ )  printf( "%5.2f ", ctrl.norm[i] );  printf("   ");
+  //for ( i=0; i<4; i++ )  printf( "%5.2f ", ctrl.norm[i] );  printf("   ");
   //for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[X][i]*(180.0f/PI) );  printf("   ");
   //for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[Y][i]*(180.0f/PI) );  printf("   ");
   //for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[Z][i]*(180.0f/PI) );  printf("   ");
