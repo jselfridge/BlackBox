@@ -8,5 +8,5 @@ thread.c:264:7:thread_imu	8	static
 thread.c:285:7:thread_fusion	8	static
 thread.c:305:7:thread_sysio	24	static
 thread.c:332:7:thread_ctrl	8	static
-thread.c:351:7:thread_telem	8	static
-thread.c:371:7:thread_debug	8	static
+thread.c:352:7:thread_telem	8	static
+thread.c:372:7:thread_debug	8	static

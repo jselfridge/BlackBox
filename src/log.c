@@ -117,6 +117,15 @@ void log_open ( void )  {
     I1,   I2,   I3,   I4,   I5,   I6,   I7,   I8,   I9,   I0,  \
     O1,   O2,   O3,   O4,   O5,   O6,   O7,   O8,   O9,   O0,  ");
 
+  // Create controller datalog file
+  sprintf( file, "%sctrl.txt", datalog.path );
+  datalog.ctrl = fopen( file, "w" );
+  sys_err( datalog.ctrl == NULL, "Error (log_init): Cannot open 'ctrl' file. \n" );
+  fprintf( datalog.ctrl, 
+    " Ctime,       Cdur,  \
+    N1,     N2,     N3,     N4,   \
+    XX,   XX,   ");
+
   // Determine start second
   struct timespec timeval;
   clock_gettime( CLOCK_MONOTONIC, &timeval );
@@ -183,6 +192,13 @@ void log_record ( enum log_index index )  {
     for ( i=0; i<10; i++ )  fprintf( datalog.sysio, "%04d, ", sys.output[i] );  fprintf( datalog.sysio, "   " );
     return;
 
+  // Record 'controller' datalog
+  case LOG_CTRL :
+    timestamp = (float)( thr_ctrl.start_sec + ( thr_ctrl.start_usec / 1000000.0f ) - datalog.offset );
+    fprintf( datalog.ctrl, "\n %011.6f, %06ld,    ", timestamp, thr_ctrl.dur );
+    for ( i=0; i<4; i++ )  fprintf( datalog.ctrl, "%06.3f, ", ctrl.norm[i] );  fprintf( datalog.ctrl, "   " );
+    return;
+
   default :
     return;
   }
@@ -202,6 +218,7 @@ void log_exit ( void )  {
   fclose(datalog.mag);
   fclose(datalog.fusion);
   fclose(datalog.sysio);
+  fclose(datalog.ctrl);
 
   // Adjust flag
   datalog.open = false;

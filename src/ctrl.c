@@ -11,14 +11,13 @@
 //  Initializes the control structure.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void ctrl_init ( void )  {
-
   if (DEBUG)  printf("Initializing controller \n");
 
   // Local variables
   ushort i, j, k;
 
   // Ensure motors are off
-  //ctrl_disarm();
+  ctrl_disarm();
 
   // Set timing values
   ctrl.hz = CTRL_HZ;
@@ -41,7 +40,7 @@ void ctrl_init ( void )  {
   }
 
   // Set full stick counters
-  for ( k=0; k<4; i++ ) {
+  for ( k=0; k<4; k++ ) {
     ctrl.fullStick[k][HIGH] = 0;
     ctrl.fullStick[k][LOW]  = 0;
   }
@@ -65,34 +64,31 @@ void ctrl_exit ( void )  {
   return;
 }
 
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_disarm
 //  Disarms all the motors
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void ctrl_disarm ( void )  {
   ushort i;
-  for ( i=0; i<10; i++ ) {
-    sys.output[i] = 1000;
-    pru_send_pulse( i, sys.output[i] );
-  }
+  for ( i=0; i<10; i++ )  sys.output[i] = 1000;
   return;
 }
-*/
-/*
+
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_law
 //  Top level function to run the control law
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void ctrl_law ( void )  {
   ctrl_ref();
-  ctrl_flags();
+  //ctrl_flags();
   ctrl_switch();
-  ctrl_limit();
+  //ctrl_limit();
   return;
 }
-*/
-/*
+
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_ref
 //  Takes PWM inputs and converts to suitable reference signals.
@@ -107,7 +103,7 @@ void ctrl_ref ( void )  {
   }
   return;
 }
-*/
+
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_flags
@@ -159,7 +155,7 @@ void ctrl_flags ( void )  {
   return;
 }
 */
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_switch
 //  Monitor radio switch to implement different control laws.
@@ -170,7 +166,7 @@ void ctrl_switch ( void )  {
   if (ctrl.motorsArmed) {
 
   // Run switch command
-  ctrl_pid();
+  //ctrl_pid();
   //ctrl_siso_sf();
   //ctrl_mimo_sf();
   //ctrl_sysid();
@@ -182,8 +178,8 @@ void ctrl_switch ( void )  {
 
   return;
 }
-*/
-/*
+
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_pid
 //  Apply PID control to vehcile attitude.
@@ -254,7 +250,7 @@ void ctrl_pid ( void )  {
 
   return;
 }
-*/
+
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_limit

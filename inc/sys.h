@@ -19,8 +19,8 @@
 typedef struct sys_struct {
   bool  running;
   int   ret;
-  uint  input[10];    // Normalize -1:1 ???
-  uint  output[10];   // Normalize -1:1 ???
+  int  input[10];    // Normalize -1:1 ???
+  int  output[10];   // Normalize -1:1 ???
 } sys_struct;
 sys_struct sys;
 

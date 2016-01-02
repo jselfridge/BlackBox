@@ -335,8 +335,9 @@ void *thread_ctrl ( )  {
   thr_periodic (&thr_ctrl);
   while (sys.running) {
     thr_start(&thr_ctrl);
-    //telem_update();
+    ctrl_law();
     thr_finish(&thr_ctrl);
+    log_write(LOG_CTRL);
     thr_pause(&thr_ctrl);
   }
   pthread_exit(NULL);

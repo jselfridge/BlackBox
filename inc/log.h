@@ -14,7 +14,8 @@ enum log_index {
   LOG_ACC    = 1,
   LOG_MAG    = 2,
   LOG_FUSION = 3,
-  LOG_SYSIO  = 4
+  LOG_SYSIO  = 4,
+  LOG_CTRL   = 5
 } log_index;
 
 
@@ -26,6 +27,7 @@ typedef struct {
   FILE* mag;
   FILE* fusion;
   FILE* sysio;
+  FILE* ctrl;
   char* dir;
   char* path;
   bool  open;
