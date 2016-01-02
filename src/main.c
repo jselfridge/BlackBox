@@ -88,7 +88,7 @@ int main ( void )  {
   log_init();
   pru_init();
   //telem_init();
-  //ctrl_init();
+  ctrl_init();
   thr_init();
 
   // Continuous loop and then exit

@@ -11,7 +11,7 @@
 //  Initializes the PRU subsystems.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void pru_init ( void )  {
-  if(DEBUG)  printf("Initiializing PRU \n");
+  if(DEBUG)  printf("Initializing PRU \n");
 
   // Initialise driver
   prussdrv_init();

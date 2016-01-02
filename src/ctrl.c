@@ -5,15 +5,20 @@
 //============================================================
 #include "ctrl.h"
 
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_init
 //  Initializes the control structure.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void ctrl_init ( void )  {
 
+  if (DEBUG)  printf("Initializing controller \n");
+
+  // Local variables
+  ushort i, j, k;
+
   // Ensure motors are off
-  ctrl_disarm();
+  //ctrl_disarm();
 
   // Set timing values
   ctrl.hz = CTRL_HZ;
@@ -25,23 +30,22 @@ void ctrl_init ( void )  {
   ctrl.range[CH_Y] = Y_RANGE;
   ctrl.range[CH_T] = T_RANGE;
 
-  // Set full stick counters
-  for ( i=0; i<4; i++ ) {
-    ctrl.fullStick[i][HIGH] = 0;
-    ctrl.fullStick[i][LOW]  = 0;
-  }
-  ctrl.stickHold = STICK_HOLD * CTRL_HZ;
-
   // Set command flags
   ctrl.motorsArmed = false;
 
   // Set error values
-  ushort i, j;
   for ( i=0; i<3; i++ ) {
     for ( j=0; j<3; j++ ) {
       ctrl.err[i][j] = 0;
     }
   }
+
+  // Set full stick counters
+  for ( k=0; k<4; i++ ) {
+    ctrl.fullStick[k][HIGH] = 0;
+    ctrl.fullStick[k][LOW]  = 0;
+  }
+  ctrl.stickHold = STICK_HOLD * CTRL_HZ;
 
   // Set gain values
   ctrl.gain[X][P] = 150.0;  ctrl.gain[Y][P] = 150.0;  ctrl.gain[Z][P] = 150.0;
@@ -50,7 +54,17 @@ void ctrl_init ( void )  {
 
   return;
 }
-*/
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  ctrl_exit
+//  Exits the controller code.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void ctrl_exit ( void )  {
+  if (DEBUG)  printf("Closing CTRL \n");
+  return;
+}
+
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_disarm

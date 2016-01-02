@@ -25,6 +25,7 @@ typedef struct thread_struct {
 thread_struct thr_imu;
 thread_struct thr_fusion;
 thread_struct thr_sysio;
+thread_struct thr_ctrl;
 thread_struct thr_telem;
 thread_struct thr_debug;
 
@@ -48,6 +49,7 @@ void  thr_exit      ( void );
 void *thread_imu    ( );
 void *thread_fusion ( );
 void *thread_sysio  ( );
+void *thread_ctrl   ( );
 void *thread_telem  ( );
 void *thread_debug  ( );
 

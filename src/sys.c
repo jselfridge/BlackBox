@@ -150,7 +150,7 @@ void sys_exit (  )  {
   pru_exit();
   log_exit();  //--- DEBUG ---//
   //telem_exit();
-  //ctrl_exit();
+  ctrl_exit();
   led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
   if(DEBUG)  printf("Program complete \n");
   sys.ret = sigaction( SIGINT, &sys_signal, NULL );

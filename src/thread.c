@@ -29,12 +29,16 @@ void thr_init ( void )  {
   thr_sysio.priority  =  94;
   thr_sysio.period    =  1000000 / SYSIO_HZ;
 
+  // Controller thread
+  thr_ctrl.priority =  92;
+  thr_ctrl.period   =  1000000 / CTRL_HZ;
+
   // Telemetry thread
-  thr_telem.priority =  92;
+  thr_telem.priority =  90;
   thr_telem.period   =  1000000 / TELEM_HZ;
 
   // Debugging thread
-  thr_debug.priority =  90;
+  thr_debug.priority =  88;
   thr_debug.period   =  1000000 / DEBUG_HZ;
 
   // Mutex initialization
@@ -77,6 +81,13 @@ void thr_init ( void )  {
   sys_err( sys.ret, "Error (thread_init): Failed to set 'sysio' priority." );
   sys.ret = pthread_create ( &thr_sysio.id, &attr, thread_sysio, (void *)NULL );
   sys_err( sys.ret, "Error (thread_init): Failed to create 'sysio' thread." );
+
+  // Initialize 'ctrl' thread
+  param.sched_priority = thr_ctrl.priority;
+  sys.ret = pthread_attr_setschedparam( &attr, &param );
+  sys_err( sys.ret, "Error (thread_init): Failed to set 'ctrl' priority." );
+  sys.ret = pthread_create ( &thr_ctrl.id, &attr, thread_ctrl, (void *)NULL );
+  sys_err( sys.ret, "Error (thread_init): Failed to create 'ctrl' thread." );
 
   // Initialize 'telem' thread
   param.sched_priority = thr_telem.priority;
@@ -220,6 +231,11 @@ void thr_exit ( void )  {
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'sysio' thread." );
   if(DEBUG)  printf( "  Status %ld for 'sysio' thread \n", (long)status );
 
+  // Exit 'ctrl' thread
+  sys.ret = pthread_join ( thr_ctrl.id, &status );
+  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'ctrl' thread." );
+  if(DEBUG)  printf( "  Status %ld for 'ctrl' thread \n", (long)status );
+
   // Exit 'telem' thread
   sys.ret = pthread_join ( thr_telem.id, &status );
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'telem' thread." );
@@ -303,6 +319,25 @@ void *thread_sysio ( )  {
     thr_finish(&thr_sysio);
     log_write(LOG_SYSIO);
     thr_pause(&thr_sysio);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  thread_ctrl
+//  Run the 'ctrl' thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void *thread_ctrl ( )  {
+  printf("  Running 'ctrl' thread \n");
+  usleep(500000);
+  thr_periodic (&thr_ctrl);
+  while (sys.running) {
+    thr_start(&thr_ctrl);
+    //telem_update();
+    thr_finish(&thr_ctrl);
+    thr_pause(&thr_ctrl);
   }
   pthread_exit(NULL);
   return NULL;
