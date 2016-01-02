@@ -82,9 +82,9 @@ void ctrl_disarm ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void ctrl_law ( void )  {
   ctrl_ref();
-  //ctrl_flags();
+  ctrl_flags();
   ctrl_switch();
-  //ctrl_limit();
+  ctrl_limit();
   return;
 }
 
@@ -104,7 +104,7 @@ void ctrl_ref ( void )  {
   return;
 }
 
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_flags
 //  Checks radio stick positions for commands. 
@@ -133,7 +133,6 @@ void ctrl_flags ( void )  {
 	ctrl.motorsArmed = true;
 	led_on(LED_MOT);
 	ctrl.heading = imu1.Eul[Z];
-	if(DEBUG) printf( "Armed at %7.4f deg\n", ctrl.heading );
       }
       if ( ctrl.fullStick[CH_Y][LEFT]  >= ctrl.stickHold ) {
 	ctrl.motorsArmed = false;
@@ -154,7 +153,7 @@ void ctrl_flags ( void )  {
 
   return;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_switch
@@ -166,7 +165,7 @@ void ctrl_switch ( void )  {
   if (ctrl.motorsArmed) {
 
   // Run switch command
-  //ctrl_pid();
+  ctrl_pid();
   //ctrl_siso_sf();
   //ctrl_mimo_sf();
   //ctrl_sysid();
@@ -251,7 +250,7 @@ void ctrl_pid ( void )  {
   return;
 }
 
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_limit
 //  Limits the motor outputs to within their min and max ranges.
@@ -264,6 +263,6 @@ void ctrl_limit ( void )  {
   }
   return;
 }
-*/
+
 
 

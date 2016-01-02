@@ -12,7 +12,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void log_init ( void )  {
   datalog.open     = false;
-  datalog.enabled  = true;  //-- DEBUG --//  false;
+  datalog.enabled  = false;
   return;
 }
 
@@ -123,8 +123,10 @@ void log_open ( void )  {
   sys_err( datalog.ctrl == NULL, "Error (log_init): Cannot open 'ctrl' file. \n" );
   fprintf( datalog.ctrl, 
     " Ctime,       Cdur,  \
-    N1,     N2,     N3,     N4,   \
-    XX,   XX,   ");
+    N1,     N2,     N3,     N4,    \
+    XPerr,  YPerr,  ZPerr, \
+    XIerr,  YIerr,  ZIerr, \
+    XDerr,  YDerr,  ZDerr,   ");
 
   // Determine start second
   struct timespec timeval;
@@ -196,7 +198,10 @@ void log_record ( enum log_index index )  {
   case LOG_CTRL :
     timestamp = (float)( thr_ctrl.start_sec + ( thr_ctrl.start_usec / 1000000.0f ) - datalog.offset );
     fprintf( datalog.ctrl, "\n %011.6f, %06ld,    ", timestamp, thr_ctrl.dur );
-    for ( i=0; i<4; i++ )  fprintf( datalog.ctrl, "%06.3f, ", ctrl.norm[i] );  fprintf( datalog.ctrl, "   " );
+    for ( i=0; i<4; i++ )  fprintf( datalog.ctrl, "%06.3f, ", ctrl.norm[i]   );  fprintf( datalog.ctrl, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ctrl, "%06.3f, ", ctrl.err[i][P] );  fprintf( datalog.ctrl, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ctrl, "%06.3f, ", ctrl.err[i][I] );  fprintf( datalog.ctrl, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ctrl, "%06.3f, ", ctrl.err[i][D] );  fprintf( datalog.ctrl, "   " );
     return;
 
   default :

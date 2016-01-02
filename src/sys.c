@@ -55,18 +55,14 @@ void sys_debug (  )  {
   // Loop counter
   ushort i;
 
-  // Time values
+  // Datalog file
   printf("\r");  fflush(stdout);
   if (datalog.enabled)  printf(" %s: ", datalog.dir );
   else                  printf(" - - - -  ");
 
+  // Time values
   float timestamp = (float)( thr_debug.start_sec + ( thr_debug.start_usec / 1000000.0f ) - datalog.offset );
   printf("%6.1f    ", timestamp );  fflush(stdout);
-  //printf("%09ld  ", t.start_nano );  fflush(stdout);
-  //printf("%09ld  ", t.dur );  fflush(stdout);
-  //printf("%4.2f  ", t.percent );  fflush(stdout);
-  //if (t.percent<1.0) {  printf("_    ");  fflush(stdout);  }
-  //else               {  printf("X    ");  fflush(stdout);  }
 
   // System Input/Output values
   //pthread_mutex_lock(&mutex_sysio);
@@ -76,7 +72,7 @@ void sys_debug (  )  {
 
   // Raw sensor values - IMU1
   //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawGyr[i] );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawAcc[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawAcc[i] );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%04d ", imu1.rawMag[i] );  printf("   ");
 
   // Raw sensor values - IMU2
@@ -95,11 +91,11 @@ void sys_debug (  )  {
   //for ( i=0; i<3; i++ )  printf("%07.2f ", imu2.avgMag[i] );  printf("   ");
 
   // Calibrated sensor values - IMU1
-  pthread_mutex_lock(&mutex_imu);
+  //pthread_mutex_lock(&mutex_imu);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calGyr[i] );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calAcc[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calAcc[i] );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calMag[i] );  printf("   ");
-  pthread_mutex_unlock(&mutex_imu);
+  //pthread_mutex_unlock(&mutex_imu);
 
   // Calibrated sensor values - IMU2
   //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.calGyr[i] );  printf("   ");
@@ -107,11 +103,11 @@ void sys_debug (  )  {
   //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.calMag[i] );  printf("   ");
 
   // Data fusion values - IMU1
-  //pthread_mutex_lock(&mutex_fusion);
+  pthread_mutex_lock(&mutex_fusion);
   //for ( i=0; i<4; i++ )  printf("%6.3f ", imu1.Quat[i]              );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.Eul[i]  *(180.0f/PI) );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.dEul[i] *(180.0f/PI) );  printf("   ");
-  //pthread_mutex_unlock(&mutex_fusion);
+  for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.Eul[i]  *(180.0f/PI) );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.dEul[i] *(180.0f/PI) );  printf("   ");
+  pthread_mutex_unlock(&mutex_fusion);
 
   // Data fusion values - IMU2
   //for ( i=0; i<4; i++ )  printf("%6.3f ", imu2.Quat[i]              );  printf("   ");
@@ -124,7 +120,7 @@ void sys_debug (  )  {
 
   // Control values
   //printf( "%6.3f      ", ctrl.heading*(180.0/PI) );
-  //for ( i=0; i<4; i++ )  printf( "%5.2f ", ctrl.norm[i] );  printf("   ");
+  for ( i=0; i<4; i++ )  printf( "%5.2f ", ctrl.norm[i] );  printf("   ");
   //for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[X][i]*(180.0f/PI) );  printf("   ");
   //for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[Y][i]*(180.0f/PI) );  printf("   ");
   //for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[Z][i]*(180.0f/PI) );  printf("   ");
@@ -149,8 +145,6 @@ void sys_exit (  )  {
   thr_exit();
   imu_exit();
   pru_exit();
-  log_exit();  //--- DEBUG ---//
-  //telem_exit();
   ctrl_exit();
   led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
   if(DEBUG)  printf("Program complete \n");

@@ -103,10 +103,10 @@ void  ctrl_exit    ( void );
 void  ctrl_disarm  ( void );
 void  ctrl_law     ( void );
 void  ctrl_ref     ( void );
-//void  ctrl_flags   ( void );
+void  ctrl_flags   ( void );
 void  ctrl_switch  ( void );
-//void  ctrl_pid     ( void );
-//void  ctrl_limit   ( void );
+void  ctrl_pid     ( void );
+void  ctrl_limit   ( void );
 
 
 #endif
