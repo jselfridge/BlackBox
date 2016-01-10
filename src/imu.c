@@ -93,7 +93,7 @@ void imu_getcal ( imu_struct* imu )  {
   memset( buff, 0, sizeof(buff) );
 
   // Set magnetometer offset
-  sprintf( path, "cal/imu%d/moffset", imu->id );
+  sprintf( path, "/root/BlackBox/cal/imu%d/moffset", imu->id );
   f = fopen( path, "r" );
   sys_err( !f, "Error (imu_getcal): File 'moffset' not found." );
   for ( i=0; i<3; i++ ) {
@@ -103,7 +103,7 @@ void imu_getcal ( imu_struct* imu )  {
   fclose(f);
 
   // Set magnetometer range
-  sprintf( path, "cal/imu%d/mrange", imu->id );
+  sprintf( path, "/root/BlackBox/cal/imu%d/mrange", imu->id );
   f = fopen( path, "r" );
   sys_err( !f, "Error (imu_getcal): File 'mrange' not found." );
   for ( i=0; i<3; i++ ) {
@@ -113,7 +113,7 @@ void imu_getcal ( imu_struct* imu )  {
   fclose(f);
 
   // Set acceleration offset
-  sprintf( path, "cal/imu%d/aoffset", imu->id );
+  sprintf( path, "/root/BlackBox/cal/imu%d/aoffset", imu->id );
   f = fopen( path, "r" );
   sys_err( !f, "Error (imu_getcal): File 'aoffset' not found." );
   for ( i=0; i<3; i++ ) {
@@ -123,7 +123,7 @@ void imu_getcal ( imu_struct* imu )  {
   fclose(f);
 
   // Set acceleration range
-  sprintf( path, "cal/imu%d/arange", imu->id );
+  sprintf( path, "/root/BlackBox/cal/imu%d/arange", imu->id );
   f = fopen( path, "r" );
   sys_err( !f, "Error (imu_getcal): File 'arange' not found." );
   for ( i=0; i<3; i++ ) {

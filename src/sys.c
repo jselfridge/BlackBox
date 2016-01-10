@@ -65,10 +65,10 @@ void sys_debug (  )  {
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // System Input/Output values
-  //pthread_mutex_lock(&mutex_sysio);
-  //for ( i=0; i<4; i++ )  printf("%04d ", sys.input[i]  );  printf("   ");
+  pthread_mutex_lock(&mutex_sysio);
+  for ( i=0; i<4; i++ )  printf("%04d ", sys.input[i]  );  printf("   ");
   //for ( i=0; i<4; i++ )  printf("%04d ", sys.output[i] );  printf("   ");
-  //pthread_mutex_unlock(&mutex_sysio);
+  pthread_mutex_unlock(&mutex_sysio);
 
   // Raw sensor values - IMU1
   //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawGyr[i] );  printf("   ");

@@ -1,7 +1,13 @@
 #! /bin/sh
-# /root/UAV/autorun.sh
 
-#echo "Running /root/UAV/autorun.sh"
-#cd /root/BlackBox/
-#xs./RunBlackBox
+echo "Starting BlackBox program"
+
+#sudo echo BLACKBOX > $SLOTS
+sudo echo BLACKBOX > /sys/devices/platform/bone_capemgr/slots
+
+cd /root/BlackBox/
+./RunBlackBox
+
+exit 0
+
 
