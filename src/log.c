@@ -75,7 +75,7 @@ void log_open ( void )  {
   fprintf( datalog.gyr, 
     " Gtime,       Gdur,  \
     Grx1,   Gry1,   Grz1,  \
-    Gax1,      Gay1,      Gaz1      \
+    Gax1,      Gay1,      Gaz1,     \
     Gcx1,    Gcy1,    Gcz1   ");
 
   // Create accelerometer datalog file

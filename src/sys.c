@@ -67,7 +67,7 @@ void sys_debug (  )  {
   // System Input/Output values
   pthread_mutex_lock(&mutex_sysio);
   for ( i=0; i<4; i++ )  printf("%04d ", sys.input[i]  );  printf("   ");
-  //for ( i=0; i<4; i++ )  printf("%04d ", sys.output[i] );  printf("   ");
+  for ( i=0; i<4; i++ )  printf("%04d ", sys.output[i] );  printf("   ");
   pthread_mutex_unlock(&mutex_sysio);
 
   // Raw sensor values - IMU1
@@ -120,7 +120,7 @@ void sys_debug (  )  {
 
   // Control values
   //printf( "%6.3f      ", ctrl.heading*(180.0/PI) );
-  for ( i=0; i<4; i++ )  printf( "%5.2f ", ctrl.norm[i] );  printf("   ");
+  //for ( i=0; i<4; i++ )  printf( "%5.2f ", ctrl.norm[i] );  printf("   ");
   //for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[X][i]*(180.0f/PI) );  printf("   ");
   //for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[Y][i]*(180.0f/PI) );  printf("   ");
   //for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[Z][i]*(180.0f/PI) );  printf("   ");

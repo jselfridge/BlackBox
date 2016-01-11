@@ -67,7 +67,7 @@
 #define T_RANGE    100
 #define T_MIN     1500
 #define T_MAX     1650
-#define T_TILT   12.0f
+#define T_TILT   30.0f
 
 
 // Full scale ranges

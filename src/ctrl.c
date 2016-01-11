@@ -46,7 +46,7 @@ void ctrl_init ( void )  {
   }
   ctrl.stickHold = STICK_HOLD * CTRL_HZ;
 
-  // Set gain values
+  // Set gain values  P 150, I 0, D 35;
   ctrl.gain[X][P] = 150.0;  ctrl.gain[Y][P] = 150.0;  ctrl.gain[Z][P] = 150.0;
   ctrl.gain[X][I] =   0.0;  ctrl.gain[Y][I] =   0.0;  ctrl.gain[Z][I] =   0.0;
   ctrl.gain[X][D] =  35.0;  ctrl.gain[Y][D] =  35.0;  ctrl.gain[Z][D] =  35.0;
@@ -185,10 +185,16 @@ void ctrl_switch ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void ctrl_pid ( void )  {
 
+  // Obtain states
+  pthread_mutex_lock(&mutex_fusion);
+  float Eul[3]  = { imu1.Eul[X],  imu1.Eul[Y],  imu1.Eul[Z]  };
+  float dEul[3] = { imu1.dEul[X], imu1.dEul[Y], imu1.dEul[Z] };
+  pthread_mutex_unlock(&mutex_fusion);
+
   // Determine roll (X) adjustment
   double R_KIreset;
-  ctrl.err[X][P] = -imu1.Eul[X] + ctrl.ref[CH_R];
-  ctrl.err[X][D] = -imu1.dEul[X];
+  ctrl.err[X][P] = -Eul[X] + ctrl.ref[CH_R];
+  ctrl.err[X][D] = -dEul[X];
   R_KIreset = ctrl.ref[CH_R] / ctrl.range[CH_R];
   if ( R_KIreset < -I_RESET || R_KIreset > I_RESET )  
     ctrl.err[X][I] = 0; 
@@ -200,8 +206,8 @@ void ctrl_pid ( void )  {
 
   // Determine pitch (Y) adjustment
   double P_KIreset;
-  ctrl.err[Y][P] = -imu1.Eul[Y] + ctrl.ref[CH_P];
-  ctrl.err[Y][D] = -imu1.dEul[Y];
+  ctrl.err[Y][P] = -Eul[Y] + ctrl.ref[CH_P];
+  ctrl.err[Y][D] = -dEul[Y];
   P_KIreset = ctrl.ref[CH_P] / ctrl.range[CH_P];
   if ( P_KIreset < -I_RESET || P_KIreset > I_RESET )
     ctrl.err[Y][I] = 0; 
@@ -216,10 +222,10 @@ void ctrl_pid ( void )  {
   if ( ctrl.norm[CH_T] > -0.9 && fabs(ctrl.norm[CH_Y]) > 0.15 )  ctrl.heading += ctrl.ref[CH_Y] * ctrl.dt;
   while ( ctrl.heading >   PI )  ctrl.heading -= 2.0*PI;
   while ( ctrl.heading <= -PI )  ctrl.heading += 2.0*PI;
-  ctrl.err[Z][P] = -imu1.Eul[Z] + ctrl.heading;
+  ctrl.err[Z][P] = -Eul[Z] + ctrl.heading;
   while ( ctrl.err[Z][P] >   PI )  ctrl.heading -= 2.0*PI;
   while ( ctrl.err[Z][P] <= -PI )  ctrl.heading += 2.0*PI;
-  ctrl.err[Z][D] = -imu1.dEul[Z];
+  ctrl.err[Z][D] = -dEul[Z];
   Y_KIreset = ctrl.ref[CH_Y] / ctrl.range[CH_Y];
   if ( Y_KIreset < -I_RESET || Y_KIreset > I_RESET )
     ctrl.err[Z][I] = 0; 
@@ -230,13 +236,13 @@ void ctrl_pid ( void )  {
                   ctrl.err[Z][D] * ctrl.gain[Z][D];
 
   // Determine throttle adjustment
-  double tilt, range;
-  tilt = 1 - ( cos(imu1.Eul[X]) * cos(imu1.Eul[Y]) );
-  if ( ctrl.norm[CH_D] <=0 )
-    range = T_MIN - 1000;
-  else
-    range = T_MAX - T_MIN;
-  ctrl.input[T] = T_MIN + range * ctrl.norm[CH_D] + ctrl.ref[CH_T] + tilt * T_TILT;
+  double tilt, threshold, range;
+  tilt = 1 - ( cos(Eul[X]) * cos(Eul[Y]) );
+  threshold = T_MIN + (0.5) * ( ctrl.norm[CH_D] + 1.0 ) * ( T_MAX - T_MIN ) - T_RANGE;
+  if ( ctrl.norm[CH_T] <=0 )  range = threshold - 1000;
+  else                        range = 2.0 * T_RANGE;
+  ctrl.input[T] = threshold + ctrl.norm[CH_T] * range + T_TILT * tilt;
+  ctrl.input[T] = 1500;  // Debugging
 
   // Set motor outputs
   ushort i;

@@ -213,7 +213,7 @@ void thr_finish ( thread_struct *thr )  {
 //  Cleanly exits the threads.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void thr_exit ( void )  {
-  printf("Closing threads  \n");
+  if(DEBUG)  printf("Closing threads  \n");
   void *status;
 
   // Exit 'imu' thread
@@ -262,7 +262,7 @@ void thr_exit ( void )  {
 //  Run the 'imu' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *thread_imu ( )  {
-  printf("  Running 'imu' thread \n");
+  if(DEBUG)  printf("  Running 'imu' thread \n");
   thr_periodic (&thr_imu);
   while (sys.running) {
     thr_start(&thr_imu);
@@ -283,7 +283,7 @@ void *thread_imu ( )  {
 //  Run the 'fusion' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *thread_fusion ( )  {
-  printf("  Running 'fusion' thread \n");
+  if(DEBUG)  printf("  Running 'fusion' thread \n");
   usleep(500000);
   thr_periodic (&thr_fusion);
   while (sys.running) {
@@ -303,7 +303,7 @@ void *thread_fusion ( )  {
 //  Run the 'sysio' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *thread_sysio ( )  {
-  printf("  Running 'sysio' thread \n");
+  if(DEBUG)  printf("  Running 'sysio' thread \n");
   thr_periodic (&thr_sysio);
   ushort i;
   while (sys.running) 
@@ -330,7 +330,7 @@ void *thread_sysio ( )  {
 //  Run the 'ctrl' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *thread_ctrl ( )  {
-  printf("  Running 'ctrl' thread \n");
+  if(DEBUG)  printf("  Running 'ctrl' thread \n");
   usleep(500000);
   thr_periodic (&thr_ctrl);
   while (sys.running) {
@@ -350,7 +350,7 @@ void *thread_ctrl ( )  {
 //  Run the 'telem' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *thread_telem ( )  {
-  printf("  Running 'telem' thread \n");
+  if(DEBUG)  printf("  Running 'telem' thread \n");
   usleep(500000);
   thr_periodic (&thr_telem);
   while (sys.running) {
@@ -370,7 +370,7 @@ void *thread_telem ( )  {
 //  Run the 'debug' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *thread_debug ( )  {
-  printf("  Running 'debug' thread \n");
+  if(DEBUG)  printf("  Running 'debug' thread \n");
   usleep(500000);
   thr_periodic (&thr_debug);
   while (sys.running) {

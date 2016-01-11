@@ -14,7 +14,7 @@
 //#define ADDR1      0x68
 //#define ADDR2      0x69
 
-#define FAST_HZ    1000
+#define FAST_HZ     500
 #define SLOW_HZ     100
 #define FUSION_HZ   100
 
