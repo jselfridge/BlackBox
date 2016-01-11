@@ -57,11 +57,11 @@ void imu_param ( imu_struct* imu )  {
   if(DEBUG) {  printf(".");  fflush(stdout);  }
   sys_err( sys.ret, "Error (imu_init): 'mpu_set_sensors' failed." );
 
-  sys.ret = mpu_set_sample_rate(FAST_HZ);
+  sys.ret = mpu_set_sample_rate(HZ_IMU);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
   sys_err( sys.ret, "Error (imu_init): 'mpu_set_sample_rate' failed." );
 
-  sys.ret = mpu_set_compass_sample_rate(SLOW_HZ);
+  sys.ret = mpu_set_compass_sample_rate(HZ_ATT);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
   sys_err( sys.ret, "Error (imu_init): 'mpu_set_compass_sample_rate' failed." );
 
@@ -159,52 +159,40 @@ void imu_setic ( imu_struct* imu )  {
   ushort i, j;
 
   // Determine timing loops
-  sys_err ( ( FAST_HZ % SLOW_HZ   != 0 ), "Error (imu_setic): 'FAST_HZ' must be a multiple of 'SLOW_HZ'."   );
-  sys_err ( ( SLOW_HZ % FUSION_HZ != 0 ), "Error (imu_setic): 'SLOW_HZ' must be a multiple of 'FUSION_HZ'." );
+  sys_err ( ( HZ_IMU % HZ_ATT   != 0 ), "Error (imu_setic): 'HZ_IMU' must be a multiple of 'HZ_ATT'."   );
   imu->count = 0;
-  imu->loops = FAST_HZ / SLOW_HZ;
+  imu->loops = HZ_IMU / HZ_ATT;
 
   // Assign sample rates
-  imu->gyr_hz = FAST_HZ;
-  imu->acc_hz = FAST_HZ;
-  imu->mag_hz = SLOW_HZ;
-  imu->fus_hz = FUSION_HZ;
+  imu->hz_imu = HZ_IMU;
+  imu->hz_att = HZ_ATT;
 
   // Calculate time steps
-  imu->gyr_dt = 1.0/FAST_HZ;
-  imu->acc_dt = 1.0/FAST_HZ;
-  imu->mag_dt = 1.0/SLOW_HZ;
-  imu->fus_dt = 1.0/FUSION_HZ;
+  imu->dt_imu = 1.0/HZ_IMU;
+  imu->dt_att = 1.0/HZ_ATT;
 
   // Assign low pass filter cutoff
-  imu->gyr_lpf = GYR_LPF;
-  imu->acc_lpf = ACC_LPF;
-  imu->mag_lpf = MAG_LPF;
+  imu->lpf_gyr = GYR_LPF;
+  imu->lpf_acc = ACC_LPF;
+  imu->lpf_mag = MAG_LPF;
 
   // Determine time constants
-  if ( GYR_LPF !=0.0 )  imu->gyr_tc = 1.0/GYR_LPF;  else imu->gyr_tc = 0.0;
-  if ( ACC_LPF !=0.0 )  imu->acc_tc = 1.0/ACC_LPF;  else imu->acc_tc = 0.0;
-  if ( MAG_LPF !=0.0 )  imu->mag_tc = 1.0/MAG_LPF;  else imu->mag_tc = 0.0;
+  if ( GYR_LPF !=0.0 )  imu->tc_gyr = 1.0/GYR_LPF;  else imu->tc_gyr = 0.0;
+  if ( ACC_LPF !=0.0 )  imu->tc_acc = 1.0/ACC_LPF;  else imu->tc_acc = 0.0;
+  if ( MAG_LPF !=0.0 )  imu->tc_mag = 1.0/MAG_LPF;  else imu->tc_mag = 0.0;
 
   // Calculate filter gain values
-  imu->gyr_gain = imu->gyr_dt / ( imu->gyr_tc + imu->gyr_dt );
-  imu->acc_gain = imu->acc_dt / ( imu->acc_tc + imu->acc_dt );
-  imu->mag_gain = imu->mag_dt / ( imu->mag_tc + imu->mag_dt );
+  imu->gain_gyr = imu->dt_imu / ( imu->tc_gyr + imu->dt_imu );
+  imu->gain_acc = imu->dt_imu / ( imu->tc_acc + imu->dt_imu );
+  imu->gain_mag = imu->dt_att / ( imu->tc_mag + imu->dt_att );
 
   // Display IMU settings
   if (DEBUG) {
-    printf("    Gyroscope:       \
-    HZ: %4d    DT: %5.3f    LPF: %6.2f    TC: %5.2f    gain: %7.4f  \n", \
-    imu->gyr_hz, imu->gyr_dt, imu->gyr_lpf, imu->gyr_tc, imu->gyr_gain );
-    printf("    Accelerometer:   \
-    HZ: %4d    DT: %5.3f    LPF: %6.2f    TC: %5.2f    gain: %7.4f  \n", \
-    imu->acc_hz, imu->acc_dt, imu->acc_lpf, imu->acc_tc, imu->acc_gain );
-    printf("    Magnetometer:    \
-    HZ: %4d    DT: %5.3f    LPF: %6.2f    TC: %5.2f    gain: %7.4f  \n", \
-    imu->mag_hz, imu->mag_dt, imu->mag_lpf, imu->mag_tc, imu->mag_gain );
-    printf("    Data Fusion:     \
-    HZ: %4d    DT: %5.3f  \n", \
-    imu->fus_hz, imu->fus_dt );
+    printf("    IMU:    HZ: %4d    DT: %5.3f \n",  imu->hz_imu, imu->dt_imu );
+    printf("    Att:    HZ: %4d    DT: %5.3f \n",  imu->hz_att, imu->dt_att );
+    printf("    Gyr:    LPF: %6.2f    TC: %5.2f    gain: %7.4f \n", imu->lpf_gyr, imu->tc_gyr, imu->gain_gyr );
+    printf("    Acc:    LPF: %6.2f    TC: %5.2f    gain: %7.4f \n", imu->lpf_acc, imu->tc_acc, imu->gain_acc );
+    printf("    Mag:    LPF: %6.2f    TC: %5.2f    gain: %7.4f \n", imu->lpf_mag, imu->tc_mag, imu->gain_mag );
   }
 
   // Clear moving average history
@@ -260,7 +248,7 @@ void imu_data ( imu_struct* imu )  {
     for ( j=1; j<k; j++ )  imu->histGyr[i][j-1] = imu->histGyr[i][j];
     imu->histGyr[i][k-1] = imu->rawGyr[i];
     g = (float) (imu->histGyr[i][0]);
-    for ( j=1; j<k; j++ )  g = g + imu->gyr_gain * (float) ( imu->histGyr[i][j] - g );
+    for ( j=1; j<k; j++ )  g = g + imu->gain_gyr * (float) ( imu->histGyr[i][j] - g );
     imu->avgGyr[i] = g;
   }
 
@@ -272,7 +260,7 @@ void imu_data ( imu_struct* imu )  {
     for ( j=1; j<k; j++ )  imu->histAcc[i][j-1] = imu->histAcc[i][j];
     imu->histAcc[i][k-1] = imu->rawAcc[i];
     a = (float) (imu->histAcc[i][0]);
-    for ( j=1; j<k; j++ )  a = a + imu->acc_gain * (float) ( imu->histAcc[i][j] - a );
+    for ( j=1; j<k; j++ )  a = a + imu->gain_acc * (float) ( imu->histAcc[i][j] - a );
     imu->avgAcc[i] = a;
   }
 
@@ -285,13 +273,13 @@ void imu_data ( imu_struct* imu )  {
     for ( j=1; j<k; j++ )  imu->histMag[i][j-1] = imu->histMag[i][j];
     imu->histMag[i][k-1] = imu->rawMag[i];
     m = (float) (imu->histMag[i][0]);
-    for ( j=1; j<k; j++ )  m = m + imu->mag_gain * (float) ( imu->histMag[i][j] - m );
+    for ( j=1; j<k; j++ )  m = m + imu->gain_mag * (float) ( imu->histMag[i][j] - m );
     imu->avgMag[i] = m;
   }
   }
 
   // Lock 'calibrated' variables
-  pthread_mutex_lock(&mutex_imu);
+  //pthread_mutex_lock(&mutex_imu);
 
   // Scale and orient gyroscope readings
   imu->calGyr[X] =  imu->avgGyr[Y] * GYR_SCALE;
@@ -311,7 +299,7 @@ void imu_data ( imu_struct* imu )  {
   }
 
   // Unlock 'calibrated' variables
-  pthread_mutex_unlock(&mutex_imu);
+  //pthread_mutex_unlock(&mutex_imu);
 
   return;
 }
@@ -332,8 +320,8 @@ void imu_fusion ( imu_struct* imu )  {
 
   // Get values from mpu structure
   double q[4], m[3], a[3], g[3], b[3], fx, fz, dt;
-  fx = imu->fx;  fz = imu->fz;  dt = imu->fus_dt;
-  pthread_mutex_lock(&mutex_imu);
+  fx = imu->fx;  fz = imu->fz;  dt = imu->dt_att;
+  //pthread_mutex_lock(&mutex_imu);
   for ( i=0; i<4; i++ ) {
     q[i] = imu->Quat[i];
     if (i<3) {
@@ -343,7 +331,7 @@ void imu_fusion ( imu_struct* imu )  {
       b[i] = imu->bias[i];
     }
   }
-  pthread_mutex_unlock(&mutex_imu);
+  //pthread_mutex_unlock(&mutex_imu);
 
   // Normalize magnetometer
   norm = 0.0;
@@ -469,7 +457,7 @@ void imu_fusion ( imu_struct* imu )  {
   e[Z] = atan2 ( ( 2* ( qwz + qxy ) ), ( 1- 2* ( qyy + qzz ) ) ) - Y_BIAS;
 
   // Update imu structure
-  pthread_mutex_lock(&mutex_fusion);
+  //pthread_mutex_lock(&mutex_fusion);
   imu->fx = fx;  imu->fz = fz;
   for ( i=0; i<4; i++ ) {
     imu->Quat[i]  = q[i];
@@ -480,7 +468,7 @@ void imu_fusion ( imu_struct* imu )  {
       imu->bias[i] = b[i];
     }
   }
-  pthread_mutex_unlock(&mutex_fusion);
+  //pthread_mutex_unlock(&mutex_fusion);
 
   /*
   //~~~  MOVE TO 'IMU_CONV' FUNCTION  ~~~//

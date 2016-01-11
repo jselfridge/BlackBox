@@ -42,6 +42,12 @@ void sys_init ( void )  {
   mallopt( M_MMAP_MAX, 0 );
   sys_memory(SYS_STACK);
 
+  // Initialize subsystems
+  imu_init();
+  //pru_init();
+  //ctrl_init();
+  //thr_init();
+
   return;
 }
 
@@ -53,7 +59,7 @@ void sys_init ( void )  {
 void sys_debug (  )  {
 
   // Loop counter
-  ushort i;
+  //ushort i;
 
   // Datalog file
   printf("\r");  fflush(stdout);
@@ -65,58 +71,34 @@ void sys_debug (  )  {
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // System Input/Output values
-  pthread_mutex_lock(&mutex_sysio);
-  for ( i=0; i<4; i++ )  printf("%04d ", sys.input[i]  );  printf("   ");
-  for ( i=0; i<4; i++ )  printf("%04d ", sys.output[i] );  printf("   ");
-  pthread_mutex_unlock(&mutex_sysio);
+  //pthread_mutex_lock(&mutex_sysio);
+  //for ( i=0; i<4; i++ )  printf("%04d ", sys.input[i]  );  printf("   ");
+  //for ( i=0; i<4; i++ )  printf("%04d ", sys.output[i] );  printf("   ");
+  //pthread_mutex_unlock(&mutex_sysio);
 
-  // Raw sensor values - IMU1
+  // Raw sensor values
   //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawGyr[i] );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawAcc[i] );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%04d ", imu1.rawMag[i] );  printf("   ");
 
-  // Raw sensor values - IMU2
-  //for ( i=0; i<3; i++ )  printf("%06d ", imu2.rawGyr[i] );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%04d ", imu2.rawMag[i] );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%06d ", imu2.rawAcc[i] );  printf("   ");
-
-  // Filtered sensor values - IMU1
+  // Filtered sensor values
   //for ( i=0; i<3; i++ )  printf("%09.2f ", imu1.avgGyr[i] );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%09.2f ", imu1.avgAcc[i] );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%07.2f ", imu1.avgMag[i] );  printf("   ");
 
-  // Filtered sensor values - IMU2
-  //for ( i=0; i<3; i++ )  printf("%09.2f ", imu2.avgGyr[i] );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%09.2f ", imu2.avgAcc[i] );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%07.2f ", imu2.avgMag[i] );  printf("   ");
-
-  // Calibrated sensor values - IMU1
+  // Calibrated sensor values
   //pthread_mutex_lock(&mutex_imu);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calGyr[i] );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calAcc[i] );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calMag[i] );  printf("   ");
   //pthread_mutex_unlock(&mutex_imu);
 
-  // Calibrated sensor values - IMU2
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.calGyr[i] );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.calAcc[i] );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", imu2.calMag[i] );  printf("   ");
-
-  // Data fusion values - IMU1
-  pthread_mutex_lock(&mutex_fusion);
+  // Data fusion values
+  //pthread_mutex_lock(&mutex_fusion);
   //for ( i=0; i<4; i++ )  printf("%6.3f ", imu1.Quat[i]              );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.Eul[i]  *(180.0f/PI) );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.dEul[i] *(180.0f/PI) );  printf("   ");
-  pthread_mutex_unlock(&mutex_fusion);
-
-  // Data fusion values - IMU2
-  //for ( i=0; i<4; i++ )  printf("%6.3f ", imu2.Quat[i]              );  printf("   ");
-  //for ( i=0; i<4; i++ )  printf("%6.3f ", imu2.dQuat[i]             );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%6.1f ", imu2.Eul[i]  *(180.0f/PI) );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%6.1f ", imu2.dEul[i] *(180.0f/PI) );  printf("   ");
-
-  // Data fusion convergence
-  //for ( i=0; i<4; i++ )  printf("%6.3f ", imu1.Prev[i] );  printf("   ");  
+  //for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.Eul[i]  *(180.0f/PI) );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%6.1f ", imu1.dEul[i] *(180.0f/PI) );  printf("   ");
+  //pthread_mutex_unlock(&mutex_fusion);
 
   // Control values
   //printf( "%6.3f      ", ctrl.heading*(180.0/PI) );
@@ -142,10 +124,10 @@ void sys_exit (  )  {
   sys.running = false;
   usleep(500000);
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
-  thr_exit();
+  //thr_exit();
   imu_exit();
-  pru_exit();
-  ctrl_exit();
+  //pru_exit();
+  //ctrl_exit();
   led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
   if(DEBUG)  printf("Program complete \n");
   sys.ret = sigaction( SIGINT, &sys_signal, NULL );

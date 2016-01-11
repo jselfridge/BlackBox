@@ -10,7 +10,7 @@
 //  ctrl_init
 //  Initializes the control structure.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ctrl_init ( void )  {
+/*void ctrl_init ( void )  {
   if (DEBUG)  printf("Initializing controller \n");
 
   // Local variables
@@ -53,47 +53,47 @@ void ctrl_init ( void )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_exit
 //  Exits the controller code.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ctrl_exit ( void )  {
+/*void ctrl_exit ( void )  {
   if (DEBUG)  printf("Closing CTRL \n");
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_disarm
 //  Disarms all the motors
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ctrl_disarm ( void )  {
+/*void ctrl_disarm ( void )  {
   ushort i;
   for ( i=0; i<10; i++ )  sys.output[i] = 1000;
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_law
 //  Top level function to run the control law
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ctrl_law ( void )  {
+/*void ctrl_law ( void )  {
   ctrl_ref();
   ctrl_flags();
   ctrl_switch();
   ctrl_limit();
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_ref
 //  Takes PWM inputs and converts to suitable reference signals.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ctrl_ref ( void )  {
+/*void ctrl_ref ( void )  {
   ushort i;
   for ( i=0; i<10; i++ ) {
     ctrl.norm[i] = 2.0 * ( sys.input[i] - IN_MID ) / (float)( IN_MAX - IN_MIN );
@@ -103,13 +103,13 @@ void ctrl_ref ( void )  {
   }
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_flags
 //  Checks radio stick positions for commands. 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ctrl_flags ( void )  {
+/*void ctrl_flags ( void )  {
 
   // Update full stick counter
   ushort i;
@@ -153,13 +153,13 @@ void ctrl_flags ( void )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_switch
 //  Monitor radio switch to implement different control laws.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ctrl_switch ( void )  {
+/*void ctrl_switch ( void )  {
 
   // Check arming flag
   if (ctrl.motorsArmed) {
@@ -177,19 +177,19 @@ void ctrl_switch ( void )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_pid
 //  Apply PID control to vehcile attitude.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ctrl_pid ( void )  {
+/*void ctrl_pid ( void )  {
 
   // Obtain states
-  pthread_mutex_lock(&mutex_fusion);
+  //pthread_mutex_lock(&mutex_fusion);
   float Eul[3]  = { imu1.Eul[X],  imu1.Eul[Y],  imu1.Eul[Z]  };
   float dEul[3] = { imu1.dEul[X], imu1.dEul[Y], imu1.dEul[Z] };
-  pthread_mutex_unlock(&mutex_fusion);
+  //pthread_mutex_unlock(&mutex_fusion);
 
   // Determine roll (X) adjustment
   double R_KIreset;
@@ -255,13 +255,13 @@ void ctrl_pid ( void )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_limit
 //  Limits the motor outputs to within their min and max ranges.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ctrl_limit ( void )  {
+/*void ctrl_limit ( void )  {
   ushort i;
   for ( i=0; i<4; i++ ) {
     if ( sys.output[i] > OUT_MAX )  sys.output[i] = OUT_MAX;
@@ -269,6 +269,6 @@ void ctrl_limit ( void )  {
   }
   return;
 }
-
+*/
 
 
