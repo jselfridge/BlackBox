@@ -10,7 +10,6 @@
 
 // Define statements
 #define DEBUG           true
-#define SYSIO_HZ        100
 #define SYS_STACK       ( 100 * 1024 * 1024 )
 
 
@@ -18,8 +17,8 @@
 typedef struct sys_struct {
   bool  running;
   int   ret;
-  int  input[10];
-  int  output[10];
+  int   input[10];
+  int   output[10];
 } sys_struct;
 sys_struct sys;
 

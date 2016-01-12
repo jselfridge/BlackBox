@@ -11,16 +11,11 @@
 //  Initializes the MPU sensors.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_init ( void )  {
-
   if(DEBUG)  printf( "Initializing IMU \n" );
-
   led_blink( LED_IMU, 500, 500 );
-
   imu1.id = 1;  imu1.addr = 0x68;  imu_setup(&imu1);
   //imu2.id = 2;  imu2.addr = 0x69;  imu_setup(&imu2);
-
   led_on(LED_IMU);
-
   return;
 }
 
@@ -30,12 +25,9 @@ void imu_init ( void )  {
 //  Setup functions for each MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_setup ( imu_struct* imu )  {
-
-  // Init functions
   imu_param(imu);
   imu_getcal(imu);
   imu_setic(imu);
-
   return;
 }
 
@@ -159,7 +151,7 @@ void imu_setic ( imu_struct* imu )  {
   ushort i, j;
 
   // Determine timing loops
-  sys_err ( ( HZ_IMU % HZ_ATT   != 0 ), "Error (imu_setic): 'HZ_IMU' must be a multiple of 'HZ_ATT'."   );
+  sys_err ( ( HZ_IMU % HZ_ATT != 0 ), "Error (imu_setic): 'HZ_IMU' must be a multiple of 'HZ_ATT'."   );
   imu->count = 0;
   imu->loops = HZ_IMU / HZ_ATT;
 
@@ -186,7 +178,7 @@ void imu_setic ( imu_struct* imu )  {
   imu->gain_acc = imu->dt_imu / ( imu->tc_acc + imu->dt_imu );
   imu->gain_mag = imu->dt_att / ( imu->tc_mag + imu->dt_att );
 
-  // Display IMU settings
+  // Display settings
   if (DEBUG) {
     printf("    IMU:    HZ: %4d    DT: %5.3f \n",  imu->hz_imu, imu->dt_imu );
     printf("    Att:    HZ: %4d    DT: %5.3f \n",  imu->hz_att, imu->dt_att );
@@ -205,7 +197,7 @@ void imu_setic ( imu_struct* imu )  {
   // Data fusion variables
   imu->fx = 0.5;  imu->fz = 0.866;
   for ( i=0; i<4; i++ ) {
-    imu->Prev[i]  = 0;
+    //imu->Prev[i]  = 0;
     imu->Quat[i]  = 0;
     imu->dQuat[i] = 0;
     if (i<3) {
@@ -214,7 +206,7 @@ void imu_setic ( imu_struct* imu )  {
       imu->bias[i] = 0;
     }
   }
-  imu->Prev[0] = 1;
+  //imu->Prev[0] = 1;
   imu->Quat[0] = 1;
 
   return;
@@ -231,6 +223,7 @@ void imu_data ( imu_struct* imu )  {
   ushort i, j, k;
   float g, a, m;
   bool mag;
+  static short histG[GYR_HIST], histA[ACC_HIST], histM[MAG_HIST];
 
   // Increment counter
   mag = false;
@@ -279,7 +272,7 @@ void imu_data ( imu_struct* imu )  {
   }
 
   // Lock 'calibrated' variables
-  //pthread_mutex_lock(&mutex_imu);
+  pthread_mutex_lock(&mutex_imu);
 
   // Scale and orient gyroscope readings
   imu->calGyr[X] =  imu->avgGyr[Y] * GYR_SCALE;
@@ -299,7 +292,7 @@ void imu_data ( imu_struct* imu )  {
   }
 
   // Unlock 'calibrated' variables
-  //pthread_mutex_unlock(&mutex_imu);
+  pthread_mutex_unlock(&mutex_imu);
 
   return;
 }

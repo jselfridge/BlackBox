@@ -18,8 +18,8 @@ void thr_init ( void )  {
   struct sched_param param;
 
   // IMU thread
-  //thr_imu.priority     =  98;
-  //thr_imu.period       =  1000000 / FAST_HZ;
+  thr_imu.priority     =  98;
+  thr_imu.period       =  1000000 / HZ_IMU;
 
   // Data fusion thread
   //thr_fusion.priority  =  96;
@@ -42,7 +42,7 @@ void thr_init ( void )  {
   thr_debug.period   =  1000000 / HZ_DEBUG;
 
   // Mutex initialization
-  //pthread_mutex_init( &mutex_imu,    NULL );
+  pthread_mutex_init( &mutex_imu,    NULL );
   //pthread_mutex_init( &mutex_fusion, NULL );
   //pthread_mutex_init( &mutex_sysio,  NULL );
 
@@ -61,12 +61,12 @@ void thr_init ( void )  {
   sys.ret = pthread_attr_setschedpolicy( &attr, SCHED_FIFO );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'FIFO' attribute." );
 
-  /*  // Initialize 'imu' thread
+  // Initialize 'imu' thread
   param.sched_priority = thr_imu.priority;
   sys.ret = pthread_attr_setschedparam( &attr, &param );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'imu' priority." );
   sys.ret = pthread_create ( &thr_imu.id, &attr, thread_imu, (void *)NULL );
-  sys_err( sys.ret, "Error (thread_init): Failed to create 'imu' thread." ); */
+  sys_err( sys.ret, "Error (thread_init): Failed to create 'imu' thread." );
 
   /*  // Initialize 'fusion' thread
   param.sched_priority = thr_fusion.priority;
@@ -216,10 +216,10 @@ void thr_exit ( void )  {
   if(DEBUG)  printf("Closing threads  \n");
   void *status;
 
-  /*  // Exit 'imu' thread
+  // Exit 'imu' thread
   sys.ret = pthread_join ( thr_imu.id, &status );
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'imu' thread." );
-  if(DEBUG)  printf( "  Status %ld for 'imu' thread \n", (long)status ); */
+  if(DEBUG)  printf( "  Status %ld for 'imu' thread \n", (long)status );
 
   /*  // Exit 'fusion' thread
   sys.ret = pthread_join ( thr_fusion.id, &status );
@@ -249,7 +249,7 @@ void thr_exit ( void )  {
   }
 
   // Destroy mutex
-  //pthread_mutex_destroy(&mutex_imu);
+  pthread_mutex_destroy(&mutex_imu);
   //pthread_mutex_destroy(&mutex_fusion);
   //pthread_mutex_destroy(&mutex_sysio);
 
@@ -261,7 +261,7 @@ void thr_exit ( void )  {
 //  thread_imu
 //  Run the 'imu' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void *thread_imu ( )  {
+void *thread_imu ( )  {
   if(DEBUG)  printf("  Running 'imu' thread \n");
   thr_periodic (&thr_imu);
   while (sys.running) {
@@ -276,7 +276,7 @@ void thr_exit ( void )  {
   pthread_exit(NULL);
   return NULL;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_fusion

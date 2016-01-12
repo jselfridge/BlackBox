@@ -10,17 +10,9 @@
 
 // Define statements
 
-//#define IMU_BUS    1
-//#define ADDR1      0x68
-//#define ADDR2      0x69
-
-//#define FAST_HZ    1000
-//#define SLOW_HZ     100
-//#define FUSION_HZ   100
-
-#define GYR_HIST    2
-#define ACC_HIST    2
-#define MAG_HIST    2
+#define GYR_HIST   2
+#define ACC_HIST   2
+#define MAG_HIST   2
 
 #define GYR_LPF   (100.0f)
 #define ACC_LPF   (10.0f)
@@ -79,7 +71,6 @@ typedef struct {
   float   calGyr    [3];
   float   calAcc    [3];
   float   calMag    [3];
-  double  Prev      [4];
   double  Quat      [4];
   double  dQuat     [4];
   double  Eul       [3];

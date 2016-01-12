@@ -46,7 +46,8 @@ void sys_init ( void )  {
   imu_init();
   //pru_init();
   //ctrl_init();
-  //thr_init();
+  log_init();  //~~~ DEBUGGING ~~~//
+  thr_init();
 
   return;
 }
@@ -59,7 +60,7 @@ void sys_init ( void )  {
 void sys_debug (  )  {
 
   // Loop counter
-  //ushort i;
+  ushort i;
 
   // Datalog file
   printf("\r");  fflush(stdout);
@@ -87,11 +88,11 @@ void sys_debug (  )  {
   //for ( i=0; i<3; i++ )  printf("%07.2f ", imu1.avgMag[i] );  printf("   ");
 
   // Calibrated sensor values
-  //pthread_mutex_lock(&mutex_imu);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calGyr[i] );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calAcc[i] );  printf("   ");
+  pthread_mutex_lock(&mutex_imu);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calGyr[i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calAcc[i] );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calMag[i] );  printf("   ");
-  //pthread_mutex_unlock(&mutex_imu);
+  pthread_mutex_unlock(&mutex_imu);
 
   // Data fusion values
   //pthread_mutex_lock(&mutex_fusion);
@@ -124,7 +125,8 @@ void sys_exit (  )  {
   sys.running = false;
   usleep(500000);
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
-  //thr_exit();
+  log_exit();  //~~~ DEBUGGING ~~~//
+  thr_exit();
   imu_exit();
   //pru_exit();
   //ctrl_exit();

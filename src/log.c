@@ -68,7 +68,7 @@ void log_open ( void )  {
   fprintf( datalog.note, "About the system parameters... ");
   fclose(datalog.note);
 
-  /*  // Create gyroscope datalog file
+  // Create gyroscope datalog file
   sprintf( file, "%sgyr.txt", datalog.path );
   datalog.gyr = fopen( file, "w" );
   sys_err( datalog.gyr == NULL, "Error (log_init): Cannot open 'gyro' file. \n" );
@@ -76,9 +76,9 @@ void log_open ( void )  {
     " Gtime,       Gdur,  \
     Grx1,   Gry1,   Grz1,  \
     Gax1,      Gay1,      Gaz1,     \
-    Gcx1,    Gcy1,    Gcz1   "); */
+    Gcx1,    Gcy1,    Gcz1   ");
 
-  /*  // Create accelerometer datalog file
+  // Create accelerometer datalog file
   sprintf( file, "%sacc.txt", datalog.path );
   datalog.acc = fopen( file, "w" );
   sys_err( datalog.acc == NULL, "Error (log_init): Cannot open 'acc' file. \n" );
@@ -86,7 +86,7 @@ void log_open ( void )  {
     " Atime,       Adur,  \
     Arx1,   Ary1,   Arz1,  \
     Aax1,      Aay1,      Aaz1,     \
-    Acx1,    Acy1,    Acz1,   "); */
+    Acx1,    Acy1,    Acz1,   ");
 
   /*  // Create magnetometer datalog file
   sprintf( file, "%smag.txt", datalog.path );
@@ -144,29 +144,29 @@ void log_open ( void )  {
 void log_record ( enum log_index index )  {
 
   // Local variables
-  //ushort i;
-  //float timestamp;
+  ushort i;
+  float timestamp;
 
   // Jump to appropriate log 
   switch(index) {
 
-    /*  // Record 'gyroscope' datalog
+  // Record 'gyroscope' datalog
   case LOG_GYR :
     timestamp = (float)( thr_imu.start_sec + ( thr_imu.start_usec / 1000000.0f ) - datalog.offset );
     fprintf( datalog.gyr, "\n %011.6f, %06ld,    ", timestamp, thr_imu.dur );
     for ( i=0; i<3; i++ )  fprintf( datalog.gyr, "%06d, ",   imu1.rawGyr[i] );   fprintf( datalog.gyr, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.gyr, "%09.2f, ", imu1.avgGyr[i] );   fprintf( datalog.gyr, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.gyr, "%07.4f, ", imu1.calGyr[i] );   fprintf( datalog.gyr, "   " );
-    return; */
+    return;
 
-    /*  // Record 'accelerometer' datalog
+  // Record 'accelerometer' datalog
   case LOG_ACC :
     timestamp = (float)( thr_imu.start_sec + ( thr_imu.start_usec / 1000000.0f ) - datalog.offset );
     fprintf( datalog.acc, "\n %011.6f, %06ld,    ", timestamp, thr_imu.dur );
     for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%06d, ",   imu1.rawAcc[i] );  fprintf( datalog.acc, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%09.2f, ", imu1.avgAcc[i] );  fprintf( datalog.acc, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%07.4f, ", imu1.calAcc[i] );  fprintf( datalog.acc, "   " );
-    return; */
+    return;
 
     /*  // Record 'magnetometer' datalog
   case LOG_MAG :
@@ -218,8 +218,8 @@ void log_record ( enum log_index index )  {
 void log_exit ( void )  {
 
   // Close files
-  //fclose(datalog.gyr);
-  //fclose(datalog.acc);
+  fclose(datalog.gyr);
+  fclose(datalog.acc);
   //fclose(datalog.mag);
   //fclose(datalog.fusion);
   //fclose(datalog.sysio);
