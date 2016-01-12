@@ -18,7 +18,7 @@ void thr_init ( void )  {
   struct sched_param param;
 
   // IMU thread
-  thr_imu.priority     =  99;
+  thr_imu.priority     =  98;
   thr_imu.period       =  1000000 / HZ_IMU;
 
   // Data fusion thread
@@ -38,11 +38,11 @@ void thr_init ( void )  {
   //thr_telem.period   =  1000000 / TELEM_HZ;
 
   // Debugging thread
-  thr_debug.priority =  88;
-  thr_debug.period   =  1000000 / HZ_DEBUG;
+  //thr_debug.priority =  88;
+  //thr_debug.period   =  1000000 / HZ_DEBUG;
 
   // Mutex initialization
-  pthread_mutex_init( &mutex_imu,    NULL );
+  //pthread_mutex_init( &mutex_imu,    NULL );
   //pthread_mutex_init( &mutex_fusion, NULL );
   //pthread_mutex_init( &mutex_sysio,  NULL );
 
@@ -96,7 +96,7 @@ void thr_init ( void )  {
   sys.ret = pthread_create ( &thr_telem.id, &attr, thread_telem, (void *)NULL );
   sys_err( sys.ret, "Error (thread_init): Failed to create 'telem' thread." ); */
 
-  // Initialize 'debug' thread
+  /*  // Initialize 'debug' thread
   if(DEBUG) {
   param.sched_priority = thr_debug.priority;
   sys.ret = pthread_attr_setschedparam( &attr, &param );
@@ -104,7 +104,7 @@ void thr_init ( void )  {
   sys.ret = pthread_create ( &thr_debug.id, &attr, thread_debug, (void *)NULL );
   sys_err( sys.ret, "Error (thread_init): Failed to create 'debug' thread." );
   printf("\n");
-  }
+  } */
 
   return;
 }
@@ -241,15 +241,15 @@ void thr_exit ( void )  {
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'telem' thread." );
   if(DEBUG)  printf( "  Status %ld for 'telem' thread \n", (long)status ); */
 
-  // Exit 'debug' thread
+  /*  // Exit 'debug' thread
   if(DEBUG) {
   sys.ret = pthread_join ( thr_debug.id, &status );
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'debug' thread." );
   printf( "  Status %ld for 'debug' thread \n", (long)status );
-  }
+  } */
 
   // Destroy mutex
-  pthread_mutex_destroy(&mutex_imu);
+  //pthread_mutex_destroy(&mutex_imu);
   //pthread_mutex_destroy(&mutex_fusion);
   //pthread_mutex_destroy(&mutex_sysio);
 
@@ -369,7 +369,7 @@ void *thread_imu ( )  {
 //  thread_debug
 //  Run the 'debug' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void *thread_debug ( )  {
+/*void *thread_debug ( )  {
   if(DEBUG)  printf("  Running 'debug' thread \n");
   usleep(500000);
   thr_periodic (&thr_debug);
@@ -381,7 +381,7 @@ void *thread_debug ( )  {
   }
   pthread_exit(NULL);
   return NULL;
-}
+  } */
 
 
 

@@ -10,9 +10,9 @@
 
 // Define statements
 
-#define GYR_HIST   80
-#define ACC_HIST   80
-#define MAG_HIST   80
+#define GYR_HIST   20
+#define ACC_HIST   20
+#define MAG_HIST   20
 
 #define GYR_LPF   (0.0f)
 #define ACC_LPF   (0.0f)

@@ -57,7 +57,7 @@ void sys_init ( void )  {
 //  sys_debug
 //  Prints system debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_debug (  )  {
+/*void sys_debug (  )  {
 
   // Loop counter
   ushort i;
@@ -88,11 +88,11 @@ void sys_debug (  )  {
   //for ( i=0; i<3; i++ )  printf("%07.2f ", imu1.avgMag[i] );  printf("   ");
 
   // Calibrated sensor values
-  pthread_mutex_lock(&mutex_imu);
+  //pthread_mutex_lock(&mutex_imu);
   for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calGyr[i] );  printf("   ");
   for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calAcc[i] );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calMag[i] );  printf("   ");
-  pthread_mutex_unlock(&mutex_imu);
+  //pthread_mutex_unlock(&mutex_imu);
 
   // Data fusion values
   //pthread_mutex_lock(&mutex_fusion);
@@ -114,7 +114,7 @@ void sys_debug (  )  {
   fflush(stdout);
 
   return;
-}
+  } */
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

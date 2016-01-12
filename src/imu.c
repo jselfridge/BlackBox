@@ -49,7 +49,7 @@ void imu_param ( imu_struct* imu )  {
   if(DEBUG) {  printf(".");  fflush(stdout);  }
   sys_err( sys.ret, "Error (imu_init): 'mpu_set_sensors' failed." );
 
-  sys.ret = mpu_set_sample_rate(1000); // HZ_IMU
+  sys.ret = mpu_set_sample_rate(HZ_IMU);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
   sys_err( sys.ret, "Error (imu_init): 'mpu_set_sample_rate' failed." );
 
@@ -272,15 +272,15 @@ void imu_data ( imu_struct* imu )  {
   }
 
   // Trying something new
-  unsigned char data[12];
-  i2c_read( 0x68, 0x3A, 1, data);
-  if ( data[0] & 0x10 ) {
+  //unsigned char data[12];
+  //i2c_read( 0x68, 0x3A, 1, data);
+  //if ( data[0] & 0x10 ) {
     //mpu_reset_fifo();
-    printf("overflow \n");
-  }
+    //printf("overflow \n");
+  //}
 
   // Lock 'calibrated' variables
-  pthread_mutex_lock(&mutex_imu);
+  //pthread_mutex_lock(&mutex_imu);
 
   // Scale and orient gyroscope readings
   imu->calGyr[X] =  imu->avgGyr[Y] * GYR_SCALE;
@@ -300,7 +300,7 @@ void imu_data ( imu_struct* imu )  {
   }
 
   // Unlock 'calibrated' variables
-  pthread_mutex_unlock(&mutex_imu);
+  //pthread_mutex_unlock(&mutex_imu);
 
   return;
 }
