@@ -49,7 +49,7 @@ void imu_param ( imu_struct* imu )  {
   if(DEBUG) {  printf(".");  fflush(stdout);  }
   sys_err( sys.ret, "Error (imu_init): 'mpu_set_sensors' failed." );
 
-  sys.ret = mpu_set_sample_rate(HZ_IMU);
+  sys.ret = mpu_set_sample_rate(1000); // HZ_IMU
   if(DEBUG) {  printf(".");  fflush(stdout);  }
   sys_err( sys.ret, "Error (imu_init): 'mpu_set_sample_rate' failed." );
 
@@ -223,7 +223,7 @@ void imu_data ( imu_struct* imu )  {
   ushort i, j, k;
   float g, a, m;
   bool mag;
-  static short histG[GYR_HIST], histA[ACC_HIST], histM[MAG_HIST];
+  //static short histG[GYR_HIST], histA[ACC_HIST], histM[MAG_HIST];
 
   // Increment counter
   mag = false;
@@ -269,6 +269,14 @@ void imu_data ( imu_struct* imu )  {
     for ( j=1; j<k; j++ )  m = m + imu->gain_mag * (float) ( imu->histMag[i][j] - m );
     imu->avgMag[i] = m;
   }
+  }
+
+  // Trying something new
+  unsigned char data[12];
+  i2c_read( 0x68, 0x3A, 1, data);
+  if ( data[0] & 0x10 ) {
+    //mpu_reset_fifo();
+    printf("overflow \n");
   }
 
   // Lock 'calibrated' variables
