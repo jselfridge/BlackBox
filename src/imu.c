@@ -233,6 +233,7 @@ void imu_data ( imu_struct* imu )  {
     imu->count = 0;
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Gyroscope
   //sys.ret = mpu_get_gyro_reg( imu->rawGyr, NULL );
   //sys_err( sys.ret, "Error (imu_mems): 'mpu_get_gyro_reg' failed." );
@@ -251,6 +252,8 @@ void imu_data ( imu_struct* imu )  {
     imu->avgGyr[i] = g;
   }
 
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Accelerometer
   //sys.ret = mpu_get_accel_reg( imu->rawAcc, NULL );
   //sys_err( sys.ret, "Error (imu_mems): 'mpu_get_accel_reg' failed." );
@@ -269,6 +272,7 @@ void imu_data ( imu_struct* imu )  {
     imu->avgAcc[i] = a;
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Magnetometer
   if(mag) {
   //sys.ret = mpu_get_compass_reg( imu->rawMag, NULL );
@@ -288,6 +292,9 @@ void imu_data ( imu_struct* imu )  {
     imu->avgMag[i] = m;
   }
   }
+
+
+
 
   // Trying something new
   //unsigned char data[12];

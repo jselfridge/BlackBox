@@ -61,12 +61,22 @@ void thr_init ( void )  {
   sys.ret = pthread_attr_setschedpolicy( &attr, SCHED_FIFO );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'FIFO' attribute." );
 
+  // Test scheduler value
+  if(DEBUG)  printf("  Priority range: %d to %d \n", \
+    sched_get_priority_min(SCHED_RR), \
+    sched_get_priority_max(SCHED_RR) );
+
   // Initialize 'imu' thread
   param.sched_priority = thr_imu.priority;
   sys.ret = pthread_attr_setschedparam( &attr, &param );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'imu' priority." );
   sys.ret = pthread_create ( &thr_imu.id, &attr, thread_imu, (void *)NULL );
   sys_err( sys.ret, "Error (thread_init): Failed to create 'imu' thread." );
+
+  // Check for proper policy value....
+  //int returnval;
+  //returnval = pthread_getschedparam( thr_imu.id, &SCHED_FIFO, &param.sched_priority );
+
 
   /*  // Initialize 'fusion' thread
   param.sched_priority = thr_fusion.priority;
