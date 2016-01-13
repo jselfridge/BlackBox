@@ -5,6 +5,17 @@
 //============================================================
 #include "thread.h"
 
+static void
+display_sched_attr(int policy, struct sched_param *param)
+{
+  printf("    policy=%s, priority=%d\n",
+	 (policy == SCHED_FIFO)  ? "SCHED_FIFO" :
+	 (policy == SCHED_RR)    ? "SCHED_RR" :
+	 (policy == SCHED_OTHER) ? "SCHED_OTHER" :
+	 "???",
+	 param->sched_priority);
+}
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thr_init
@@ -63,8 +74,8 @@ void thr_init ( void )  {
 
   // Test scheduler value
   if(DEBUG)  printf("  Priority range: %d to %d \n", \
-    sched_get_priority_min(SCHED_RR), \
-    sched_get_priority_max(SCHED_RR) );
+    sched_get_priority_min(SCHED_FIFO), \
+    sched_get_priority_max(SCHED_FIFO) );
 
   // Initialize 'imu' thread
   param.sched_priority = thr_imu.priority;
@@ -74,9 +85,10 @@ void thr_init ( void )  {
   sys_err( sys.ret, "Error (thread_init): Failed to create 'imu' thread." );
 
   // Check for proper policy value....
-  //int returnval;
-  //returnval = pthread_getschedparam( thr_imu.id, &SCHED_FIFO, &param.sched_priority );
-
+  int test_policy;
+  struct sched_param test_param;
+  pthread_getschedparam( thr_imu.id, &test_policy, &test_param );
+  display_sched_attr( test_policy, &test_param );
 
   /*  // Initialize 'fusion' thread
   param.sched_priority = thr_fusion.priority;

@@ -218,7 +218,7 @@ void imu_setic ( imu_struct* imu )  {
 //  Obtain new IMU device data.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_data ( imu_struct* imu )  {
-
+  /*
   // Local variables
   ushort i, j, k;
   float g, a, m;
@@ -326,7 +326,7 @@ void imu_data ( imu_struct* imu )  {
 
   // Unlock 'calibrated' variables
   //pthread_mutex_unlock(&mutex_imu);
-
+  */
   return;
 }
 
