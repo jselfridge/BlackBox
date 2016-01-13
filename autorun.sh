@@ -23,8 +23,8 @@ echo 0 > /sys/class/leds/beaglebone\:green\:usr3/brightness
 
 echo BLACKBOX > /sys/devices/platform/bone_capemgr/slots
 
-cd /root/BlackBox/
-./RunBlackBox
+#cd /root/BlackBox/
+#./RunBlackBox
 
 exit 0
 
