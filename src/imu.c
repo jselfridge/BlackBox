@@ -232,13 +232,13 @@ void imu_data ( imu_struct* imu )  {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Gyroscope
-  sys.ret = mpu_get_gyro_reg( imu->rawGyr, NULL );
-  sys_err( sys.ret, "Error (imu_mems): 'mpu_get_gyro_reg' failed." );
+  //sys.ret = mpu_get_gyro_reg( imu->rawGyr, NULL );
+  //sys_err( sys.ret, "Error (imu_mems): 'mpu_get_gyro_reg' failed." );
 
-  //for ( i=0; i<3; i++ ) { 
-  //imu->rawGyr[i] = imu->rawGyr[i] + 2; 
-  //if ( imu->rawGyr[i] > 10 )  imu->rawGyr[i] = -10;
-  //}
+  for ( i=0; i<3; i++ ) { 
+  imu->rawGyr[i] = imu->rawGyr[i] + 2; 
+  if ( imu->rawGyr[i] > 10 )  imu->rawGyr[i] = -10;
+  }
 
   k = GYR_HIST;
   for ( i=0; i<3; i++ ) {
@@ -252,13 +252,13 @@ void imu_data ( imu_struct* imu )  {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Accelerometer
-  sys.ret = mpu_get_accel_reg( imu->rawAcc, NULL );
-  sys_err( sys.ret, "Error (imu_mems): 'mpu_get_accel_reg' failed." );
+  //sys.ret = mpu_get_accel_reg( imu->rawAcc, NULL );
+  //sys_err( sys.ret, "Error (imu_mems): 'mpu_get_accel_reg' failed." );
 
-  //for ( i=0; i<3; i++ ) { 
-  //imu->rawAcc[i] = imu->rawAcc[i] + 5; 
-  //if ( imu->rawAcc[i] > 50 )  imu->rawAcc[i] = -50;
-  //}
+  for ( i=0; i<3; i++ ) { 
+  imu->rawAcc[i] = imu->rawAcc[i] + 5; 
+  if ( imu->rawAcc[i] > 50 )  imu->rawAcc[i] = -50;
+  }
 
   k = ACC_HIST;
   for ( i=0; i<3; i++ ) {
@@ -272,13 +272,13 @@ void imu_data ( imu_struct* imu )  {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Magnetometer
   if(mag) {
-  sys.ret = mpu_get_compass_reg( imu->rawMag, NULL );
-  sys_err( sys.ret, "Error (imu_mems): 'mpu_get_compass_reg' failed." );
+    //sys.ret = mpu_get_compass_reg( imu->rawMag, NULL );
+    //sys_err( sys.ret, "Error (imu_mems): 'mpu_get_compass_reg' failed." );
 
-  //for ( i=0; i<3; i++ ) { 
-  //imu->rawMag[i] = imu->rawMag[i] + 10; 
-  //if ( imu->rawMag[i] > 100 )  imu->rawMag[i] = -100;
-  //}
+  for ( i=0; i<3; i++ ) { 
+  imu->rawMag[i] = imu->rawMag[i] + 10; 
+  if ( imu->rawMag[i] > 100 )  imu->rawMag[i] = -100;
+  }
 
   k = MAG_HIST;
   for ( i=0; i<3; i++ ) {

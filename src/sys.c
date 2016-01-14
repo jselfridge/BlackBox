@@ -43,7 +43,7 @@ void sys_init ( void )  {
   sys_memory(SYS_STACK);
 
   // Initialize subsystems
-  imu_init();
+  //imu_init();
   //pru_init();
   //ctrl_init();
   log_init();  //~~~ DEBUGGING ~~~//
@@ -127,7 +127,7 @@ void sys_exit (  )  {
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   log_exit();  //~~~ DEBUGGING ~~~//
   thr_exit();
-  imu_exit();
+  //imu_exit();
   //pru_exit();
   //ctrl_exit();
   led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
