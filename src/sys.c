@@ -46,7 +46,7 @@ void sys_init ( void )  {
   //struct sched_param param;
   //param.sched_priority = 99;
   //sys.ret = sched_setscheduler( 0, SCHED_FIFO, &param );
-  //sys_err( sys.ret, "Error (sys_init): Failed to set thread priority." ); 
+  //sys_err( sys.ret, "Error (sys_init): Failed to set main thread priority." ); 
 
   // Initialize subsystems
   imu_init();

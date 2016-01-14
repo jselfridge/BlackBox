@@ -9,9 +9,9 @@
 
 
 // Define statements
-#define HZ_IMU     200
-#define HZ_ATT     100
-#define HZ_CTRL     50
+#define HZ_IMU      10
+#define HZ_ATT      10
+#define HZ_CTRL     10
 #define HZ_TELEM    10
 #define HZ_DEBUG    10
 
