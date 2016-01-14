@@ -88,7 +88,7 @@ void log_open ( void )  {
     Aax1,      Aay1,      Aaz1,     \
     Acx1,    Acy1,    Acz1,   ");
 
-  /*  // Create magnetometer datalog file
+  // Create magnetometer datalog file
   sprintf( file, "%smag.txt", datalog.path );
   datalog.mag = fopen( file, "w" );
   sys_err( datalog.mag == NULL, "Error (log_init): Cannot open 'mag' file. \n" );
@@ -96,7 +96,7 @@ void log_open ( void )  {
     " Mtime,       Mdur,  \
     Mrx1, Mry1, Mrz1,\
     Max1,    May1,    Maz1,   \
-    Mcx1,    Mcy1,    Mcz1,   "); */
+    Mcx1,    Mcy1,    Mcz1,   ");
 
   /*  // Create data fusion datalog file
   sprintf( file, "%sfusion.txt", datalog.path );
@@ -168,14 +168,14 @@ void log_record ( enum log_index index )  {
     for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%07.4f, ", imu1.calAcc[i] );  fprintf( datalog.acc, "   " );
     return;
 
-    /*  // Record 'magnetometer' datalog
+  // Record 'magnetometer' datalog
   case LOG_MAG :
     timestamp = (float)( thr_imu.start_sec + ( thr_imu.start_usec / 1000000.0f ) - datalog.offset );
     fprintf( datalog.mag, "\n %011.6f, %06ld,    ", timestamp, thr_imu.dur );
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%04d, ",   imu1.rawMag[i] );  fprintf( datalog.mag, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%07.2f, ", imu1.avgMag[i] );  fprintf( datalog.mag, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%07.4f, ", imu1.calMag[i] );  fprintf( datalog.mag, "   " );
-    return; */
+    return;
 
     /*  // Record 'data fusion' datalog
   case LOG_FUSION :
@@ -220,7 +220,7 @@ void log_exit ( void )  {
   // Close files
   fclose(datalog.gyr);
   fclose(datalog.acc);
-  //fclose(datalog.mag);
+  fclose(datalog.mag);
   //fclose(datalog.fusion);
   //fclose(datalog.sysio);
   //fclose(datalog.ctrl);

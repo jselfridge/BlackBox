@@ -9,10 +9,10 @@
 
 
 // Define statements
-#define HZ_IMU      10
-#define HZ_ATT      10
-#define HZ_CTRL     10
-#define HZ_TELEM    10
+#define HZ_IMU     200
+#define HZ_ATT     100
+#define HZ_CTRL     50
+#define HZ_TELEM    20
 #define HZ_DEBUG    10
 
 
@@ -35,7 +35,7 @@ thread_struct thr_imu;
 //thread_struct thr_sysio;
 //thread_struct thr_ctrl;
 //thread_struct thr_telem;
-//thread_struct thr_debug;
+thread_struct thr_debug;
 
 
 // Mutex variables
@@ -59,7 +59,7 @@ void *thread_imu    ( );
 //void *thread_sysio  ( );
 //void *thread_ctrl   ( );
 //void *thread_telem  ( );
-//void *thread_debug  ( );
+void *thread_debug  ( );
 
 
 #endif

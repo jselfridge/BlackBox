@@ -42,12 +42,6 @@ void sys_init ( void )  {
   mallopt( M_MMAP_MAX, 0 );
   sys_memory(SYS_STACK);
 
-  // Set main thread priority
-  //struct sched_param param;
-  //param.sched_priority = 99;
-  //sys.ret = sched_setscheduler( 0, SCHED_FIFO, &param );
-  //sys_err( sys.ret, "Error (sys_init): Failed to set main thread priority." ); 
-
   // Initialize subsystems
   imu_init();
   //pru_init();
@@ -63,7 +57,7 @@ void sys_init ( void )  {
 //  sys_debug
 //  Prints system debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void sys_debug (  )  {
+void sys_debug (  )  {
 
   // Loop counter
   ushort i;
@@ -84,9 +78,9 @@ void sys_init ( void )  {
   //pthread_mutex_unlock(&mutex_sysio);
 
   // Raw sensor values
-  //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawGyr[i] );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawAcc[i] );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%04d ", imu1.rawMag[i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawGyr[i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawAcc[i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%04d ", imu1.rawMag[i] );  printf("   ");
 
   // Filtered sensor values
   //for ( i=0; i<3; i++ )  printf("%09.2f ", imu1.avgGyr[i] );  printf("   ");
@@ -95,8 +89,8 @@ void sys_init ( void )  {
 
   // Calibrated sensor values
   //pthread_mutex_lock(&mutex_imu);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calGyr[i] );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calAcc[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calGyr[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calAcc[i] );  printf("   ");
   //for ( i=0; i<3; i++ )  printf("%6.3f ", imu1.calMag[i] );  printf("   ");
   //pthread_mutex_unlock(&mutex_imu);
 
@@ -121,7 +115,7 @@ void sys_init ( void )  {
 
   return;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_exit
