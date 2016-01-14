@@ -18,7 +18,7 @@ void thr_init ( void )  {
   struct sched_param param;
 
   // IMU thread
-  thr_imu.priority     =  99;
+  thr_imu.priority     =  1;
   thr_imu.period       =  1000000 / HZ_IMU;
 
   // Data fusion thread
@@ -38,7 +38,7 @@ void thr_init ( void )  {
   //thr_telem.period   =  1000000 / TELEM_HZ;
 
   // Debugging thread
-  thr_debug.priority =  88;
+  thr_debug.priority =  1;
   thr_debug.period   =  1000000 / HZ_DEBUG;
 
   // Mutex initialization
