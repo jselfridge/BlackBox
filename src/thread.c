@@ -78,6 +78,8 @@ void thr_init ( void )  {
     sched_get_priority_max(SCHED_FIFO) );
 
   // Initialize 'imu' thread
+
+
   param.sched_priority = thr_imu.priority;
   sys.ret = pthread_attr_setschedparam( &attr, &param );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'imu' priority." );

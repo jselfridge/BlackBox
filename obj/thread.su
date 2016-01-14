@@ -1,8 +1,8 @@
 thread.c:9:1:display_sched_attr	24	static
 thread.c:24:6:thr_init	64	static
-thread.c:139:6:thr_periodic	48	static
-thread.c:174:6:thr_pause	24	static
-thread.c:194:6:thr_start	24	static
-thread.c:212:6:thr_finish	24	static
-thread.c:237:6:thr_exit	16	static
-thread.c:286:7:thread_imu	8	static
+thread.c:141:6:thr_periodic	48	static
+thread.c:176:6:thr_pause	24	static
+thread.c:196:6:thr_start	24	static
+thread.c:214:6:thr_finish	24	static
+thread.c:239:6:thr_exit	16	static
+thread.c:288:7:thread_imu	8	static

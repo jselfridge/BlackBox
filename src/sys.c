@@ -42,6 +42,12 @@ void sys_init ( void )  {
   mallopt( M_MMAP_MAX, 0 );
   sys_memory(SYS_STACK);
 
+  // Set main thread priority
+  //struct sched_param param;
+  //param.sched_priority = 99;
+  //sys.ret = sched_setscheduler( 0, SCHED_FIFO, &param );
+  //sys_err( sys.ret, "Error (sys_init): Failed to set thread priority." ); 
+
   // Initialize subsystems
   imu_init();
   //pru_init();
@@ -114,8 +120,8 @@ void sys_init ( void )  {
   fflush(stdout);
 
   return;
-  } */
-
+}
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_exit
