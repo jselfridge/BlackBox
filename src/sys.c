@@ -26,13 +26,12 @@ void sys_init ( void )  {
   sys.running = true;
   sys.ret = 0;
 
-  // Establish exit condition
-  struct sigaction sys_run;
-  if(DEBUG)  printf("  Setting system exit condition \n");
-  memset( &sys_run, 0, sizeof(sys_run) );
-  sys_run.sa_handler = &sys_exit;
-  sys.ret = sigaction( SIGINT, &sys_run, NULL );
-  sys_err( sys.ret == -1, "Error (sys_init): Function 'sigaction' failed." );
+  // Establish realtime priority
+  struct sched_param sp;
+  printf("  Establishing realtime priority \n");
+  sp.sched_priority = 99;
+  sys.ret = sched_setscheduler( 0, SCHED_FIFO, &sp );
+  sys_err( sys.ret == -1, "Error (sys_init): Function 'sched_setscheduler' failed." );
 
   // Lock and reserve memory
   if(DEBUG)  printf("  Locking and reserving memory \n");
@@ -42,12 +41,22 @@ void sys_init ( void )  {
   mallopt( M_MMAP_MAX, 0 );
   sys_memory(SYS_STACK);
 
+  // Setup exit condition
+  struct sigaction sys_run;
+  if(DEBUG)  printf("  Setting system exit condition \n");
+  memset( &sys_run, 0, sizeof(sys_run) );
+  sys_run.sa_handler = &sys_exit;
+  sys.ret = sigaction( SIGINT, &sys_run, NULL );
+  sys_err( sys.ret == -1, "Error (sys_init): Function 'sigaction' failed." );
+
   // Initialize subsystems
   //imu_init();
   //pru_init();
   //ctrl_init();
-  log_init();  //~~~ DEBUGGING ~~~//
-  thr_init();
+  //log_init();  //~~~ DEBUGGING ~~~//
+  //thr_init();
+
+  loop_init();
 
   return;
 }
@@ -58,7 +67,7 @@ void sys_init ( void )  {
 //  Prints system debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_debug (  )  {
-
+  /*
   // Loop counter
   ushort i;
 
@@ -112,7 +121,7 @@ void sys_debug (  )  {
   // Finish print loop
   printf("    ");
   fflush(stdout);
-
+  */
   return;
 }
 
@@ -125,8 +134,11 @@ void sys_exit (  )  {
   sys.running = false;
   usleep(500000);
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
-  log_exit();  //~~~ DEBUGGING ~~~//
-  thr_exit();
+
+  loop_exit();
+
+  //log_exit();  //~~~ DEBUGGING ~~~//
+  //thr_exit();
   //imu_exit();
   //pru_exit();
   //ctrl_exit();

@@ -29,13 +29,15 @@
 // Custom includes
 #include <ctrl.h>
 #include <gpio.h>
-#include <imu.h>
+//#include <imu.h>
 #include <led.h>
-#include <log.h>
+//#include <log.h>
+#include <loop.h>
 #include <pru.h>
 #include <sys.h>
 #include <telem.h>
-#include <thread.h>
+//#include <thread.h>
+
 
 
 // PRU includes

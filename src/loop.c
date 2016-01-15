@@ -1,40 +1,40 @@
 
 //============================================================
-//  thread.c
+//  loop.c
 //  Justin M Selfridge
 //============================================================
-#include "thread.h"
+#include "loop.h"
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thr_init
-//  Initializes the various threads.
+//  loop_init
+//  
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thr_init ( void )  {
-  if(DEBUG)  printf("Initializing threads \n");
-
+void loop_init ( void )  {
+  if(DEBUG)  printf("Initializing timing loops \n");
+  /*
   // Local variables
   pthread_attr_t attr;
   struct sched_param param;
 
   // IMU thread
-  thr_imu.priority     =  1;
+  thr_imu.priority     =  31;
   thr_imu.period       =  1000000 / HZ_IMU;
 
   // Data fusion thread
-  //thr_fusion.priority  =  96;
+  //thr_fusion.priority  =  14;
   //thr_fusion.period    =  1000000 / FUSION_HZ;
 
   // System input/output thread
-  //thr_sysio.priority  =  94;
+  //thr_sysio.priority  =  13;
   //thr_sysio.period    =  1000000 / SYSIO_HZ;
 
   // Controller thread
-  //thr_ctrl.priority =  92;
+  //thr_ctrl.priority =  12;
   //thr_ctrl.period   =  1000000 / CTRL_HZ;
 
   // Telemetry thread
-  //thr_telem.priority =  90;
+  //thr_telem.priority =  10;
   //thr_telem.period   =  1000000 / TELEM_HZ;
 
   // Debugging thread
@@ -73,33 +73,33 @@ void thr_init ( void )  {
   sys.ret = pthread_create ( &thr_imu.id, &attr, thread_imu, (void *)NULL );
   sys_err( sys.ret, "Error (thread_init): Failed to create 'imu' thread." );
 
-  /*  // Initialize 'fusion' thread
+  // Initialize 'fusion' thread
   param.sched_priority = thr_fusion.priority;
   sys.ret = pthread_attr_setschedparam( &attr, &param );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'fusion' priority." );
   sys.ret = pthread_create ( &thr_fusion.id, &attr, thread_fusion, (void *)NULL );
-  sys_err( sys.ret, "Error (thread_init): Failed to create 'fusion' thread." ); */
+  sys_err( sys.ret, "Error (thread_init): Failed to create 'fusion' thread." );
 
-  /*  // Initialize 'sysio' thread
+  // Initialize 'sysio' thread
   param.sched_priority = thr_sysio.priority;
   sys.ret = pthread_attr_setschedparam( &attr, &param );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'sysio' priority." );
   sys.ret = pthread_create ( &thr_sysio.id, &attr, thread_sysio, (void *)NULL );
-  sys_err( sys.ret, "Error (thread_init): Failed to create 'sysio' thread." ); */
+  sys_err( sys.ret, "Error (thread_init): Failed to create 'sysio' thread." );
 
-  /*  // Initialize 'ctrl' thread
+  // Initialize 'ctrl' thread
   param.sched_priority = thr_ctrl.priority;
   sys.ret = pthread_attr_setschedparam( &attr, &param );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'ctrl' priority." );
   sys.ret = pthread_create ( &thr_ctrl.id, &attr, thread_ctrl, (void *)NULL );
-  sys_err( sys.ret, "Error (thread_init): Failed to create 'ctrl' thread." ); */
+  sys_err( sys.ret, "Error (thread_init): Failed to create 'ctrl' thread." );
 
-  /*  // Initialize 'telem' thread
+  // Initialize 'telem' thread
   param.sched_priority = thr_telem.priority;
   sys.ret = pthread_attr_setschedparam( &attr, &param );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'telem' priority." );
   sys.ret = pthread_create ( &thr_telem.id, &attr, thread_telem, (void *)NULL );
-  sys_err( sys.ret, "Error (thread_init): Failed to create 'telem' thread." ); */
+  sys_err( sys.ret, "Error (thread_init): Failed to create 'telem' thread." );
 
   // Initialize 'debug' thread
   if(DEBUG) {
@@ -110,7 +110,7 @@ void thr_init ( void )  {
   sys_err( sys.ret, "Error (thread_init): Failed to create 'debug' thread." );
   printf("\n");
   }
-
+  */
   return;
 }
 
@@ -119,7 +119,7 @@ void thr_init ( void )  {
 //  thr_periodic
 //  Establishes the periodic attributes for a thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thr_periodic ( thread_struct *thr )  {
+/*void thr_periodic ( thread_struct *thr )  {
 
   // Local variables
   unsigned int fd, sec, nsec;
@@ -148,13 +148,13 @@ void thr_periodic ( thread_struct *thr )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thr_pause
 //  Implements the pause before starting the next loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thr_pause ( thread_struct *thr )  {
+/*void thr_pause ( thread_struct *thr )  {
 
   // Local variables
   unsigned long long missed;
@@ -168,13 +168,13 @@ void thr_pause ( thread_struct *thr )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thr_start
 //  Start code for a thread loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thr_start ( thread_struct *thr )  {
+/*void thr_start ( thread_struct *thr )  {
 
   // Get current time
   struct timespec timeval;
@@ -186,13 +186,13 @@ void thr_start ( thread_struct *thr )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thr_finish
 //  Finish code for a thread loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thr_finish ( thread_struct *thr )  {
+/*void thr_finish ( thread_struct *thr )  {
 
   // Get current time
   struct timespec timeval;
@@ -211,14 +211,16 @@ void thr_finish ( thread_struct *thr )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thr_exit
+//  loop_exit
 //  Cleanly exits the threads.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thr_exit ( void )  {
-  if(DEBUG)  printf("Closing threads  \n");
+void loop_exit ( void )  {
+  if(DEBUG)  printf("Closing timing loops  \n");
+
+  /*
   void *status;
 
   // Exit 'imu' thread
@@ -226,25 +228,25 @@ void thr_exit ( void )  {
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'imu' thread." );
   if(DEBUG)  printf( "  Status %ld for 'imu' thread \n", (long)status );
 
-  /*  // Exit 'fusion' thread
+  // Exit 'fusion' thread
   sys.ret = pthread_join ( thr_fusion.id, &status );
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'fusion' thread." );
-  if(DEBUG)  printf( "  Status %ld for 'fusion' thread \n", (long)status ); */
+  if(DEBUG)  printf( "  Status %ld for 'fusion' thread \n", (long)status );
 
-  /*  // Exit 'sysio' thread
+  // Exit 'sysio' thread
   sys.ret = pthread_join ( thr_sysio.id, &status );
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'sysio' thread." );
-  if(DEBUG)  printf( "  Status %ld for 'sysio' thread \n", (long)status ); */
+  if(DEBUG)  printf( "  Status %ld for 'sysio' thread \n", (long)status );
 
-  /*  // Exit 'ctrl' thread
+  // Exit 'ctrl' thread
   sys.ret = pthread_join ( thr_ctrl.id, &status );
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'ctrl' thread." );
-  if(DEBUG)  printf( "  Status %ld for 'ctrl' thread \n", (long)status ); */
+  if(DEBUG)  printf( "  Status %ld for 'ctrl' thread \n", (long)status );
 
-  /*  // Exit 'telem' thread
+  // Exit 'telem' thread
   sys.ret = pthread_join ( thr_telem.id, &status );
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'telem' thread." );
-  if(DEBUG)  printf( "  Status %ld for 'telem' thread \n", (long)status ); */
+  if(DEBUG)  printf( "  Status %ld for 'telem' thread \n", (long)status );
 
   // Exit 'debug' thread
   if(DEBUG) {
@@ -257,7 +259,7 @@ void thr_exit ( void )  {
   //pthread_mutex_destroy(&mutex_imu);
   //pthread_mutex_destroy(&mutex_fusion);
   //pthread_mutex_destroy(&mutex_sysio);
-
+  */
   return;
 }
 
@@ -266,7 +268,7 @@ void thr_exit ( void )  {
 //  thread_imu
 //  Run the 'imu' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void *thread_imu ( )  {
+/*void *thread_imu ( )  {
   if(DEBUG)  printf("  Running 'imu' thread \n");
   thr_periodic (&thr_imu);
   while (sys.running) {
@@ -281,7 +283,7 @@ void *thread_imu ( )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_fusion
@@ -374,7 +376,7 @@ void *thread_imu ( )  {
 //  thread_debug
 //  Run the 'debug' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void *thread_debug ( )  {
+/*void *thread_debug ( )  {
   if(DEBUG)  printf("  Running 'debug' thread \n");
   usleep(500000);
   thr_periodic (&thr_debug);
@@ -387,6 +389,6 @@ void *thread_debug ( )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 

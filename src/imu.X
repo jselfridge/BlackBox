@@ -222,6 +222,8 @@ void imu_data ( imu_struct* imu )  {
   float g, a, m;
   bool mag;
 
+  //  short histGyro[3][GYRO_HIST], histAcc[3][ACC_HIST], histMag[3][MAG_HIST];
+
   // Increment counter
   mag = false;
   imu->count++;
@@ -230,10 +232,19 @@ void imu_data ( imu_struct* imu )  {
     imu->count = 0;
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Gyroscope
+  // Sample IMU
   //sys.ret = mpu_get_gyro_reg( imu->rawGyr, NULL );
   //sys_err( sys.ret, "Error (imu_mems): 'mpu_get_gyro_reg' failed." );
+  //sys.ret = mpu_get_accel_reg( imu->rawAcc, NULL );
+  //sys_err( sys.ret, "Error (imu_mems): 'mpu_get_accel_reg' failed." );
+  //if(mag) {
+  //sys.ret = mpu_get_compass_reg( imu->rawMag, NULL );
+  //sys_err( sys.ret, "Error (imu_mems): 'mpu_get_compass_reg' failed." );
+  //}
+
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Gyroscope
 
   for ( i=0; i<3; i++ ) { 
   imu->rawGyr[i] = imu->rawGyr[i] + 2; 
@@ -252,8 +263,6 @@ void imu_data ( imu_struct* imu )  {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Accelerometer
-  //sys.ret = mpu_get_accel_reg( imu->rawAcc, NULL );
-  //sys_err( sys.ret, "Error (imu_mems): 'mpu_get_accel_reg' failed." );
 
   for ( i=0; i<3; i++ ) { 
   imu->rawAcc[i] = imu->rawAcc[i] + 5; 
@@ -272,8 +281,6 @@ void imu_data ( imu_struct* imu )  {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Magnetometer
   if(mag) {
-    //sys.ret = mpu_get_compass_reg( imu->rawMag, NULL );
-    //sys_err( sys.ret, "Error (imu_mems): 'mpu_get_compass_reg' failed." );
 
   for ( i=0; i<3; i++ ) { 
   imu->rawMag[i] = imu->rawMag[i] + 10; 

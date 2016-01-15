@@ -1,0 +1,2 @@
+loop.c:13:6:loop_init	8	static
+loop.c:220:6:loop_exit	8	static
