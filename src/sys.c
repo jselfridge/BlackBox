@@ -26,6 +26,15 @@ void sys_init ( void )  {
   sys.running = true;
   sys.ret = 0;
 
+  // Setup exit condition
+  struct sigaction sys_run;
+  if(DEBUG)  printf("  Setting system exit condition \n");
+  memset( &sys_run, 0, sizeof(sys_run) );
+  sys_run.sa_handler = &sys_exit;
+  sys.ret = sigaction( SIGINT, &sys_run, NULL );
+  sys_err( sys.ret == -1, "Error (sys_init): Function 'sigaction' failed." );
+
+  /*
   // Establish realtime priority
   struct sched_param sp;
   printf("  Establishing realtime priority \n");
@@ -41,14 +50,6 @@ void sys_init ( void )  {
   mallopt( M_MMAP_MAX, 0 );
   sys_memory(SYS_STACK);
 
-  // Setup exit condition
-  struct sigaction sys_run;
-  if(DEBUG)  printf("  Setting system exit condition \n");
-  memset( &sys_run, 0, sizeof(sys_run) );
-  sys_run.sa_handler = &sys_exit;
-  sys.ret = sigaction( SIGINT, &sys_run, NULL );
-  sys_err( sys.ret == -1, "Error (sys_init): Function 'sigaction' failed." );
-
   // Initialize subsystems
   //imu_init();
   //pru_init();
@@ -57,7 +58,7 @@ void sys_init ( void )  {
   //thr_init();
 
   loop_init();
-
+  */
   return;
 }
 
@@ -66,7 +67,7 @@ void sys_init ( void )  {
 //  sys_debug
 //  Prints system debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_debug (  )  {
+/*void sys_debug (  )  {
 
   //
   loop_start(&loop_debug);
@@ -130,29 +131,34 @@ void sys_debug (  )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_exit
 //  Code that runs prior to exiting the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_exit (  )  {
-  sys.running = false;
-  usleep(500000);
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
 
-  loop_exit();
+  // Set exit flag
+  sys.running = false;
+  usleep(500000);
 
+  // Exit sub-routines
+  //loop_exit();
   //log_exit();  //~~~ DEBUGGING ~~~//
   //thr_exit();
   //imu_exit();
   //pru_exit();
   //ctrl_exit();
+
+  // Terminate program
   led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
   if(DEBUG)  printf("Program complete \n");
   sys.ret = sigaction( SIGINT, &sys_signal, NULL );
   sys_err( sys.ret == -1, "Error (sys_exit): Function 'sigaction' failed." );
   kill( 0, SIGINT );
+
   return;
 }
 
@@ -161,7 +167,7 @@ void sys_exit (  )  {
 //  sys_memory
 //  Reserves a block of memory exclusively for the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_memory ( int size )  {
+/*void sys_memory ( int size )  {
   int i;
   char *buffer;   
   buffer = malloc(size);
@@ -169,6 +175,6 @@ void sys_memory ( int size )  {
   free(buffer);
   return;
 }
-
+*/
 
 
