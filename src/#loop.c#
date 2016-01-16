@@ -61,6 +61,11 @@ void loop_init ( void )  {
   sys.ret = pthread_attr_setschedpolicy( &attr, SCHED_FIFO );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'FIFO' attribute." );
 
+  // Test scheduler value
+  //if(DEBUG)  printf("  Priority range: %d to %d \n",	\
+  //sched_get_priority_min(SCHED_FIFO),			\
+  //sched_get_priority_max(SCHED_FIFO) );
+
   /*// Initialize 'imu' thread
   param.sched_priority = thr_imu.priority;
   sys.ret = pthread_attr_setschedparam( &attr, &param );
@@ -166,47 +171,47 @@ void loop_init ( void )  {
 */
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  loop_start
-//  
+//  thr_start
+//  Start code for a thread loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void loop_start ( loop_struct* loop )  {
+/*void thr_start ( thread_struct *thr )  {
 
   // Get current time
   struct timespec timeval;
   clock_gettime( CLOCK_MONOTONIC, &timeval );
 
   // Assign start time to thread
-  loop->start_sec  = timeval.tv_sec;
-  loop->start_usec = timeval.tv_nsec / 1000;
+  thr->start_sec  = timeval.tv_sec;
+  thr->start_usec = timeval.tv_nsec / 1000;
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  loop_finish
-//  
+//  thr_finish
+//  Finish code for a thread loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void loop_finish ( loop_struct* loop )  {
+/*void thr_finish ( thread_struct *thr )  {
 
   // Get current time
   struct timespec timeval;
   clock_gettime( CLOCK_MONOTONIC, &timeval );
 
   // Assign finish time to thread
-  loop->finish_sec  = timeval.tv_sec;
-  loop->finish_usec = timeval.tv_nsec /1000;
+  thr->finish_sec  = timeval.tv_sec;
+  thr->finish_usec = timeval.tv_nsec /1000;
 
   // Adjust for rollover
-  if ( loop->finish_sec == loop->start_sec )  loop->dur = 0;
-  else                                        loop->dur = 1000000;
+  if ( thr->finish_sec == thr->start_sec )  thr->dur = 0;
+  else                                      thr->dur = 1000000;
 
   // Calculate timing metrics
-  loop->dur += loop->finish_usec - loop->start_usec;
+  thr->dur += thr->finish_usec - thr->start_usec;
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  loop_exit
@@ -375,31 +380,33 @@ void* timer_debug ( )  {
   if(DEBUG)  printf("  Running 'debug' loop \n");
 
 
-  loop_debug.siga.sa_sigaction = sys_debug;
-  sys.ret = sigaction( SIGRTMIN, &loop_debug.siga, NULL );
-  sys_err( sys.ret == -1, "Error (timer_debug): Could not assign sigaction." );
 
-  //timer_t timerid; == loop_debug.tid
-  //struct sigevent sev; == loop_debug.sige
+  sa.sa_sigaction = display_time;
+  ret = sigaction( SIGRTMIN, &sa, NULL );
+  if ( ret == -1 )  printf("Error: Could not assign sigaction. \n");
+  printf("complete \n");
 
-  loop_debug.sige.sigev_notify = SIGEV_SIGNAL;
-  loop_debug.sige.sigev_signo = SIGRTMIN;
-  loop_debug.sige.sigev_value.sival_ptr = &loop_debug.tid;
+  // Create timer
+  printf("Create timer... ");
+  timer_t timerid;
+  struct sigevent sev;
+  sev.sigev_notify = SIGEV_SIGNAL;
+  sev.sigev_signo = SIGRTMIN;
+  sev.sigev_value.sival_ptr = &timerid;
+  ret = timer_create( CLOCK_REALTIME, &sev, &timerid );
+  if ( ret == -1 )  printf("Error: Could not create timer. \n");
+  printf("complete \n");
 
-  sys.ret = timer_create( CLOCK_REALTIME, &loop_debug.sige, &loop_debug.tid );
-  sys_err( sys.ret == -1, "Error (timer_debug): Could not create timer." );
-
+  // Assign timer values
   struct itimerspec its;
-  its.it_value.tv_sec      = 0;
-  its.it_value.tv_nsec     = 500000000;
-  its.it_interval.tv_sec   = 0;
-  its.it_interval.tv_nsec  = loop_debug.period * 1000;
-  sys.ret = timer_settime( loop_debug.tid, 0, &its, NULL );
-  sys_err( sys.ret == -1, "Error (timer_debug): Could not assign timer values." );
+  its.it_value.tv_sec      = DELAY_SEC;
+  its.it_value.tv_nsec     = DELAY_NANO;
+  its.it_interval.tv_sec   = TIMER_SEC;
+  its.it_interval.tv_nsec  = TIMER_NANO;
 
-
-
-
+  // Set timer values
+  ret = timer_settime( timerid, 0, &its, NULL );
+  if ( ret == -1 )  printf("Error: Could not assign timer values. \n");
 
   /*  usleep(500000);
   thr_periodic (&thr_debug);

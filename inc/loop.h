@@ -28,8 +28,8 @@ typedef struct loop_struct {
   uint      finish_sec;
   ulong     finish_usec;
   ulong     dur;
-  struct sigevent sev;  // new
-  struct sigaction sa;  // new
+  struct sigevent sige;  // new
+  struct sigaction siga;  // new
 } loop_struct;
 
 
@@ -39,7 +39,7 @@ typedef struct loop_struct {
 //loop_struct thr_sysio;
 //loop_struct thr_ctrl;
 //loop_struct thr_telem;
-loop_struct XXX_debug;
+loop_struct loop_debug;
 
 /*
 // Mutex variables
@@ -52,19 +52,19 @@ loop_struct XXX_debug;
 void  loop_init      ( void );
 //void  thr_periodic  ( thread_struct *thr );
 //void  thr_pause     ( thread_struct *thr );
-//void  thr_start     ( thread_struct *thr );
-//void  thr_finish    ( thread_struct *thr );
+void  loop_start     ( loop_struct* loop );
+void  loop_finish    ( loop_struct* loop );
 void  loop_exit      ( void );
 
-/*
-// Thread handlers
+
+// Timer handlers
 //void *thread_imu    ( );
 //void *thread_fusion ( );
 //void *thread_sysio  ( );
 //void *thread_ctrl   ( );
 //void *thread_telem  ( );
-void *thread_debug  ( );
-*/
+void* timer_debug  ( );
+
 
 #endif
 

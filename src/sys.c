@@ -67,17 +67,20 @@ void sys_init ( void )  {
 //  Prints system debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_debug (  )  {
-  /*
+
+  //
+  loop_start(&loop_debug);
+
   // Loop counter
-  ushort i;
+  static ushort i = 0;
 
   // Datalog file
   printf("\r");  fflush(stdout);
-  if (datalog.enabled)  printf(" %s: ", datalog.dir );
-  else                  printf(" - - - -  ");
+  //if (datalog.enabled)  printf(" %s: ", datalog.dir );
+  //else                  printf(" - - - -  ");
 
   // Time values
-  float timestamp = (float)( thr_debug.start_sec + ( thr_debug.start_usec / 1000000.0f ) - datalog.offset );
+  float timestamp = (float)( loop_debug.start_sec + ( loop_debug.start_usec / 1000000.0f ) ); // - datalog.offset );
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // System Input/Output values
@@ -87,9 +90,9 @@ void sys_debug (  )  {
   //pthread_mutex_unlock(&mutex_sysio);
 
   // Raw sensor values
-  for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawGyr[i] );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawAcc[i] );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%04d ", imu1.rawMag[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawGyr[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawAcc[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%04d ", imu1.rawMag[i] );  printf("   ");
 
   // Filtered sensor values
   //for ( i=0; i<3; i++ )  printf("%09.2f ", imu1.avgGyr[i] );  printf("   ");
@@ -121,7 +124,10 @@ void sys_debug (  )  {
   // Finish print loop
   printf("    ");
   fflush(stdout);
-  */
+
+  //
+  loop_finish(&loop_debug);
+
   return;
 }
 
