@@ -30,18 +30,18 @@ void sys_init (  )  {
     printf( "Error (sys_init): Function 'sched_setscheduler' failed. \n" );
 
   // Lock current and future memroy
-  printf("  Locking current and future memory \n ");
+  printf("  Locking current and future memory \n");
   if( mlockall( MCL_CURRENT | MCL_FUTURE ) )
     printf( "Error (sys_init): Failed to lock memory." );
   mallopt( M_TRIM_THRESHOLD, -1 );
   mallopt( M_MMAP_MAX, 0 );
 
   // Prefault the memory stack
-  ushort i; 
+  long i; 
   char *buffer;
   printf("  Prefaulting memory stack \n ");
   buffer = malloc(SYS_STACK);
-  for ( i=0; i<SYS_STACK; i += sysconf(_SC_PAGESIZE) )  {  buffer[i] = 0;  }
+  for ( i=0; i<SYS_STACK; i += sysconf(_SC_PAGESIZE) )  buffer[i] = 0;
   free(buffer);
 
   return;

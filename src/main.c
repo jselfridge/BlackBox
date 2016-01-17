@@ -28,6 +28,7 @@ int main ( void )  {
 
   // Keep the program running
   while(running)  usleep(100000);
+  usleep(200000);
 
   // Exit subsystems
   if(DEBUG)  printf("\n--- Exit BlackBox program ---\n");
