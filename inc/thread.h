@@ -9,11 +9,14 @@
 
 
 // Define statements
-#define HZ_IMU     200
-#define HZ_ATT     100
-#define HZ_CTRL     50
-#define HZ_TELEM    20
+#define HZ_IMU    1000
+//#define HZ_ATT     100
+//#define HZ_STAB     50
+//#define HZ_NAV      10
+//#define HZ_TELEM    10
 #define HZ_DEBUG    10
+//#define HZ_FLAGS     2
+//#define HZ_HEART     1
 
 
 // Thread structure

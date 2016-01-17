@@ -46,8 +46,9 @@ void sys_init ( void )  {
   //pru_init();
   //ctrl_init();
   //log_init();  //~~~ DEBUGGING ~~~//
-  //thr_init();
-  sys_mem();
+  thr_init();
+  //usleep(250000);
+  //sys_mem();
 
   return;
 }
@@ -59,7 +60,6 @@ void sys_init ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_debug ( void )  {
 
-  /*
   // Loop counter
   static ushort i = 0;
 
@@ -69,7 +69,7 @@ void sys_debug ( void )  {
   //else                  printf(" - - - -  ");
 
   // Time values
-  float timestamp = (float)( loop_debug.start_sec + ( loop_debug.start_usec / 1000000.0f ) ); // - datalog.offset );
+  float timestamp = (float)( thr_debug.start_sec + ( thr_debug.start_usec / 1000000.0f ) ); // - datalog.offset );
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // System Input/Output values
@@ -114,9 +114,6 @@ void sys_debug ( void )  {
   printf("    ");
   fflush(stdout);
 
-  //
-  loop_finish(&loop_debug);
-  */
   return;
 }
 
@@ -126,16 +123,16 @@ void sys_debug ( void )  {
 //  Code that runs prior to exiting the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_exit ( void )  {
-  if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
 
-  // Set exit flag
+  // Begin exit sequence
+  usleep(200000);
+  if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   sys.running = false;
-  usleep(500000);
 
   // Exit sub-routines
   //loop_exit();
   //log_exit();  //~~~ DEBUGGING ~~~//
-  //thr_exit();
+  thr_exit();
   //imu_exit();
   //pru_exit();
   //ctrl_exit();

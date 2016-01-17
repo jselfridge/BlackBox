@@ -18,27 +18,27 @@ void thr_init ( void )  {
   struct sched_param param;
 
   // IMU thread
-  thr_imu.priority     =  31;
-  thr_imu.period       =  1000000 / HZ_IMU;
+  //thr_imu.priority     =  90;
+  //thr_imu.period       =  1000000 / HZ_IMU;
 
   // Data fusion thread
-  //thr_fusion.priority  =  14;
+  //thr_fusion.priority  =  80;
   //thr_fusion.period    =  1000000 / FUSION_HZ;
 
   // System input/output thread
-  //thr_sysio.priority  =  13;
+  //thr_sysio.priority  =  70;
   //thr_sysio.period    =  1000000 / SYSIO_HZ;
 
   // Controller thread
-  //thr_ctrl.priority =  12;
+  //thr_ctrl.priority =  60;
   //thr_ctrl.period   =  1000000 / CTRL_HZ;
 
   // Telemetry thread
-  //thr_telem.priority =  10;
+  //thr_telem.priority =  50;
   //thr_telem.period   =  1000000 / TELEM_HZ;
 
   // Debugging thread
-  thr_debug.priority =  1;
+  thr_debug.priority =  40;
   thr_debug.period   =  1000000 / HZ_DEBUG;
 
   // Mutex initialization
@@ -48,6 +48,10 @@ void thr_init ( void )  {
 
   // Initialize attribute variable
   pthread_attr_init(&attr);
+
+  // Set stack size of threads
+  sys.ret = pthread_attr_setstacksize( &attr, PTHREAD_STACK_MIN + (100*1024) );
+  sys_err( sys.ret, "Error (thread_init): Failed to set 'stack size' attribute." );
 
   // Make threads joinable
   sys.ret = pthread_attr_setdetachstate( &attr, PTHREAD_CREATE_JOINABLE );
@@ -66,12 +70,12 @@ void thr_init ( void )  {
     sched_get_priority_min(SCHED_FIFO), \
     sched_get_priority_max(SCHED_FIFO) );
 
-  // Initialize 'imu' thread
+  /*  // Initialize 'imu' thread
   param.sched_priority = thr_imu.priority;
   sys.ret = pthread_attr_setschedparam( &attr, &param );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'imu' priority." );
   sys.ret = pthread_create ( &thr_imu.id, &attr, thread_imu, (void *)NULL );
-  sys_err( sys.ret, "Error (thread_init): Failed to create 'imu' thread." );
+  sys_err( sys.ret, "Error (thread_init): Failed to create 'imu' thread." ); */
 
   /*  // Initialize 'fusion' thread
   param.sched_priority = thr_fusion.priority;
@@ -108,7 +112,6 @@ void thr_init ( void )  {
   sys_err( sys.ret, "Error (thread_init): Failed to set 'debug' priority." );
   sys.ret = pthread_create ( &thr_debug.id, &attr, thread_debug, (void *)NULL );
   sys_err( sys.ret, "Error (thread_init): Failed to create 'debug' thread." );
-  printf("\n");
   }
 
   return;
@@ -221,10 +224,10 @@ void thr_exit ( void )  {
   if(DEBUG)  printf("Closing threads  \n");
   void *status;
 
-  // Exit 'imu' thread
+  /*  // Exit 'imu' thread
   sys.ret = pthread_join ( thr_imu.id, &status );
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'imu' thread." );
-  if(DEBUG)  printf( "  Status %ld for 'imu' thread \n", (long)status );
+  if(DEBUG)  printf( "  Status %ld for 'imu' thread \n", (long)status ); */
 
   /*  // Exit 'fusion' thread
   sys.ret = pthread_join ( thr_fusion.id, &status );
@@ -267,7 +270,7 @@ void thr_exit ( void )  {
 //  Run the 'imu' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *thread_imu ( )  {
-  if(DEBUG)  printf("  Running 'imu' thread \n");
+  /*  if(DEBUG)  printf("  Running 'imu' thread \n");
   thr_periodic (&thr_imu);
   while (sys.running) {
     thr_start(&thr_imu);
@@ -279,6 +282,7 @@ void *thread_imu ( )  {
     thr_pause(&thr_imu);
   }
   pthread_exit(NULL);
+  */  
   return NULL;
 }
 
@@ -374,9 +378,8 @@ void *thread_imu ( )  {
 //  thread_debug
 //  Run the 'debug' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void *thread_debug ( )  {
+void* thread_debug ( )  {
   if(DEBUG)  printf("  Running 'debug' thread \n");
-  usleep(500000);
   thr_periodic (&thr_debug);
   while (sys.running) {
     thr_start(&thr_debug);
