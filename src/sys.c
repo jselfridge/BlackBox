@@ -7,49 +7,42 @@
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_err
-//  If error condition is true, prints a warning and exits.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_err ( bool cond, char* msg )  {
-  if (cond) {  fprintf( stderr, "%s\n\n", msg );  exit(1);  }
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_init
 //  Initializes the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_init ( void )  {
+void sys_init ( sys_struct* sys )  {
   if(DEBUG)  printf("Initializing system \n");
 
   // Initialize struct values
-  sys.running = true;
-  sys.ret = 0;
+  sys->running = true;
+  sys->ret = 0;
 
   // Setup exit condition
   struct sigaction sys_run;
   if(DEBUG)  printf("  Setting system exit condition \n");
   memset( &sys_run, 0, sizeof(sys_run) );
   sys_run.sa_handler = &sys_exit;
-  sys.ret = sigaction( SIGINT, &sys_run, NULL );
-  sys_err( sys.ret == -1, "Error (sys_init): Function 'sigaction' failed." );
+  sys->ret = sigaction( SIGINT, &sys_run, NULL );
+  if( sys->ret == -1 )
+    printf( "Error (sys_init): Function 'sigaction' failed. \n" );
 
   // Establish realtime priority
   struct sched_param sp;
   printf("  Establishing realtime priority \n");
   sp.sched_priority = 98;
-  sys.ret = sched_setscheduler( 0, SCHED_FIFO, &sp );
-  sys_err( sys.ret == -1, "Error (sys_init): Function 'sched_setscheduler' failed." );
+  sys->ret = sched_setscheduler( 0, SCHED_FIFO, &sp );
+  if( sys->ret == -1 )
+    printf( "Error (sys_init): Function 'sched_setscheduler' failed. \n" );
 
   // Initialize subsystems
-  imu_init();
+  //imu_init();
   //pru_init();
   //ctrl_init();
-  thr_init();
+  //thr_init();
   usleep(250000);
-  sys_mem();
+  sys_mem(sys);
   usleep(250000);
-  log_init();  //~~~ DEBUGGING ~~~//
+  //log_init();  //~~~ DEBUGGING ~~~//
 
   return;
 }
@@ -63,15 +56,16 @@ void sys_debug ( void )  {
 
   // Loop counter
   static ushort i = 0;
+  printf("%6d    ", i );  fflush(stdout);  i++;
 
   // Datalog file
   printf("\r");  fflush(stdout);
-  if (datalog.enabled)  printf(" %s: ", datalog.dir );
-  else                  printf(" - - - -  ");
+  //if (datalog.enabled)  printf(" %s: ", datalog.dir );
+  //else                  printf(" - - - -  ");
 
   // Time values
-  float timestamp = (float)( thr_debug.start_sec + ( thr_debug.start_usec / 1000000.0f ) - datalog.offset );
-  printf("%6.1f    ", timestamp );  fflush(stdout);
+  //float timestamp = (float)( thr_debug.start_sec + ( thr_debug.start_usec / 1000000.0f ) ); //- datalog.offset );
+  //printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // System Input/Output values
   //pthread_mutex_lock(&mutex_sysio);
@@ -80,9 +74,9 @@ void sys_debug ( void )  {
   //pthread_mutex_unlock(&mutex_sysio);
 
   // Raw sensor values
-  for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawGyr[i] );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawAcc[i] );  printf("   ");
-  for ( i=0; i<3; i++ )  printf("%04d ", imu1.rawMag[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawGyr[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawAcc[i] );  printf("   ");
+  //for ( i=0; i<3; i++ )  printf("%04d ", imu1.rawMag[i] );  printf("   ");
 
   // Filtered sensor values
   //for ( i=0; i<3; i++ )  printf("%09.2f ", imu1.avgGyr[i] );  printf("   ");
@@ -123,26 +117,27 @@ void sys_debug ( void )  {
 //  sys_exit
 //  Code that runs prior to exiting the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_exit ( void )  {
+void sys_exit (  )  {
 
   // Begin exit sequence
   usleep(200000);
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
-  sys.running = false;
+  //sys->running = false;
 
   // Exit sub-routines
   //loop_exit();
   //log_exit();  //~~~ DEBUGGING ~~~//
-  thr_exit();
-  imu_exit();
+  //thr_exit();
+  //imu_exit();
   //pru_exit();
   //ctrl_exit();
 
   // Terminate program
   led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
   if(DEBUG)  printf("Program complete \n");
-  sys.ret = sigaction( SIGINT, &sys_signal, NULL );
-  sys_err( sys.ret == -1, "Error (sys_exit): Function 'sigaction' failed." );
+  int ret = sigaction( SIGINT, &sys_signal, NULL );
+  if( ret == -1 )
+    printf( "Error (sys_exit): Function 'sigaction' failed." );
   kill( 0, SIGINT );
 
   return;
@@ -153,15 +148,16 @@ void sys_exit ( void )  {
 //  sys_mem
 //  Reserves a block of memory exclusively for the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_mem ( void )  {
+void sys_mem ( sys_struct *sys )  {
 
   // Local variables
   int i;
   char *buffer;   
 
   // Lock current and future memroy
-  sys.ret = mlockall( MCL_CURRENT | MCL_FUTURE );
-  sys_err( sys.ret, "Error (sys_init): Failed to lock memory." );
+  sys->ret = mlockall( MCL_CURRENT | MCL_FUTURE );
+  if( sys->ret )
+    printf( "Error (sys_init): Failed to lock memory." );
   mallopt( M_TRIM_THRESHOLD, -1 );
   mallopt( M_MMAP_MAX, 0 );
 

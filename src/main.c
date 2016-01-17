@@ -12,10 +12,14 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int main ( void )  {
   if(DEBUG)  printf("\n--- Begin BlackBox program ---\n");
-  led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
-  sys_init();
+  led_on(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
+
+  sys_struct sys;
+
+  sys_init(&sys);
+
   while(sys.running)  usleep(100000); 
-  sys_exit();
+
   return 0;
 }
 

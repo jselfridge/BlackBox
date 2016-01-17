@@ -1,8 +1,6 @@
-thread.c:13:6:thr_init	72	static
-thread.c:125:6:thr_periodic	40	static
-thread.c:380:7:thread_debug	48	static
-thread.c:272:7:thread_imu	40	static
-thread.c:160:6:thr_pause	16	static
-thread.c:180:6:thr_start	16	static
-thread.c:198:6:thr_finish	24	static
-thread.c:223:6:thr_exit	16	static
+thread.c:13:6:thr_init	48	static
+thread.c:125:6:thr_periodic	0	static
+thread.c:160:6:thr_pause	0	static
+thread.c:180:6:thr_start	0	static
+thread.c:198:6:thr_finish	0	static
+thread.c:223:6:thr_exit	0	static
