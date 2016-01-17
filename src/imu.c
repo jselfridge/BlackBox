@@ -222,7 +222,7 @@ void imu_data ( imu_struct* imu )  {
   float g, a, m;
   bool mag;
 
-  //  short histGyro[3][GYRO_HIST], histAcc[3][ACC_HIST], histMag[3][MAG_HIST];
+  // Try using local variables for history...
 
   // Increment counter
   mag = false;
@@ -296,17 +296,6 @@ void imu_data ( imu_struct* imu )  {
     imu->avgMag[i] = m;
   }
   }
-
-
-
-
-  // Trying something new
-  //unsigned char data[12];
-  //i2c_read( 0x68, 0x3A, 1, data);
-  //if ( data[0] & 0x10 ) {
-    //mpu_reset_fifo();
-    //printf("overflow \n");
-  //}
 
   // Lock 'calibrated' variables
   //pthread_mutex_lock(&mutex_imu);
@@ -531,12 +520,10 @@ void imu_fusion ( imu_struct* imu )  {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_exit
-//  Terminate an MPU sensor.
+//  Terminate an IMU device.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_exit ( void )  {
   if(DEBUG)  printf("Closing IMU \n");
-  //sys.ret = mpu_set_dmp_state(0);
-  //sys_err( sys.ret, "Error (imu_exit): 'mpu_set_dmp_state' failed." );
   return;
 }
 

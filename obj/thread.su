@@ -4,5 +4,5 @@ thread.c:160:6:thr_pause	24	static
 thread.c:180:6:thr_start	24	static
 thread.c:198:6:thr_finish	24	static
 thread.c:223:6:thr_exit	16	static
-thread.c:272:7:thread_imu	4	static
-thread.c:381:7:thread_debug	8	static
+thread.c:272:7:thread_imu	8	static
+thread.c:380:7:thread_debug	8	static

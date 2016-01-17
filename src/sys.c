@@ -42,7 +42,7 @@ void sys_init ( void )  {
   sys_err( sys.ret == -1, "Error (sys_init): Function 'sched_setscheduler' failed." );
 
   // Initialize subsystems
-  //imu_init();
+  imu_init();
   //pru_init();
   //ctrl_init();
   //log_init();  //~~~ DEBUGGING ~~~//
@@ -79,9 +79,9 @@ void sys_debug ( void )  {
   //pthread_mutex_unlock(&mutex_sysio);
 
   // Raw sensor values
-  //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawGyr[i] );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawAcc[i] );  printf("   ");
-  //for ( i=0; i<3; i++ )  printf("%04d ", imu1.rawMag[i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawGyr[i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%06d ", imu1.rawAcc[i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%04d ", imu1.rawMag[i] );  printf("   ");
 
   // Filtered sensor values
   //for ( i=0; i<3; i++ )  printf("%09.2f ", imu1.avgGyr[i] );  printf("   ");
@@ -133,7 +133,7 @@ void sys_exit ( void )  {
   //loop_exit();
   //log_exit();  //~~~ DEBUGGING ~~~//
   thr_exit();
-  //imu_exit();
+  imu_exit();
   //pru_exit();
   //ctrl_exit();
 

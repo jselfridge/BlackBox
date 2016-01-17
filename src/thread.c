@@ -18,8 +18,8 @@ void thr_init ( void )  {
   struct sched_param param;
 
   // IMU thread
-  //thr_imu.priority     =  90;
-  //thr_imu.period       =  1000000 / HZ_IMU;
+  thr_imu.priority     =  90;
+  thr_imu.period       =  1000000 / HZ_IMU;
 
   // Data fusion thread
   //thr_fusion.priority  =  80;
@@ -65,17 +65,17 @@ void thr_init ( void )  {
   sys.ret = pthread_attr_setschedpolicy( &attr, SCHED_FIFO );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'FIFO' attribute." );
 
-  // Test scheduler value
+  // Determine priority range
   if(DEBUG)  printf("  Priority range: %d to %d \n", \
     sched_get_priority_min(SCHED_FIFO), \
     sched_get_priority_max(SCHED_FIFO) );
 
-  /*  // Initialize 'imu' thread
+  // Initialize 'imu' thread
   param.sched_priority = thr_imu.priority;
   sys.ret = pthread_attr_setschedparam( &attr, &param );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'imu' priority." );
   sys.ret = pthread_create ( &thr_imu.id, &attr, thread_imu, (void *)NULL );
-  sys_err( sys.ret, "Error (thread_init): Failed to create 'imu' thread." ); */
+  sys_err( sys.ret, "Error (thread_init): Failed to create 'imu' thread." );
 
   /*  // Initialize 'fusion' thread
   param.sched_priority = thr_fusion.priority;
@@ -224,10 +224,10 @@ void thr_exit ( void )  {
   if(DEBUG)  printf("Closing threads  \n");
   void *status;
 
-  /*  // Exit 'imu' thread
+  // Exit 'imu' thread
   sys.ret = pthread_join ( thr_imu.id, &status );
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'imu' thread." );
-  if(DEBUG)  printf( "  Status %ld for 'imu' thread \n", (long)status ); */
+  if(DEBUG)  printf( "  Status %ld for 'imu' thread \n", (long)status );
 
   /*  // Exit 'fusion' thread
   sys.ret = pthread_join ( thr_fusion.id, &status );
@@ -270,19 +270,18 @@ void thr_exit ( void )  {
 //  Run the 'imu' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *thread_imu ( )  {
-  /*  if(DEBUG)  printf("  Running 'imu' thread \n");
+  if(DEBUG)  printf("  Running 'imu' thread \n");
   thr_periodic (&thr_imu);
   while (sys.running) {
     thr_start(&thr_imu);
     imu_data(&imu1);
     thr_finish(&thr_imu);
-    log_write(LOG_GYR);
-    log_write(LOG_ACC);
-    if (!imu1.count)  log_write(LOG_MAG);
+    //log_write(LOG_GYR);
+    //log_write(LOG_ACC);
+    //if (!imu1.count)  log_write(LOG_MAG);
     thr_pause(&thr_imu);
   }
   pthread_exit(NULL);
-  */  
   return NULL;
 }
 
