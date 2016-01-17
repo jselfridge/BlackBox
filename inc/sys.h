@@ -23,16 +23,16 @@ typedef struct sys_struct {
 sys_struct sys;
 
 
-// Global variables  { Move into struct? }
+// Global variables
 struct sigaction sys_signal;
 
 
 // Function declarations  { Add void? }
 void sys_err    ( bool cond, char* msg );
-void sys_init   (  );
-//void sys_debug  (  );
-void sys_exit   (  );
-//void sys_memory ( int size );
+void sys_init   ( void );
+void sys_debug  ( void );
+void sys_exit   ();
+void sys_mem    ( void );
 
 
 #endif

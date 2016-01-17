@@ -34,21 +34,12 @@ void sys_init ( void )  {
   sys.ret = sigaction( SIGINT, &sys_run, NULL );
   sys_err( sys.ret == -1, "Error (sys_init): Function 'sigaction' failed." );
 
-  /*
   // Establish realtime priority
   struct sched_param sp;
   printf("  Establishing realtime priority \n");
-  sp.sched_priority = 99;
+  sp.sched_priority = 90;
   sys.ret = sched_setscheduler( 0, SCHED_FIFO, &sp );
   sys_err( sys.ret == -1, "Error (sys_init): Function 'sched_setscheduler' failed." );
-
-  // Lock and reserve memory
-  if(DEBUG)  printf("  Locking and reserving memory \n");
-  sys.ret = mlockall( MCL_CURRENT | MCL_FUTURE );
-  sys_err( sys.ret, "Error (sys_init): Failed to lock memory." );
-  mallopt( M_TRIM_THRESHOLD, -1 );
-  mallopt( M_MMAP_MAX, 0 );
-  sys_memory(SYS_STACK);
 
   // Initialize subsystems
   //imu_init();
@@ -56,9 +47,8 @@ void sys_init ( void )  {
   //ctrl_init();
   //log_init();  //~~~ DEBUGGING ~~~//
   //thr_init();
+  sys_mem();
 
-  loop_init();
-  */
   return;
 }
 
@@ -67,11 +57,9 @@ void sys_init ( void )  {
 //  sys_debug
 //  Prints system debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void sys_debug (  )  {
+void sys_debug ( void )  {
 
-  //
-  loop_start(&loop_debug);
-
+  /*
   // Loop counter
   static ushort i = 0;
 
@@ -128,16 +116,16 @@ void sys_init ( void )  {
 
   //
   loop_finish(&loop_debug);
-
+  */
   return;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_exit
 //  Code that runs prior to exiting the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_exit (  )  {
+void sys_exit ( void )  {
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
 
   // Set exit flag
@@ -164,17 +152,29 @@ void sys_exit (  )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_memory
+//  sys_mem
 //  Reserves a block of memory exclusively for the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void sys_memory ( int size )  {
+void sys_mem ( void )  {
+  if(DEBUG)  printf("  Locking and reserving memory \n");
+
+  // Local variables
   int i;
   char *buffer;   
-  buffer = malloc(size);
-  for ( i=0; i<size; i += sysconf(_SC_PAGESIZE) )  {  buffer[i] = 0;  }
+
+  // Lock current and future memroy
+  sys.ret = mlockall( MCL_CURRENT | MCL_FUTURE );
+  sys_err( sys.ret, "Error (sys_init): Failed to lock memory." );
+  mallopt( M_TRIM_THRESHOLD, -1 );
+  mallopt( M_MMAP_MAX, 0 );
+
+  // Prefault the memory stack
+  buffer = malloc(SYS_STACK);
+  for ( i=0; i<SYS_STACK; i += sysconf(_SC_PAGESIZE) )  {  buffer[i] = 0;  }
   free(buffer);
+
   return;
 }
-*/
+
 
 
