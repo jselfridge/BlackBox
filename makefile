@@ -7,7 +7,7 @@
 
 EXEC   = RunBlackBox
 CC     = gcc
-CFLAGS = -Wall -g -c -fstack-check -fstack-usage
+CFLAGS = -Wall -g -c -fstack-check -fstack-usage -O3
 
 LIB    = -lm -lrt -lpthread -lprussdrv
 #LDIR   = ../Libraries/lib/
@@ -28,7 +28,7 @@ MPU    = mpu/inv_glue.o \
 all : $(EXEC)
 
 $(EXEC) : $(OBJ) $(BIN)
-	$(CC) -o $@ $(OBJ) $(LIB) $(MPU) # -L$(LDIR)
+	$(CC) -O3 -o $@ $(OBJ) $(LIB) $(MPU) # -L$(LDIR)
 
 obj/%.o : src/%.c inc/%.h
 	$(CC) $(CFLAGS) -Iinc -Impu -o $@ $<  # -I$(IDIR)

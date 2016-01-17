@@ -218,8 +218,8 @@ void imu_setic ( imu_struct* imu )  {
 void imu_data ( imu_struct* imu )  {
 
   // Local variables
-  ushort i, j, k;
-  float g, a; //, m;
+  //ushort i, j, k;
+  //float g, a; //, m;
   //bool mag;
 
   // Try using local variables for history...
@@ -233,7 +233,7 @@ void imu_data ( imu_struct* imu )  {
     imu->count = 0;
   }
   */
-
+  /*
   // Sample IMU
   sys.ret = mpu_get_gyro_reg( imu->rawGyr, NULL );
   sys_err( sys.ret, "Error (imu_mems): 'mpu_get_gyro_reg' failed." );
@@ -243,7 +243,7 @@ void imu_data ( imu_struct* imu )  {
   //sys.ret = mpu_get_compass_reg( imu->rawMag, NULL );
   //sys_err( sys.ret, "Error (imu_mems): 'mpu_get_compass_reg' failed." );
   //}
-
+  */
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Gyroscope
@@ -252,7 +252,7 @@ void imu_data ( imu_struct* imu )  {
   //imu->rawGyr[i] = imu->rawGyr[i] + 2; 
   //if ( imu->rawGyr[i] > 10 )  imu->rawGyr[i] = -10;
   //}
-
+  /*
   k = GYR_HIST;
   for ( i=0; i<3; i++ ) {
     for ( j=1; j<k; j++ )  imu->histGyr[i][j-1] = imu->histGyr[i][j];
@@ -261,7 +261,7 @@ void imu_data ( imu_struct* imu )  {
     for ( j=1; j<k; j++ )  g = g + imu->gain_gyr * (float) ( imu->histGyr[i][j] - g );
     imu->avgGyr[i] = g;
   }
-
+  */
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Accelerometer
@@ -270,7 +270,7 @@ void imu_data ( imu_struct* imu )  {
   //imu->rawAcc[i] = imu->rawAcc[i] + 5; 
   //if ( imu->rawAcc[i] > 50 )  imu->rawAcc[i] = -50;
   //}
-
+  /*
   k = ACC_HIST;
   for ( i=0; i<3; i++ ) {
     for ( j=1; j<k; j++ )  imu->histAcc[i][j-1] = imu->histAcc[i][j];
@@ -279,7 +279,7 @@ void imu_data ( imu_struct* imu )  {
     for ( j=1; j<k; j++ )  a = a + imu->gain_acc * (float) ( imu->histAcc[i][j] - a );
     imu->avgAcc[i] = a;
   }
-
+  */
   /*
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Magnetometer
@@ -303,7 +303,7 @@ void imu_data ( imu_struct* imu )  {
 
   // Lock 'calibrated' variables
   //pthread_mutex_lock(&mutex_imu);
-
+  /*
   // Scale and orient gyroscope readings
   imu->calGyr[X] =  imu->avgGyr[Y] * GYR_SCALE;
   imu->calGyr[Y] =  imu->avgGyr[X] * GYR_SCALE;
@@ -313,7 +313,7 @@ void imu_data ( imu_struct* imu )  {
   imu->calAcc[X] = ( -imu->avgAcc[Y] - imu->aoffset[Y] ) / (double)imu->arange[Y];
   imu->calAcc[Y] = ( -imu->avgAcc[X] - imu->aoffset[X] ) / (double)imu->arange[X];
   imu->calAcc[Z] = (  imu->avgAcc[Z] - imu->aoffset[Z] ) / (double)imu->arange[Z];
-
+  */
   /*
   // Shift and orient magnetometer readings
   if (mag) {
