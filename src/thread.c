@@ -18,7 +18,7 @@ void thr_init ( void )  {
   struct sched_param param;
 
   // IMU thread
-  thr_imu.priority     =  90;
+  thr_imu.priority     =  98;
   thr_imu.period       =  1000000 / HZ_IMU;
 
   // Data fusion thread

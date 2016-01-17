@@ -37,7 +37,7 @@ void sys_init ( void )  {
   // Establish realtime priority
   struct sched_param sp;
   printf("  Establishing realtime priority \n");
-  sp.sched_priority = 90;
+  sp.sched_priority = 98;
   sys.ret = sched_setscheduler( 0, SCHED_FIFO, &sp );
   sys_err( sys.ret == -1, "Error (sys_init): Function 'sched_setscheduler' failed." );
 
