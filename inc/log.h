@@ -28,7 +28,8 @@ typedef struct {
   FILE* mag;
   FILE* fus;
   FILE* sio;
-  FILE* ctrl;
+  FILE* stab;
+  FILE* nav;
   char* dir;
   char* path;
   bool  open;

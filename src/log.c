@@ -49,7 +49,7 @@ void log_open ( void )  {
     if      ( i<10   )  sprintf( datalog.dir, "Log_00%d", i );
     else if ( i<100  )  sprintf( datalog.dir, "Log_0%d",  i );
     else if ( i<1000 )  sprintf( datalog.dir, "Log_%d",   i );
-    else  sys_err( true, "Error (log_init): Exceeded maximum number of log directories." );
+    else  sys_err( true, "Error (log_open): Exceeded maximum number of log directories." );
     sprintf( file, "./log/%s/notes.txt", datalog.dir );
     if ( access( file , F_OK ) == -1 )  break;
   }
@@ -62,7 +62,7 @@ void log_open ( void )  {
   // Create notes file
   sprintf( file, "%snotes.txt", datalog.path );
   datalog.note = fopen( file, "w" );
-  sys_err( datalog.note == NULL, "Error (log_init): Cannot open 'note' file. \n" );
+  sys_err( datalog.note == NULL, "Error (log_open): Cannot open 'note' file. \n" );
   fprintf( datalog.note, "%s \n", datalog.dir );
   fprintf( datalog.note, "Add some more content... \n");
   fprintf( datalog.note, "About the system parameters... ");
@@ -71,7 +71,7 @@ void log_open ( void )  {
   // Create gyroscope datalog file
   sprintf( file, "%sgyr.txt", datalog.path );
   datalog.gyr = fopen( file, "w" );
-  sys_err( datalog.gyr == NULL, "Error (log_init): Cannot open 'gyro' file. \n" );
+  sys_err( datalog.gyr == NULL, "Error (log_open): Cannot open 'gyro' file. \n" );
   fprintf( datalog.gyr, 
     " Gtime,       Gdur,  \
     Grx1,   Gry1,   Grz1,  \
@@ -81,7 +81,7 @@ void log_open ( void )  {
   // Create accelerometer datalog file
   sprintf( file, "%sacc.txt", datalog.path );
   datalog.acc = fopen( file, "w" );
-  sys_err( datalog.acc == NULL, "Error (log_init): Cannot open 'acc' file. \n" );
+  sys_err( datalog.acc == NULL, "Error (log_open): Cannot open 'acc' file. \n" );
   fprintf( datalog.acc, 
     " Atime,       Adur,  \
     Arx1,   Ary1,   Arz1,  \
@@ -91,7 +91,7 @@ void log_open ( void )  {
   // Create magnetometer datalog file
   sprintf( file, "%smag.txt", datalog.path );
   datalog.mag = fopen( file, "w" );
-  sys_err( datalog.mag == NULL, "Error (log_init): Cannot open 'mag' file. \n" );
+  sys_err( datalog.mag == NULL, "Error (log_open): Cannot open 'mag' file. \n" );
   fprintf( datalog.mag, 
     " Mtime,       Mdur,  \
     Mrx1, Mry1, Mrz1,\
@@ -101,7 +101,7 @@ void log_open ( void )  {
   /*  // Create data fusion datalog file
   sprintf( file, "%sfusion.txt", datalog.path );
   datalog.fusion = fopen( file, "w" );
-  sys_err( datalog.fusion == NULL, "Error (log_init): Cannot open 'fusion' file. \n" );
+  sys_err( datalog.fusion == NULL, "Error (log_open): Cannot open 'fusion' file. \n" );
   fprintf( datalog.fusion, 
     " Ftime,       Fdur,  \
     Qw1,     Qx1,     Qy1,     Qz1,    \
@@ -111,7 +111,7 @@ void log_open ( void )  {
   /*  // Create system input/output datalog file
   sprintf( file, "%ssysio.txt", datalog.path );
   datalog.sysio = fopen( file, "w" );
-  sys_err( datalog.sysio == NULL, "Error (log_init): Cannot open 'sysio' file. \n" );
+  sys_err( datalog.sysio == NULL, "Error (log_open): Cannot open 'sysio' file. \n" );
   fprintf( datalog.sysio, 
     " Stime,       Sdur,  \
     I1,   I2,   I3,   I4,   I5,   I6,   I7,   I8,   I9,   I0,  \
@@ -120,7 +120,7 @@ void log_open ( void )  {
   /*  // Create controller datalog file
   sprintf( file, "%sctrl.txt", datalog.path );
   datalog.ctrl = fopen( file, "w" );
-  sys_err( datalog.ctrl == NULL, "Error (log_init): Cannot open 'ctrl' file. \n" );
+  sys_err( datalog.ctrl == NULL, "Error (log_open): Cannot open 'ctrl' file. \n" );
   fprintf( datalog.ctrl, 
     " Ctime,       Cdur,  \
     N1,     N2,     N3,     N4,    \

@@ -45,10 +45,11 @@ void sys_init ( void )  {
   imu_init();
   //pru_init();
   //ctrl_init();
-  //log_init();  //~~~ DEBUGGING ~~~//
   thr_init();
-  //usleep(250000);
-  //sys_mem();
+  usleep(250000);
+  sys_mem();
+  usleep(250000);
+  log_init();  //~~~ DEBUGGING ~~~//
 
   return;
 }
@@ -65,11 +66,11 @@ void sys_debug ( void )  {
 
   // Datalog file
   printf("\r");  fflush(stdout);
-  //if (datalog.enabled)  printf(" %s: ", datalog.dir );
-  //else                  printf(" - - - -  ");
+  if (datalog.enabled)  printf(" %s: ", datalog.dir );
+  else                  printf(" - - - -  ");
 
   // Time values
-  float timestamp = (float)( thr_debug.start_sec + ( thr_debug.start_usec / 1000000.0f ) ); // - datalog.offset );
+  float timestamp = (float)( thr_debug.start_sec + ( thr_debug.start_usec / 1000000.0f ) - datalog.offset );
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // System Input/Output values
@@ -153,7 +154,6 @@ void sys_exit ( void )  {
 //  Reserves a block of memory exclusively for the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_mem ( void )  {
-  if(DEBUG)  printf("  Locking and reserving memory \n");
 
   // Local variables
   int i;

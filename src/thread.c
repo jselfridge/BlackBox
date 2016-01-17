@@ -276,8 +276,8 @@ void *thread_imu ( )  {
     thr_start(&thr_imu);
     imu_data(&imu1);
     thr_finish(&thr_imu);
-    //log_write(LOG_GYR);
-    //log_write(LOG_ACC);
+    log_write(LOG_GYR);
+    log_write(LOG_ACC);
     //if (!imu1.count)  log_write(LOG_MAG);
     thr_pause(&thr_imu);
   }
