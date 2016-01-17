@@ -94,7 +94,7 @@ typedef struct {
   uint    stickHold;
   bool    motorsArmed;
 } ctrl_struct;
-ctrl_struct ctrl;
+//ctrl_struct ctrl;
 
 
 // CTRL functions

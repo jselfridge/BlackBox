@@ -79,7 +79,7 @@ typedef struct {
   double  fx;
   double  fz;
 } imu_struct;
-imu_struct imu1;
+//imu_struct imu1;
 //imu_struct imu2;
 
 

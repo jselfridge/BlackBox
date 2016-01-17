@@ -36,7 +36,7 @@ typedef struct {
   bool  enabled;
   long  offset;
 } log_struct;
-log_struct datalog; 
+//log_struct datalog; 
 
 
 // Log functions

@@ -20,7 +20,7 @@ typedef struct sys_struct {
   int   input[10];
   int   output[10];
 } sys_struct;
-sys_struct sys;
+//sys_struct sys;
 
 
 // Global variables

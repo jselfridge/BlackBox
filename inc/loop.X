@@ -13,7 +13,7 @@
 //#define HZ_ATT     100
 //#define HZ_CTRL     50
 //#define HZ_TELEM    20
-#define HZ_DEBUG    10
+//#define HZ_DEBUG    10
 
 
 // Loop structure
@@ -39,7 +39,7 @@ typedef struct loop_struct {
 //loop_struct thr_sysio;
 //loop_struct thr_ctrl;
 //loop_struct thr_telem;
-loop_struct loop_debug;
+//loop_struct loop_debug;
 
 /*
 // Mutex variables
@@ -49,12 +49,12 @@ loop_struct loop_debug;
 */
 
 // Loop functions
-void  loop_init      ( void );
+//void  loop_init      ( void );
 //void  thr_periodic  ( thread_struct *thr );
 //void  thr_pause     ( thread_struct *thr );
-void  loop_start     ( loop_struct* loop );
-void  loop_finish    ( loop_struct* loop );
-void  loop_exit      ( void );
+//void  loop_start     ( loop_struct* loop );
+//void  loop_finish    ( loop_struct* loop );
+//void  loop_exit      ( void );
 
 
 // Timer handlers
@@ -63,7 +63,7 @@ void  loop_exit      ( void );
 //void *thread_sysio  ( );
 //void *thread_ctrl   ( );
 //void *thread_telem  ( );
-void* timer_debug  ( );
+//void* timer_debug  ( );
 
 
 #endif
