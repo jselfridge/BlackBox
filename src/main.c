@@ -11,17 +11,42 @@
 //  Primary code that runs the UAV avionics.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int main ( void )  {
+
+  // Declare structures
+  //blah;
+  //blah;
+
+  // Initialize subsystems
   if(DEBUG)  printf("\n--- Begin BlackBox program ---\n");
-  led_on(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
+  led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
+  sys_init();
+  //imu_init();
+  //pru_init();
+  //ctrl_init();
+  //thr_init();
+  //log_init();  //~~~ DEBUGGING ~~~//   
 
-  sys_struct sys;
+  // Keep the program running
+  while(running)  usleep(100000);
 
-  sys_init(&sys);
-
-  while(sys.running)  usleep(100000); 
+  // Exit subsystems
+  if(DEBUG)  printf("\n--- Exit BlackBox program ---\n");
+  led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
+  sys_exit();
+  //loop_exit();
+  //log_exit();  //~~~ DEBUGGING ~~~//
+  //thr_exit();
+  //imu_exit();
+  //pru_exit();
+  //ctrl_exit();
 
   return 0;
 }
+
+
+
+
+
 
 
 

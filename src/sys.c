@@ -10,39 +10,39 @@
 //  sys_init
 //  Initializes the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_init ( sys_struct* sys )  {
+void sys_init (  )  {
   if(DEBUG)  printf("Initializing system \n");
-
-  // Initialize struct values
-  sys->running = true;
-  sys->ret = 0;
+  running = true;
 
   // Setup exit condition
   struct sigaction sys_run;
   if(DEBUG)  printf("  Setting system exit condition \n");
   memset( &sys_run, 0, sizeof(sys_run) );
-  sys_run.sa_handler = &sys_exit;
-  sys->ret = sigaction( SIGINT, &sys_run, NULL );
-  if( sys->ret == -1 )
+  sys_run.sa_handler = &sys_flag;
+  if( sigaction( SIGINT, &sys_run, NULL ) == -1 )
     printf( "Error (sys_init): Function 'sigaction' failed. \n" );
 
   // Establish realtime priority
   struct sched_param sp;
   printf("  Establishing realtime priority \n");
   sp.sched_priority = 98;
-  sys->ret = sched_setscheduler( 0, SCHED_FIFO, &sp );
-  if( sys->ret == -1 )
+  if( sched_setscheduler( 0, SCHED_FIFO, &sp ) == -1 )
     printf( "Error (sys_init): Function 'sched_setscheduler' failed. \n" );
 
-  // Initialize subsystems
-  //imu_init();
-  //pru_init();
-  //ctrl_init();
-  //thr_init();
-  usleep(250000);
-  sys_mem(sys);
-  usleep(250000);
-  //log_init();  //~~~ DEBUGGING ~~~//
+  // Lock current and future memroy
+  printf("  Locking current and future memory \n ");
+  if( mlockall( MCL_CURRENT | MCL_FUTURE ) )
+    printf( "Error (sys_init): Failed to lock memory." );
+  mallopt( M_TRIM_THRESHOLD, -1 );
+  mallopt( M_MMAP_MAX, 0 );
+
+  // Prefault the memory stack
+  ushort i; 
+  char *buffer;
+  printf("  Prefaulting memory stack \n ");
+  buffer = malloc(SYS_STACK);
+  for ( i=0; i<SYS_STACK; i += sysconf(_SC_PAGESIZE) )  {  buffer[i] = 0;  }
+  free(buffer);
 
   return;
 }
@@ -52,8 +52,8 @@ void sys_init ( sys_struct* sys )  {
 //  sys_debug
 //  Prints system debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_debug ( void )  {
-
+void sys_debug (  )  {
+/*
   // Loop counter
   static ushort i = 0;
   printf("%6d    ", i );  fflush(stdout);  i++;
@@ -108,7 +108,17 @@ void sys_debug ( void )  {
   // Finish print loop
   printf("    ");
   fflush(stdout);
+*/
+  return;
+}
 
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  sys_flag
+//  Change boolean flag to signal the end of the program.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void sys_flag (  )  {
+  running = false;
   return;
 }
 
@@ -118,54 +128,10 @@ void sys_debug ( void )  {
 //  Code that runs prior to exiting the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_exit (  )  {
-
-  // Begin exit sequence
-  usleep(200000);
-  if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
-  //sys->running = false;
-
-  // Exit sub-routines
-  //loop_exit();
-  //log_exit();  //~~~ DEBUGGING ~~~//
-  //thr_exit();
-  //imu_exit();
-  //pru_exit();
-  //ctrl_exit();
-
-  // Terminate program
-  led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
   if(DEBUG)  printf("Program complete \n");
-  int ret = sigaction( SIGINT, &sys_signal, NULL );
-  if( ret == -1 )
+  if( sigaction( SIGINT, &sys_signal, NULL ) == -1 )
     printf( "Error (sys_exit): Function 'sigaction' failed." );
   kill( 0, SIGINT );
-
-  return;
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_mem
-//  Reserves a block of memory exclusively for the system.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_mem ( sys_struct *sys )  {
-
-  // Local variables
-  int i;
-  char *buffer;   
-
-  // Lock current and future memroy
-  sys->ret = mlockall( MCL_CURRENT | MCL_FUTURE );
-  if( sys->ret )
-    printf( "Error (sys_init): Failed to lock memory." );
-  mallopt( M_TRIM_THRESHOLD, -1 );
-  mallopt( M_MMAP_MAX, 0 );
-
-  // Prefault the memory stack
-  buffer = malloc(SYS_STACK);
-  for ( i=0; i<SYS_STACK; i += sysconf(_SC_PAGESIZE) )  {  buffer[i] = 0;  }
-  free(buffer);
-
   return;
 }
 
