@@ -37,7 +37,7 @@
 //#include <pru.h>
 #include <sys.h>
 //#include <telem.h>
-//#include <thread.h>
+#include <thread.h>
 
 
 

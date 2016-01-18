@@ -7,113 +7,117 @@
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thr_init
-//  Initializes the various threads.
+//  thr_attr
+//  Sets the thread attributes.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thr_init ( void )  {
-  if(DEBUG)  printf("Initializing threads \n");
+void thr_attr ( pthread_attr_t* attr )  {
+  if(DEBUG)  printf("  Setting thread attributes \n");
+
+  // Initialize attribute variable
+  if( pthread_attr_init(attr) )
+    printf( "Error (thr_attr): Failed to initialize thread attribute. \n" );
+
+  // Set stack size of threads
+  if ( pthread_attr_setstacksize( attr, PTHREAD_STACK_MIN + (100*1024) ) )
+    printf( "Error (thr_attr): Failed to set 'stack size' attribute. \n" );
+
+  // Make threads joinable
+  if ( pthread_attr_setdetachstate( attr, PTHREAD_CREATE_JOINABLE ) )
+    printf( "Error (thr_attr): Failed to set 'joinable' attribute. \n" );
+
+  // Specify inherit schedule
+  if ( pthread_attr_setinheritsched( attr, PTHREAD_EXPLICIT_SCHED ) )
+    printf( "Error (thr_attr): Failed to set 'explicit' attribute. \n" );
+
+  // Set scheduler policy
+  if ( pthread_attr_setschedpolicy( attr, SCHED_FIFO ) )
+    printf( "Error (thr_attr): Failed to set 'FIFO' attribute." );
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  thr_init
+//  Initializes a new thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void thr_init ( thread_struct* thr, pthread_attr_t* attr, void* fcn )  {
+  if(DEBUG)  printf( "  Running '%s' \n", thr->name );
+  struct sched_param param;
+  param.sched_priority = thr->priority;
+  if( pthread_attr_setschedparam( attr, &param ) )
+    printf( "Error (thr_init): Failed to set '%s' priority. \n", thr->name );
+  if( pthread_create ( &thr->id, attr, fcn, (void *)NULL ) )
+    printf( "Error (thr_init): Failed to create '%s' thread. \n", thr->name );
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  thr_blah
+//  
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void thr_blah ( void )  {
+  if(DEBUG)  printf("           Blah threads \n");
 
   // Local variables
-  pthread_attr_t attr;
   //struct sched_param param;
-
-  // IMU thread
-  //thr_imu.priority     =  98;
-  //thr_imu.period       =  1000000 / HZ_IMU;
-
-  // Data fusion thread
-  //thr_fusion.priority  =  80;
-  //thr_fusion.period    =  1000000 / FUSION_HZ;
-
-  // System input/output thread
-  //thr_sysio.priority  =  70;
-  //thr_sysio.period    =  1000000 / SYSIO_HZ;
-
-  // Controller thread
-  //thr_ctrl.priority =  60;
-  //thr_ctrl.period   =  1000000 / CTRL_HZ;
-
-  // Telemetry thread
-  //thr_telem.priority =  50;
-  //thr_telem.period   =  1000000 / TELEM_HZ;
-
-  // Debugging thread
-  //thr_debug.priority =  40;
-  //thr_debug.period   =  1000000 / HZ_DEBUG;
 
   // Mutex initialization
   //pthread_mutex_init( &mutex_imu,    NULL );
   //pthread_mutex_init( &mutex_fusion, NULL );
   //pthread_mutex_init( &mutex_sysio,  NULL );
 
-  // Initialize attribute variable
-  pthread_attr_init(&attr);
-
-  // Set stack size of threads
-  if ( pthread_attr_setstacksize( &attr, PTHREAD_STACK_MIN + (100*1024) ) )
-    printf( "Error (thread_init): Failed to set 'stack size' attribute. \n" );
-
-  // Make threads joinable
-  if ( pthread_attr_setdetachstate( &attr, PTHREAD_CREATE_JOINABLE ) )
-    printf( "Error (thread_init): Failed to set 'joinable' attribute. \n" );
-
-  // Specify inherit schedule
-  if ( pthread_attr_setinheritsched( &attr, PTHREAD_EXPLICIT_SCHED ) )
-    printf( "Error (thread_init): Failed to set 'explicit' attribute. \n" );
-
-  // Set scheduler policy
-  if ( pthread_attr_setschedpolicy( &attr, SCHED_FIFO ) )
-    printf( "Error (thread_init): Failed to set 'FIFO' attribute." );
-
+  /*
   // Determine priority range
   if(DEBUG)  printf("  Priority range: %d to %d \n", \
     sched_get_priority_min(SCHED_FIFO), \
     sched_get_priority_max(SCHED_FIFO) );
-
-  /*  // Initialize 'imu' thread
+  */
+  /*  // Create 'imu' thread
   param.sched_priority = thr_imu.priority;
   sys.ret = pthread_attr_setschedparam( &attr, &param );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'imu' priority." );
   sys.ret = pthread_create ( &thr_imu.id, &attr, thread_imu, (void *)NULL );
   sys_err( sys.ret, "Error (thread_init): Failed to create 'imu' thread." ); */
 
-  /*  // Initialize 'fusion' thread
+  /*  // Create 'fusion' thread
   param.sched_priority = thr_fusion.priority;
   sys.ret = pthread_attr_setschedparam( &attr, &param );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'fusion' priority." );
   sys.ret = pthread_create ( &thr_fusion.id, &attr, thread_fusion, (void *)NULL );
   sys_err( sys.ret, "Error (thread_init): Failed to create 'fusion' thread." ); */
 
-  /*  // Initialize 'sysio' thread
+  /*  // Create 'sysio' thread
   param.sched_priority = thr_sysio.priority;
   sys.ret = pthread_attr_setschedparam( &attr, &param );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'sysio' priority." );
   sys.ret = pthread_create ( &thr_sysio.id, &attr, thread_sysio, (void *)NULL );
   sys_err( sys.ret, "Error (thread_init): Failed to create 'sysio' thread." ); */
 
-  /*  // Initialize 'ctrl' thread
+  /*  // Create 'ctrl' thread
   param.sched_priority = thr_ctrl.priority;
   sys.ret = pthread_attr_setschedparam( &attr, &param );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'ctrl' priority." );
   sys.ret = pthread_create ( &thr_ctrl.id, &attr, thread_ctrl, (void *)NULL );
   sys_err( sys.ret, "Error (thread_init): Failed to create 'ctrl' thread." ); */
 
-  /*  // Initialize 'telem' thread
+  /*  // Create 'telem' thread
   param.sched_priority = thr_telem.priority;
   sys.ret = pthread_attr_setschedparam( &attr, &param );
   sys_err( sys.ret, "Error (thread_init): Failed to set 'telem' priority." );
   sys.ret = pthread_create ( &thr_telem.id, &attr, thread_telem, (void *)NULL );
   sys_err( sys.ret, "Error (thread_init): Failed to create 'telem' thread." ); */
-
-  /*  // Initialize 'debug' thread
+  /*
+  // Create 'debug' thread
   if(DEBUG) {
-  param.sched_priority = thr_debug.priority;
-  sys.ret = pthread_attr_setschedparam( &attr, &param );
-  sys_err( sys.ret, "Error (thread_init): Failed to set 'debug' priority." );
-  sys.ret = pthread_create ( &thr_debug.id, &attr, thread_debug, (void *)NULL );
-  sys_err( sys.ret, "Error (thread_init): Failed to create 'debug' thread." );
-  } */
-
+  param.sched_priority = PRIO_DEBUG;
+  if( pthread_attr_setschedparam( &attr, &param ) )
+    printf( "Error (thread_init): Failed to set 'debug' priority. \n" );
+  if( pthread_create ( &thr_debug.id, &attr, thread_debug, (void *)NULL ) )
+    printf( "Error (thread_init): Failed to create 'debug' thread. \n" );
+  }
+  */
   return;
 }
 
@@ -220,12 +224,24 @@ void thr_finish ( thread_struct *thr )  {
 //  thr_exit
 //  Cleanly exits the threads.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thr_exit ( void )  {
+void thr_exit ( thread_struct* thr )  {
+  void *status;
+  if( pthread_join ( thr->id, &status ) )
+    printf( "Error (thread_exit): Failed to exit '%s' thread. \n", thr->name );
+  if(DEBUG)  printf( "  Status %ld for '%s' \n", (long)status, thr->name );
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  thr_exit
+//  Cleanly exits the threads.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//void thr_exit ( void )  {
+  //if(DEBUG)  printf("Closing threads  \n");
+  //void *status;
 
   /*
-  if(DEBUG)  printf("Closing threads  \n");
-  void *status;
-
   // Exit 'imu' thread
   sys.ret = pthread_join ( thr_imu.id, &status );
   sys_err( sys.ret, "Error (thread_exit): Failed to exit 'imu' thread." );
@@ -258,21 +274,21 @@ void thr_exit ( void )  {
   printf( "  Status %ld for 'debug' thread \n", (long)status );
   }
   */
-  // Destroy mutex
-  //pthread_mutex_destroy(&mutex_imu);
-  //pthread_mutex_destroy(&mutex_fusion);
-  //pthread_mutex_destroy(&mutex_sysio);
+  //return;
+//}
 
-  return;
-}
+
+
+
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thread_imu
-//  Run the 'imu' thread.
+//  fcn_imu
+//  Function handler for the 'imu' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void *thread_imu ( )  {
-  if(DEBUG)  printf("  Running 'imu' thread \n");
+void* fcn_imu ( )  {
+  if(DEBUG)  printf("  Is that an IMU... or are you happy to see me?... \n");
+  /*
   thr_periodic (&thr_imu);
   while (sys.running) {
     thr_start(&thr_imu);
@@ -284,15 +300,16 @@ void thr_exit ( void )  {
     thr_pause(&thr_imu);
   }
   pthread_exit(NULL);
+  */
   return NULL;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thread_fusion
-//  Run the 'fusion' thread.
+//  fcn_fusion
+//  Function handler for  the 'fusion' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void *thread_fusion ( )  {
+/*void* fcn_fusion ( )  {
   if(DEBUG)  printf("  Running 'fusion' thread \n");
   usleep(500000);
   thr_periodic (&thr_fusion);
@@ -309,10 +326,10 @@ void thr_exit ( void )  {
 */
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thread_sysio
-//  Run the 'sysio' thread.
+//  fcn_sysio
+//  Function handler for the 'sysio' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void *thread_sysio ( )  {
+/*void* fcn_sysio ( )  {
   if(DEBUG)  printf("  Running 'sysio' thread \n");
   thr_periodic (&thr_sysio);
   ushort i;
@@ -336,10 +353,10 @@ void thr_exit ( void )  {
 */
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thread_ctrl
-//  Run the 'ctrl' thread.
+//  fcn_ctrl
+//  Function handler for the 'ctrl' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void *thread_ctrl ( )  {
+/*void* fcn_ctrl ( )  {
   if(DEBUG)  printf("  Running 'ctrl' thread \n");
   usleep(500000);
   thr_periodic (&thr_ctrl);
@@ -356,10 +373,10 @@ void thr_exit ( void )  {
 */
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thread_telem
-//  Run the 'telem' thread.
+//  fcn_telem
+//  Function handler for the 'telem' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void *thread_telem ( )  {
+/*void* fcn_telem ( )  {
   if(DEBUG)  printf("  Running 'telem' thread \n");
   usleep(500000);
   thr_periodic (&thr_telem);
@@ -376,11 +393,12 @@ void thr_exit ( void )  {
 */
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thread_debug
-//  Run the 'debug' thread.
+//  fcn_debug
+//  Function handler for the 'debug' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void* thread_debug ( )  {
-  if(DEBUG)  printf("  Running 'debug' thread \n");
+void* fcn_debug ( )  {
+  if(DEBUG)  printf("  hey there... good lookin'... \n");
+  /*
   thr_periodic (&thr_debug);
   while (sys.running) {
     thr_start(&thr_debug);
@@ -389,8 +407,9 @@ void thr_exit ( void )  {
     thr_pause(&thr_debug);
   }
   pthread_exit(NULL);
+  */
   return NULL;
 }
-*/
+
 
 

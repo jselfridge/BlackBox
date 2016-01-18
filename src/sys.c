@@ -39,7 +39,7 @@ void sys_init (  )  {
   // Prefault the memory stack
   long i; 
   char *buffer;
-  printf("  Prefaulting memory stack \n ");
+  printf("  Prefaulting memory stack \n");
   buffer = malloc(SYS_STACK);
   for ( i=0; i<SYS_STACK; i += sysconf(_SC_PAGESIZE) )  buffer[i] = 0;
   free(buffer);
