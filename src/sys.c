@@ -52,9 +52,9 @@ void sys_init (  )  {
 //  sys_debug
 //  Prints system debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_debug ( ushort i )  {
+void sys_debug (  )  {
 
-  printf("%d \n", i);  fflush(stdout);
+  printf("sys_debug \n");  fflush(stdout);
 
   // Loop counter
   //static ushort i;

@@ -49,7 +49,7 @@ void thr_attr ( pthread_attr_t* attr )  {
   return;
 }
 
-
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thr_init
 //  Initializes a new thread.
@@ -66,13 +66,14 @@ void thr_init ( thread_struct* thr, pthread_attr_t* attr, void* fcn )  {
     printf( "Error (thr_init): Failed to set '%s' priority. \n", thr->name );
 
   // Create thread
-  if( pthread_create ( &thr->id, attr, fcn, NULL ) )
+  int myint = 8;
+  if( pthread_create ( &thr->id, attr, fcn, &myint ) )
     printf( "Error (thr_init): Failed to create '%s' thread. \n", thr->name );
   printf( "created \n" );
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thr_periodic
@@ -81,7 +82,8 @@ void thr_init ( thread_struct* thr, pthread_attr_t* attr, void* fcn )  {
 void thr_periodic ( thread_struct *thr )  {
 
   // Local variables
-  unsigned long sec, nsec;
+  time_t sec;
+  long   nsec;
   struct itimerspec itval;
 
   // Create the timer
@@ -91,17 +93,14 @@ void thr_periodic ( thread_struct *thr )  {
 
   // Determine time values
   sec  = thr->period / 1000000;
-  //nsec = ( thr->period % 1000000 ) * 1000;
-  nsec = ( thr->period - ( sec * 1000000 ) ) * 1000;
-
-  printf("S: %ld  N:%09ld \n", sec, nsec );
+  nsec = ( thr->period % 1000000 ) * 1000;
 
   // Set interval duration
-  itval.it_interval.tv_sec = sec;
+  itval.it_interval.tv_sec  = sec;
   itval.it_interval.tv_nsec = nsec;
 
   // Set start value
-  itval.it_value.tv_sec = 0;
+  itval.it_value.tv_sec  = 0;
   itval.it_value.tv_nsec = 200 * 1000 * 1000;
 
   // Enable the timer
@@ -186,6 +185,39 @@ void thr_exit ( thread_struct* thr )  {
   if(DEBUG)  printf( "  Status %ld for '%s' \n", (long)status, thr->name );
   return;
 }
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  fcn_debug
+//  Function handler for the 'debug' thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void* fcn_debug ( void* arg ) { //thread_struct* thr )  {
+
+  struct thread_struct* thr = arg;
+  if(DEBUG)  printf("  Running 'debug' thread \n" );
+
+  thr_periodic(thr);
+  while (running) {
+    thr_start(thr);
+    printf(".");  fflush(stdout);
+    //int myint = 8;
+    //sys_debug(&thr);
+    thr_finish(thr);
+    thr_pause(thr);
+  }
+  pthread_exit(NULL);
+
+  return NULL;
+}
+
+
+
+
+
+
+
+
+
 
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -298,25 +330,6 @@ void* fcn_imu ( thread_struct* thr )  {
 }
 */
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_debug
-//  Function handler for the 'debug' thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void* fcn_debug ( ) { //thread_struct* thr )  {
-  if(DEBUG)  printf("  hey there... good lookin'... \n");
-  //thr_periodic(thr);
-  //while (running) {
-    //thr_start(thr);
-    //printf("  start \n");
-    //ushort i = 8;
-    //sys_debug(i);
-    //thr_finish(thr);
-    //thr_pause(thr);
-  //}
-  pthread_exit(NULL);
-
-  return NULL;
-}
 
 
 

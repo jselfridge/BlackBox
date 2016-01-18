@@ -6,7 +6,7 @@
 #ifndef _SYS_H_
 #define _SYS_H_
 #include <main.h>
-//#include <thread.h>
+#include <thread.h>
 
 
 // Define statements
@@ -21,7 +21,7 @@ struct sigaction sys_signal;
 
 // Function declarations
 void sys_init   (  );
-void sys_debug  ( ushort i );
+void sys_debug  (  );
 void sys_flag   (  );
 void sys_exit   (  );
 
