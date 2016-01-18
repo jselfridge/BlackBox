@@ -6,6 +6,7 @@
 #ifndef _THREAD_H_
 #define _THREAD_H_
 #include <main.h>
+//#include <sys.h>
 
 
 // Define frequencies
@@ -62,7 +63,6 @@ typedef struct thread_struct {
 // Thread functions
 void  thr_attr      ( pthread_attr_t* attr );
 void  thr_init      ( thread_struct* thr, pthread_attr_t* attr, void* fcn );
-void  thr_blah      ( void );
 void  thr_periodic  ( thread_struct* thr );
 void  thr_pause     ( thread_struct* thr );
 void  thr_start     ( thread_struct* thr );
@@ -71,12 +71,12 @@ void  thr_exit      ( thread_struct* thr );
 
 
 // Function handlers
-void* fcn_imu    ( );
-//void* fcn_fusion ( );
-//void* fcn_sysio  ( );
+//void* fcn_imu    ( thread_struct* thr );
+//void* fcn_fus    ( );
+//void* fcn_sio    ( );
 //void* fcn_ctrl   ( );
 //void* fcn_telem  ( );
-void* fcn_debug  ( );
+void* fcn_debug  ( ); //thread_struct* thr );
 
 
 #endif

@@ -16,32 +16,37 @@ int main ( void )  {
   if(DEBUG)  printf("\n--- Begin BlackBox program ---\n");
   led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
 
+  // Initialize subsystems
+  sys_init();
+  //imu_init();
+  //sio_init();
+  usleep(200000);
+  //log_init();  //~~~ DEBUGGING ~~~//   
+
   // Initialize threads
   if(DEBUG)  printf("Initializing threads \n");
   pthread_attr_t attr;  thr_attr(&attr);
 
   thread_struct thr_debug;
-  thread_struct thr_imu;
+  //thread_struct thr_imu;
 
   thr_debug.name = "debug";
-  thr_imu.name   = "imu";
+  //thr_imu.name   = "imu";
+
+  thr_debug.period = 1000000 / HZ_DEBUG;
+  //thr_imu.period   = 1000000 / HZ_IMU;
 
   thr_debug.priority = PRIO_DEBUG;
-  thr_imu.priority   = PRIO_IMU;
+  //thr_imu.priority   = PRIO_IMU;
 
   thr_init( &thr_debug, &attr, fcn_debug );
-  thr_init( &thr_imu,   &attr, fcn_imu   );
+  //thr_init( &thr_imu,   &attr, fcn_imu   );
 
-  // Initialize subsystems
-  sys_init();
-  //thr_init();
-  //imu_init();
-  //sio_init();
-  //log_init();  //~~~ DEBUGGING ~~~//   
 
   // Keep the program running
   while(running)  usleep(100000);
   usleep(200000);
+
 
   // Exit program
   if(DEBUG)  printf("\n--- Exit BlackBox program ---\n");
@@ -50,9 +55,10 @@ int main ( void )  {
   // Exiting threads
   if(DEBUG)  printf("Closing threads  \n");
   thr_exit(&thr_debug);
-  thr_exit(&thr_imu);
+  //thr_exit(&thr_imu);
 
   // Close subsystems
+  usleep(200000);
   sys_exit();
   //log_exit();  //~~~ DEBUGGING ~~~//
   //imu_exit();

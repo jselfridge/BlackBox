@@ -52,20 +52,21 @@ void sys_init (  )  {
 //  sys_debug
 //  Prints system debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_debug (  )  {
-/*
+void sys_debug ( ushort i )  {
+
+  printf("%d \n", i);  fflush(stdout);
+
   // Loop counter
-  static ushort i = 0;
-  printf("%6d    ", i );  fflush(stdout);  i++;
+  //static ushort i;
 
   // Datalog file
-  printf("\r");  fflush(stdout);
+  //printf("\r");  fflush(stdout);
   //if (datalog.enabled)  printf(" %s: ", datalog.dir );
   //else                  printf(" - - - -  ");
-
+  /*
   // Time values
-  //float timestamp = (float)( thr_debug.start_sec + ( thr_debug.start_usec / 1000000.0f ) ); //- datalog.offset );
-  //printf("%6.1f    ", timestamp );  fflush(stdout);
+  float timestamp = (float)( thr->start_sec + ( thr->start_usec / 1000000.0f ) ); //- datalog.offset );
+  printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // System Input/Output values
   //pthread_mutex_lock(&mutex_sysio);
