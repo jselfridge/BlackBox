@@ -54,6 +54,13 @@ typedef struct sensor_struct {
 } sensor_struct;
 
 
+// Argument struct
+typedef struct blah {
+  int myint;
+  tmr_struct* tmr_blah;
+} blah;
+
+
 // Custom includes
 #include <gpio.h>
 #include <led.h>

@@ -186,29 +186,17 @@ void thr_exit ( tmr_struct* tmr )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void* fcn_gyr ( void* arg ) {
 
-  struct tmr_struct* tmr = arg;
-  if(DEBUG)  printf("  Running '%s' thread \n", tmr->name );
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~
+  //  DEBUGGING
+  struct blah* myarg = arg;
+  struct tmr_struct* mytmr = myarg->tmr_blah;
+  printf("fcn_gyr: myint %d %s \n", myarg->myint, mytmr->name );
+  //~~~~~~~~~~~~~~~~~~~~~~~~
+
+  //struct tmr_struct* tmr = arg;
+  //if(DEBUG)  printf("  Running '%s' thread \n", tmr->name );
   /*
-  //struct thread_struct* thr  = arg[0];
-  //struct temp_struct*   temp = arg[1];
-  //int arg1 = arg[0];
-  //int arg2 = arg[1];
-  //struct arg_struct *args = arg;
-
-  struct temp_struct* temp = arg;
-  //struct gyro_struct* gyr_str_p   = arg;
-  //struct gyro_struct gyr_str_s;
-
-  //gyr_str_s = *gyr_str_p;
-  //if(DEBUG)  printf("  fcn_gyr: %s \n", gyr_str->tmp_str->name  );
-  //struct temp_struct tmp_str   = gyr_str->temp_str;
-  //struct thread_struct* thr_str = syr_str->thr_str;
-
-  if(DEBUG)  printf("  fcn_gyr: %s %d \n", temp->name, temp->val  );
-  imu_gyr(temp);
-  if(DEBUG)  printf("  fcn_gyr: %s %d \n", temp->name, temp->val  );
-
   thr_periodic(thr);
   while (running) {
     thr_start(thr);

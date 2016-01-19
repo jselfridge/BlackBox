@@ -54,8 +54,13 @@ int main ( void )  {
   if( pthread_attr_setschedparam( &attr, &param ) )
     printf( "Error (thr_init): Failed to set '%s' priority. \n", tmr_gyr.name );
 
+  // Create argument struct
+  blah gyr_arg;
+  gyr_arg.myint = 6;
+  gyr_arg.tmr_blah = &tmr_gyr;
+
   // Create thread
-  if( pthread_create ( &tmr_gyr.id, &attr, &fcn_gyr, &tmr_gyr ) )
+  if( pthread_create ( &tmr_gyr.id, &attr, &fcn_gyr, &gyr_arg ) )
     printf( "Error (thr_init): Failed to create '%s' thread. \n", tmr_gyr.name );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
