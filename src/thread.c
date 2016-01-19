@@ -11,13 +11,6 @@
   //pthread_mutex_init( &mutex_fusion, NULL );
   //pthread_mutex_init( &mutex_sysio,  NULL );
 
-  /*
-  // Determine priority range
-  if(DEBUG)  printf("  Priority range: %d to %d \n", \
-    sched_get_priority_min(SCHED_FIFO), \
-    sched_get_priority_max(SCHED_FIFO) );
-  */
-
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thr_attr
@@ -195,18 +188,15 @@ void* fcn_debug ( void* arg ) { //thread_struct* thr )  {
 
   struct thread_struct* thr = arg;
   if(DEBUG)  printf("  Running '%s' thread \n", thr->name );
-
   thr_periodic(thr);
   while (running) {
     thr_start(thr);
-    printf(".");  fflush(stdout);
-    //int myint = 8;
-    //sys_debug(&thr);
+    sys_debug(thr);
     thr_finish(thr);
     thr_pause(thr);
   }
-  pthread_exit(NULL);
 
+  pthread_exit(NULL);
   return NULL;
 }
 

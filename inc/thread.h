@@ -29,21 +29,6 @@
 //#define PRIO_FLAGS   86
 //#define PRIO_HEART   84
 
-/*
-// Thread structure
-typedef struct thread_struct {
-  char*     name;
-  pthread_t id;
-  int       fd;
-  ushort    priority;
-  ulong     period;
-  time_t    start_sec;
-  ulong     start_usec;
-  time_t    finish_sec;
-  ulong     finish_usec;
-  ulong     dur;
-} thread_struct;
-*/
 
 // Mutex variables
 //pthread_mutex_t mutex_imu;

@@ -13,11 +13,6 @@
 #define SYS_STACK    ( 100 * 1024 * 1024 )
 
 
-// Global variables
-//bool running;
-//struct sigaction sys_signal;
-
-
 // Function declarations
 void sys_init   (  );
 void sys_debug  ( thread_struct* thr );

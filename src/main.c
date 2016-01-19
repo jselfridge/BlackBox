@@ -32,15 +32,12 @@ int main ( void )  {
 
   thr_debug.name = "debug";
   //thr_imu.name   = "imu";
-  //if(DEBUG)  printf("Name: %s \n", thr_debug.name );
 
   thr_debug.period = 1000000 / HZ_DEBUG;
   //thr_imu.period   = 1000000 / HZ_IMU;
-  //if(DEBUG)  printf("Period: %ld \n", thr_debug.period );
 
   thr_debug.priority = PRIO_DEBUG;
   //thr_imu.priority   = PRIO_IMU;
-  //if(DEBUG)  printf("Priority: %d \n", thr_debug.priority );
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -61,7 +58,6 @@ int main ( void )  {
     printf( "Error (thr_init): Failed to create '%s' thread. \n", thr_debug.name );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
 
 

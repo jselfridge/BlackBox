@@ -22,7 +22,7 @@ void sys_init (  )  {
   if( sigaction( SIGINT, &sys_run, NULL ) == -1 )
     printf( "Error (sys_init): Function 'sigaction' failed. \n" );
 
-  /*  // Establish realtime priority
+  // Establish realtime priority
   struct sched_param sp;
   printf("  Establishing realtime priority \n");
   sp.sched_priority = 98;
@@ -43,7 +43,7 @@ void sys_init (  )  {
   buffer = malloc(SYS_STACK);
   for ( i=0; i<SYS_STACK; i += sysconf(_SC_PAGESIZE) )  buffer[i] = 0;
   free(buffer);
-  */
+
   return;
 }
 
@@ -54,20 +54,18 @@ void sys_init (  )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_debug ( thread_struct* thr )  {
 
-  printf( "sys_debug: %d \n", thr->priority );  fflush(stdout);
-
   // Loop counter
   //static ushort i;
 
   // Datalog file
-  //printf("\r");  fflush(stdout);
+  printf("\r");  fflush(stdout);
   //if (datalog.enabled)  printf(" %s: ", datalog.dir );
   //else                  printf(" - - - -  ");
-  /*
+
   // Time values
   float timestamp = (float)( thr->start_sec + ( thr->start_usec / 1000000.0f ) ); //- datalog.offset );
   printf("%6.1f    ", timestamp );  fflush(stdout);
-
+  /*
   // System Input/Output values
   //pthread_mutex_lock(&mutex_sysio);
   //for ( i=0; i<4; i++ )  printf("%04d ", sys.input[i]  );  printf("   ");
@@ -105,11 +103,10 @@ void sys_debug ( thread_struct* thr )  {
   //for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[Y][i]*(180.0f/PI) );  printf("   ");
   //for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[Z][i]*(180.0f/PI) );  printf("   ");
   //for ( i=0; i<3; i++ )  printf( "%07.2f ", ctrl.input[i] *(180.0f/PI) );  printf("   ");
-
+  */
   // Finish print loop
-  printf("    ");
   fflush(stdout);
-*/
+
   return;
 }
 
