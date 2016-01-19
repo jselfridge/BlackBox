@@ -54,7 +54,7 @@ void* fcn_gyr    ( void* arg );
 //void* fcn_telem  ( void* arg );
 void* fcn_debug  ( void* arg );
 
-//void imu_gyr( temp_struct* tmp );  // DEBUGGING FUNCTION
+void imu_gyr( sensor_struct* gyr_sensor );  // DEBUGGING FUNCTION
 
 #endif
 

@@ -54,11 +54,11 @@ typedef struct sensor_struct {
 } sensor_struct;
 
 
-// Argument struct
-typedef struct blah {
-  int myint;
-  tmr_struct* tmr_blah;
-} blah;
+// Gyroscope argument structure
+typedef struct gyr_arg_struct {
+  sensor_struct*  gyr_sensor;
+  tmr_struct*     gyr_tmr;
+} gyr_arg_struct;
 
 
 // Custom includes

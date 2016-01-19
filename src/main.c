@@ -54,10 +54,15 @@ int main ( void )  {
   if( pthread_attr_setschedparam( &attr, &param ) )
     printf( "Error (thr_init): Failed to set '%s' priority. \n", tmr_gyr.name );
 
+  // Create gyro sensor structure
+  sensor_struct gyr_sensor;
+  gyr_sensor.raw   = 100;
+  gyr_sensor.calib = 300.0;
+
   // Create argument struct
-  blah gyr_arg;
-  gyr_arg.myint = 6;
-  gyr_arg.tmr_blah = &tmr_gyr;
+  gyr_arg_struct gyr_arg;
+  gyr_arg.gyr_sensor = &gyr_sensor;
+  gyr_arg.gyr_tmr    = &tmr_gyr;
 
   // Create thread
   if( pthread_create ( &tmr_gyr.id, &attr, &fcn_gyr, &gyr_arg ) )

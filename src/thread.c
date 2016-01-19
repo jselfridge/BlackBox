@@ -185,40 +185,37 @@ void thr_exit ( tmr_struct* tmr )  {
 //  Function handler for the 'gyroscope' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void* fcn_gyr ( void* arg ) {
+  if(DEBUG)  printf("  Running 'gyro' thread \n");
 
+  // Demux argument pointers
+  struct gyr_arg_struct* gyr_arg     = arg;
+  struct sensor_struct*  gyr_sensor  = gyr_arg->gyr_sensor;
+  struct tmr_struct*     gyr_tmr     = gyr_arg->gyr_tmr;
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~
-  //  DEBUGGING
-  struct blah* myarg = arg;
-  struct tmr_struct* mytmr = myarg->tmr_blah;
-  printf("fcn_gyr: myint %d %s \n", myarg->myint, mytmr->name );
-  //~~~~~~~~~~~~~~~~~~~~~~~~
-
-  //struct tmr_struct* tmr = arg;
-  //if(DEBUG)  printf("  Running '%s' thread \n", tmr->name );
-  /*
-  thr_periodic(thr);
+  // Execute timing loop
+  thr_periodic(gyr_tmr);
   while (running) {
-    thr_start(thr);
-    imu_gyr(temp);
-    thr_finish(thr);
-    thr_pause(thr);
+    thr_start(gyr_tmr);
+    imu_gyr(gyr_sensor);
+    printf("%d %f \n", gyr_sensor->raw, gyr_sensor->calib );  fflush(stdout);
+    thr_finish(gyr_tmr);
+    thr_pause(gyr_tmr);
   }
-  */
 
+  // Exit timing thread
   pthread_exit(NULL);
   return NULL;
 }
 
-//void imu_gyr ( temp_struct* tmp ) {
-//tmp->name = "alpha";
-//tmp->val  = 1;
-  //static int count = 0;
-  //if ( count >= 40 ) count = -42;
-  //count += 2;
-  //printf("%d \n", count);
-  //return;
-//}
+void imu_gyr ( sensor_struct* gyr_sensor ) {
+  static short raw = 0;
+  if ( raw >= 100 ) raw = 0;
+  raw++;
+  float calib = raw * 3.0;
+  gyr_sensor->raw    = raw;
+  gyr_sensor->calib  = calib;
+  return;
+}
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -226,18 +223,21 @@ void* fcn_gyr ( void* arg ) {
 //  Function handler for the 'debug' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void* fcn_debug ( void* arg ) {
+  if(DEBUG)  printf("  Running 'debug' thread \n");
 
+  // Demux argument pointers
   struct tmr_struct* tmr = arg;
-  if(DEBUG)  printf("  Running '%s' thread \n", tmr->name );
-  thr_periodic(tmr);
 
+  // Execute timing loop
+  thr_periodic(tmr);
   while (running) {
     thr_start(tmr);
-    sys_debug(tmr);
+    //sys_debug(tmr);
     thr_finish(tmr);
     thr_pause(tmr);
   }
 
+  // Exit timing thread
   pthread_exit(NULL);
   return NULL;
 }
