@@ -24,25 +24,25 @@ int main ( void )  {
   //log_init();  //~~~ DEBUGGING ~~~//   
 
   // Initialize threads
-  //if(DEBUG)  printf("Initializing threads \n");
-  //pthread_attr_t attr;  thr_attr(&attr);
+  if(DEBUG)  printf("Initializing threads \n");
+  pthread_attr_t attr;  thr_attr(&attr);
 
-  //thread_struct thr_gyr;
-  //thread_struct thr_debug;
+  //tmr_struct tmr_gyr;
+  tmr_struct tmr_debug;
 
-  //thr_gyr.name   = "gyr";
-  //thr_debug.name = "debug";
+  //tmr_gyr.name   = "gyr";
+  tmr_debug.name = "debug";
 
-  //thr_gyr.period   = 1000000 / HZ_GYR;
-  //thr_debug.period = 1000000 / HZ_DEBUG;
+  //tmr_gyr.period   = 1000000 / HZ_GYR;
+  tmr_debug.period = 1000000 / HZ_DEBUG;
 
-  //thr_gyr.priority   = PRIO_GYR;
-  //thr_debug.priority = PRIO_DEBUG;
+  //tmr_gyr.priority   = PRIO_GYR;
+  tmr_debug.priority = PRIO_DEBUG;
 
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  //struct sched_param param;
+  struct sched_param param;
   //thr_init( &thr_gyr,   &attr, fcn_gyr   );
   //thr_init( &thr_debug, &attr, fcn_debug );
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -81,15 +81,15 @@ int main ( void )  {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   // Declare thread priority
-  //param.sched_priority = thr_debug.priority;
+  param.sched_priority = tmr_debug.priority;
 
   // Assign thread priority and attributes
-  //if( pthread_attr_setschedparam( &attr, &param ) )
-  //printf( "Error (thr_init): Failed to set '%s' priority. \n", thr_debug.name );
+  if( pthread_attr_setschedparam( &attr, &param ) )
+    printf( "Error (thr_init): Failed to set '%s' priority. \n", tmr_debug.name );
 
   // Create thread
-  //if( pthread_create ( &thr_debug.id, &attr, &fcn_debug, &thr_debug ) )
-  //printf( "Error (thr_init): Failed to create '%s' thread. \n", thr_debug.name );
+  if( pthread_create ( &tmr_debug.id, &attr, &fcn_debug, &tmr_debug ) )
+    printf( "Error (thr_init): Failed to create '%s' thread. \n", tmr_debug.name );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -106,9 +106,9 @@ int main ( void )  {
   led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
 
   // Exiting threads
-  //if(DEBUG)  printf("Closing threads  \n");
+  if(DEBUG)  printf("Closing threads  \n");
   //thr_exit(&thr_gyr);
-  //thr_exit(&thr_debug);
+  thr_exit(&tmr_debug);
 
   // Close subsystems
   //usleep(200000);

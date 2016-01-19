@@ -55,27 +55,30 @@ typedef struct sensor_struct {
 
 
 // Custom includes
-//#include <ctrl.h>
 #include <gpio.h>
-//#include <imu.h>
 #include <led.h>
-//#include <log.h>
-//#include <loop.h>
-//#include <pru.h>
 #include <sys.h>
-//#include <telem.h>
 #include <thread.h>
 
 
+// Add these in later
+//#include <ctrl.h>
+//#include <imu.h>
+//#include <log.h>
+//#include <loop.h>
+//#include <pru.h>
+//#include <telem.h>
+
+
 // PRU includes
-#include <prussdrv.h>
-#include <pruss_intc_mapping.h>
+//#include <prussdrv.h>
+//#include <pruss_intc_mapping.h>
 
 
 // MPU includes
-#include <inv_mpu.h>
-#include <inv_mpu_dmp_motion_driver.h>
-#include <inv_glue.h>
+//#include <inv_mpu.h>
+//#include <inv_mpu_dmp_motion_driver.h>
+//#include <inv_glue.h>
 
 
 #endif

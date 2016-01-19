@@ -239,7 +239,7 @@ void* fcn_debug ( void* arg ) {
   thr_periodic(tmr);
   while (running) {
     thr_start(tmr);
-    sys_debug(tmr);
+    //sys_debug(tmr);
     thr_finish(tmr);
     thr_pause(tmr);
   }
