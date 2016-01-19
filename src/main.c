@@ -24,59 +24,59 @@ int main ( void )  {
   //log_init();  //~~~ DEBUGGING ~~~//   
 
   // Initialize threads
-  if(DEBUG)  printf("Initializing threads \n");
-  pthread_attr_t attr;  thr_attr(&attr);
+  //if(DEBUG)  printf("Initializing threads \n");
+  //pthread_attr_t attr;  thr_attr(&attr);
 
-  thread_struct thr_gyr;
+  //thread_struct thr_gyr;
   //thread_struct thr_debug;
 
-  thr_gyr.name   = "gyr";
+  //thr_gyr.name   = "gyr";
   //thr_debug.name = "debug";
 
-  thr_gyr.period   = 1000000 / HZ_GYR;
+  //thr_gyr.period   = 1000000 / HZ_GYR;
   //thr_debug.period = 1000000 / HZ_DEBUG;
 
-  thr_gyr.priority   = PRIO_GYR;
+  //thr_gyr.priority   = PRIO_GYR;
   //thr_debug.priority = PRIO_DEBUG;
 
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  struct sched_param param;
+  //struct sched_param param;
   //thr_init( &thr_gyr,   &attr, fcn_gyr   );
   //thr_init( &thr_debug, &attr, fcn_debug );
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   // Declare thread priority
-  param.sched_priority = thr_gyr.priority;
+  //param.sched_priority = thr_gyr.priority;
 
   // Assign thread priority and attributes
-  if( pthread_attr_setschedparam( &attr, &param ) )
-    printf( "Error (thr_init): Failed to set '%s' priority. \n", thr_gyr.name );
+  //if( pthread_attr_setschedparam( &attr, &param ) )
+  //printf( "Error (thr_init): Failed to set '%s' priority. \n", thr_gyr.name );
 
   // Create argument struct
-  struct temp_struct temp_s;
-  temp_s.name = "charlie";
-  temp_s.val  = 3;
-  printf( "  Struct: %s %d \n", temp_s.name, temp_s.val );
+  //struct temp_struct temp_s;
+  //temp_s.name = "charlie";
+  //temp_s.val  = 3;
+  //printf( "  Struct: %s %d \n", temp_s.name, temp_s.val );
 
   // Create pointer struct
-  struct temp_struct* temp_p;
-  temp_p = &temp_s;
-  printf( "  Pointer: %s %d \n", temp_p->name, temp_p->val );
-  temp_p->name = "bravo";
-  temp_p->val = 2;
-  printf( "  New: %s %d \n", temp_p->name, temp_p->val );
+  //struct temp_struct* temp_p;
+  //temp_p = &temp_s;
+  //printf( "  Pointer: %s %d \n", temp_p->name, temp_p->val );
+  //temp_p->name = "bravo";
+  //temp_p->val = 2;
+  //printf( "  New: %s %d \n", temp_p->name, temp_p->val );
 
   // Create gyro arg
-  struct gyr_struct gyr_arg;
-  gyr_arg.temp_str = temp_s;
-  gyr_arg.thr_str  = thr_gyr;
+  //struct gyr_struct gyr_arg;
+  //gyr_arg.temp_str = temp_s;
+  //gyr_arg.thr_str  = thr_gyr;
 
   // Create thread
   //if( pthread_create ( &thr_gyr.id, &attr, &fcn_gyr, &temp_s ) )
-  if( pthread_create ( &thr_gyr.id, &attr, &fcn_gyr, &gyr_arg ) )
-    printf( "Error (thr_init): Failed to create '%s' thread. \n", thr_gyr.name );
+  //if( pthread_create ( &thr_gyr.id, &attr, &fcn_gyr, &gyr_arg ) )
+  //printf( "Error (thr_init): Failed to create '%s' thread. \n", thr_gyr.name );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

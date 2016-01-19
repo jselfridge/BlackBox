@@ -52,7 +52,7 @@ void sys_init (  )  {
 //  sys_debug
 //  Prints system debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_debug ( thread_struct* thr )  {
+void sys_debug ( tmr_struct* tmr_debug )  {
 
   // Loop counter
   //static ushort i;
@@ -63,7 +63,7 @@ void sys_debug ( thread_struct* thr )  {
   //else                  printf(" - - - -  ");
 
   // Time values
-  float timestamp = (float)( thr->start_sec + ( thr->start_usec / 1000000.0f ) ); //- datalog.offset );
+  float timestamp = (float)( tmr_debug->start_sec + ( tmr_debug->start_usec / 1000000.0f ) ); //- datalog.offset );
   printf("%6.1f    ", timestamp );  fflush(stdout);
   /*
   // System Input/Output values

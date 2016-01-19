@@ -32,8 +32,8 @@ bool running;
 struct sigaction sys_signal;
 
 
-// Thread structure
-typedef struct thread_struct {
+// Timer structure
+typedef struct tmr_struct {
   char*     name;
   pthread_t id;
   int       fd;
@@ -44,42 +44,14 @@ typedef struct thread_struct {
   time_t    finish_sec;
   ulong     finish_usec;
   ulong     dur;
-} thread_struct;
+} tmr_struct;
 
 
-/*// Sensor structure
+// Sensor structure
 typedef struct sensor_struct {
-  uint  hz;
-  float dt;
-  float lpf;
-  float tc;
-  float gain;
   short raw;
-  float filter;
   float calib;
 } sensor_struct;
-*/
-
-/*// IMU structure
-typedef struct imu_struct {
-  ushort addr;
-  sensor_struct gyr;
-  sensor_struct acc;
-  sensor_struct mag;
-} imu_struct;
-*/
-
-// Temp structure
-typedef struct temp_struct {
-  char* name;
-  int   val;
-} temp_struct;
-
-// Gyro arguments
-typedef struct gyr_struct {
-  temp_struct   temp_str;
-  thread_struct thr_str;
-} gyr_struct;
 
 
 // Custom includes

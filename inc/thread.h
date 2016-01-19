@@ -39,11 +39,11 @@
 // Thread functions
 void  thr_attr      ( pthread_attr_t* attr );
 //void  thr_init      ( thread_struct* thr, pthread_attr_t* attr, void* fcn );
-void  thr_periodic  ( thread_struct* thr );
-void  thr_pause     ( thread_struct* thr );
-void  thr_start     ( thread_struct* thr );
-void  thr_finish    ( thread_struct* thr );
-void  thr_exit      ( thread_struct* thr );
+void  thr_periodic  ( tmr_struct* tmr );
+void  thr_pause     ( tmr_struct* tmr );
+void  thr_start     ( tmr_struct* tmr );
+void  thr_finish    ( tmr_struct* tmr );
+void  thr_exit      ( tmr_struct* tmr );
 
 
 // Function handlers
@@ -54,7 +54,7 @@ void* fcn_gyr    ( void* arg );
 //void* fcn_telem  ( void* arg );
 void* fcn_debug  ( void* arg );
 
-void imu_gyr( temp_struct* tmp );  // DEBUGGING FUNCTION
+//void imu_gyr( temp_struct* tmp );  // DEBUGGING FUNCTION
 
 #endif
 
