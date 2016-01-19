@@ -179,12 +179,10 @@ void thr_finish ( thread_struct *thr )  {
 //  Cleanly exits the threads.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void thr_exit ( thread_struct* thr )  {
-  /*
   void *status;
   if( pthread_join ( thr->id, &status ) )
     printf( "Error (thread_exit): Failed to exit '%s' thread. \n", thr->name );
   if(DEBUG)  printf( "  Status %ld for '%s' \n", (long)status, thr->name );
-  */
   return;
 }
 
@@ -194,10 +192,10 @@ void thr_exit ( thread_struct* thr )  {
 //  Function handler for the 'debug' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void* fcn_debug ( void* arg ) { //thread_struct* thr )  {
-  /*
-  struct thread_struct* thr = arg;
-  if(DEBUG)  printf("  Running 'debug' thread \n" );
 
+  struct thread_struct* thr = arg;
+  if(DEBUG)  printf("  Running '%s' thread \n", thr->name );
+  /*
   thr_periodic(thr);
   while (running) {
     thr_start(thr);

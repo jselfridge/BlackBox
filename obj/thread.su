@@ -3,5 +3,5 @@ thread.c:82:6:thr_periodic	0	static
 thread.c:118:6:thr_pause	0	static
 thread.c:138:6:thr_start	0	static
 thread.c:156:6:thr_finish	0	static
-thread.c:181:6:thr_exit	0	static
-thread.c:196:7:fcn_debug	0	static
+thread.c:181:6:thr_exit	16	static
+thread.c:194:7:fcn_debug	8	static

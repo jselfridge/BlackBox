@@ -42,7 +42,6 @@ int main ( void )  {
   //thr_imu.priority   = PRIO_IMU;
   //if(DEBUG)  printf("Priority: %d \n", thr_debug.priority );
 
-  sys_debug(&thr_debug);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //thr_init( &thr_debug, &attr, fcn_debug );
@@ -50,16 +49,16 @@ int main ( void )  {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   // Declare thread priority
-  //struct sched_param param;
-  //param.sched_priority = thr_debug.priority;
+  struct sched_param param;
+  param.sched_priority = thr_debug.priority;
 
   // Assign thread priority and attributes
-  //if( pthread_attr_setschedparam( &attr, &param ) )
-  //printf( "Error (thr_init): Failed to set '%s' priority. \n", thr_debug.name );
+  if( pthread_attr_setschedparam( &attr, &param ) )
+    printf( "Error (thr_init): Failed to set '%s' priority. \n", thr_debug.name );
 
   // Create thread
-  //if( pthread_create ( &thr_debug.id, &attr, &fcn_debug, &thr_debug ) )
-  //printf( "Error (thr_init): Failed to create '%s' thread. \n", thr_debug.name );
+  if( pthread_create ( &thr_debug.id, &attr, &fcn_debug, &thr_debug ) )
+    printf( "Error (thr_init): Failed to create '%s' thread. \n", thr_debug.name );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -77,8 +76,8 @@ int main ( void )  {
   led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
 
   // Exiting threads
-  //if(DEBUG)  printf("Closing threads  \n");
-  //thr_exit(&thr_debug);
+  if(DEBUG)  printf("Closing threads  \n");
+  thr_exit(&thr_debug);
   //thr_exit(&thr_imu);
 
   // Close subsystems
