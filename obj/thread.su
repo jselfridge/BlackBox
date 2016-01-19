@@ -1,7 +1,7 @@
 thread.c:26:6:thr_attr	8	static
-thread.c:82:6:thr_periodic	0	static
-thread.c:118:6:thr_pause	0	static
-thread.c:138:6:thr_start	0	static
-thread.c:156:6:thr_finish	0	static
+thread.c:82:6:thr_periodic	40	static
+thread.c:118:6:thr_pause	16	static
+thread.c:138:6:thr_start	16	static
+thread.c:156:6:thr_finish	24	static
 thread.c:181:6:thr_exit	16	static
-thread.c:194:7:fcn_debug	8	static
+thread.c:194:7:fcn_debug	40	static
