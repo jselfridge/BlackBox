@@ -6,7 +6,6 @@
 #ifndef _SYS_H_
 #define _SYS_H_
 #include <main.h>
-#include <thread.h>
 
 
 // Define statements
@@ -15,8 +14,8 @@
 
 
 // Global variables
-bool running;
-struct sigaction sys_signal;
+//bool running;
+//struct sigaction sys_signal;
 
 
 // Function declarations

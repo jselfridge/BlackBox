@@ -22,7 +22,7 @@ void sys_init (  )  {
   if( sigaction( SIGINT, &sys_run, NULL ) == -1 )
     printf( "Error (sys_init): Function 'sigaction' failed. \n" );
 
-  // Establish realtime priority
+  /*  // Establish realtime priority
   struct sched_param sp;
   printf("  Establishing realtime priority \n");
   sp.sched_priority = 98;
@@ -43,7 +43,7 @@ void sys_init (  )  {
   buffer = malloc(SYS_STACK);
   for ( i=0; i<SYS_STACK; i += sysconf(_SC_PAGESIZE) )  buffer[i] = 0;
   free(buffer);
-
+  */
   return;
 }
 

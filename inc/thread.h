@@ -6,7 +6,6 @@
 #ifndef _THREAD_H_
 #define _THREAD_H_
 #include <main.h>
-//#include <sys.h>
 
 
 // Define frequencies
@@ -30,7 +29,7 @@
 //#define PRIO_FLAGS   86
 //#define PRIO_HEART   84
 
-
+/*
 // Thread structure
 typedef struct thread_struct {
   char*     name;
@@ -44,7 +43,7 @@ typedef struct thread_struct {
   ulong     finish_usec;
   ulong     dur;
 } thread_struct;
-
+*/
 
 // Mutex variables
 //pthread_mutex_t mutex_imu;
@@ -63,12 +62,12 @@ void  thr_exit      ( thread_struct* thr );
 
 
 // Function handlers
-//void* fcn_imu    ( thread_struct* thr );
-//void* fcn_fus    ( );
-//void* fcn_sio    ( );
-//void* fcn_ctrl   ( );
-//void* fcn_telem  ( );
-void* fcn_debug  ( void* arg ); //thread_struct* thr );
+//void* fcn_imu    ( void* arg );
+//void* fcn_fus    ( void* arg );
+//void* fcn_sio    ( void* arg );
+//void* fcn_ctrl   ( void* arg );
+//void* fcn_telem  ( void* arg );
+void* fcn_debug  ( void* arg );
 
 
 #endif

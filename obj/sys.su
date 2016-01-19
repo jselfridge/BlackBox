@@ -1,4 +1,4 @@
 sys.c:121:6:sys_flag	0	static
-sys.c:13:6:sys_init	184	dynamic,bounded
+sys.c:13:6:sys_init	168	dynamic,bounded
 sys.c:55:6:sys_debug	8	static
 sys.c:131:6:sys_exit	8	static

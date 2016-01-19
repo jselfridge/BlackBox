@@ -80,7 +80,7 @@ void thr_init ( thread_struct* thr, pthread_attr_t* attr, void* fcn )  {
 //  Establishes the periodic attributes for a thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void thr_periodic ( thread_struct *thr )  {
-
+  /*
   // Local variables
   time_t sec;
   long   nsec;
@@ -106,7 +106,7 @@ void thr_periodic ( thread_struct *thr )  {
   // Enable the timer
   if( timerfd_settime ( thr->fd, 0, &itval, NULL ) )
     printf( "Error (thread_periodic): Failed to enable the timer. \n" );
-
+  */
   return;
 }
 
@@ -116,7 +116,7 @@ void thr_periodic ( thread_struct *thr )  {
 //  Implements the pause before starting the next loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void thr_pause ( thread_struct* thr )  {
-
+  /*
   // Local variables
   unsigned long long missed;
 
@@ -126,7 +126,7 @@ void thr_pause ( thread_struct* thr )  {
 
   // Play around with the "missed" feature some more...
   //if ( missed > 0 )  {  thr->missed += (missed - 1);  }
-
+  */
   return;
 }
 
@@ -136,7 +136,7 @@ void thr_pause ( thread_struct* thr )  {
 //  Start code for a thread loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void thr_start ( thread_struct *thr )  {
-
+  /*
   // Get current time
   struct timespec timeval;
   clock_gettime( CLOCK_MONOTONIC, &timeval );
@@ -144,7 +144,7 @@ void thr_start ( thread_struct *thr )  {
   // Assign start time to thread
   thr->start_sec  = timeval.tv_sec;
   thr->start_usec = timeval.tv_nsec / 1000;
-
+  */
   return;
 }
 
@@ -154,7 +154,7 @@ void thr_start ( thread_struct *thr )  {
 //  Finish code for a thread loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void thr_finish ( thread_struct *thr )  {
-
+  /*
   // Get current time
   struct timespec timeval;
   clock_gettime( CLOCK_MONOTONIC, &timeval );
@@ -169,7 +169,7 @@ void thr_finish ( thread_struct *thr )  {
 
   // Calculate timing metrics
   thr->dur += thr->finish_usec - thr->start_usec;
-
+  */
   return;
 }
 
@@ -179,10 +179,12 @@ void thr_finish ( thread_struct *thr )  {
 //  Cleanly exits the threads.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void thr_exit ( thread_struct* thr )  {
+  /*
   void *status;
   if( pthread_join ( thr->id, &status ) )
     printf( "Error (thread_exit): Failed to exit '%s' thread. \n", thr->name );
   if(DEBUG)  printf( "  Status %ld for '%s' \n", (long)status, thr->name );
+  */
   return;
 }
 
@@ -192,7 +194,7 @@ void thr_exit ( thread_struct* thr )  {
 //  Function handler for the 'debug' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void* fcn_debug ( void* arg ) { //thread_struct* thr )  {
-
+  /*
   struct thread_struct* thr = arg;
   if(DEBUG)  printf("  Running 'debug' thread \n" );
 
@@ -206,7 +208,7 @@ void* fcn_debug ( void* arg ) { //thread_struct* thr )  {
     thr_pause(thr);
   }
   pthread_exit(NULL);
-
+  */
   return NULL;
 }
 
@@ -329,7 +331,6 @@ void* fcn_imu ( thread_struct* thr )  {
   return NULL;
 }
 */
-
 
 
 
