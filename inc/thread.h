@@ -9,7 +9,7 @@
 
 
 // Define frequencies
-#define HZ_GYR     500
+#define HZ_GYR     20
 //#define HZ_ATT     100
 //#define HZ_STAB     50
 //#define HZ_NAV      10
@@ -47,14 +47,14 @@ void  thr_exit      ( thread_struct* thr );
 
 
 // Function handlers
-void* fcn_gyr    ( );
+void* fcn_gyr    ( void* arg );
 //void* fcn_fus    ( void* arg );
 //void* fcn_sio    ( void* arg );
 //void* fcn_ctrl   ( void* arg );
 //void* fcn_telem  ( void* arg );
 void* fcn_debug  ( void* arg );
 
-void imu_gyr();  // DEBUGGING FUNCTION
+void imu_gyr( temp_struct* tmp );  // DEBUGGING FUNCTION
 
 #endif
 

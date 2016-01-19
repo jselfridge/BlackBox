@@ -184,7 +184,7 @@ void thr_exit ( thread_struct* thr )  {
 //  fcn_gyr
 //  Function handler for the 'gyroscope' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void* fcn_gyr ( ) {
+void* fcn_gyr ( void* arg ) {
 
   //struct thread_struct* thr  = arg[0];
   //struct temp_struct*   temp = arg[1];
@@ -192,7 +192,10 @@ void* fcn_gyr ( ) {
   //int arg2 = arg[1];
   //struct arg_struct *args = arg;
 
-  if(DEBUG)  printf("  Running '%s' thread: %d %d \n", "thr->name", 5,7  );
+  struct temp_struct* temp = arg;
+  if(DEBUG)  printf("  fcn_gyr: %s %d \n", temp->name, temp->val  );
+  imu_gyr(temp);
+  if(DEBUG)  printf("  fcn_gyr: %s %d \n", temp->name, temp->val  );
   /*
   thr_periodic(thr);
   while (running) {
@@ -205,11 +208,13 @@ void* fcn_gyr ( ) {
   pthread_exit(NULL);
   return NULL;
 }
-void imu_gyr ( void ) {
-  static int count = 0;
-  if ( count >= 40 ) count = -42;
-  count += 2;
-  printf("%d \n", count);
+void imu_gyr ( temp_struct* tmp ) {
+  tmp->name = "alpha";
+  tmp->val  = 1;
+  //static int count = 0;
+  //if ( count >= 40 ) count = -42;
+  //count += 2;
+  //printf("%d \n", count);
   return;
 }
 

@@ -71,7 +71,8 @@ typedef struct imu_struct {
 
 // Temp structure
 typedef struct temp_struct {
-  ushort raw;
+  char* name;
+  int   val;
 } temp_struct;
 
 

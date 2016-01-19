@@ -6,12 +6,6 @@
 #include "main.h"
 
 
-struct arg_struct {
-  char* name;
-  int   val;
-} arg_struct;
-
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  main
 //  Primary code that runs the UAV avionics.
@@ -61,20 +55,21 @@ int main ( void )  {
     printf( "Error (thr_init): Failed to set '%s' priority. \n", thr_gyr.name );
 
   // Create argument struct
-  struct arg_struct args;
-  args.name = "charlie";
-  args.val  = 3;
-  printf( "  Struct: %s %d \n", args.name, args.val );
+  struct temp_struct temp_s;
+  temp_s.name = "charlie";
+  temp_s.val  = 3;
+  printf( "  Struct: %s %d \n", temp_s.name, temp_s.val );
 
   // Create pointer struct
-  struct arg_struct *parg;
-  parg = &args;
-  parg->name = "bravo";
-  parg->val = 2;
-  printf( "  Pointer: %s %d \n", parg->name, parg->val );
+  struct temp_struct* temp_p;
+  temp_p = &temp_s;
+  printf( "  Pointer: %s %d \n", temp_p->name, temp_p->val );
+  temp_p->name = "bravo";
+  temp_p->val = 2;
+  printf( "  New: %s %d \n", temp_p->name, temp_p->val );
 
   // Create thread
-  if( pthread_create ( &thr_gyr.id, &attr, &fcn_gyr, NULL ) )
+  if( pthread_create ( &thr_gyr.id, &attr, &fcn_gyr, &temp_s ) )
     printf( "Error (thr_init): Failed to create '%s' thread. \n", thr_gyr.name );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -105,8 +100,8 @@ int main ( void )  {
   led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
 
   // Exiting threads
-  if(DEBUG)  printf("Closing threads  \n");
-  thr_exit(&thr_gyr);
+  //if(DEBUG)  printf("Closing threads  \n");
+  //thr_exit(&thr_gyr);
   //thr_exit(&thr_debug);
 
   // Close subsystems
