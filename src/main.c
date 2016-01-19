@@ -24,25 +24,25 @@ int main ( void )  {
   //log_init();  //~~~ DEBUGGING ~~~//   
 
   // Initialize threads
-  //if(DEBUG)  printf("Initializing threads \n");
-  //pthread_attr_t attr;  thr_attr(&attr);
+  if(DEBUG)  printf("Initializing threads \n");
+  pthread_attr_t attr;  thr_attr(&attr);
 
-  //thread_struct thr_debug;
+  thread_struct thr_debug;
   //thread_struct thr_imu;
 
-  //thr_debug.name = "debug";
+  thr_debug.name = "debug";
   //thr_imu.name   = "imu";
   //if(DEBUG)  printf("Name: %s \n", thr_debug.name );
 
-  //thr_debug.period = 1000000 / HZ_DEBUG;
+  thr_debug.period = 1000000 / HZ_DEBUG;
   //thr_imu.period   = 1000000 / HZ_IMU;
   //if(DEBUG)  printf("Period: %ld \n", thr_debug.period );
 
-  //thr_debug.priority = PRIO_DEBUG;
+  thr_debug.priority = PRIO_DEBUG;
   //thr_imu.priority   = PRIO_IMU;
   //if(DEBUG)  printf("Priority: %d \n", thr_debug.priority );
 
-  //sys_debug();
+  sys_debug(&thr_debug);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //thr_init( &thr_debug, &attr, fcn_debug );
