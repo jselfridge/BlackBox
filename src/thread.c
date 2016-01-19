@@ -73,20 +73,20 @@ void thr_init ( thread_struct* thr, pthread_attr_t* attr, void* fcn )  {
 //  Establishes the periodic attributes for a thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void thr_periodic ( tmr_struct *tmr )  {
-  /*
+
   // Local variables
   time_t sec;
   long   nsec;
   struct itimerspec itval;
 
   // Create the timer
-  thr->fd = timerfd_create ( CLOCK_MONOTONIC, 0 );
-  if ( thr->fd == -1 )
+  tmr->fd = timerfd_create ( CLOCK_MONOTONIC, 0 );
+  if ( tmr->fd == -1 )
     printf( "Error (thread_periodic): Failed to create timer. \n" );
 
   // Determine time values
-  sec  = thr->period / 1000000;
-  nsec = ( thr->period % 1000000 ) * 1000;
+  sec  = tmr->period / 1000000;
+  nsec = ( tmr->period % 1000000 ) * 1000;
 
   // Set interval duration
   itval.it_interval.tv_sec  = sec;
@@ -97,9 +97,9 @@ void thr_periodic ( tmr_struct *tmr )  {
   itval.it_value.tv_nsec = 200 * 1000 * 1000;
 
   // Enable the timer
-  if( timerfd_settime ( thr->fd, 0, &itval, NULL ) )
+  if( timerfd_settime ( tmr->fd, 0, &itval, NULL ) )
     printf( "Error (thread_periodic): Failed to enable the timer. \n" );
-  */
+
   return;
 }
 
@@ -109,17 +109,17 @@ void thr_periodic ( tmr_struct *tmr )  {
 //  Implements the pause before starting the next loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void thr_pause ( tmr_struct* tmr )  {
-  /*
+
   // Local variables
   unsigned long long missed;
 
   // Wait for timer event and obtain number of "missed" loops
-  if( read( thr->fd, &missed, sizeof(missed) ) == -1 )
-    printf( "Error (thread_pause): Failed to read timer file. \n" );
+  if( read( tmr->fd, &missed, sizeof(missed) ) == -1 )
+    printf( "Error (thr_pause): Failed to read timer file. \n" );
 
   // Play around with the "missed" feature some more...
-  //if ( missed > 0 )  {  thr->missed += (missed - 1);  }
-  */
+  //if ( missed > 0 )  {  tmr->missed += (missed - 1);  }
+
   return;
 }
 
@@ -129,15 +129,15 @@ void thr_pause ( tmr_struct* tmr )  {
 //  Start code for a thread loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void thr_start ( tmr_struct *tmr )  {
-  /*
+
   // Get current time
   struct timespec timeval;
   clock_gettime( CLOCK_MONOTONIC, &timeval );
 
   // Assign start time to thread
-  thr->start_sec  = timeval.tv_sec;
-  thr->start_usec = timeval.tv_nsec / 1000;
-  */
+  tmr->start_sec  = timeval.tv_sec;
+  tmr->start_usec = timeval.tv_nsec / 1000;
+
   return;
 }
 
@@ -147,22 +147,22 @@ void thr_start ( tmr_struct *tmr )  {
 //  Finish code for a thread loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void thr_finish ( tmr_struct *tmr )  {
-  /*
+
   // Get current time
   struct timespec timeval;
   clock_gettime( CLOCK_MONOTONIC, &timeval );
 
   // Assign finish time to thread
-  thr->finish_sec  = timeval.tv_sec;
-  thr->finish_usec = timeval.tv_nsec / 1000;
+  tmr->finish_sec  = timeval.tv_sec;
+  tmr->finish_usec = timeval.tv_nsec / 1000;
 
   // Adjust for rollover
-  if ( thr->finish_sec == thr->start_sec )  thr->dur = 0;
-  else                                      thr->dur = 1000000;
+  if ( tmr->finish_sec == tmr->start_sec )  tmr->dur = 0;
+  else                                      tmr->dur = 1000000;
 
   // Calculate timing metrics
-  thr->dur += thr->finish_usec - thr->start_usec;
-  */
+  tmr->dur += tmr->finish_usec - tmr->start_usec;
+
   return;
 }
 
@@ -185,6 +185,10 @@ void thr_exit ( tmr_struct* tmr )  {
 //  Function handler for the 'gyroscope' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void* fcn_gyr ( void* arg ) {
+
+  struct tmr_struct* tmr = arg;
+  if(DEBUG)  printf("  Running '%s' thread \n", tmr->name );
+
   /*
   //struct thread_struct* thr  = arg[0];
   //struct temp_struct*   temp = arg[1];
@@ -217,6 +221,7 @@ void* fcn_gyr ( void* arg ) {
   pthread_exit(NULL);
   return NULL;
 }
+
 //void imu_gyr ( temp_struct* tmp ) {
 //tmp->name = "alpha";
 //tmp->val  = 1;
@@ -237,9 +242,10 @@ void* fcn_debug ( void* arg ) {
   struct tmr_struct* tmr = arg;
   if(DEBUG)  printf("  Running '%s' thread \n", tmr->name );
   thr_periodic(tmr);
+
   while (running) {
     thr_start(tmr);
-    //sys_debug(tmr);
+    sys_debug(tmr);
     thr_finish(tmr);
     thr_pause(tmr);
   }

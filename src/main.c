@@ -27,16 +27,16 @@ int main ( void )  {
   if(DEBUG)  printf("Initializing threads \n");
   pthread_attr_t attr;  thr_attr(&attr);
 
-  //tmr_struct tmr_gyr;
+  tmr_struct tmr_gyr;
   tmr_struct tmr_debug;
 
-  //tmr_gyr.name   = "gyr";
+  tmr_gyr.name   = "gyr";
   tmr_debug.name = "debug";
 
-  //tmr_gyr.period   = 1000000 / HZ_GYR;
+  tmr_gyr.period   = 1000000 / HZ_GYR;
   tmr_debug.period = 1000000 / HZ_DEBUG;
 
-  //tmr_gyr.priority   = PRIO_GYR;
+  tmr_gyr.priority   = PRIO_GYR;
   tmr_debug.priority = PRIO_DEBUG;
 
 
@@ -48,35 +48,15 @@ int main ( void )  {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   // Declare thread priority
-  //param.sched_priority = thr_gyr.priority;
+  param.sched_priority = tmr_gyr.priority;
 
   // Assign thread priority and attributes
-  //if( pthread_attr_setschedparam( &attr, &param ) )
-  //printf( "Error (thr_init): Failed to set '%s' priority. \n", thr_gyr.name );
-
-  // Create argument struct
-  //struct temp_struct temp_s;
-  //temp_s.name = "charlie";
-  //temp_s.val  = 3;
-  //printf( "  Struct: %s %d \n", temp_s.name, temp_s.val );
-
-  // Create pointer struct
-  //struct temp_struct* temp_p;
-  //temp_p = &temp_s;
-  //printf( "  Pointer: %s %d \n", temp_p->name, temp_p->val );
-  //temp_p->name = "bravo";
-  //temp_p->val = 2;
-  //printf( "  New: %s %d \n", temp_p->name, temp_p->val );
-
-  // Create gyro arg
-  //struct gyr_struct gyr_arg;
-  //gyr_arg.temp_str = temp_s;
-  //gyr_arg.thr_str  = thr_gyr;
+  if( pthread_attr_setschedparam( &attr, &param ) )
+    printf( "Error (thr_init): Failed to set '%s' priority. \n", tmr_gyr.name );
 
   // Create thread
-  //if( pthread_create ( &thr_gyr.id, &attr, &fcn_gyr, &temp_s ) )
-  //if( pthread_create ( &thr_gyr.id, &attr, &fcn_gyr, &gyr_arg ) )
-  //printf( "Error (thr_init): Failed to create '%s' thread. \n", thr_gyr.name );
+  if( pthread_create ( &tmr_gyr.id, &attr, &fcn_gyr, &tmr_gyr ) )
+    printf( "Error (thr_init): Failed to create '%s' thread. \n", tmr_gyr.name );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -97,7 +77,7 @@ int main ( void )  {
 
 
   // Keep the program running
-  //while(running)  usleep(100000);
+  while(running)  usleep(100000);
   usleep(200000);
 
 
@@ -107,7 +87,7 @@ int main ( void )  {
 
   // Exiting threads
   if(DEBUG)  printf("Closing threads  \n");
-  //thr_exit(&thr_gyr);
+  thr_exit(&tmr_gyr);
   thr_exit(&tmr_debug);
 
   // Close subsystems

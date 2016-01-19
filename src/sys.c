@@ -65,6 +65,7 @@ void sys_debug ( tmr_struct* tmr_debug )  {
   // Time values
   float timestamp = (float)( tmr_debug->start_sec + ( tmr_debug->start_usec / 1000000.0f ) ); //- datalog.offset );
   printf("%6.1f    ", timestamp );  fflush(stdout);
+
   /*
   // System Input/Output values
   //pthread_mutex_lock(&mutex_sysio);
@@ -104,6 +105,7 @@ void sys_debug ( tmr_struct* tmr_debug )  {
   //for ( i=0; i<3; i++ )  printf( "%05.2f ", ctrl.err[Z][i]*(180.0f/PI) );  printf("   ");
   //for ( i=0; i<3; i++ )  printf( "%07.2f ", ctrl.input[i] *(180.0f/PI) );  printf("   ");
   */
+
   // Finish print loop
   fflush(stdout);
 
