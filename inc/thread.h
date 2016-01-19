@@ -47,7 +47,7 @@ void  thr_exit      ( thread_struct* thr );
 
 
 // Function handlers
-void* fcn_gyr    ( void* arg );
+void* fcn_gyr    ( );
 //void* fcn_fus    ( void* arg );
 //void* fcn_sio    ( void* arg );
 //void* fcn_ctrl   ( void* arg );

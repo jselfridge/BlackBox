@@ -6,6 +6,12 @@
 #include "main.h"
 
 
+struct arg_struct {
+  char* name;
+  int   val;
+} arg_struct;
+
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  main
 //  Primary code that runs the UAV avionics.
@@ -28,19 +34,17 @@ int main ( void )  {
   pthread_attr_t attr;  thr_attr(&attr);
 
   thread_struct thr_gyr;
-  thread_struct thr_debug;
+  //thread_struct thr_debug;
 
   thr_gyr.name   = "gyr";
-  thr_debug.name = "debug";
+  //thr_debug.name = "debug";
 
   thr_gyr.period   = 1000000 / HZ_GYR;
-  thr_debug.period = 1000000 / HZ_DEBUG;
+  //thr_debug.period = 1000000 / HZ_DEBUG;
 
   thr_gyr.priority   = PRIO_GYR;
-  thr_debug.priority = PRIO_DEBUG;
+  //thr_debug.priority = PRIO_DEBUG;
 
-  // Initialize temp structure
-  temp_struct temp;
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,22 +60,35 @@ int main ( void )  {
   if( pthread_attr_setschedparam( &attr, &param ) )
     printf( "Error (thr_init): Failed to set '%s' priority. \n", thr_gyr.name );
 
+  // Create argument struct
+  struct arg_struct args;
+  args.name = "charlie";
+  args.val  = 3;
+  printf( "  Struct: %s %d \n", args.name, args.val );
+
+  // Create pointer struct
+  struct arg_struct *parg;
+  parg = &args;
+  parg->name = "bravo";
+  parg->val = 2;
+  printf( "  Pointer: %s %d \n", parg->name, parg->val );
+
   // Create thread
-  if( pthread_create ( &thr_gyr.id, &attr, &fcn_gyr, &thr_gyr ) )
+  if( pthread_create ( &thr_gyr.id, &attr, &fcn_gyr, NULL ) )
     printf( "Error (thr_init): Failed to create '%s' thread. \n", thr_gyr.name );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   // Declare thread priority
-  param.sched_priority = thr_debug.priority;
+  //param.sched_priority = thr_debug.priority;
 
   // Assign thread priority and attributes
-  if( pthread_attr_setschedparam( &attr, &param ) )
-    printf( "Error (thr_init): Failed to set '%s' priority. \n", thr_debug.name );
+  //if( pthread_attr_setschedparam( &attr, &param ) )
+  //printf( "Error (thr_init): Failed to set '%s' priority. \n", thr_debug.name );
 
   // Create thread
-  if( pthread_create ( &thr_debug.id, &attr, &fcn_debug, &thr_debug ) )
-    printf( "Error (thr_init): Failed to create '%s' thread. \n", thr_debug.name );
+  //if( pthread_create ( &thr_debug.id, &attr, &fcn_debug, &thr_debug ) )
+  //printf( "Error (thr_init): Failed to create '%s' thread. \n", thr_debug.name );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -79,7 +96,7 @@ int main ( void )  {
 
 
   // Keep the program running
-  while(running)  usleep(100000);
+  //while(running)  usleep(100000);
   usleep(200000);
 
 
@@ -90,7 +107,7 @@ int main ( void )  {
   // Exiting threads
   if(DEBUG)  printf("Closing threads  \n");
   thr_exit(&thr_gyr);
-  thr_exit(&thr_debug);
+  //thr_exit(&thr_debug);
 
   // Close subsystems
   //usleep(200000);
