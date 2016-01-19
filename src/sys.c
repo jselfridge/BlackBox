@@ -52,10 +52,10 @@ void sys_init (  )  {
 //  sys_debug
 //  Prints system debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_debug ( tmr_struct* tmr_debug )  {
+void sys_debug ( tmr_struct* tmr_debug, sensor_struct* gyr_sensor )  {
 
   // Loop counter
-  //static ushort i;
+  ushort i;
 
   // Datalog file
   printf("\r");  fflush(stdout);
@@ -65,6 +65,11 @@ void sys_debug ( tmr_struct* tmr_debug )  {
   // Time values
   float timestamp = (float)( tmr_debug->start_sec + ( tmr_debug->start_usec / 1000000.0f ) ); //- datalog.offset );
   printf("%6.1f    ", timestamp );  fflush(stdout);
+
+  // Debugging sensor values
+  for ( i=0; i<3; i++ )  printf("%06d ", gyr_sensor->raw[i] );  printf("   ");
+  for ( i=0; i<3; i++ )  printf("%6.3f ", gyr_sensor->calib[i] );  printf("   ");
+  
 
   /*
   // System Input/Output values

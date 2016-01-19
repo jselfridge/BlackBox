@@ -49,8 +49,8 @@ typedef struct tmr_struct {
 
 // Sensor structure
 typedef struct sensor_struct {
-  short raw;
-  float calib;
+  short raw[3];
+  float calib[3];
 } sensor_struct;
 
 
@@ -59,6 +59,13 @@ typedef struct gyr_arg_struct {
   sensor_struct*  gyr_sensor;
   tmr_struct*     gyr_tmr;
 } gyr_arg_struct;
+
+
+// Debug argument structure
+typedef struct debug_arg_struct {
+  tmr_struct*     debug_tmr;
+  sensor_struct*  gyr_sensor;
+} debug_arg_struct;
 
 
 // Custom includes

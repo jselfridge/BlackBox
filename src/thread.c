@@ -197,7 +197,11 @@ void* fcn_gyr ( void* arg ) {
   while (running) {
     thr_start(gyr_tmr);
     imu_gyr(gyr_sensor);
-    printf("%d %f \n", gyr_sensor->raw, gyr_sensor->calib );  fflush(stdout);
+    /*
+    printf("%d %d %d    %f %f %f \n", \
+      gyr_sensor->raw[0],   gyr_sensor->raw[1],   gyr_sensor->raw[2], \
+      gyr_sensor->calib[0], gyr_sensor->calib[1], gyr_sensor->calib[2] );  fflush(stdout);
+    */
     thr_finish(gyr_tmr);
     thr_pause(gyr_tmr);
   }
@@ -212,8 +216,12 @@ void imu_gyr ( sensor_struct* gyr_sensor ) {
   if ( raw >= 100 ) raw = 0;
   raw++;
   float calib = raw * 3.0;
-  gyr_sensor->raw    = raw;
-  gyr_sensor->calib  = calib;
+  gyr_sensor->raw[0]    = raw;
+  gyr_sensor->raw[1]    = raw + 10;
+  gyr_sensor->raw[2]    = raw + 20;
+  gyr_sensor->calib[0]  = calib;
+  gyr_sensor->calib[1]  = calib + 100.0;
+  gyr_sensor->calib[2]  = calib + 200.0;
   return;
 }
 
@@ -226,15 +234,17 @@ void* fcn_debug ( void* arg ) {
   if(DEBUG)  printf("  Running 'debug' thread \n");
 
   // Demux argument pointers
-  struct tmr_struct* tmr = arg;
+  struct debug_arg_struct* debug_arg   = arg;
+  struct tmr_struct*       debug_tmr   = debug_arg->debug_tmr;
+  struct sensor_struct*    gyr_sensor  = debug_arg->gyr_sensor;
 
   // Execute timing loop
-  thr_periodic(tmr);
+  thr_periodic(debug_tmr);
   while (running) {
-    thr_start(tmr);
-    //sys_debug(tmr);
-    thr_finish(tmr);
-    thr_pause(tmr);
+    thr_start(debug_tmr);
+    sys_debug(debug_tmr,gyr_sensor);
+    thr_finish(debug_tmr);
+    thr_pause(debug_tmr);
   }
 
   // Exit timing thread

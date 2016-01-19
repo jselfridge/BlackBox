@@ -15,7 +15,7 @@
 
 // Function declarations
 void sys_init   (  );
-void sys_debug  ( tmr_struct* tmr_debug );
+void sys_debug  ( tmr_struct* tmr_debug, sensor_struct* gyr_sensor );
 void sys_flag   (  );
 void sys_exit   (  );
 

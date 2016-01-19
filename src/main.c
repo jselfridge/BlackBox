@@ -56,10 +56,8 @@ int main ( void )  {
 
   // Create gyro sensor structure
   sensor_struct gyr_sensor;
-  gyr_sensor.raw   = 100;
-  gyr_sensor.calib = 300.0;
 
-  // Create argument struct
+  // Create gyro argument struct
   gyr_arg_struct gyr_arg;
   gyr_arg.gyr_sensor = &gyr_sensor;
   gyr_arg.gyr_tmr    = &tmr_gyr;
@@ -77,8 +75,13 @@ int main ( void )  {
   if( pthread_attr_setschedparam( &attr, &param ) )
     printf( "Error (thr_init): Failed to set '%s' priority. \n", tmr_debug.name );
 
+  // Create debug argument struct
+  debug_arg_struct debug_arg;
+  debug_arg.debug_tmr  = &tmr_debug;
+  debug_arg.gyr_sensor = &gyr_sensor;
+
   // Create thread
-  if( pthread_create ( &tmr_debug.id, &attr, &fcn_debug, &tmr_debug ) )
+  if( pthread_create ( &tmr_debug.id, &attr, &fcn_debug, &debug_arg ) )
     printf( "Error (thr_init): Failed to create '%s' thread. \n", tmr_debug.name );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
