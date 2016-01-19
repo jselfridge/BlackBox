@@ -68,8 +68,14 @@ int main ( void )  {
   temp_p->val = 2;
   printf( "  New: %s %d \n", temp_p->name, temp_p->val );
 
+  // Create gyro arg
+  struct gyr_struct gyr_arg;
+  gyr_arg.temp_str = temp_s;
+  gyr_arg.thr_str  = thr_gyr;
+
   // Create thread
-  if( pthread_create ( &thr_gyr.id, &attr, &fcn_gyr, &temp_s ) )
+  //if( pthread_create ( &thr_gyr.id, &attr, &fcn_gyr, &temp_s ) )
+  if( pthread_create ( &thr_gyr.id, &attr, &fcn_gyr, &gyr_arg ) )
     printf( "Error (thr_init): Failed to create '%s' thread. \n", thr_gyr.name );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

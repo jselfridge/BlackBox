@@ -75,6 +75,12 @@ typedef struct temp_struct {
   int   val;
 } temp_struct;
 
+// Gyro arguments
+typedef struct gyr_struct {
+  temp_struct   temp_str;
+  thread_struct thr_str;
+} gyr_struct;
+
 
 // Custom includes
 //#include <ctrl.h>

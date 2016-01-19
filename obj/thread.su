@@ -5,5 +5,5 @@ thread.c:131:6:thr_start	16	static
 thread.c:149:6:thr_finish	24	static
 thread.c:174:6:thr_exit	16	static
 thread.c:187:7:fcn_gyr	16	static
-thread.c:211:6:imu_gyr	0	static
-thread.c:226:7:fcn_debug	40	static
+thread.c:220:6:imu_gyr	0	static
+thread.c:235:7:fcn_debug	40	static
