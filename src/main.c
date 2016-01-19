@@ -27,26 +27,42 @@ int main ( void )  {
   if(DEBUG)  printf("Initializing threads \n");
   pthread_attr_t attr;  thr_attr(&attr);
 
+  thread_struct thr_gyr;
   thread_struct thr_debug;
-  //thread_struct thr_imu;
 
+  thr_gyr.name   = "gyr";
   thr_debug.name = "debug";
-  //thr_imu.name   = "imu";
 
+  thr_gyr.period   = 1000000 / HZ_GYR;
   thr_debug.period = 1000000 / HZ_DEBUG;
-  //thr_imu.period   = 1000000 / HZ_IMU;
 
+  thr_gyr.priority   = PRIO_GYR;
   thr_debug.priority = PRIO_DEBUG;
-  //thr_imu.priority   = PRIO_IMU;
+
+  // Initialize temp structure
+  temp_struct temp;
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  struct sched_param param;
+  //thr_init( &thr_gyr,   &attr, fcn_gyr   );
   //thr_init( &thr_debug, &attr, fcn_debug );
-  //thr_init( &thr_imu,   &attr, fcn_imu   );
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   // Declare thread priority
-  struct sched_param param;
+  param.sched_priority = thr_gyr.priority;
+
+  // Assign thread priority and attributes
+  if( pthread_attr_setschedparam( &attr, &param ) )
+    printf( "Error (thr_init): Failed to set '%s' priority. \n", thr_gyr.name );
+
+  // Create thread
+  if( pthread_create ( &thr_gyr.id, &attr, &fcn_gyr, &thr_gyr ) )
+    printf( "Error (thr_init): Failed to create '%s' thread. \n", thr_gyr.name );
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  // Declare thread priority
   param.sched_priority = thr_debug.priority;
 
   // Assign thread priority and attributes
@@ -73,8 +89,8 @@ int main ( void )  {
 
   // Exiting threads
   if(DEBUG)  printf("Closing threads  \n");
+  thr_exit(&thr_gyr);
   thr_exit(&thr_debug);
-  //thr_exit(&thr_imu);
 
   // Close subsystems
   //usleep(200000);

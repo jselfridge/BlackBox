@@ -47,6 +47,34 @@ typedef struct thread_struct {
 } thread_struct;
 
 
+/*// Sensor structure
+typedef struct sensor_struct {
+  uint  hz;
+  float dt;
+  float lpf;
+  float tc;
+  float gain;
+  short raw;
+  float filter;
+  float calib;
+} sensor_struct;
+*/
+
+/*// IMU structure
+typedef struct imu_struct {
+  ushort addr;
+  sensor_struct gyr;
+  sensor_struct acc;
+  sensor_struct mag;
+} imu_struct;
+*/
+
+// Temp structure
+typedef struct temp_struct {
+  ushort raw;
+} temp_struct;
+
+
 // Custom includes
 //#include <ctrl.h>
 #include <gpio.h>

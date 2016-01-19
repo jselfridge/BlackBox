@@ -9,7 +9,7 @@
 
 
 // Define frequencies
-//#define HZ_IMU     500
+#define HZ_GYR     500
 //#define HZ_ATT     100
 //#define HZ_STAB     50
 //#define HZ_NAV      10
@@ -20,7 +20,7 @@
 
 
 // Define priorities
-//#define PRIO_IMU     98
+#define PRIO_GYR     98
 //#define PRIO_ATT     96
 //#define PRIO_STAB    94
 //#define PRIO_NAV     92
@@ -47,13 +47,14 @@ void  thr_exit      ( thread_struct* thr );
 
 
 // Function handlers
-//void* fcn_imu    ( void* arg );
+void* fcn_gyr    ( void* arg );
 //void* fcn_fus    ( void* arg );
 //void* fcn_sio    ( void* arg );
 //void* fcn_ctrl   ( void* arg );
 //void* fcn_telem  ( void* arg );
 void* fcn_debug  ( void* arg );
 
+void imu_gyr();  // DEBUGGING FUNCTION
 
 #endif
 
