@@ -23,6 +23,10 @@ int main ( void )  {
   //sio_init();
   //log_init();  //~~~ DEBUGGING ~~~//   
 
+  // Initialize datalog file
+  datalog = fopen( "datalog.txt", "w" );
+  fprintf( datalog, "datalog \n" );
+
   // Initialize threads
   if(DEBUG)  printf("Initializing threads \n");
   pthread_attr_t attr;  thr_attr(&attr);
@@ -102,6 +106,9 @@ int main ( void )  {
   if(DEBUG)  printf("Closing threads  \n");
   thr_exit(&tmr_gyr);
   thr_exit(&tmr_debug);
+
+  // Cose datalog file
+  fclose(datalog);
 
   // Close subsystems
   //usleep(200000);

@@ -197,6 +197,9 @@ void* fcn_gyr ( void* arg ) {
   while (running) {
     thr_start(gyr_tmr);
     imu_gyr(gyr_sensor);
+
+    float timestamp = (float)( gyr_tmr->start_sec + ( gyr_tmr->start_usec / 1000000.0f ) );
+    fprintf( datalog, "%011.6f \n", timestamp );
     /*
     printf("%d %d %d    %f %f %f \n", \
       gyr_sensor->raw[0],   gyr_sensor->raw[1],   gyr_sensor->raw[2], \

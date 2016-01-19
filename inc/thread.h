@@ -9,7 +9,7 @@
 
 
 // Define frequencies
-#define HZ_GYR     20
+#define HZ_GYR     1000
 //#define HZ_ATT     100
 //#define HZ_STAB     50
 //#define HZ_NAV      10

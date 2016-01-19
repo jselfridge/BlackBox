@@ -30,6 +30,7 @@
 // Global variables = EVIL... just use them for debugging
 bool running;
 struct sigaction sys_signal;
+FILE* datalog;
 
 
 // Timer structure
