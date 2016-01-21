@@ -27,13 +27,13 @@
 
 // Custom includes
 //#include <ctrl.h>
-#include <gpio.h>
-#include <imu.h>
-#include <led.h>
-#include <log.h>
+//#include <gpio.h>
+//#include <imu.h>
+//#include <led.h>
+//#include <log.h>
 //#include <pru.h>
-#include <sys.h>
-#include <thread.h>
+//#include <sys.h>
+//#include <timer.h>
 
 
 // PRU includes
@@ -42,9 +42,9 @@
 
 
 // MPU includes
-#include <inv_mpu.h>
-#include <inv_mpu_dmp_motion_driver.h>
-#include <inv_glue.h>
+//#include <inv_mpu.h>
+//#include <inv_mpu_dmp_motion_driver.h>
+//#include <inv_glue.h>
 
 
 #endif
