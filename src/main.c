@@ -15,7 +15,7 @@ int main ( void )  {
   printf("\n--- Begin BlackBox program ---\n");
 
   // Set LED indicators
-  //led_on(LED_IMU);  led_on(LED_PRU);  led_on(LED_LOG);  led_on(LED_MOT);
+  led_on(LED_IMU);  led_on(LED_PRU);  led_on(LED_LOG);  led_on(LED_MOT);
 
   // Initialize subsystems
   //sys_init();
@@ -29,9 +29,10 @@ int main ( void )  {
   // Continuous loop and then exit
   //while(sys.running);
   //sys_exit();
+  usleep(1000000);
 
   // Set LED indicators
-  //led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
+  led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
 
   //if(DEBUG)  
   printf("\n--- End BlackBox program ---\n");
