@@ -18,12 +18,12 @@ int main ( void )  {
 
   // Initialize subsystems
   sys_init();
+  tmr_init();
 
   //imu_init(&imu1,1);
   //log_init();
   //pru_init();
   //ctrl_init();
-  //thr_init();
 
   // Wait for exit condition
   while(running)  usleep(100000);

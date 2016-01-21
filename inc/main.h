@@ -9,6 +9,7 @@
 
 // Standard includes
 #include <fcntl.h>
+#include <limits.h>
 #include <malloc.h>
 #include <pthread.h>
 #include <sched.h>

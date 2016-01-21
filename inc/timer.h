@@ -8,44 +8,62 @@
 #include <main.h>
 
 
-/*// Thread structure
-typedef struct thread_struct {
+// Define timer priorities
+#define PRIO_GYR    96
+#define PRIO_ACC    96
+#define PRIO_MAG    94
+#define PRIO_DEBUG  80
+
+
+// Define timer frequencies
+#define HZ_GYR    200
+#define HZ_ACC    100
+#define HZ_MAG     50
+#define HZ_DEBUG   10
+
+
+// Timer structure
+typedef struct timer_struct {
   pthread_t id;
   int       fd;
-  ushort    priority;
-  ulong     period;
+  ushort    prio;
+  ulong     per;
   uint      start_sec;
   ulong     start_usec;
   uint      finish_sec;
   ulong     finish_usec;
   ulong     dur;
-} thread_struct;
+} timer_struct;
 
-// Thread instances
-thread_struct thr_imu;
-thread_struct thr_fusion;
-thread_struct thr_debug;
+
+// Timer instances
+timer_struct tmr_gyr;
+timer_struct tmr_acc;
+timer_struct tmr_mag;
+timer_struct tmr_debug;
 
 
 // Mutex variables
-pthread_mutex_t mutex_cal;
-pthread_mutex_t mutex_fusion;
+//pthread_mutex_t mutex_cal;
+//pthread_mutex_t mutex_fusion;
 
 
 // Thread functions
-void  thr_init      ( void );
-void  thr_periodic  ( thread_struct *thr );
-void  thr_pause     ( thread_struct *thr );
-void  thr_start     ( thread_struct *thr );
-void  thr_finish    ( thread_struct *thr );
-void  thr_exit      ( void );
+void  tmr_init      ( void );
+void  tmr_setup     ( void );
+void  tmr_attr      ( pthread_attr_t *attr );
+//void  tmr_periodic  ( thread_struct *thr );
+//void  tmr_pause     ( thread_struct *thr );
+//void  tmr_start     ( thread_struct *thr );
+//void  tmr_finish    ( thread_struct *thr );
+//void  tmr_exit      ( void );
 
 
 // Thread handlers
-void *thread_imu    ( );
-void *thread_fusion  ( );
-void *thread_debug   ( );
-*/
+//void *thread_imu    ( );
+//void *thread_fusion  ( );
+//void *thread_debug   ( );
+
 
 #endif
 

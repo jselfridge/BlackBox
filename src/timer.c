@@ -7,46 +7,27 @@
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thr_init
-//  Initializes the various threads.
+//  tmr_init
+//  Initializes the various timing threads.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void thr_init ( void )  {
-  if(DEBUG)  printf("Initializing threads \n");
+void tmr_init ( void )  {
+  if(DEBUG)  printf("Initializing timing threads \n");
 
-  // Local variables
+  // Populate the timer structures
+  tmr_setup();
+
+  // Specify thread attributes
   pthread_attr_t attr;
+  tmr_attr(&attr);
+
+
+  /*
+  // Local variables
   struct sched_param param;
-
-  // IMU thread
-  thr_imu.priority     =  98;
-  thr_imu.period       =  1000000 / FAST_HZ;
-
-  // Data fusion algorithm
-  thr_fusion.priority  =  96;
-  thr_fusion.period    =  1000000 / FUSION_HZ;
-
-  // Debugging thread
-  thr_debug.priority =  94;
-  thr_debug.period   =  1000000 / DEBUG_HZ;
 
   // Mutex initialization
   pthread_mutex_init( &mutex_cal, NULL );
   pthread_mutex_init( &mutex_fusion, NULL );
-
-  // Initialize attribute variable
-  pthread_attr_init(&attr);
-
-  // Make threads joinable
-  sys.ret = pthread_attr_setdetachstate( &attr, PTHREAD_CREATE_JOINABLE );
-  sys_err( sys.ret, "Error (thread_init): Failed to set 'joinable' attribute." );
-
-  // Specify inherit schedule
-  sys.ret = pthread_attr_setinheritsched( &attr, PTHREAD_EXPLICIT_SCHED );
-  sys_err( sys.ret, "Error (thread_init): Failed to set 'explicit' attribute." );
-
-  // Set scheduler policy
-  sys.ret = pthread_attr_setschedpolicy( &attr, SCHED_FIFO );
-  sys_err( sys.ret, "Error (thread_init): Failed to set 'FIFO' attribute." );
 
   // Initialize 'imu' thread
   param.sched_priority = thr_imu.priority;
@@ -71,10 +52,68 @@
   sys_err( sys.ret, "Error (thread_init): Failed to create 'debug' thread." );
   printf("\n");
   }
+  */
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  tmr_setup
+//  Assign timing thread parameters to a data structure.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void tmr_setup ( void )  {
+  if(DEBUG)  printf("  Assign parameters to data structure \n");
+
+  // Rate gyro timer
+  tmr_gyr.prio     =  PRIO_GYR;
+  tmr_gyr.per      =  1000000 / HZ_GYR;
+
+  // Accelerometer timer
+  tmr_acc.prio     =  PRIO_ACC;
+  tmr_acc.per      =  1000000 / HZ_ACC;
+
+  // Magnetometer timer
+  tmr_mag.prio     =  PRIO_MAG;
+  tmr_mag.per      =  1000000 / HZ_MAG;
+
+  // Debugging timer
+  tmr_debug.prio   =  PRIO_DEBUG;
+  tmr_debug.per    =  1000000 / HZ_DEBUG;
 
   return;
 }
-*/
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  tmr_attr
+//  Sets the attributes of the timing threads.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void tmr_attr ( pthread_attr_t *attr )  {
+  if(DEBUG)  printf("  Setting timer thread attributes \n");
+
+  // Initialize attribute variable
+  if( pthread_attr_init(attr) )
+    printf( "Error (thr_attr): Failed to initialize thread attribute. \n" );
+
+  // Set stack size of threads
+  if ( pthread_attr_setstacksize( attr, PTHREAD_STACK_MIN + (100*1024) ) )
+    printf( "Error (thr_attr): Failed to set 'stack size' attribute. \n" );
+
+  // Make threads joinable
+  if ( pthread_attr_setdetachstate( attr, PTHREAD_CREATE_JOINABLE ) )
+    printf( "Error (thr_attr): Failed to set 'joinable' attribute. \n" );
+
+  // Specify inherit schedule
+  if ( pthread_attr_setinheritsched( attr, PTHREAD_EXPLICIT_SCHED ) )
+    printf( "Error (thr_attr): Failed to set 'explicit' attribute. \n" );
+
+  // Set scheduler policy
+  if ( pthread_attr_setschedpolicy( attr, SCHED_FIFO ) )
+    printf( "Error (thr_attr): Failed to set 'FIFO' attribute." );
+
+  return;
+}
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thr_periodic
