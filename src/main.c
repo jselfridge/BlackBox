@@ -11,24 +11,119 @@
 //  Primary code that runs the UAV avionics.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int main ( void )  {
-  if(DEBUG)  printf("\n--- Begin BlackBox program ---\n");
 
-  // Set LED indicators
+  // Begin BlackBox program
+  if(DEBUG)  printf("\n--- Begin BlackBox program ---\n");
   led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
 
   // Initialize subsystems
   sys_init();
-  imu_init();
-  pru_init();
-  ctrl_init();
-  thr_init();
+  //usleep(250000);
+  //imu_init();
+  //sio_init();
+  //log_init();  //~~~ DEBUGGING ~~~//   
 
-  // Continuous loop and then exit
-  while(sys.running);
+  // Initialize datalog file
+  datalog = fopen( "datalog.txt", "w" );
+  fprintf( datalog, "datalog \n" );
+
+  // Initialize threads
+  if(DEBUG)  printf("Initializing threads \n");
+  pthread_attr_t attr;  thr_attr(&attr);
+
+  tmr_struct tmr_gyr;
+  tmr_struct tmr_debug;
+
+  tmr_gyr.name   = "gyr";
+  tmr_debug.name = "debug";
+
+  tmr_gyr.period   = 1000000 / HZ_GYR;
+  tmr_debug.period = 1000000 / HZ_DEBUG;
+
+  tmr_gyr.priority   = PRIO_GYR;
+  tmr_debug.priority = PRIO_DEBUG;
+
+
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  struct sched_param param;
+  //thr_init( &thr_gyr,   &attr, fcn_gyr   );
+  //thr_init( &thr_debug, &attr, fcn_debug );
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  // Declare thread priority
+  param.sched_priority = tmr_gyr.priority;
+
+  // Assign thread priority and attributes
+  if( pthread_attr_setschedparam( &attr, &param ) )
+    printf( "Error (thr_init): Failed to set '%s' priority. \n", tmr_gyr.name );
+
+  // Create gyro sensor structure
+  sensor_struct gyr_sensor;
+
+  // Create gyro argument struct
+  gyr_arg_struct gyr_arg;
+  gyr_arg.gyr_sensor = &gyr_sensor;
+  gyr_arg.gyr_tmr    = &tmr_gyr;
+
+  // Create thread
+  if( pthread_create ( &tmr_gyr.id, &attr, &fcn_gyr, &gyr_arg ) )
+    printf( "Error (thr_init): Failed to create '%s' thread. \n", tmr_gyr.name );
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  // Declare thread priority
+  param.sched_priority = tmr_debug.priority;
+
+  // Assign thread priority and attributes
+  if( pthread_attr_setschedparam( &attr, &param ) )
+    printf( "Error (thr_init): Failed to set '%s' priority. \n", tmr_debug.name );
+
+  // Create debug argument struct
+  debug_arg_struct debug_arg;
+  debug_arg.debug_tmr  = &tmr_debug;
+  debug_arg.gyr_sensor = &gyr_sensor;
+
+  // Create thread
+  if( pthread_create ( &tmr_debug.id, &attr, &fcn_debug, &debug_arg ) )
+    printf( "Error (thr_init): Failed to create '%s' thread. \n", tmr_debug.name );
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+  // Keep the program running
+  while(running)  usleep(100000);
+  usleep(200000);
+
+
+  // Exit program
+  if(DEBUG)  printf("\n--- Exit BlackBox program ---\n");
+  led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
+
+  // Exiting threads
+  if(DEBUG)  printf("Closing threads  \n");
+  thr_exit(&tmr_gyr);
+  thr_exit(&tmr_debug);
+
+  // Cose datalog file
+  fclose(datalog);
+
+  // Close subsystems
+  //usleep(200000);
   sys_exit();
+  //log_exit();  //~~~ DEBUGGING ~~~//
+  //imu_exit();
+  //sio_exit();
 
   return 0;
 }
+
+
+
+
+
 
 
 

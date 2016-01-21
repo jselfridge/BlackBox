@@ -10,21 +10,13 @@
 
 // Define statements
 
-//#define IMU_BUS    1
-//#define ADDR1      0x68
-//#define ADDR2      0x69
+#define GYR_HIST   10
+#define ACC_HIST   10
+#define MAG_HIST   10
 
-#define FAST_HZ    1000
-#define SLOW_HZ     100
-#define FUSION_HZ   100
-
-#define GYR_HIST    8
-#define ACC_HIST    6
-#define MAG_HIST    4
-
-#define GYR_LPF   (10.0f)
-#define ACC_LPF   (1.0f)
-#define MAG_LPF   (0.1f)
+#define GYR_LPF   (0.0f)
+#define ACC_LPF   (0.0f)
+#define MAG_LPF   (0.0f)
 
 #define GYR_FSR   500
 #define ACC_FSR   4
@@ -50,23 +42,19 @@ typedef struct {
   ushort  addr;
   ushort  count;
   ushort  loops;
-  ushort  gyr_hz;
-  ushort  acc_hz;
-  ushort  mag_hz;
-  ushort  fus_hz;
-  float   gyr_dt;
-  float   acc_dt;
-  float   mag_dt;
-  float   fus_dt;
-  float   gyr_lpf;
-  float   acc_lpf;
-  float   mag_lpf;
-  float   gyr_tc;
-  float   acc_tc;
-  float   mag_tc;
-  float   gyr_gain;
-  float   acc_gain;
-  float   mag_gain;
+  ushort  hz_imu;
+  ushort  hz_att;
+  float   dt_imu;
+  float   dt_att;
+  float   lpf_gyr;
+  float   lpf_acc;
+  float   lpf_mag;
+  float   tc_gyr;
+  float   tc_acc;
+  float   tc_mag;
+  float   gain_gyr;
+  float   gain_acc;
+  float   gain_mag;
   int     moffset   [3];
   int     aoffset   [3];
   int     mrange    [3];
@@ -83,7 +71,6 @@ typedef struct {
   float   calGyr    [3];
   float   calAcc    [3];
   float   calMag    [3];
-  double  Prev      [4];
   double  Quat      [4];
   double  dQuat     [4];
   double  Eul       [3];
@@ -92,7 +79,7 @@ typedef struct {
   double  fx;
   double  fz;
 } imu_struct;
-imu_struct imu1;
+//imu_struct imu1;
 //imu_struct imu2;
 
 

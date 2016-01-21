@@ -12,16 +12,19 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int led_rmtrig ( unsigned int index )  {
 
-  sys_err( index >3, "Error (led_rmtrig): LED index is between 0-3." );
+  if( index >3 )
+    printf( "Error (led_rmtrig): LED index is between 0-3. \n" );
 
   int fd, len;
   char path[MAX_BUF];
 
   len = snprintf ( path, sizeof(path), LED_PATH "%d/trigger", index );
-  sys_err( len <=0, "Error (led_rmtrig): Failed to generate 'trigger' file path." );
+  if( len <=0 )
+    printf( "Error (led_rmtrig): Failed to generate 'trigger' file path. \n" );
 
   fd = open( path , O_WRONLY );  
-  sys_err( fd <0, "Error (led_rmtrig): Failed to open 'trigger' file." );
+  if( fd <0 )
+    printf( "Error (led_rmtrig): Failed to open 'trigger' file. \n" );
 
   write( fd, "none", 5 );
   close(fd);
@@ -36,7 +39,8 @@ int led_rmtrig ( unsigned int index )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int led_on ( unsigned int index )  {
 
-  sys_err( index >3, "Error (led_on): LED index is between 0-3." );
+  if( index >3 )
+    printf( "Error (led_on): LED index is between 0-3. \n" );
 
   int fd, len;
   char path[MAX_BUF];
@@ -44,10 +48,12 @@ int led_on ( unsigned int index )  {
   led_rmtrig(index);
 
   len = snprintf ( path, sizeof(path), LED_PATH "%d/brightness", index );
-  sys_err( len <=0, "Error (led_on): Failed to generate 'brightness' file path." );
+  if( len <=0 )
+    printf( "Error (led_on): Failed to generate 'brightness' file path. \n" );
 
   fd = open ( path, O_WRONLY );
-  sys_err( fd <0, "Error (led_on): Failed to open 'brightness' file." );
+  if( fd <0 )
+    printf( "Error (led_on): Failed to open 'brightness' file. \n" );
 
   write( fd, "1", 2 );
   close(fd);
@@ -62,7 +68,8 @@ int led_on ( unsigned int index )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int led_off ( unsigned int index )  {
 
-  sys_err( index >3, "Error (led_off): LED index is between 0-3." );
+  if( index >3 )
+    printf( "Error (led_off): LED index is between 0-3. \n" );
 
   int fd, len;
   char path[MAX_BUF];
@@ -70,10 +77,12 @@ int led_off ( unsigned int index )  {
   led_rmtrig(index);
 
   len = snprintf ( path, sizeof(path), LED_PATH "%d/brightness", index );
-  sys_err( len <=0, "Error (led_off): Failed to generate 'brightness' file path." );
+  if( len <=0 )
+    printf( "Error (led_off): Failed to generate 'brightness' file path. \n" );
 
   fd = open ( path, O_WRONLY );
-  sys_err( fd <0, "Error (led_off): Failed to open 'brightness' file." );
+  if( fd <0 )
+    printf( "Error (led_off): Failed to open 'brightness' file. \n" );
 
   write( fd, "0", 2 );
   close(fd);
@@ -88,9 +97,12 @@ int led_off ( unsigned int index )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int led_blink ( unsigned int index, unsigned int on, unsigned int off )  {
 
-  sys_err( index  >3, "Error (led_blink): LED index is between 0-3."        );
-  sys_err( on    <=0, "Error (led_blink): Duration 'on' must be positive."  );
-  sys_err( off   <=0, "Error (led_blink): Duration 'off' must be positive." );
+  if( index  >3 )
+    printf( "Error (led_blink): LED index is between 0-3. \n"        );
+  if( on    <=0 )
+    printf( "Error (led_blink): Duration 'on' must be positive. \n"  );
+  if( off   <=0 )
+    printf( "Error (led_blink): Duration 'off' must be positive. \n" );
 
   int fd, len;
   char path[MAX_BUF];
@@ -99,31 +111,39 @@ int led_blink ( unsigned int index, unsigned int on, unsigned int off )  {
   path[0] = '\0';
   val[0]  = '\0';
   len = snprintf ( path, sizeof(path), LED_PATH "%d/trigger", index );
-  sys_err( len <=0, "Error (led_blink): Failed to generate 'trigger' file path." );
+  if( len <=0 )
+    printf( "Error (led_blink): Failed to generate 'trigger' file path. \n" );
   fd = open ( path, O_WRONLY );
-  sys_err( fd <0, "Error (led_blink): Failed to open 'trigger' file." );
+  if( fd <0 )
+    printf( "Error (led_blink): Failed to open 'trigger' file. \n" );
   write( fd, "timer", 6 );
   close(fd);
 
   path[0] = '\0';
   val[0]  = '\0';
   len = snprintf ( path, sizeof(path), LED_PATH "%d/delay_on", index );
-  sys_err( len <=0, "Error (led_blink): Failed to generate 'delay_on' file path." );
+  if( len <=0 )
+    printf( "Error (led_blink): Failed to generate 'delay_on' file path. \n" );
   fd = open ( path, O_WRONLY );
-  sys_err( fd <0, "Error (led_blink): Failed to open 'delay_on' file." );
+  if( fd <0 )
+    printf( "Error (led_blink): Failed to open 'delay_on' file. \n" );
   len = snprintf ( val, sizeof(val), "%d", on );
-  sys_err( len<=0, "Error (led_blink): Failed to generate 'delay_on' description." );
+  if( len<=0 )
+    printf( "Error (led_blink): Failed to generate 'delay_on' description. \n" );
   write( fd, val, len+1 );
   close(fd);
 
   path[0] = '\0';
   val[0]  = '\0';
   len = snprintf ( path, sizeof(path), LED_PATH "%d/delay_off", index );
-  sys_err( len<=0, "Error (led_blink): Failed to generate 'delay_off' file path." );
+  if( len<=0 )
+    printf( "Error (led_blink): Failed to generate 'delay_off' file path. \n" );
   fd = open ( path, O_WRONLY );
-  sys_err( fd<0, "Error (led_blink): Failed to open 'delay_off' file." );
+  if( fd<0 )
+    printf( "Error (led_blink): Failed to open 'delay_off' file. \n" );
   len = snprintf( val, sizeof(val), "%d", off );
-  sys_err( len<=0, "Error (led_blink): Failed to generate 'delay_off' description." );
+  if( len<=0 )
+    printf( "Error (led_blink): Failed to generate 'delay_off' description. \n" );
   write( fd, val, len+1 );
   close(fd);
 

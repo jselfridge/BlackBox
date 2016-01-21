@@ -10,12 +10,13 @@
 
 // Log enumerations
 enum log_index {
-  LOG_GYR    = 0,
-  LOG_ACC    = 1,
-  LOG_MAG    = 2,
-  LOG_FUSION = 3,
-  LOG_SYSIO  = 4,
-  LOG_CTRL   = 5
+  LOG_NOTE = 0,
+  LOG_GYR  = 1,
+  LOG_ACC  = 2,
+  LOG_MAG  = 3,
+  LOG_FUS  = 4,
+  LOG_SIO  = 5,
+  LOG_CTRL = 6
 } log_index;
 
 
@@ -25,16 +26,17 @@ typedef struct {
   FILE* gyr;
   FILE* acc;
   FILE* mag;
-  FILE* fusion;
-  FILE* sysio;
-  FILE* ctrl;
+  FILE* fus;
+  FILE* sio;
+  FILE* stab;
+  FILE* nav;
   char* dir;
   char* path;
   bool  open;
   bool  enabled;
   long  offset;
 } log_struct;
-log_struct datalog; 
+//log_struct datalog; 
 
 
 // Log functions

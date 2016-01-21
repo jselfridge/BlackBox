@@ -67,7 +67,7 @@
 #define T_RANGE    100
 #define T_MIN     1500
 #define T_MAX     1650
-#define T_TILT   12.0f
+#define T_TILT   30.0f
 
 
 // Full scale ranges
@@ -94,19 +94,19 @@ typedef struct {
   uint    stickHold;
   bool    motorsArmed;
 } ctrl_struct;
-ctrl_struct ctrl;
+//ctrl_struct ctrl;
 
 
 // CTRL functions
-void  ctrl_init    ( void );
-void  ctrl_exit    ( void );
-void  ctrl_disarm  ( void );
-void  ctrl_law     ( void );
-void  ctrl_ref     ( void );
-void  ctrl_flags   ( void );
-void  ctrl_switch  ( void );
-void  ctrl_pid     ( void );
-void  ctrl_limit   ( void );
+//void  ctrl_init    ( void );
+//void  ctrl_exit    ( void );
+//void  ctrl_disarm  ( void );
+//void  ctrl_law     ( void );
+//void  ctrl_ref     ( void );
+//void  ctrl_flags   ( void );
+//void  ctrl_switch  ( void );
+//void  ctrl_pid     ( void );
+//void  ctrl_limit   ( void );
 
 
 #endif
