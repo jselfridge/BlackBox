@@ -7,40 +7,42 @@
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_err
-//  If error condition is true, prints a warning and exits.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_err ( bool cond, char* msg )  {
-  if (cond) {  fprintf( stderr, "%s\n\n", msg );  exit(1);  }
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_init
 //  Initializes the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_init ( void )  {
   if(DEBUG)  printf("Initializing system \n");
 
-  // Initialize struct values
-  sys.running = true;
-  sys.ret = 0;
-
   // Establish exit condition
+  if(DEBUG)  printf("  Set system exit condition \n");
   struct sigaction sys_run;
-  if(DEBUG)  printf("  Setting system exit condition \n");
+  running = true;
   memset( &sys_run, 0, sizeof(sys_run) );
   sys_run.sa_handler = &sys_exit;
-  sys.ret = sigaction( SIGINT, &sys_run, NULL );
-  sys_err( sys.ret == -1, "Error (sys_init): Function 'sigaction' failed." );
+  if( sigaction( SIGINT, &sys_run, NULL ) == -1 )
+    printf( "Error (sys_init): Function 'sigaction' failed. \n" );
+
+  // Establish realtime priority
+  if(DEBUG)  printf("  Establish realtime priority \n");
+  struct sched_param sp;
+  sp.sched_priority = 98;
+  if( sched_setscheduler( 0, SCHED_FIFO, &sp ) == -1 )
+    printf( "Error (sys_init): Function 'sched_setscheduler' failed. \n" );
+
+  // Prefault memory stack
+  if(DEBUG)  printf("  Prefault memory stack \n");
+  int i;
+  char *buffer;   
+  buffer = malloc(SYS_STACK);
+  for ( i=0; i<SYS_STACK; i += sysconf(_SC_PAGESIZE) )  {  buffer[i] = 0;  }
+  free(buffer);
 
   // Lock and reserve memory
-  if(DEBUG)  printf("  Locking and reserving memory \n");
-  sys.ret = mlockall( MCL_CURRENT | MCL_FUTURE );
-  sys_err( sys.ret, "Error (sys_init): Failed to lock memory." );
+  if(DEBUG)  printf("  Lock and reserve memory \n");
+  if ( mlockall( MCL_CURRENT | MCL_FUTURE ) )
+    printf( "Error (sys_init): Failed to lock memory. \n" );
   mallopt( M_TRIM_THRESHOLD, -1 );
   mallopt( M_MMAP_MAX, 0 );
-  sys_memory(SYS_STACK);
 
   return;
 }
@@ -50,8 +52,8 @@ void sys_init ( void )  {
 //  sys_debug
 //  Prints system debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_debug (  )  {
-
+void sys_debug ( void )  {
+  /*
   // Loop counter
   ushort i;
 
@@ -130,7 +132,7 @@ void sys_debug (  )  {
   // Finish print loop
   printf("    ");
   fflush(stdout);
-
+  */
   return;
 }
 
@@ -140,32 +142,25 @@ void sys_debug (  )  {
 //  Code that runs prior to exiting the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_exit (  )  {
-  sys.running = false;
-  usleep(500000);
+
+  // Change exit status
+  running = false;
+  usleep(200000);
+
+  // Exit subsystems
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
-  thr_exit();
-  imu_exit();
+  //thr_exit();
+  //imu_exit();
   //pru_exit();
-  log_exit();  //--- DEBUG ---//
-  led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
+  //log_exit();  //--- DEBUG ---//
+
+  // Shut everything down
   if(DEBUG)  printf("Program complete \n");
-  sys.ret = sigaction( SIGINT, &sys_signal, NULL );
-  sys_err( sys.ret == -1, "Error (sys_exit): Function 'sigaction' failed." );
+  led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
+  if( sigaction( SIGINT, &sys_signal, NULL ) == -1 )
+    printf( "Error (sys_exit): Function 'sigaction' failed. \n" );
   kill( 0, SIGINT );
-  return;
-}
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_memory
-//  Reserves a block of memory exclusively for the system.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_memory ( int size )  {
-  int i;
-  char *buffer;   
-  buffer = malloc(size);
-  for ( i=0; i<size; i += sysconf(_SC_PAGESIZE) )  {  buffer[i] = 0;  }
-  free(buffer);
   return;
 }
 

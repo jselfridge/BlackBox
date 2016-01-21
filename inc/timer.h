@@ -1,14 +1,14 @@
 
 //============================================================
-//  thread.h
+//  timer.h
 //  Justin M Selfridge
 //============================================================
-#ifndef _THREAD_H_
-#define _THREAD_H_
+#ifndef _TIMER_H_
+#define _TIMER_H_
 #include <main.h>
 
 
-// Thread structure
+/*// Thread structure
 typedef struct thread_struct {
   pthread_t id;
   int       fd;
@@ -45,7 +45,7 @@ void  thr_exit      ( void );
 void *thread_imu    ( );
 void *thread_fusion  ( );
 void *thread_debug   ( );
-
+*/
 
 #endif
 

@@ -1,16 +1,16 @@
 
 //============================================================
-//  thread.c
+//  timer.c
 //  Justin M Selfridge
 //============================================================
-#include "thread.h"
+#include "timer.h"
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thr_init
 //  Initializes the various threads.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thr_init ( void )  {
+/*void thr_init ( void )  {
   if(DEBUG)  printf("Initializing threads \n");
 
   // Local variables
@@ -74,13 +74,13 @@ void thr_init ( void )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thr_periodic
 //  Establishes the periodic attributes for a thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thr_periodic ( thread_struct *thr )  {
+/*void thr_periodic ( thread_struct *thr )  {
 
   // Local variables
   unsigned int fd, sec, nsec;
@@ -109,13 +109,13 @@ void thr_periodic ( thread_struct *thr )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thr_pause
 //  Implements the pause before starting the next loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thr_pause ( thread_struct *thr )  {
+/*void thr_pause ( thread_struct *thr )  {
 
   // Local variables
   unsigned long long missed;
@@ -129,13 +129,13 @@ void thr_pause ( thread_struct *thr )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thr_start
 //  Start code for a thread loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thr_start ( thread_struct *thr )  {
+/*void thr_start ( thread_struct *thr )  {
 
   // Get current time
   struct timespec timeval;
@@ -147,13 +147,13 @@ void thr_start ( thread_struct *thr )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thr_finish
 //  Finish code for a thread loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thr_finish ( thread_struct *thr )  {
+/*void thr_finish ( thread_struct *thr )  {
 
   // Get current time
   struct timespec timeval;
@@ -172,13 +172,13 @@ void thr_finish ( thread_struct *thr )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thr_exit
 //  Cleanly exits the threads.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void thr_exit ( void )  {
+/*void thr_exit ( void )  {
   printf("Closing threads  \n");
   void *status;
 
@@ -205,13 +205,13 @@ void thr_exit ( void )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_imu
 //  Run the 'imu' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void *thread_imu ( )  {
+/*void *thread_imu ( )  {
   printf("  Running 'imu' thread \n");
   thr_periodic (&thr_imu);
   while (sys.running) {
@@ -226,13 +226,13 @@ void *thread_imu ( )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_fusion
 //  Run the 'fusion' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void *thread_fusion ( )  {
+/*void *thread_fusion ( )  {
   printf("  Running 'fusion' thread \n");
   usleep(500000);
   thr_periodic (&thr_fusion);
@@ -247,13 +247,13 @@ void *thread_fusion ( )  {
 
   return NULL;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  thread_debug
 //  Run the 'debug' thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void *thread_debug ( )  {
+/*void *thread_debug ( )  {
   printf("  Running 'debug' thread \n");
   usleep(500000);
   thr_periodic (&thr_debug);
@@ -266,6 +266,6 @@ void *thread_debug ( )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 

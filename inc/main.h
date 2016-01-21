@@ -28,6 +28,8 @@
 // Custom includes
 #include <gpio.h>
 #include <led.h>
+#include <sys.h>
+#include <timer.h>
 
 
 // Under development
@@ -35,8 +37,6 @@
 //#include <imu.h>
 //#include <log.h>
 //#include <pru.h>
-//#include <sys.h>
-//#include <timer.h>
 
 
 // PRU includes
@@ -48,6 +48,11 @@
 //#include <inv_mpu.h>
 //#include <inv_mpu_dmp_motion_driver.h>
 //#include <inv_glue.h>
+
+
+// Global variables (remove as quickly as possible)
+bool running;
+struct sigaction sys_signal;
 
 
 #endif
