@@ -1,3 +1,10 @@
-timer.c:13:6:tmr_init	48	static
-timer.c:64:6:tmr_setup	8	static
-timer.c:91:6:tmr_attr	16	static
+timer.c:18:6:tmr_init	48	static
+timer.c:50:6:tmr_setup	8	static
+timer.c:81:6:tmr_attr	16	static
+timer.c:112:6:tmr_thread	32	static
+timer.c:135:6:tmr_create	40	static
+timer.c:170:6:tmr_pause	24	static
+timer.c:190:6:tmr_start	24	static
+timer.c:208:6:tmr_finish	24	static
+timer.c:233:6:tmr_exit	16	static
+timer.c:254:7:fcn_gyr	8	static

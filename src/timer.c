@@ -6,6 +6,11 @@
 #include "timer.h"
 
 
+  // Mutex initialization
+  //pthread_mutex_init( &mutex_cal, NULL );
+  //pthread_mutex_init( &mutex_fusion, NULL );
+
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  tmr_init
 //  Initializes the various timing threads.
@@ -13,46 +18,27 @@
 void tmr_init ( void )  {
   if(DEBUG)  printf("Initializing timing threads \n");
 
-  // Populate the timer structures
-  tmr_setup();
-
-  // Specify thread attributes
+  // Local variables
   pthread_attr_t attr;
+  //struct sched_param param;
+
+  // Run through functions
+  tmr_setup();
   tmr_attr(&attr);
 
+  tmr_thread( &tmr_gyr, &attr, fcn_gyr );
 
-  /*
-  // Local variables
-  struct sched_param param;
-
-  // Mutex initialization
-  pthread_mutex_init( &mutex_cal, NULL );
-  pthread_mutex_init( &mutex_fusion, NULL );
-
-  // Initialize 'imu' thread
-  param.sched_priority = thr_imu.priority;
-  sys.ret = pthread_attr_setschedparam( &attr, &param );
-  sys_err( sys.ret, "Error (thread_init): Failed to set 'imu' priority." );
-  sys.ret = pthread_create ( &thr_imu.id, &attr, thread_imu, (void *)NULL );
-  sys_err( sys.ret, "Error (thread_init): Failed to create 'imu' thread." );
-
-  // Initialize 'fusion' thread
-  param.sched_priority = thr_fusion.priority;
-  sys.ret = pthread_attr_setschedparam( &attr, &param );
-  sys_err( sys.ret, "Error (thread_init): Failed to set 'fusion' priority." );
-  sys.ret = pthread_create ( &thr_fusion.id, &attr, thread_fusion, (void *)NULL );
-  sys_err( sys.ret, "Error (thread_init): Failed to create 'fusion' thread." );
-
-  // Initialize 'debug' thread
-  if(DEBUG) {
-  param.sched_priority = thr_debug.priority;
-  sys.ret = pthread_attr_setschedparam( &attr, &param );
-  sys_err( sys.ret, "Error (thread_init): Failed to set 'debug' priority." );
-  sys.ret = pthread_create ( &thr_debug.id, &attr, thread_debug, (void *)NULL );
-  sys_err( sys.ret, "Error (thread_init): Failed to create 'debug' thread." );
-  printf("\n");
-  }
+  /*  // Create 'gyr' timer
+  printf("prio: %d \n", tmr_gyr.prio ); fflush(stdout);
+  param.sched_priority = tmr_gyr.prio;
+  if ( pthread_attr_setschedparam( &attr, &param ) );
+    printf( "Error (tmr_init): Failed to set 'gyr' priority. \n" );
+  if( pthread_create( &tmr_gyr.id, &attr, fcn_gyr, (void *)NULL ) )
+    printf( "Error (tmr_init): Failed to create 'gyr' thread. \n" );
   */
+
+
+
   return;
 }
 
@@ -65,18 +51,22 @@ void tmr_setup ( void )  {
   if(DEBUG)  printf("  Assign parameters to data structure \n");
 
   // Rate gyro timer
+  tmr_gyr.name     =  "gyr";
   tmr_gyr.prio     =  PRIO_GYR;
   tmr_gyr.per      =  1000000 / HZ_GYR;
 
   // Accelerometer timer
+  tmr_acc.name     =  "acc";
   tmr_acc.prio     =  PRIO_ACC;
   tmr_acc.per      =  1000000 / HZ_ACC;
 
   // Magnetometer timer
+  tmr_mag.name     =  "mag";
   tmr_mag.prio     =  PRIO_MAG;
   tmr_mag.per      =  1000000 / HZ_MAG;
 
   // Debugging timer
+  tmr_debug.name   =  "debug";
   tmr_debug.prio   =  PRIO_DEBUG;
   tmr_debug.per    =  1000000 / HZ_DEBUG;
 
@@ -116,195 +106,164 @@ void tmr_attr ( pthread_attr_t *attr )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thr_periodic
-//  Establishes the periodic attributes for a thread.
+//  tmr_thread
+//  Create a new pthread to run the timer. 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void thr_periodic ( thread_struct *thr )  {
+void tmr_thread ( timer_struct *tmr, pthread_attr_t *attr, void *fcn )  {
+  if(DEBUG)  printf( "  Started '%s' timer thread \n", tmr->name );
 
-  // Local variables
-  unsigned int fd, sec, nsec;
-  struct itimerspec itval;
+  // Declare thread priority
+  struct sched_param param;
+  param.sched_priority = tmr->prio;
 
-  // Create the timer
-  fd = timerfd_create ( CLOCK_MONOTONIC, 0 );
-  sys_err( fd == -1, "Error (thread_periodic): Failed to create timer." );
-  thr->fd = fd;
+  // Assign thread priority and attributes
+  if( pthread_attr_setschedparam( attr, &param ) )
+    printf( "Error (thr_create): Failed to set '%s' priority. \n", tmr->name );
 
-  // Determine time values
-  sec = thr->period / 1000000;
-  nsec = ( thr->period - ( sec * 1000000 ) ) * 1000;
-
-  // Set interval duration
-  itval.it_interval.tv_sec = sec;
-  itval.it_interval.tv_nsec = nsec;
-
-  // Set start value
-  itval.it_value.tv_sec = 0;
-  itval.it_value.tv_nsec = 200000000;
-
-  // Enable the timer
-  sys.ret = timerfd_settime ( fd, 0, &itval, NULL );
-  sys_err( sys.ret, "Error (thread_periodic): Failed to enable the timer." );
+  // Create thread
+  if( pthread_create ( &tmr->id, attr, fcn, (void*)NULL ) )
+    printf( "Error (thr_init): Failed to create '%s' thread. \n", tmr->name );
 
   return;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thr_pause
+//  tmr_create
+//  Creates the timer file descriptor within a thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void tmr_create ( timer_struct *tmr )  {
+
+  // Local variables
+  uint sec;
+  ulong nsec;
+  struct itimerspec itval;
+
+  // Create the timer
+  tmr->fd = timerfd_create ( CLOCK_MONOTONIC, 0 );
+  if( tmr->fd == -1 )  printf( "Error (tmr_create): Failed to create '%s' timer. \n", tmr->name );
+
+  // Determine time values
+  sec = tmr->per / 1000000;
+  nsec = ( tmr->per % 1000000 ) * 1000;
+
+  // Set interval duration
+  itval.it_interval.tv_sec  = sec;
+  itval.it_interval.tv_nsec = nsec;
+
+  // Set start value
+  itval.it_value.tv_sec  = 0;
+  itval.it_value.tv_nsec = 200 * 1000 * 1000;
+
+  // Enable the timer
+  if( timerfd_settime ( tmr->fd, 0, &itval, NULL ) )
+    printf( "Error (tmr_create): Failed to enable the '%s' timer. \n", tmr->name );
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  tmr_pause
 //  Implements the pause before starting the next loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void thr_pause ( thread_struct *thr )  {
+void tmr_pause ( timer_struct *tmr )  {
 
   // Local variables
   unsigned long long missed;
 
   // Wait for timer event and obtain number of "missed" loops
-  sys.ret = read( thr->fd, &missed, sizeof(missed) );
-  sys_err( sys.ret == -1, "Error (thread_pause): Failed to read timer file." );
+  if( read( tmr->fd, &missed, sizeof(missed) ) == -1 )
+    printf( "Error (tmr_pause): Failed to read '%s' timer file. \n", tmr->name );
 
   // Play around with the "missed" feature some more...
-  //if ( missed > 0 )  {  thr->missed += (missed - 1);  }
+  //if ( missed > 0 )  {  tmr->missed += (missed - 1);  }
 
   return;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thr_start
-//  Start code for a thread loop.
+//  tmr_start
+//  Start code for a timer loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void thr_start ( thread_struct *thr )  {
+void tmr_start ( timer_struct *tmr )  {
 
   // Get current time
   struct timespec timeval;
   clock_gettime( CLOCK_MONOTONIC, &timeval );
 
   // Assign start time to thread
-  thr->start_sec  = timeval.tv_sec;
-  thr->start_usec = timeval.tv_nsec / 1000;
+  tmr->start_sec  = timeval.tv_sec;
+  tmr->start_usec = timeval.tv_nsec / 1000;
 
   return;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thr_finish
-//  Finish code for a thread loop.
+//  tmr_finish
+//  Finish code for a timer loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void thr_finish ( thread_struct *thr )  {
+void tmr_finish ( timer_struct *tmr )  {
 
   // Get current time
   struct timespec timeval;
   clock_gettime( CLOCK_MONOTONIC, &timeval );
 
   // Assign finish time to thread
-  thr->finish_sec  = timeval.tv_sec;
-  thr->finish_usec = timeval.tv_nsec /1000;
+  tmr->finish_sec  = timeval.tv_sec;
+  tmr->finish_usec = timeval.tv_nsec /1000;
 
   // Adjust for rollover
-  if ( thr->finish_sec == thr->start_sec )  thr->dur = 0;
-  else                                      thr->dur = 1000000;
+  if ( tmr->finish_sec == tmr->start_sec )  tmr->dur = 0;
+  else                                      tmr->dur = 1000000;
 
   // Calculate timing metrics
-  thr->dur += thr->finish_usec - thr->start_usec;
+  tmr->dur += tmr->finish_usec - tmr->start_usec;
 
   return;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thr_exit
-//  Cleanly exits the threads.
+//  tmr_exit
+//  Cleanly exits the timing threads.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void thr_exit ( void )  {
-  printf("Closing threads  \n");
+void tmr_exit ( void )  {
+  printf("Closing timing threads \n");
   void *status;
 
-  // Exit 'imu' thread
-  sys.ret = pthread_join ( thr_imu.id, &status );
-  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'imu' thread." );
-  if(DEBUG)  printf( "  Status %ld for 'imu' thread \n", (long)status );
-
-  // Exit 'fusion' thread
-  sys.ret = pthread_join ( thr_fusion.id, &status );
-  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'fusion' thread." );
-  if(DEBUG)  printf( "  Status %ld for 'fusion' thread \n", (long)status );
-
-  // Exit 'debug' thread
-  if(DEBUG) {
-  sys.ret = pthread_join ( thr_debug.id, &status );
-  sys_err( sys.ret, "Error (thread_exit): Failed to exit 'debug' thread." );
-  printf( "  Status %ld for 'debug' thread \n", (long)status );
-  }
+  // Exit 'gyr' thread
+  if( pthread_join ( tmr_gyr.id, &status ) )
+    printf( "Error (tmr_exit): Failed to exit 'gyr' thread. \n" );
+  if(DEBUG)  printf( "  Status %ld for 'gyr' timing thread \n", (long)status );
 
   // Destroy mutex
-  pthread_mutex_destroy(&mutex_cal);
-  pthread_mutex_destroy(&mutex_fusion);
+  //pthread_mutex_destroy(&mutex_cal);
+  //pthread_mutex_destroy(&mutex_fusion);
 
   return;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thread_imu
-//  Run the 'imu' thread.
+//  fcn_gyr
+//  Function handler for the 'gyr' timing thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void *thread_imu ( )  {
-  printf("  Running 'imu' thread \n");
-  thr_periodic (&thr_imu);
-  while (sys.running) {
-    thr_start(&thr_imu);
-    imu_data(&imu1);
-    thr_finish(&thr_imu);
-    log_write(LOG_GYR);
-    log_write(LOG_ACC);
-    if (!imu1.count)  log_write(LOG_MAG);
-    thr_pause(&thr_imu);
+void *fcn_gyr (  )  {
+  tmr_create(&tmr_gyr);
+  while (running) {
+    tmr_start(&tmr_gyr);
+    //printf("."); fflush(stdout);
+    //imu_gyr(&imu);
+    tmr_finish(&tmr_gyr);
+    //log_write(LOG_GYR);
+    tmr_pause(&tmr_gyr);
   }
   pthread_exit(NULL);
   return NULL;
 }
-*/
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thread_fusion
-//  Run the 'fusion' thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void *thread_fusion ( )  {
-  printf("  Running 'fusion' thread \n");
-  usleep(500000);
-  thr_periodic (&thr_fusion);
-  while (sys.running) {
-    thr_start(&thr_fusion);
-    imu_fusion(&imu1);
-    thr_finish(&thr_fusion);
-    log_write(LOG_FUSION);
-    thr_pause(&thr_fusion);
-  }
-  pthread_exit(NULL);
-
-  return NULL;
-}
-*/
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  thread_debug
-//  Run the 'debug' thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void *thread_debug ( )  {
-  printf("  Running 'debug' thread \n");
-  usleep(500000);
-  thr_periodic (&thr_debug);
-  while (sys.running) {
-    thr_start(&thr_debug);
-    sys_debug();
-    thr_finish(&thr_debug);
-    thr_pause(&thr_debug);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
-*/
 
 

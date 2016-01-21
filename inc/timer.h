@@ -9,14 +9,14 @@
 
 
 // Define timer priorities
-#define PRIO_GYR    96
+#define PRIO_GYR    34
 #define PRIO_ACC    96
 #define PRIO_MAG    94
 #define PRIO_DEBUG  80
 
 
 // Define timer frequencies
-#define HZ_GYR    200
+#define HZ_GYR    10
 #define HZ_ACC    100
 #define HZ_MAG     50
 #define HZ_DEBUG   10
@@ -24,6 +24,7 @@
 
 // Timer structure
 typedef struct timer_struct {
+  char      *name;
   pthread_t id;
   int       fd;
   ushort    prio;
@@ -52,15 +53,16 @@ timer_struct tmr_debug;
 void  tmr_init      ( void );
 void  tmr_setup     ( void );
 void  tmr_attr      ( pthread_attr_t *attr );
-//void  tmr_periodic  ( thread_struct *thr );
-//void  tmr_pause     ( thread_struct *thr );
-//void  tmr_start     ( thread_struct *thr );
-//void  tmr_finish    ( thread_struct *thr );
-//void  tmr_exit      ( void );
+void  tmr_thread    ( timer_struct *tmr, pthread_attr_t *attr, void *fcn );
+void  tmr_create    ( timer_struct *tmr );
+void  tmr_pause     ( timer_struct *tmr );
+void  tmr_start     ( timer_struct *tmr );
+void  tmr_finish    ( timer_struct *tmr );
+void  tmr_exit      ( void );
 
 
-// Thread handlers
-//void *thread_imu    ( );
+// Function handlers
+void *fcn_gyr    (  );
 //void *thread_fusion  ( );
 //void *thread_debug   ( );
 
