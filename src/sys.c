@@ -149,8 +149,10 @@ void sys_exit (  )  {
 
   // Exit subsystems
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
-  tmr_exit();
-  //imu_exit();
+  //tmr_exit();
+  imu_exit();
+
+  // Under development
   //pru_exit();
   //log_exit();  //--- DEBUG ---//
 

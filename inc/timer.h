@@ -16,10 +16,10 @@
 
 
 // Define timer frequencies
-#define HZ_GYR     10
-#define HZ_ACC     10
-#define HZ_MAG     10
-#define HZ_DEBUG   10
+#define HZ_GYR     200
+#define HZ_ACC     100
+#define HZ_MAG      50
+#define HZ_DEBUG    10
 
 
 // Timer structure

@@ -28,6 +28,7 @@
 
 // Custom includes
 #include <gpio.h>
+#include <imu.h>
 #include <led.h>
 #include <sys.h>
 #include <timer.h>
@@ -35,7 +36,6 @@
 
 // Under development
 //#include <ctrl.h>
-//#include <imu.h>
 //#include <log.h>
 //#include <pru.h>
 
@@ -46,9 +46,9 @@
 
 
 // MPU includes
-//#include <inv_mpu.h>
-//#include <inv_mpu_dmp_motion_driver.h>
-//#include <inv_glue.h>
+#include <inv_mpu.h>
+#include <inv_mpu_dmp_motion_driver.h>
+#include <inv_glue.h>
 
 
 // Global variables (remove as quickly as possible)
