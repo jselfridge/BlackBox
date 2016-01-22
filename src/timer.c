@@ -6,11 +6,6 @@
 #include "timer.h"
 
 
-  // Mutex initialization
-  //pthread_mutex_init( &mutex_cal, NULL );
-  //pthread_mutex_init( &mutex_fusion, NULL );
-
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  tmr_init
 //  Initializes the various timing threads.
@@ -20,19 +15,20 @@ void tmr_init ( void )  {
 
   // Local variables
   pthread_attr_t attr;
-  //struct sched_param param;
 
   // Run through setup functions
   tmr_setup();
   tmr_attr(&attr);
 
-  // Begin each thread
-  if(DEBUG)  printf("  Create threads: ");
-  tmr_thread( &tmr_gyr,   &attr, fcn_gyr   );
-  tmr_thread( &tmr_acc,   &attr, fcn_acc   );
-  tmr_thread( &tmr_mag,   &attr, fcn_mag   );
-  tmr_thread( &tmr_debug, &attr, fcn_debug );
-  if(DEBUG)  printf("\n");
+  // Begin each thread and mutex
+  if(DEBUG)  printf("  Create threads and mutexes: ");
+  tmr_thread( &tmr_gyr, &attr, fcn_gyr );  pthread_mutex_init( &gyr_mutex, NULL );
+  tmr_thread( &tmr_acc, &attr, fcn_acc );  pthread_mutex_init( &acc_mutex, NULL );
+  tmr_thread( &tmr_mag, &attr, fcn_mag );  pthread_mutex_init( &mag_mutex, NULL );
+  if(DEBUG) {
+    tmr_thread( &tmr_debug, &attr, fcn_debug );
+    printf("\n");
+  }
 
   return;
 }
@@ -45,7 +41,7 @@ void tmr_init ( void )  {
 void tmr_setup ( void )  {
   if(DEBUG)  printf("  Assign thread structure elements \n");
 
-  // Rate gyro timer
+  // Gyroscope timer
   tmr_gyr.name     =  "gyr";
   tmr_gyr.prio     =  PRIO_GYR;
   tmr_gyr.per      =  1000000 / HZ_GYR;
@@ -131,28 +127,30 @@ void tmr_exit ( void )  {
   printf("Close timing threads: ");
 
   // Exit rate gyro thread
+  pthread_mutex_destroy(&gyr_mutex);
   if( pthread_join ( tmr_gyr.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gyr' thread. \n" );
   if(DEBUG)  printf( "gyr " );
 
   // Exit accelerometer thread
+  pthread_mutex_destroy(&acc_mutex);
   if( pthread_join ( tmr_acc.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'acc' thread. \n" );
   if(DEBUG)  printf( "acc " );
 
   // Exit magnetometer thread
+  pthread_mutex_destroy(&mag_mutex);
   if( pthread_join ( tmr_mag.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'mag' thread. \n" );
   if(DEBUG)  printf( "mag " );
 
   // Exit debugging thread
+  if(DEBUG) {
   if( pthread_join ( tmr_debug.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'debug' thread. \n" );
-  if(DEBUG)  printf( "degub " );
+  printf( "debug " );
+  }
 
-  // Destroy mutex
-  //pthread_mutex_destroy(&mutex_cal);
-  //pthread_mutex_destroy(&mutex_fusion);
   if(DEBUG)  printf("\n");
 
   return;
@@ -184,7 +182,7 @@ void tmr_create ( timer_struct *tmr )  {
 
   // Set start value
   itval.it_value.tv_sec  = 0;
-  itval.it_value.tv_nsec = 200 * 1000 * 1000;
+  itval.it_value.tv_nsec = 500 * 1000 * 1000;
 
   // Enable the timer
   if( timerfd_settime ( tmr->fd, 0, &itval, NULL ) )
@@ -265,8 +263,7 @@ void *fcn_gyr (  )  {
   tmr_create(&tmr_gyr);
   while (running) {
     tmr_start(&tmr_gyr);
-    printf("g"); fflush(stdout);
-    //imu_gyr(&imu);
+    imu_gyr();
     tmr_finish(&tmr_gyr);
     //log_write(LOG_GYR);
     tmr_pause(&tmr_gyr);
@@ -284,8 +281,7 @@ void *fcn_acc (  )  {
   tmr_create(&tmr_acc);
   while (running) {
     tmr_start(&tmr_acc);
-    printf("a"); fflush(stdout);
-    //imu_acc(&imu);
+    imu_acc();
     tmr_finish(&tmr_acc);
     //log_write(LOG_ACC);
     tmr_pause(&tmr_acc);
@@ -303,8 +299,7 @@ void *fcn_mag (  )  {
   tmr_create(&tmr_mag);
   while (running) {
     tmr_start(&tmr_mag);
-    printf("m"); fflush(stdout);
-    //imu_mag(&imu);
+    imu_mag();
     tmr_finish(&tmr_mag);
     //log_write(LOG_MAG);
     tmr_pause(&tmr_mag);
@@ -322,8 +317,7 @@ void *fcn_debug (  )  {
   tmr_create(&tmr_debug);
   while (running) {
     tmr_start(&tmr_debug);
-    printf("d"); fflush(stdout);
-    //sys_debug();
+    sys_debug();
     tmr_finish(&tmr_debug);
     tmr_pause(&tmr_debug);
   }

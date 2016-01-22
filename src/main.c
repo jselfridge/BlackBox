@@ -19,7 +19,7 @@ int main ( void )  {
   // Initialize subsystems
   sys_init();
   imu_init();
-  //tmr_init();
+  tmr_init();
 
   // Under development
   //log_init();

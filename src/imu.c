@@ -27,7 +27,7 @@ void imu_init (  )  {
   imu_setic();
 
   // Indicate init completed
-  //led_on(LED_IMU);
+  led_on(LED_IMU);
 
   return;
 }
@@ -38,7 +38,7 @@ void imu_init (  )  {
 //  Terminate an MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_exit ( void )  {
-  if(DEBUG)  printf("Closing IMU \n");
+  if(DEBUG)  printf("Close IMU \n");
   // Add IMU exit code here...
   return;
 }
@@ -190,88 +190,114 @@ void imu_setic (  )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_data
-//  Obtain new IMU device data.
+//  imu_gyr
+//  Obtain new gyroscope data.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void imu_data ( imu_struct* imu )  {
+void imu_gyr (  )  {
 
-  // Local variables
-  ushort i, j, k;
-  float g, a, m;
-  bool mag;
+  ushort i, j, k = GYR_HIST;
+  static short hist [3][GYR_HIST];
 
-  // Increment counter
-  mag = false;
-  imu->count++;
-  if ( imu->count == imu->loops ) {
-    mag = true;
-    imu->count = 0;
-  }
+  // Lock mutex
+  pthread_mutex_lock(&gyr_mutex);
 
-  // Gyroscope
-  sys.ret = mpu_get_gyro_reg( imu->rawGyr, NULL );
-  sys_err( sys.ret, "Error (imu_mems): 'mpu_get_gyro_reg' failed." );
-  k = GYR_HIST;
+  // Get new data
+  if( mpu_get_gyro_reg( gyr.raw, NULL ) )
+    printf( "Error (imu_gyr): 'mpu_get_gyro_reg' failed. \n" );
+
+  // Apply low pass filter
   for ( i=0; i<3; i++ ) {
-    for ( j=1; j<k; j++ )  imu->histGyr[i][j-1] = imu->histGyr[i][j];
-    imu->histGyr[i][k-1] = imu->rawGyr[i];
-    g = (float) (imu->histGyr[i][0]);
-    for ( j=1; j<k; j++ )  g = g + imu->gyr_gain * (float) ( imu->histGyr[i][j] - g );
-    imu->avgGyr[i] = g;
+    for ( j=1; j<k; j++ )  hist[i][j-1] = hist[i][j];
+    hist[i][k-1] = gyr.raw[i];
+    float g = (float) (hist[i][0]);
+    for ( j=1; j<k; j++ )  g = g + gyr.gain * (float) ( hist[i][j] - g );
+    gyr.avg[i] = g;
   }
-
-  // Accelerometer
-  sys.ret = mpu_get_accel_reg( imu->rawAcc, NULL );
-  sys_err( sys.ret, "Error (imu_mems): 'mpu_get_accel_reg' failed." );
-  k = ACC_HIST;
-  for ( i=0; i<3; i++ ) {
-    for ( j=1; j<k; j++ )  imu->histAcc[i][j-1] = imu->histAcc[i][j];
-    imu->histAcc[i][k-1] = imu->rawAcc[i];
-    a = (float) (imu->histAcc[i][0]);
-    for ( j=1; j<k; j++ )  a = a + imu->acc_gain * (float) ( imu->histAcc[i][j] - a );
-    imu->avgAcc[i] = a;
-  }
-
-  // Magnetometer
-  if(mag) {
-  sys.ret = mpu_get_compass_reg( imu->rawMag, NULL );
-  sys_err( sys.ret, "Error (imu_mems): 'mpu_get_compass_reg' failed." );
-  k = MAG_HIST;
-  for ( i=0; i<3; i++ ) {
-    for ( j=1; j<k; j++ )  imu->histMag[i][j-1] = imu->histMag[i][j];
-    imu->histMag[i][k-1] = imu->rawMag[i];
-    m = (float) (imu->histMag[i][0]);
-    for ( j=1; j<k; j++ )  m = m + imu->mag_gain * (float) ( imu->histMag[i][j] - m );
-    imu->avgMag[i] = m;
-  }
-  }
-
-  // Lock 'calibrated' variables
-  pthread_mutex_lock(&mutex_cal);  
 
   // Scale and orient gyroscope readings
-  imu->calGyr[X] = -imu->avgGyr[Y] * GYR_SCALE;
-  imu->calGyr[Y] = -imu->avgGyr[X] * GYR_SCALE;
-  imu->calGyr[Z] = -imu->avgGyr[Z] * GYR_SCALE;
+  gyr.cal[X] = -gyr.avg[Y] * GYR_SCALE;
+  gyr.cal[Y] = -gyr.avg[X] * GYR_SCALE;
+  gyr.cal[Z] = -gyr.avg[Z] * GYR_SCALE;
 
-  // Shift and orient accelerometer readings
-  imu->calAcc[X] = ( imu->avgAcc[Y] - imu->aoffset[Y] ) / (double)imu->arange[Y];
-  imu->calAcc[Y] = ( imu->avgAcc[X] - imu->aoffset[X] ) / (double)imu->arange[X];
-  imu->calAcc[Z] = ( imu->avgAcc[Z] - imu->aoffset[Z] ) / (double)imu->arange[Z];
-
-  // Shift and orient magnetometer readings
-  if (mag) {
-  imu->calMag[X] = -( imu->avgMag[X] - imu->moffset[X] ) / (double)imu->mrange[X];
-  imu->calMag[Y] = -( imu->avgMag[Y] - imu->moffset[Y] ) / (double)imu->mrange[Y];
-  imu->calMag[Z] =  ( imu->avgMag[Z] - imu->moffset[Z] ) / (double)imu->mrange[Z];
-  }
-
-  // Unlock 'calibrated' variables
-  pthread_mutex_unlock(&mutex_cal);  
+  // Unlock mutex
+  pthread_mutex_unlock(&gyr_mutex);
 
   return;
 }
-*/
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  imu_acc
+//  Obtain new accelerometer data.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void imu_acc (  )  {
+
+  ushort i, j, k = ACC_HIST;
+  static short hist [3][ACC_HIST];
+
+  // Lock mutex
+  pthread_mutex_lock(&acc_mutex);
+
+  // Get new data
+  if( mpu_get_accel_reg( acc.raw, NULL ) )
+    printf( "Error (imu_acc): 'mpu_get_accel_reg' failed. \n" );
+
+  // Apply low pass filter
+  for ( i=0; i<3; i++ ) {
+    for ( j=1; j<k; j++ )  hist[i][j-1] = hist[i][j];
+    hist[i][k-1] = acc.raw[i];
+    float a = (float) (hist[i][0]);
+    for ( j=1; j<k; j++ )  a = a + acc.gain * (float) ( hist[i][j] - a );
+    acc.avg[i] = a;
+  }
+
+  // Shift and orient accelerometer readings
+  acc.cal[X] = ( acc.avg[Y] - acc.bias[Y] ) / (double)acc.range[Y];
+  acc.cal[Y] = ( acc.avg[X] - acc.bias[X] ) / (double)acc.range[X];
+  acc.cal[Z] = ( acc.avg[Z] - acc.bias[Z] ) / (double)acc.range[Z];
+
+  // Unlock mutex
+  pthread_mutex_unlock(&acc_mutex);
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  imu_mag
+//  Obtain new magnetometer data.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void imu_mag (  )  {
+
+  ushort i, j, k = MAG_HIST;
+  static short hist [3][MAG_HIST];
+
+  // Lock mutex
+  pthread_mutex_lock(&mag_mutex);
+
+  // Get new data
+  if( mpu_get_compass_reg( mag.raw, NULL ) )
+    printf( "Error (imu_mag): 'mpu_get_compass_reg' failed. \n" );
+
+  // Apply low pass filter
+  for ( i=0; i<3; i++ ) {
+    for ( j=1; j<k; j++ )  hist[i][j-1] = hist[i][j];
+    hist[i][k-1] = mag.raw[i];
+    float m = (float) (hist[i][0]);
+    for ( j=1; j<k; j++ )  m = m + mag.gain * (float) ( hist[i][j] - m );
+    mag.avg[i] = m;
+  }
+
+  // Shift and orient magnetometer readings
+  mag.cal[X] = ( mag.avg[Y] - mag.bias[Y] ) / (double)mag.range[Y];
+  mag.cal[Y] = ( mag.avg[X] - mag.bias[X] ) / (double)mag.range[X];
+  mag.cal[Z] = ( mag.avg[Z] - mag.bias[Z] ) / (double)mag.range[Z];
+
+  // Unlock mutex
+  pthread_mutex_unlock(&mag_mutex);
+
+  return;
+}
 
 
 /*

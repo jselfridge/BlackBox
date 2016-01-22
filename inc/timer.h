@@ -16,9 +16,9 @@
 
 
 // Define timer frequencies
-#define HZ_GYR     200
-#define HZ_ACC     100
-#define HZ_MAG      50
+#define HZ_GYR     500
+#define HZ_ACC     500
+#define HZ_MAG     100
 #define HZ_DEBUG    10
 
 
@@ -44,9 +44,10 @@ timer_struct tmr_mag;
 timer_struct tmr_debug;
 
 
-// Mutex variables
-//pthread_mutex_t mutex_cal;
-//pthread_mutex_t mutex_fusion;
+// Mutex declarations
+pthread_mutex_t gyr_mutex;
+pthread_mutex_t acc_mutex;
+pthread_mutex_t mag_mutex;
 
 
 // Thread functions
