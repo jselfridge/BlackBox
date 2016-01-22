@@ -55,6 +55,8 @@ imu_data_struct mag;
 typedef struct imu_struct {
   ushort id;
   ushort addr;
+  ushort loops;
+  ushort count;
   imu_data_struct* gyr;
   imu_data_struct* acc;
   imu_data_struct* mag;
@@ -63,7 +65,7 @@ imu_struct imu;
 
 
 // IMU functions
-void  imu_init    ( void ); //imu_struct *imu );
+void  imu_init    ( void );
 void  imu_exit    ( void );
 void  imu_param   ( void );
 void  imu_getcal  ( void );

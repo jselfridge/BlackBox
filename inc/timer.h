@@ -14,7 +14,7 @@
 
 
 // Define timer frequencies
-#define HZ_IMU_FAST   100
+#define HZ_IMU_FAST   500
 #define HZ_IMU_SLOW   100
 #define HZ_DEBUG       10
 
@@ -34,15 +34,13 @@ typedef struct timer_struct {
 } timer_struct;
 
 
-// Timer instances
+// Timer declarations
 timer_struct tmr_imu;
 timer_struct tmr_debug;
 
 
 // Mutex declarations
-//pthread_mutex_t gyr_mutex;
-//pthread_mutex_t acc_mutex;
-//pthread_mutex_t mag_mutex;
+pthread_mutex_t mutex_imu;
 
 
 // Thread functions

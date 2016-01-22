@@ -23,7 +23,7 @@ void tmr_init ( void )  {
   // Begin each thread and mutex
   if(DEBUG)  printf("  Create threads and mutexes: ");
 
-  tmr_thread( &tmr_imu, &attr, fcn_imu );  //pthread_mutex_init( &XXX_mutex, NULL );
+  tmr_thread( &tmr_imu, &attr, fcn_imu );  pthread_mutex_init( &mutex_imu, NULL );
 
   if(DEBUG) {
     tmr_thread( &tmr_debug, &attr, fcn_debug );
@@ -117,7 +117,7 @@ void tmr_exit ( void )  {
   printf("Close timing threads: ");
 
   // Exit imu thread
-  //pthread_mutex_destroy(&XXX_mutex);
+  pthread_mutex_destroy(&mutex_imu);
   if( pthread_join ( tmr_imu.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'imu' thread. \n" );
   if(DEBUG)  printf( "imu " );

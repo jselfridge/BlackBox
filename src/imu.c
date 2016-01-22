@@ -159,6 +159,12 @@ void imu_getcal (  )  {
 void imu_setic (  )  {
   if(DEBUG)  printf("  Set IMU initial conditions \n");
 
+  // Assign loop counter values
+  if ( HZ_IMU_FAST % HZ_IMU_SLOW != 0 )
+    printf( "  *** WARNING ***  Slow loop must divide evenly into fast loop. \n" );
+  imu.loops = HZ_IMU_FAST / HZ_IMU_SLOW;
+  imu.count = 0;
+
   // Calculate time steps
   float gyr_dt, acc_dt, mag_dt;
   gyr_dt = 1.0 / HZ_IMU_FAST;
@@ -199,29 +205,33 @@ void imu_data (  )  {
   // Local variables
   ushort i, j, k;
   float g, a, m;
-  //bool mag;
+  bool getmag;
 
+  // Declare data history arrays
   static short ghist[3][GYR_HIST];
   static short ahist[3][ACC_HIST];
   static short mhist[3][MAG_HIST];
 
-    /*
   // Increment counter
-  mag = false;
-  imu->count++;
-  if ( imu->count == imu->loops ) {
-    mag = true;
-    imu->count = 0;
+  getmag = false;
+  imu.count++;
+  if ( imu.count == imu.loops ) {
+    getmag = true;
+    imu.count = 0;
   }
-    */
+
+  // Lock IMU data
+  pthread_mutex_lock(&mutex_imu);
 
   // Sample IMU
   if( mpu_get_gyro_reg( gyr.raw, NULL ) )
     printf( "Error (imu_data): 'mpu_get_gyro_reg' failed. \n" );
   if( mpu_get_accel_reg( acc.raw, NULL ) )
     printf( "Error (imu_data): 'mpu_get_accel_reg' failed. \n" );
+  if(getmag){
   if( mpu_get_compass_reg( mag.raw, NULL ) )
     printf( "Error (imu_data): 'mpu_get_compass_reg' failed. \n" );
+  }
 
   // Gyroscope low pass filter
   k = GYR_HIST;
@@ -244,6 +254,7 @@ void imu_data (  )  {
   }
 
   // Magnetometer low pass filter
+  if(getmag) {
   k = MAG_HIST;
   for ( i=0; i<3; i++ ) {
     for ( j=1; j<k; j++ )  mhist[i][j-1] = mhist[i][j];
@@ -251,10 +262,7 @@ void imu_data (  )  {
     m = (float) (mhist[i][0]);
     for ( j=1; j<k; j++ )  m = m + mag.gain * (float) ( mhist[i][j] - m );
     mag.avg[i] = m;
-  }
-
-  // Lock 'calibrated' variables
-  //pthread_mutex_lock(&mutex_imu);
+  }}
 
   // Shift and orient gyroscope readings (add bias)
   gyr.cal[X] =   ( gyr.avg[Y] - 0 ) * GYR_SCALE;
@@ -267,12 +275,14 @@ void imu_data (  )  {
   acc.cal[Z] =   ( acc.avg[Z] - acc.bias[Z] ) / (double) (acc.range[Z]);
 
   // Shift and orient magnetometer readings
+  if(getmag) {
   mag.cal[X] = ( mag.avg[X] - mag.bias[X] ) / (double) (mag.range[X]);
   mag.cal[Y] = ( mag.avg[Y] - mag.bias[Y] ) / (double) (mag.range[Y]);
   mag.cal[Z] = ( mag.avg[Z] - mag.bias[Z] ) / (double) (mag.range[Z]);
+  }
 
-  // Unlock 'calibrated' variables
-  //pthread_mutex_unlock(&mutex_imu);
+  // Unlock IMU data
+  pthread_mutex_unlock(&mutex_imu);
 
   return;
 }

@@ -65,26 +65,26 @@ void sys_debug ( void )  {
   float timestamp = (float)( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f ) ); //- datalog.offset );
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
+  // Lock IMU data
+  pthread_mutex_lock(&mutex_imu);
+
   // Gyroscope data
-  //pthread_mutex_lock(&gyr_mutex);
   //for ( i=0; i<3; i++ )  printf("%06d ",   gyr.raw[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%09.2f ", gyr.avg[i] );  printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%06.3f ", gyr.cal[i] );  printf("   ");  fflush(stdout);
-  //pthread_mutex_unlock(&gyr_mutex);
 
   // Accelerometer data
-  //pthread_mutex_lock(&acc_mutex);
   //for ( i=0; i<3; i++ )  printf("%06d ",   acc.raw[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%09.2f ", acc.avg[i] );  printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%06.3f ", acc.cal[i] );  printf("   ");  fflush(stdout);
-  //pthread_mutex_unlock(&acc_mutex);
 
   // Magnetometer data
-  //pthread_mutex_lock(&mag_mutex);
   //for ( i=0; i<3; i++ )  printf("%04d ",   mag.raw[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%07.2f ", mag.avg[i] );  printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%06.3f ", mag.cal[i] );  printf("   ");  fflush(stdout);
-  //pthread_mutex_unlock(&mag_mutex);
+
+  // Unlock IMU data
+  pthread_mutex_unlock(&mutex_imu);
 
   // Complete debugging display 
   printf("  "); fflush(stdout);
