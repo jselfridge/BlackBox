@@ -9,16 +9,16 @@
 
 
 // Define timer priorities
-#define PRIO_GYR    34
+#define PRIO_GYR    96
 #define PRIO_ACC    96
 #define PRIO_MAG    94
 #define PRIO_DEBUG  80
 
 
 // Define timer frequencies
-#define HZ_GYR    10
-#define HZ_ACC    100
-#define HZ_MAG     50
+#define HZ_GYR     10
+#define HZ_ACC     10
+#define HZ_MAG     10
 #define HZ_DEBUG   10
 
 
@@ -54,17 +54,20 @@ void  tmr_init      ( void );
 void  tmr_setup     ( void );
 void  tmr_attr      ( pthread_attr_t *attr );
 void  tmr_thread    ( timer_struct *tmr, pthread_attr_t *attr, void *fcn );
+void  tmr_exit      ( void );
 void  tmr_create    ( timer_struct *tmr );
 void  tmr_pause     ( timer_struct *tmr );
 void  tmr_start     ( timer_struct *tmr );
 void  tmr_finish    ( timer_struct *tmr );
-void  tmr_exit      ( void );
 
 
 // Function handlers
 void *fcn_gyr    (  );
-//void *thread_fusion  ( );
-//void *thread_debug   ( );
+void *fcn_acc    (  );
+void *fcn_mag    (  );
+void *fcn_debug  (  );
+
+
 
 
 #endif

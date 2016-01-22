@@ -22,22 +22,17 @@ void tmr_init ( void )  {
   pthread_attr_t attr;
   //struct sched_param param;
 
-  // Run through functions
+  // Run through setup functions
   tmr_setup();
   tmr_attr(&attr);
 
-  tmr_thread( &tmr_gyr, &attr, fcn_gyr );
-
-  /*  // Create 'gyr' timer
-  printf("prio: %d \n", tmr_gyr.prio ); fflush(stdout);
-  param.sched_priority = tmr_gyr.prio;
-  if ( pthread_attr_setschedparam( &attr, &param ) );
-    printf( "Error (tmr_init): Failed to set 'gyr' priority. \n" );
-  if( pthread_create( &tmr_gyr.id, &attr, fcn_gyr, (void *)NULL ) )
-    printf( "Error (tmr_init): Failed to create 'gyr' thread. \n" );
-  */
-
-
+  // Begin each thread
+  if(DEBUG)  printf("  Create threads: ");
+  tmr_thread( &tmr_gyr,   &attr, fcn_gyr   );
+  tmr_thread( &tmr_acc,   &attr, fcn_acc   );
+  tmr_thread( &tmr_mag,   &attr, fcn_mag   );
+  tmr_thread( &tmr_debug, &attr, fcn_debug );
+  if(DEBUG)  printf("\n");
 
   return;
 }
@@ -48,7 +43,7 @@ void tmr_init ( void )  {
 //  Assign timing thread parameters to a data structure.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void tmr_setup ( void )  {
-  if(DEBUG)  printf("  Assign parameters to data structure \n");
+  if(DEBUG)  printf("  Assign thread structure elements \n");
 
   // Rate gyro timer
   tmr_gyr.name     =  "gyr";
@@ -79,7 +74,7 @@ void tmr_setup ( void )  {
 //  Sets the attributes of the timing threads.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void tmr_attr ( pthread_attr_t *attr )  {
-  if(DEBUG)  printf("  Setting timer thread attributes \n");
+  if(DEBUG)  printf("  Set timing thread attributes \n");
 
   // Initialize attribute variable
   if( pthread_attr_init(attr) )
@@ -110,7 +105,7 @@ void tmr_attr ( pthread_attr_t *attr )  {
 //  Create a new pthread to run the timer. 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void tmr_thread ( timer_struct *tmr, pthread_attr_t *attr, void *fcn )  {
-  if(DEBUG)  printf( "  Started '%s' timer thread \n", tmr->name );
+  if(DEBUG)  printf( "%s ", tmr->name );
 
   // Declare thread priority
   struct sched_param param;
@@ -123,6 +118,42 @@ void tmr_thread ( timer_struct *tmr, pthread_attr_t *attr, void *fcn )  {
   // Create thread
   if( pthread_create ( &tmr->id, attr, fcn, (void*)NULL ) )
     printf( "Error (thr_init): Failed to create '%s' thread. \n", tmr->name );
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  tmr_exit
+//  Cleanly exits the timing threads.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void tmr_exit ( void )  {
+  printf("Close timing threads: ");
+
+  // Exit rate gyro thread
+  if( pthread_join ( tmr_gyr.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'gyr' thread. \n" );
+  if(DEBUG)  printf( "gyr " );
+
+  // Exit accelerometer thread
+  if( pthread_join ( tmr_acc.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'acc' thread. \n" );
+  if(DEBUG)  printf( "acc " );
+
+  // Exit magnetometer thread
+  if( pthread_join ( tmr_mag.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'mag' thread. \n" );
+  if(DEBUG)  printf( "mag " );
+
+  // Exit debugging thread
+  if( pthread_join ( tmr_debug.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'debug' thread. \n" );
+  if(DEBUG)  printf( "degub " );
+
+  // Destroy mutex
+  //pthread_mutex_destroy(&mutex_cal);
+  //pthread_mutex_destroy(&mutex_fusion);
+  if(DEBUG)  printf("\n");
 
   return;
 }
@@ -227,39 +258,74 @@ void tmr_finish ( timer_struct *tmr )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  tmr_exit
-//  Cleanly exits the timing threads.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void tmr_exit ( void )  {
-  printf("Closing timing threads \n");
-  void *status;
-
-  // Exit 'gyr' thread
-  if( pthread_join ( tmr_gyr.id, &status ) )
-    printf( "Error (tmr_exit): Failed to exit 'gyr' thread. \n" );
-  if(DEBUG)  printf( "  Status %ld for 'gyr' timing thread \n", (long)status );
-
-  // Destroy mutex
-  //pthread_mutex_destroy(&mutex_cal);
-  //pthread_mutex_destroy(&mutex_fusion);
-
-  return;
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  fcn_gyr
-//  Function handler for the 'gyr' timing thread.
+//  Function handler for the rate gyro timing thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *fcn_gyr (  )  {
   tmr_create(&tmr_gyr);
   while (running) {
     tmr_start(&tmr_gyr);
-    //printf("."); fflush(stdout);
+    printf("g"); fflush(stdout);
     //imu_gyr(&imu);
     tmr_finish(&tmr_gyr);
     //log_write(LOG_GYR);
     tmr_pause(&tmr_gyr);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  fcn_acc
+//  Function handler for the accelerometer timing thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void *fcn_acc (  )  {
+  tmr_create(&tmr_acc);
+  while (running) {
+    tmr_start(&tmr_acc);
+    printf("a"); fflush(stdout);
+    //imu_acc(&imu);
+    tmr_finish(&tmr_acc);
+    //log_write(LOG_ACC);
+    tmr_pause(&tmr_acc);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  fcn_mag
+//  Function handler for the magnetometer timing thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void *fcn_mag (  )  {
+  tmr_create(&tmr_mag);
+  while (running) {
+    tmr_start(&tmr_mag);
+    printf("m"); fflush(stdout);
+    //imu_mag(&imu);
+    tmr_finish(&tmr_mag);
+    //log_write(LOG_MAG);
+    tmr_pause(&tmr_mag);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  fcn_debug
+//  Function handler for the debugging timing thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void *fcn_debug (  )  {
+  tmr_create(&tmr_debug);
+  while (running) {
+    tmr_start(&tmr_debug);
+    printf("d"); fflush(stdout);
+    //sys_debug();
+    tmr_finish(&tmr_debug);
+    tmr_pause(&tmr_debug);
   }
   pthread_exit(NULL);
   return NULL;
