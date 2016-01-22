@@ -26,7 +26,8 @@ void imu_init (  )  {
   imu_getcal();
   imu_setic();
 
-  // Indicate init completed
+  // IMU warmup period
+  usleep(500000);
   led_on(LED_IMU);
 
   return;
@@ -50,7 +51,7 @@ void imu_exit ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_param (  )  {
 
-  if(DEBUG) {  printf("  Assigning IMU parameters ");  fflush(stdout);  }
+  if(DEBUG) {  printf("  Assign IMU parameters ");  fflush(stdout);  }
   linux_set_i2c_bus(imu.id);
 
   if(DEBUG) {  printf(".");  fflush(stdout);  }
@@ -62,11 +63,11 @@ void imu_param (  )  {
     printf( "Error (imu_param): 'mpu_set_sensors' failed. \n" );
 
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  if( mpu_set_sample_rate(HZ_GYR) )
+  if( mpu_set_sample_rate(HZ_IMU_FAST) )
     printf( "Error (imu_param): 'mpu_set_sample_rate' failed. \n" );
 
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  if( mpu_set_compass_sample_rate(HZ_MAG) )
+  if( mpu_set_compass_sample_rate(HZ_IMU_SLOW) )
     printf( "Error (imu_param): 'mpu_set_compass_sample_rate' failed. \n" );
 
   if(DEBUG) {  printf(".");  fflush(stdout);  }
@@ -156,13 +157,13 @@ void imu_getcal (  )  {
 //  Sets the initial conditions for the MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_setic (  )  {
-  if(DEBUG)  printf("  Setting IMU initial conditions \n");
+  if(DEBUG)  printf("  Set IMU initial conditions \n");
 
   // Calculate time steps
   float gyr_dt, acc_dt, mag_dt;
-  gyr_dt = 1.0 / HZ_GYR;
-  acc_dt = 1.0 / HZ_ACC;
-  mag_dt = 1.0 / HZ_MAG;
+  gyr_dt = 1.0 / HZ_IMU_FAST;
+  acc_dt = 1.0 / HZ_IMU_FAST;
+  mag_dt = 1.0 / HZ_IMU_SLOW;
 
   // Determine time constants
   float gyr_tc, acc_tc, mag_tc;
@@ -178,11 +179,11 @@ void imu_setic (  )  {
   // Display settings
   if (DEBUG) {
     printf("    |  GYR  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
-	   HZ_GYR, gyr_dt, GYR_LPF, gyr_tc, gyr.gain );
+	   HZ_IMU_FAST, gyr_dt, GYR_LPF, gyr_tc, gyr.gain );
     printf("    |  ACC  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
-	   HZ_ACC, acc_dt, ACC_LPF, acc_tc, acc.gain );
+	   HZ_IMU_FAST, acc_dt, ACC_LPF, acc_tc, acc.gain );
     printf("    |  MAG  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
-	   HZ_MAG, mag_dt, MAG_LPF, mag_tc, mag.gain );
+	   HZ_IMU_SLOW, mag_dt, MAG_LPF, mag_tc, mag.gain );
   }
 
   return;
@@ -190,114 +191,97 @@ void imu_setic (  )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_gyr
-//  Obtain new gyroscope data.
+//  imu_data
+//  Obtain new IMU sensor data.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_gyr (  )  {
+void imu_data (  )  {
 
-  ushort i, j, k = GYR_HIST;
-  static short hist [3][GYR_HIST];
+  // Local variables
+  ushort i, j, k;
+  float g, a, m;
+  //bool mag;
 
-  // Lock mutex
-  pthread_mutex_lock(&gyr_mutex);
+  static short ghist[3][GYR_HIST];
+  static short ahist[3][ACC_HIST];
+  static short mhist[3][MAG_HIST];
 
-  // Get new data
+    /*
+  // Increment counter
+  mag = false;
+  imu->count++;
+  if ( imu->count == imu->loops ) {
+    mag = true;
+    imu->count = 0;
+  }
+    */
+
+  // Sample IMU
   if( mpu_get_gyro_reg( gyr.raw, NULL ) )
-    printf( "Error (imu_gyr): 'mpu_get_gyro_reg' failed. \n" );
+    printf( "Error (imu_data): 'mpu_get_gyro_reg' failed. \n" );
+  if( mpu_get_accel_reg( acc.raw, NULL ) )
+    printf( "Error (imu_data): 'mpu_get_accel_reg' failed. \n" );
+  if( mpu_get_compass_reg( mag.raw, NULL ) )
+    printf( "Error (imu_data): 'mpu_get_compass_reg' failed. \n" );
 
-  // Apply low pass filter
+  // Gyroscope low pass filter
+  k = GYR_HIST;
   for ( i=0; i<3; i++ ) {
-    for ( j=1; j<k; j++ )  hist[i][j-1] = hist[i][j];
-    hist[i][k-1] = gyr.raw[i];
-    float g = (float) (hist[i][0]);
-    for ( j=1; j<k; j++ )  g = g + gyr.gain * (float) ( hist[i][j] - g );
+    for ( j=1; j<k; j++ )  ghist[i][j-1] = ghist[i][j];
+    ghist[i][k-1] = gyr.raw[i];
+    g = (float) (ghist[i][0]);
+    for ( j=1; j<k; j++ )  g = g + gyr.gain * (float) ( ghist[i][j] - g );
     gyr.avg[i] = g;
   }
 
-  // Scale and orient gyroscope readings
-  gyr.cal[X] = -gyr.avg[Y] * GYR_SCALE;
-  gyr.cal[Y] = -gyr.avg[X] * GYR_SCALE;
-  gyr.cal[Z] = -gyr.avg[Z] * GYR_SCALE;
-
-  // Unlock mutex
-  pthread_mutex_unlock(&gyr_mutex);
-
-  return;
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_acc
-//  Obtain new accelerometer data.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_acc (  )  {
-
-  ushort i, j, k = ACC_HIST;
-  static short hist [3][ACC_HIST];
-
-  // Lock mutex
-  pthread_mutex_lock(&acc_mutex);
-
-  // Get new data
-  if( mpu_get_accel_reg( acc.raw, NULL ) )
-    printf( "Error (imu_acc): 'mpu_get_accel_reg' failed. \n" );
-
-  // Apply low pass filter
+  // Accelerometer low pass filter
+  k = ACC_HIST;
   for ( i=0; i<3; i++ ) {
-    for ( j=1; j<k; j++ )  hist[i][j-1] = hist[i][j];
-    hist[i][k-1] = acc.raw[i];
-    float a = (float) (hist[i][0]);
-    for ( j=1; j<k; j++ )  a = a + acc.gain * (float) ( hist[i][j] - a );
+    for ( j=1; j<k; j++ )  ahist[i][j-1] = ahist[i][j];
+    ahist[i][k-1] = acc.raw[i];
+    a = (float) (ahist[i][0]);
+    for ( j=1; j<k; j++ )  a = a + acc.gain * (float) ( ahist[i][j] - a );
     acc.avg[i] = a;
   }
 
-  // Shift and orient accelerometer readings
-  acc.cal[X] = ( acc.avg[Y] - acc.bias[Y] ) / (double)acc.range[Y];
-  acc.cal[Y] = ( acc.avg[X] - acc.bias[X] ) / (double)acc.range[X];
-  acc.cal[Z] = ( acc.avg[Z] - acc.bias[Z] ) / (double)acc.range[Z];
-
-  // Unlock mutex
-  pthread_mutex_unlock(&acc_mutex);
-
-  return;
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_mag
-//  Obtain new magnetometer data.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_mag (  )  {
-
-  ushort i, j, k = MAG_HIST;
-  static short hist [3][MAG_HIST];
-
-  // Lock mutex
-  pthread_mutex_lock(&mag_mutex);
-
-  // Get new data
-  if( mpu_get_compass_reg( mag.raw, NULL ) )
-    printf( "Error (imu_mag): 'mpu_get_compass_reg' failed. \n" );
-
-  // Apply low pass filter
+  // Magnetometer low pass filter
+  k = MAG_HIST;
   for ( i=0; i<3; i++ ) {
-    for ( j=1; j<k; j++ )  hist[i][j-1] = hist[i][j];
-    hist[i][k-1] = mag.raw[i];
-    float m = (float) (hist[i][0]);
-    for ( j=1; j<k; j++ )  m = m + mag.gain * (float) ( hist[i][j] - m );
+    for ( j=1; j<k; j++ )  mhist[i][j-1] = mhist[i][j];
+    mhist[i][k-1] = mag.raw[i];
+    m = (float) (mhist[i][0]);
+    for ( j=1; j<k; j++ )  m = m + mag.gain * (float) ( mhist[i][j] - m );
     mag.avg[i] = m;
   }
 
-  // Shift and orient magnetometer readings
-  mag.cal[X] = ( mag.avg[Y] - mag.bias[Y] ) / (double)mag.range[Y];
-  mag.cal[Y] = ( mag.avg[X] - mag.bias[X] ) / (double)mag.range[X];
-  mag.cal[Z] = ( mag.avg[Z] - mag.bias[Z] ) / (double)mag.range[Z];
+  // Lock 'calibrated' variables
+  //pthread_mutex_lock(&mutex_imu);
 
-  // Unlock mutex
-  pthread_mutex_unlock(&mag_mutex);
+  // Shift and orient gyroscope readings (add bias)
+  gyr.cal[X] =   ( gyr.avg[Y] - 0 ) * GYR_SCALE;
+  gyr.cal[Y] =   ( gyr.avg[X] - 0 ) * GYR_SCALE;
+  gyr.cal[Z] = - ( gyr.avg[Z] - 0 ) * GYR_SCALE;
+
+  // Shift and orient accelerometer readings
+  acc.cal[X] = - ( acc.avg[Y] - acc.bias[Y] ) / (double) (acc.range[Y]);
+  acc.cal[Y] = - ( acc.avg[X] - acc.bias[X] ) / (double) (acc.range[X]);
+  acc.cal[Z] =   ( acc.avg[Z] - acc.bias[Z] ) / (double) (acc.range[Z]);
+
+  // Shift and orient magnetometer readings
+  mag.cal[X] = ( mag.avg[X] - mag.bias[X] ) / (double) (mag.range[X]);
+  mag.cal[Y] = ( mag.avg[Y] - mag.bias[Y] ) / (double) (mag.range[Y]);
+  mag.cal[Z] = ( mag.avg[Z] - mag.bias[Z] ) / (double) (mag.range[Z]);
+
+  // Unlock 'calibrated' variables
+  //pthread_mutex_unlock(&mutex_imu);
 
   return;
 }
+
+
+
+
+
+
 
 
 /*

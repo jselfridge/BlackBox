@@ -22,9 +22,9 @@ void tmr_init ( void )  {
 
   // Begin each thread and mutex
   if(DEBUG)  printf("  Create threads and mutexes: ");
-  tmr_thread( &tmr_gyr, &attr, fcn_gyr );  pthread_mutex_init( &gyr_mutex, NULL );
-  tmr_thread( &tmr_acc, &attr, fcn_acc );  pthread_mutex_init( &acc_mutex, NULL );
-  tmr_thread( &tmr_mag, &attr, fcn_mag );  pthread_mutex_init( &mag_mutex, NULL );
+
+  tmr_thread( &tmr_imu, &attr, fcn_imu );  //pthread_mutex_init( &XXX_mutex, NULL );
+
   if(DEBUG) {
     tmr_thread( &tmr_debug, &attr, fcn_debug );
     printf("\n");
@@ -41,20 +41,10 @@ void tmr_init ( void )  {
 void tmr_setup ( void )  {
   if(DEBUG)  printf("  Assign thread structure elements \n");
 
-  // Gyroscope timer
-  tmr_gyr.name     =  "gyr";
-  tmr_gyr.prio     =  PRIO_GYR;
-  tmr_gyr.per      =  1000000 / HZ_GYR;
-
-  // Accelerometer timer
-  tmr_acc.name     =  "acc";
-  tmr_acc.prio     =  PRIO_ACC;
-  tmr_acc.per      =  1000000 / HZ_ACC;
-
-  // Magnetometer timer
-  tmr_mag.name     =  "mag";
-  tmr_mag.prio     =  PRIO_MAG;
-  tmr_mag.per      =  1000000 / HZ_MAG;
+  // IMU timer
+  tmr_imu.name     =  "imu";
+  tmr_imu.prio     =  PRIO_IMU;
+  tmr_imu.per      =  1000000 / HZ_IMU_FAST;
 
   // Debugging timer
   tmr_debug.name   =  "debug";
@@ -126,23 +116,11 @@ void tmr_thread ( timer_struct *tmr, pthread_attr_t *attr, void *fcn )  {
 void tmr_exit ( void )  {
   printf("Close timing threads: ");
 
-  // Exit rate gyro thread
-  pthread_mutex_destroy(&gyr_mutex);
-  if( pthread_join ( tmr_gyr.id, NULL ) )
-    printf( "Error (tmr_exit): Failed to exit 'gyr' thread. \n" );
-  if(DEBUG)  printf( "gyr " );
-
-  // Exit accelerometer thread
-  pthread_mutex_destroy(&acc_mutex);
-  if( pthread_join ( tmr_acc.id, NULL ) )
-    printf( "Error (tmr_exit): Failed to exit 'acc' thread. \n" );
-  if(DEBUG)  printf( "acc " );
-
-  // Exit magnetometer thread
-  pthread_mutex_destroy(&mag_mutex);
-  if( pthread_join ( tmr_mag.id, NULL ) )
-    printf( "Error (tmr_exit): Failed to exit 'mag' thread. \n" );
-  if(DEBUG)  printf( "mag " );
+  // Exit imu thread
+  //pthread_mutex_destroy(&XXX_mutex);
+  if( pthread_join ( tmr_imu.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'imu' thread. \n" );
+  if(DEBUG)  printf( "imu " );
 
   // Exit debugging thread
   if(DEBUG) {
@@ -182,7 +160,7 @@ void tmr_create ( timer_struct *tmr )  {
 
   // Set start value
   itval.it_value.tv_sec  = 0;
-  itval.it_value.tv_nsec = 500 * 1000 * 1000;
+  itval.it_value.tv_nsec = 200 * 1000 * 1000;
 
   // Enable the timer
   if( timerfd_settime ( tmr->fd, 0, &itval, NULL ) )
@@ -256,53 +234,17 @@ void tmr_finish ( timer_struct *tmr )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_gyr
-//  Function handler for the rate gyro timing thread.
+//  fcn_imu
+//  Function handler for the imu timing thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void *fcn_gyr (  )  {
-  tmr_create(&tmr_gyr);
+void *fcn_imu (  )  {
+  tmr_create(&tmr_imu);
   while (running) {
-    tmr_start(&tmr_gyr);
-    imu_gyr();
-    tmr_finish(&tmr_gyr);
-    //log_write(LOG_GYR);
-    tmr_pause(&tmr_gyr);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_acc
-//  Function handler for the accelerometer timing thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void *fcn_acc (  )  {
-  tmr_create(&tmr_acc);
-  while (running) {
-    tmr_start(&tmr_acc);
-    imu_acc();
-    tmr_finish(&tmr_acc);
-    //log_write(LOG_ACC);
-    tmr_pause(&tmr_acc);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_mag
-//  Function handler for the magnetometer timing thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void *fcn_mag (  )  {
-  tmr_create(&tmr_mag);
-  while (running) {
-    tmr_start(&tmr_mag);
-    imu_mag();
-    tmr_finish(&tmr_mag);
-    //log_write(LOG_MAG);
-    tmr_pause(&tmr_mag);
+    tmr_start(&tmr_imu);
+    imu_data();
+    tmr_finish(&tmr_imu);
+    //log_write(LOG_IMU);
+    tmr_pause(&tmr_imu);
   }
   pthread_exit(NULL);
   return NULL;

@@ -14,9 +14,9 @@
 #define ACC_HIST   10
 #define MAG_HIST   10
 
-#define GYR_LPF   10.0f
-#define ACC_LPF    1.0f
-#define MAG_LPF    0.1f
+#define GYR_LPF    0.0f
+#define ACC_LPF    0.0f
+#define MAG_LPF    0.0f
 
 #define GYR_FSR   500
 #define ACC_FSR   4
@@ -68,9 +68,7 @@ void  imu_exit    ( void );
 void  imu_param   ( void );
 void  imu_getcal  ( void );
 void  imu_setic   ( void );
-void  imu_gyr     ( void );
-void  imu_acc     ( void );
-void  imu_mag     ( void );
+void  imu_data    ( void );
 //void    imu_fusion   ( imu_struct *imu );
 
 
