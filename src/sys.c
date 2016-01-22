@@ -49,51 +49,6 @@ void sys_init ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_debug
-//  Prints system debugging messages to the terminal.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_debug ( void )  {
-
-  // Loop counter
-  ushort i;
-
-  // Time values
-  printf("\r");  fflush(stdout);
-  //if (datalog.enabled)  printf(" %s: ", datalog.dir );
-  //else                  printf(" - - - -  ");
-
-  float timestamp = (float)( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f ) ); //- datalog.offset );
-  printf("%6.1f    ", timestamp );  fflush(stdout);
-
-  // Lock IMU data
-  pthread_mutex_lock(&mutex_imu);
-
-  // Gyroscope data
-  //for ( i=0; i<3; i++ )  printf("%06d ",   gyr.raw[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%09.2f ", gyr.avg[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%06.3f ", gyr.cal[i] );  printf("   ");  fflush(stdout);
-
-  // Accelerometer data
-  //for ( i=0; i<3; i++ )  printf("%06d ",   acc.raw[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%09.2f ", acc.avg[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%06.3f ", acc.cal[i] );  printf("   ");  fflush(stdout);
-
-  // Magnetometer data
-  //for ( i=0; i<3; i++ )  printf("%04d ",   mag.raw[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%07.2f ", mag.avg[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%06.3f ", mag.cal[i] );  printf("   ");  fflush(stdout);
-
-  // Unlock IMU data
-  pthread_mutex_unlock(&mutex_imu);
-
-  // Complete debugging display 
-  printf("  "); fflush(stdout);
-
-  return;
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_exit
 //  Code that runs prior to exiting the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -119,6 +74,56 @@ void sys_exit (  )  {
   if( sigaction( SIGINT, &sys_signal, NULL ) == -1 )
     printf( "Error (sys_exit): Function 'sigaction' failed. \n" );
   kill( 0, SIGINT );
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  sys_debug
+//  Prints system debugging messages to the terminal.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void sys_debug ( void )  {
+
+  // Time values
+  printf("\r");  fflush(stdout);
+  //if (datalog.enabled)  printf(" %s: ", datalog.dir );  fflush(stdout);
+  //else                  printf(" - - - -  ");  fflush(stdout);
+
+  float timestamp = (float) ( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f ) ); //- datalog.offset );
+  printf("%6.1f    ", timestamp );  fflush(stdout);
+
+  // Select data for display
+  pthread_mutex_lock(&mutex_imu);    sys_imu();    pthread_mutex_unlock(&mutex_imu);
+
+  // Complete debugging display 
+  printf("  "); fflush(stdout);
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  sys_imu
+//  Prints IMU debugging messages to the terminal.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void sys_imu ( void )  {
+  ushort i;
+
+  // Gyroscope data
+  //for ( i=0; i<3; i++ )  printf("%06d ",   gyr.raw[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%09.2f ", gyr.avg[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%06.3f ", gyr.cal[i] );  printf("   ");  fflush(stdout);
+
+  // Accelerometer data
+  //for ( i=0; i<3; i++ )  printf("%06d ",   acc.raw[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%09.2f ", acc.avg[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%06.3f ", acc.cal[i] );  printf("   ");  fflush(stdout);
+
+  // Magnetometer data
+  //for ( i=0; i<3; i++ )  printf("%04d ",   mag.raw[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%07.2f ", mag.avg[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%06.3f ", mag.cal[i] );  printf("   ");  fflush(stdout);
 
   return;
 }
