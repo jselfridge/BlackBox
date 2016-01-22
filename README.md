@@ -11,6 +11,7 @@ Pending
 The following list outlines proposed upcoming changes 
 <ul>
   <li><b>Priority</b></li>
+  <li>Identify timing loop issues</li>
   <li>Reestablish PRU functionality</li>
   <li>Reestablish controller code</li>
   <li>Add health/status monitoring thread</li>
