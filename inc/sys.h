@@ -15,9 +15,9 @@
 
 // Function declarations  { Add void? }
 void sys_init   ( void );
-void sys_exit   (  );
 void sys_debug  ( void );
 void sys_imu    ( void );
+void sys_exit   (  );
 
 
 #endif

@@ -14,8 +14,8 @@
 
 
 // Define timer frequencies
-#define HZ_IMU_FAST   100
-#define HZ_IMU_SLOW    20
+#define HZ_IMU_FAST    10
+#define HZ_IMU_SLOW     2
 #define HZ_DEBUG       10
 
 
@@ -30,7 +30,7 @@ typedef struct timer_struct {
   ulong     start_usec;
   uint      finish_sec;
   ulong     finish_usec;
-  ulong     dur;
+  uint      dur;
 } timer_struct;
 
 

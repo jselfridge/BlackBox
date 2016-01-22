@@ -55,7 +55,7 @@ void log_init ( void )  {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  log_exit
-//  Closes the data log file.
+//  Closes the data log files.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void log_exit ( void )  {
   if(DEBUG)  printf("Close log files \n");
@@ -201,58 +201,64 @@ void log_exit ( void )  {
 //  log_record
 //  Records the data to the log file.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void log_record ( enum log_index index )  {
+void log_record ( enum log_index index )  {
 
   // Local variables
-  ushort i;
-  float timestamp;
+  //ushort i;
+  //static float timestamp = 0.0;
 
   // Jump to appropriate log 
-  switch(index) {
+  //switch(index) {
 
-  // Record 'gyroscope' datalog
-  case LOG_GYR :
-    timestamp = (float)( thr_imu.start_sec + ( thr_imu.start_usec / 1000000.0f ) - datalog.offset );
-    fprintf( datalog.gyr, "\n %011.6f, %06ld,    ", timestamp, thr_imu.dur );
-    for ( i=0; i<3; i++ )  fprintf( datalog.gyr, "%06d, ",   imu1.rawGyr[i] );   fprintf( datalog.gyr, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.gyr, "%09.2f, ", imu1.avgGyr[i] );   fprintf( datalog.gyr, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.gyr, "%07.4f, ", imu1.calGyr[i] );   fprintf( datalog.gyr, "   " );
-    return;
+  // Record IMU data
+  //case LOG_IMU :
 
-  // Record 'accelerometer' datalog
+    // Gyroscope data
+    //timestamp = (float)( tmr_imu.start_sec + ( tmr_imu.start_usec / 1000000.0f ) ); // - datalog.offset );
+    //log_gyr.time [log_gyr.count] = timestamp;
+    //log_gyr.dur  [log_gyr.count] = &tmr_imu.dur;
+    //log_gyr.count++;
+    //timestamp += 0.1;
+
+    //fprintf( datalog.gyr, "\n %011.6f, %06ld,    ", timestamp, thr_imu.dur );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.gyr, "%06d, ",   imu1.rawGyr[i] );   fprintf( datalog.gyr, "   " );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.gyr, "%09.2f, ", imu1.avgGyr[i] );   fprintf( datalog.gyr, "   " );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.gyr, "%07.4f, ", imu1.calGyr[i] );   fprintf( datalog.gyr, "   " );
+
+    //return;
+
+  /*  // Record 'accelerometer' datalog
   case LOG_ACC :
     timestamp = (float)( thr_imu.start_sec + ( thr_imu.start_usec / 1000000.0f ) - datalog.offset );
     fprintf( datalog.acc, "\n %011.6f, %06ld,    ", timestamp, thr_imu.dur );
     for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%06d, ",   imu1.rawAcc[i] );  fprintf( datalog.acc, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%09.2f, ", imu1.avgAcc[i] );  fprintf( datalog.acc, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%07.4f, ", imu1.calAcc[i] );  fprintf( datalog.acc, "   " );
-    return;
+    return;*/
 
-  // Record 'magnetometer' datalog
+  /*  // Record 'magnetometer' datalog
   case LOG_MAG :
     timestamp = (float)( thr_imu.start_sec + ( thr_imu.start_usec / 1000000.0f ) - datalog.offset );
     fprintf( datalog.mag, "\n %011.6f, %06ld,    ", timestamp, thr_imu.dur );
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%04d, ",   imu1.rawMag[i] );  fprintf( datalog.mag, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%07.2f, ", imu1.avgMag[i] );  fprintf( datalog.mag, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%07.4f, ", imu1.calMag[i] );  fprintf( datalog.mag, "   " );
-    return;
+    return;*/
 
-  // Record 'data fusion' datalog
+  /*  // Record 'data fusion' datalog
   case LOG_FUSION :
     timestamp = (float)( thr_fusion.start_sec + ( thr_fusion.start_usec / 1000000.0f ) - datalog.offset );
     fprintf( datalog.fusion, "\n %011.6f, %06ld,    ", timestamp, thr_fusion.dur );
     for ( i=0; i<4; i++ )  fprintf( datalog.fusion, "%07.4f, ", imu1.Quat[i] );  fprintf( datalog.fusion, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.fusion, "%07.4f, ", imu1.Eul[i]  );  fprintf( datalog.fusion, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.fusion, "%07.4f, ", imu1.dEul[i] );  fprintf( datalog.fusion, "   " );
-    return;
+    return;*/
 
-  default :
+  //default :
     return;
-  }
+    //}
 
 }
-*/
-
 
 
 

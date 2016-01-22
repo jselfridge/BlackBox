@@ -49,47 +49,19 @@ void sys_init ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_exit
-//  Code that runs prior to exiting the system.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_exit (  )  {
-
-  // Change exit status
-  running = false;
-  usleep(200000);
-
-  // Exit subsystems
-  if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
-  usleep(100000);
-  tmr_exit();
-  imu_exit();
-  log_exit();
-
-  // Under development
-  //pru_exit();
-
-  // Shut everything down
-  if(DEBUG)  printf("Program complete \n");
-  led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
-  if( sigaction( SIGINT, &sys_signal, NULL ) == -1 )
-    printf( "Error (sys_exit): Function 'sigaction' failed. \n" );
-  kill( 0, SIGINT );
-
-  return;
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_debug
 //  Prints system debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_debug ( void )  {
 
-  // Time values
+  // Start debugging display
   printf("\r");  fflush(stdout);
+
+  // Datalog status
   //if (datalog.enabled)  printf(" %s: ", datalog.dir );  fflush(stdout);
   //else                  printf(" - - - -  ");  fflush(stdout);
 
+  // Time values
   float timestamp = (float) ( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f ) ); //- datalog.offset );
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
@@ -124,6 +96,37 @@ void sys_imu ( void )  {
   //for ( i=0; i<3; i++ )  printf("%04d ",   mag.raw[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%07.2f ", mag.avg[i] );  printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%06.3f ", mag.cal[i] );  printf("   ");  fflush(stdout);
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  sys_exit
+//  Code that runs prior to exiting the system.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void sys_exit (  )  {
+
+  // Change exit status
+  running = false;
+  usleep(200000);
+
+  // Exit subsystems
+  if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
+  usleep(100000);
+  tmr_exit();
+  imu_exit();
+  log_exit();
+
+  // Under development
+  //pru_exit();
+
+  // Shut everything down
+  if(DEBUG)  printf("Program complete \n");
+  led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
+  if( sigaction( SIGINT, &sys_signal, NULL ) == -1 )
+    printf( "Error (sys_exit): Function 'sigaction' failed. \n" );
+  kill( 0, SIGINT );
 
   return;
 }

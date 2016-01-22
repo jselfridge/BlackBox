@@ -1,0 +1,1 @@
+Gtime        Gdur       Grx     Gry     Grz        Gax        Gay        Gaz           Gcx      Gcy      Gcz     

@@ -13,9 +13,8 @@
 
 // Log enumerations
 enum log_index {
-  LOG_GYR  = 0,
-  LOG_ACC  = 1,
-  LOG_MAG  = 2
+  LOG_IMU  = 0,
+  LOG_FUS  = 1
 } log_index;
 
 
@@ -25,7 +24,7 @@ typedef struct log_imu_struct {
   ulong count;
   ulong limit;
   float *time;
-  ulong *dur;
+  uint  *dur;
   short *raw;
   float *avg;
   float *cal;
@@ -37,21 +36,21 @@ log_imu_struct log_mag;
 
 // Log structure
 typedef struct {
-  bool   enabled;
-  bool   open;
-  float  offset;
-  char   *dir;
-  char   *path;
+  //bool   enabled;
+  //bool   open;
+  //float  offset;
+  //char   *dir;
+  //char   *path;
 } log_struct;
-log_struct datalog; 
+log_struct datalog;
 
 
 // Log functions
 void  log_init   ( void );
 void  log_exit   ( void );
+void  log_record ( enum log_index index );
 //void  log_write  ( enum log_index index );
 //void  log_open   ( void );
-//void  log_record ( enum log_index index );
 
 
 #endif
