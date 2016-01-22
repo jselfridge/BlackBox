@@ -30,13 +30,13 @@
 #include <gpio.h>
 #include <imu.h>
 #include <led.h>
+#include <log.h>
 #include <sys.h>
 #include <timer.h>
 
 
 // Under development
 //#include <ctrl.h>
-//#include <log.h>
 //#include <pru.h>
 
 

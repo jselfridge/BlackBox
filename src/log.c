@@ -11,8 +11,88 @@
 //  Initalizes the datalog structure attributes.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void log_init ( void )  {
-  datalog.open     = false;
-  datalog.enabled  = true;  //-- DEBUG --//  false;
+  if(DEBUG)  printf("Initializing log parameters \n");
+
+  // Set counters to zero
+  if(DEBUG)  printf("  Clear counters \n");
+  log_gyr.count = 0;
+  log_acc.count = 0;
+  log_mag.count = 0;
+
+  // Establish datalog limits
+  if(DEBUG)  printf("  Establish datalog limits \n");
+  log_gyr.limit = MAX_LOG_DUR * HZ_IMU_FAST;
+  log_acc.limit = MAX_LOG_DUR * HZ_IMU_FAST;
+  log_mag.limit = MAX_LOG_DUR * HZ_IMU_SLOW;
+
+  // Allocate memory for 'gyr' storage arrays
+  if(DEBUG)  printf("  Allocate 'gyr' mem \n");
+  log_gyr.time =  malloc( sizeof(float) * log_gyr.limit * 1 );
+  log_gyr.dur  =  malloc( sizeof(ulong) * log_gyr.limit * 1 );
+  log_gyr.raw  =  malloc( sizeof(short) * log_gyr.limit * 3 );
+  log_gyr.avg  =  malloc( sizeof(float) * log_gyr.limit * 3 );
+  log_gyr.cal  =  malloc( sizeof(float) * log_gyr.limit * 3 );
+
+  // Allocate memory for 'acc' storage arrays
+  if(DEBUG)  printf("  Allocate 'acc' mem \n");
+  log_acc.time =  malloc( sizeof(float) * log_acc.limit * 1 );
+  log_acc.dur  =  malloc( sizeof(ulong) * log_acc.limit * 1 );
+  log_acc.raw  =  malloc( sizeof(short) * log_acc.limit * 3 );
+  log_acc.avg  =  malloc( sizeof(float) * log_acc.limit * 3 );
+  log_acc.cal  =  malloc( sizeof(float) * log_acc.limit * 3 );
+
+  // Allocate memory for 'mag' storage arrays
+  if(DEBUG)  printf("  Allocate 'mag' mem \n");
+  log_mag.time =  malloc( sizeof(float) * log_mag.limit * 1 );
+  log_mag.dur  =  malloc( sizeof(ulong) * log_mag.limit * 1 );
+  log_mag.raw  =  malloc( sizeof(short) * log_mag.limit * 3 );
+  log_mag.avg  =  malloc( sizeof(float) * log_mag.limit * 3 );
+  log_mag.cal  =  malloc( sizeof(float) * log_mag.limit * 3 );
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  log_exit
+//  Closes the data log file.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void log_exit ( void )  {
+  if(DEBUG)  printf("Close log files \n");
+
+  // Free memory for 'gyr'
+  if(DEBUG)  printf("  Free 'gyr' memory \n");
+  free(log_gyr.time);
+  free(log_gyr.dur);
+  free(log_gyr.raw);
+  free(log_gyr.avg);
+  free(log_gyr.cal);
+
+  // Free memory for 'acc'
+  if(DEBUG)  printf("  Free 'acc' memory \n");
+  free(log_acc.time);
+  free(log_acc.dur);
+  free(log_acc.raw);
+  free(log_acc.avg);
+  free(log_acc.cal);
+
+  // Free memory for 'mag'
+  if(DEBUG)  printf("  Free 'mag' memory \n");
+  free(log_mag.time);
+  free(log_mag.dur);
+  free(log_mag.raw);
+  free(log_mag.avg);
+  free(log_mag.cal);
+
+  // Close files
+  //fclose(datalog.gyr);
+  //fclose(datalog.acc);
+  //fclose(datalog.mag);
+  //fclose(datalog.fusion);
+
+  // Adjust flag
+  //datalog.open = false;
+
   return;
 }
 
@@ -21,18 +101,18 @@ void log_init ( void )  {
 //  log_write
 //  Top level function for writing data log commands.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void log_write ( enum log_index index )  {
+/*void log_write ( enum log_index index )  {
   if (datalog.enabled) {  if (!datalog.open)  log_open();  log_record(index);  }
   else                 {  if (datalog.open)   log_exit();  }
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  log_open
 //  Opens the next sequential log file and populates the header.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void log_open ( void )  {
+/*void log_open ( void )  {
 
   // Local varaibales
   int i = 0;
@@ -115,13 +195,13 @@ void log_open ( void )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  log_record
 //  Records the data to the log file.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void log_record ( enum log_index index )  {
+/*void log_record ( enum log_index index )  {
 
   // Local variables
   ushort i;
@@ -171,25 +251,8 @@ void log_record ( enum log_index index )  {
   }
 
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  log_exit
-//  Closes the data log file.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void log_exit ( void )  {
-
-  // Close files
-  fclose(datalog.gyr);
-  fclose(datalog.acc);
-  fclose(datalog.mag);
-  fclose(datalog.fusion);
-
-  // Adjust flag
-  datalog.open = false;
-
-  return;
-}
 
 
 

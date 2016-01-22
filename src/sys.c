@@ -63,10 +63,10 @@ void sys_exit (  )  {
   usleep(100000);
   tmr_exit();
   imu_exit();
+  log_exit();
 
   // Under development
   //pru_exit();
-  //log_exit();  //--- DEBUG ---//
 
   // Shut everything down
   if(DEBUG)  printf("Program complete \n");

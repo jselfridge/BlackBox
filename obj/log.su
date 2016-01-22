@@ -1,0 +1,2 @@
+log.c:13:6:log_init	8	static
+log.c:60:6:log_exit	8	static
