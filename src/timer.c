@@ -26,7 +26,7 @@ void tmr_init ( void )  {
   tmr_thread( &tmr_imu, &attr, fcn_imu );  pthread_mutex_init( &mutex_imu, NULL );
 
   if(DEBUG) {
-    //tmr_thread( &tmr_debug, &attr, fcn_debug );
+    tmr_thread( &tmr_debug, &attr, fcn_debug );
     printf("\n");
   }
 
@@ -122,13 +122,13 @@ void tmr_exit ( void )  {
     printf( "Error (tmr_exit): Failed to exit 'imu' thread. \n" );
   if(DEBUG)  printf( "imu " );
 
-  /*  // Exit debugging thread
+  // Exit debugging thread
   if(DEBUG) {
   if( pthread_join ( tmr_debug.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'debug' thread. \n" );
   printf( "debug " );
   }
-  */
+
   if(DEBUG)  printf("\n");
 
   return;
@@ -246,28 +246,44 @@ void *fcn_imu (  )  {
     //log_record(LOG_IMU);
     //printf(".");  fflush(stdout);
 
-    ulong i = log_gyr.count;
+    ulong i;
     ushort j;
-    log_gyr.time[i] = (float) ( tmr_imu.start_sec + ( tmr_imu.start_usec / 1000000.0f ) ) ;
-    printf("test: %f ", log_gyr.time[log_gyr.count] );
+    float timestamp = (float) ( tmr_imu.start_sec + ( tmr_imu.start_usec / 1000000.0f ) ) ;
+
+    pthread_mutex_lock(&mutex_imu);
+
+    if ( log_gyr.count <= log_gyr.limit ) {
+    i = log_gyr.count;
+    log_gyr.time[i] = timestamp;
     log_gyr.dur[i]  = tmr_imu.dur;
-    for ( j=0; j<3; j++ ) {
-      log_gyr.raw[3*i+j] = gyr.raw[j];  
-      printf("%d ", gyr.raw[j] );
-    }
-    for ( j=0; j<3; j++ ) {
-      log_gyr.avg[3*i+j] = gyr.avg[j];  
-      printf("%9.2f ", gyr.avg[j] );
-    }
-    for ( j=0; j<3; j++ ) {
-      log_gyr.cal[3*i+j] = gyr.cal[j];  
-      printf("%7.4f ", gyr.cal[j] );
-    }
-
-    printf("\n");
-
-
+    for ( j=0; j<3; j++ )  log_gyr.raw[3*i+j] = gyr.raw[j];
+    for ( j=0; j<3; j++ )  log_gyr.avg[3*i+j] = gyr.avg[j];
+    for ( j=0; j<3; j++ )  log_gyr.cal[3*i+j] = gyr.cal[j];
     log_gyr.count++;
+    }
+
+    if ( log_acc.count <= log_acc.limit ) {
+    i = log_acc.count;
+    log_acc.time[i] = timestamp;
+    log_acc.dur[i]  = tmr_imu.dur;
+    for ( j=0; j<3; j++ )  log_acc.raw[3*i+j] = acc.raw[j];
+    for ( j=0; j<3; j++ )  log_acc.avg[3*i+j] = acc.avg[j];
+    for ( j=0; j<3; j++ )  log_acc.cal[3*i+j] = acc.cal[j];
+    log_acc.count++;
+    }
+
+    if( imu.getmag && ( log_mag.count < log_mag.limit) ) {
+    i = log_mag.count;
+    log_mag.time[i] = timestamp;
+    log_mag.dur[i]  = tmr_imu.dur;
+    for ( j=0; j<3; j++ )  log_mag.raw[3*i+j] = mag.raw[j];
+    for ( j=0; j<3; j++ )  log_mag.avg[3*i+j] = mag.avg[j];
+    for ( j=0; j<3; j++ )  log_mag.cal[3*i+j] = mag.cal[j];
+    log_mag.count++;
+    }
+
+    pthread_mutex_unlock(&mutex_imu);
+
     if ( log_gyr.count >= log_gyr.limit ) running = false;
 
     tmr_pause(&tmr_imu);

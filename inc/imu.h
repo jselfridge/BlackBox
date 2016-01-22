@@ -57,6 +57,7 @@ typedef struct imu_struct {
   ushort addr;
   ushort loops;
   ushort count;
+  bool   getmag;
   imu_data_struct* gyr;
   imu_data_struct* acc;
   imu_data_struct* mag;

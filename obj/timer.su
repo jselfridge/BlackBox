@@ -7,5 +7,5 @@ timer.c:142:6:tmr_create	40	static
 timer.c:177:6:tmr_pause	24	static
 timer.c:197:6:tmr_start	24	static
 timer.c:215:6:tmr_finish	24	static
-timer.c:240:7:fcn_imu	16	static
-timer.c:284:7:fcn_debug	8	static
+timer.c:240:7:fcn_imu	24	static
+timer.c:300:7:fcn_debug	8	static

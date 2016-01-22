@@ -38,10 +38,12 @@ int main ( void )  {
   char *dir  = malloc(16);
   char *path = malloc(32);
   char *file = malloc(64);
-  FILE *gyrf;
-  
-  // Find next available log directory
+  FILE *gyrf, *accf, *magf;
   ushort i;
+  ulong j;
+  ushort k;
+
+  // Find next available log directory
   while (true) {
     i++;
     if      ( i<10   )  sprintf( dir, "Log_00%d", i );
@@ -67,9 +69,29 @@ int main ( void )  {
     Gax        Gay        Gaz       \
     Gcx      Gcy      Gcz     ");
 
-  // Loop through data
-  ulong j;
-  ushort k;
+  // Create accelerometer datalog file
+  sprintf( file, "%sacc.txt", path );
+  accf = fopen( file, "w" );
+  if( accf == NULL )
+    printf( "Error (log_XX): Cannot open 'acc' file. \n" );
+  fprintf( accf, 
+    " Atime        Adur  \
+    Arx     Ary     Arz    \
+    Aax        Aay        Aaz       \
+    Acx      Acy      Acz     ");
+
+  // Create magnetometer datalog file
+  sprintf( file, "%smag.txt", path );
+  magf = fopen( file, "w" );
+  if( magf == NULL )
+    printf( "Error (log_XX): Cannot open 'mag' file. \n" );
+  fprintf( magf, 
+    " Mtime        Mdur  \
+    Mrx     Mry     Mrz    \
+    Max        May        Maz       \
+    Mcx      Mcy      Mcz     ");
+
+  // Loop through gyroscope data
   for ( j=0; j<log_gyr.count; j++ ) {
     fprintf( gyrf, "\n %011.6f  %06d    ", log_gyr.time[j], log_gyr.dur[j] );
     for ( k=0; k<3; k++ )  fprintf( gyrf, "%06d  ",   log_gyr.raw[j*3+k] );   fprintf( gyrf, "   " );
@@ -77,7 +99,26 @@ int main ( void )  {
     for ( k=0; k<3; k++ )  fprintf( gyrf, "%07.4f  ", log_gyr.cal[j*3+k] );   fprintf( gyrf, "   " );
   }
 
+  // Loop through accelerometer data
+  for ( j=0; j<log_acc.count; j++ ) {
+    fprintf( accf, "\n %011.6f  %06d    ", log_acc.time[j], log_acc.dur[j] );
+    for ( k=0; k<3; k++ )  fprintf( accf, "%06d  ",   log_acc.raw[j*3+k] );   fprintf( accf, "   " );
+    for ( k=0; k<3; k++ )  fprintf( accf, "%09.2f  ", log_acc.avg[j*3+k] );   fprintf( accf, "   " );
+    for ( k=0; k<3; k++ )  fprintf( accf, "%07.4f  ", log_acc.cal[j*3+k] );   fprintf( accf, "   " );
+  }
+
+  // Loop through magnetometer data
+  for ( j=0; j<log_mag.count; j++ ) {
+    fprintf( magf, "\n %011.6f  %06d    ", log_mag.time[j], log_mag.dur[j] );
+    for ( k=0; k<3; k++ )  fprintf( magf, "%06d  ",   log_mag.raw[j*3+k] );   fprintf( magf, "   " );
+    for ( k=0; k<3; k++ )  fprintf( magf, "%09.2f  ", log_mag.avg[j*3+k] );   fprintf( magf, "   " );
+    for ( k=0; k<3; k++ )  fprintf( magf, "%07.4f  ", log_mag.cal[j*3+k] );   fprintf( magf, "   " );
+  }
+
+  // Close files
   fclose(gyrf);
+  fclose(accf);
+  fclose(magf);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

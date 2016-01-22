@@ -84,15 +84,6 @@ void log_exit ( void )  {
   free(log_mag.avg);
   free(log_mag.cal);
 
-  // Close files
-  //fclose(datalog.gyr);
-  //fclose(datalog.acc);
-  //fclose(datalog.mag);
-  //fclose(datalog.fusion);
-
-  // Adjust flag
-  //datalog.open = false;
-
   return;
 }
 

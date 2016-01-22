@@ -162,8 +162,9 @@ void imu_setic (  )  {
   // Assign loop counter values
   if ( HZ_IMU_FAST % HZ_IMU_SLOW != 0 )
     printf( "  *** WARNING ***  Slow loop must divide evenly into fast loop. \n" );
-  imu.loops = HZ_IMU_FAST / HZ_IMU_SLOW;
-  imu.count = 0;
+  imu.loops  = HZ_IMU_FAST / HZ_IMU_SLOW;
+  imu.count  = 0;
+  imu.getmag = false;
 
   // Calculate time steps
   float gyr_dt, acc_dt, mag_dt;
@@ -205,7 +206,6 @@ void imu_data (  )  {
   // Local variables
   ushort i, j, k;
   float g, a, m;
-  bool getmag;
 
   // Declare data history arrays
   static short ghist[3][GYR_HIST];
@@ -213,12 +213,12 @@ void imu_data (  )  {
   static short mhist[3][MAG_HIST];
 
   // Increment counter
-  getmag = false;
-  imu.count++;
-  if ( imu.count == imu.loops ) {
-    getmag = true;
-    imu.count = 0;
+  imu.getmag = false;
+  if ( imu.count == 0 ) {
+    imu.getmag = true;
+    imu.count = imu.loops;
   }
+  imu.count--;
 
   // Lock IMU data
   pthread_mutex_lock(&mutex_imu);
@@ -228,7 +228,7 @@ void imu_data (  )  {
     printf( "Error (imu_data): 'mpu_get_gyro_reg' failed. \n" );
   if( mpu_get_accel_reg( acc.raw, NULL ) )
     printf( "Error (imu_data): 'mpu_get_accel_reg' failed. \n" );
-  if(getmag){
+  if(imu.getmag){
   if( mpu_get_compass_reg( mag.raw, NULL ) )
     printf( "Error (imu_data): 'mpu_get_compass_reg' failed. \n" );
   }
@@ -254,7 +254,7 @@ void imu_data (  )  {
   }
 
   // Magnetometer low pass filter
-  if(getmag) {
+  if(imu.getmag) {
   k = MAG_HIST;
   for ( i=0; i<3; i++ ) {
     for ( j=1; j<k; j++ )  mhist[i][j-1] = mhist[i][j];
@@ -275,7 +275,7 @@ void imu_data (  )  {
   acc.cal[Z] =   ( acc.avg[Z] - acc.bias[Z] ) / (double) (acc.range[Z]);
 
   // Shift and orient magnetometer readings
-  if(getmag) {
+  if(imu.getmag) {
   mag.cal[X] = ( mag.avg[X] - mag.bias[X] ) / (double) (mag.range[X]);
   mag.cal[Y] = ( mag.avg[Y] - mag.bias[Y] ) / (double) (mag.range[Y]);
   mag.cal[Z] = ( mag.avg[Z] - mag.bias[Z] ) / (double) (mag.range[Z]);

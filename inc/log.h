@@ -9,7 +9,8 @@
 
 
 // Define statements
-#define MAX_LOG_DUR  1
+#define MAX_LOG_DUR  (20*60)
+
 
 // Log enumerations
 enum log_index {
@@ -20,7 +21,7 @@ enum log_index {
 
 // Log IMU structure
 typedef struct log_imu_struct {
-  int   fd;
+//int   fd;
   ulong count;
   ulong limit;
   float *time;
