@@ -18,39 +18,57 @@ void log_init ( void )  {
 
   // Set counters to zero
   if(DEBUG)  printf("  Clear counters \n");
-  log_gyr.count = 0;
-  log_acc.count = 0;
-  log_mag.count = 0;
+  log_gyr.count    = 0;
+  log_acc.count    = 0;
+  log_mag.count    = 0;
+  log_input.count  = 0;
+  log_output.count = 0;
 
   // Establish datalog limits
   if(DEBUG)  printf("  Establish datalog limits \n");
-  log_gyr.limit = MAX_LOG_DUR * HZ_IMU_FAST;
-  log_acc.limit = MAX_LOG_DUR * HZ_IMU_FAST;
-  log_mag.limit = MAX_LOG_DUR * HZ_IMU_SLOW;
+  log_gyr.limit    = MAX_LOG_DUR * HZ_IMU_FAST;
+  log_acc.limit    = MAX_LOG_DUR * HZ_IMU_FAST;
+  log_mag.limit    = MAX_LOG_DUR * HZ_IMU_SLOW;
+  log_input.limit  = MAX_LOG_DUR * HZ_SIO;
+  log_output.limit = MAX_LOG_DUR * HZ_SIO;
 
   // Allocate memory for 'gyr' storage arrays
   if(DEBUG)  printf("  Allocate 'gyr' mem \n");
-  log_gyr.time =  malloc( sizeof(float) * log_gyr.limit * 1 );
-  log_gyr.dur  =  malloc( sizeof(ulong) * log_gyr.limit * 1 );
+  log_gyr.time =  malloc( sizeof(float) * log_gyr.limit     );
+  log_gyr.dur  =  malloc( sizeof(ulong) * log_gyr.limit     );
   log_gyr.raw  =  malloc( sizeof(short) * log_gyr.limit * 3 );
   log_gyr.avg  =  malloc( sizeof(float) * log_gyr.limit * 3 );
   log_gyr.cal  =  malloc( sizeof(float) * log_gyr.limit * 3 );
 
   // Allocate memory for 'acc' storage arrays
   if(DEBUG)  printf("  Allocate 'acc' mem \n");
-  log_acc.time =  malloc( sizeof(float) * log_acc.limit * 1 );
-  log_acc.dur  =  malloc( sizeof(ulong) * log_acc.limit * 1 );
+  log_acc.time =  malloc( sizeof(float) * log_acc.limit     );
+  log_acc.dur  =  malloc( sizeof(ulong) * log_acc.limit     );
   log_acc.raw  =  malloc( sizeof(short) * log_acc.limit * 3 );
   log_acc.avg  =  malloc( sizeof(float) * log_acc.limit * 3 );
   log_acc.cal  =  malloc( sizeof(float) * log_acc.limit * 3 );
 
   // Allocate memory for 'mag' storage arrays
   if(DEBUG)  printf("  Allocate 'mag' mem \n");
-  log_mag.time =  malloc( sizeof(float) * log_mag.limit * 1 );
-  log_mag.dur  =  malloc( sizeof(ulong) * log_mag.limit * 1 );
+  log_mag.time =  malloc( sizeof(float) * log_mag.limit     );
+  log_mag.dur  =  malloc( sizeof(ulong) * log_mag.limit     );
   log_mag.raw  =  malloc( sizeof(short) * log_mag.limit * 3 );
   log_mag.avg  =  malloc( sizeof(float) * log_mag.limit * 3 );
   log_mag.cal  =  malloc( sizeof(float) * log_mag.limit * 3 );
+
+  // Allocate memory for 'input' storage arrays
+  if(DEBUG)  printf("  Allocate 'input' mem \n");
+  log_input.time =  malloc( sizeof(float)  * log_input.limit      );
+  log_input.reg  =  malloc( sizeof(ushort) * log_input.limit * 10 );
+  log_input.pwm  =  malloc( sizeof(ushort) * log_input.limit * 10 );
+  log_input.norm =  malloc( sizeof(double) * log_input.limit * 10 );
+
+  // Allocate memory for 'output' storage arrays
+  if(DEBUG)  printf("  Allocate 'output' mem \n");
+  log_output.time =  malloc( sizeof(float)  * log_output.limit      );
+  log_output.reg  =  malloc( sizeof(ushort) * log_output.limit * 10 );
+  log_output.pwm  =  malloc( sizeof(ushort) * log_output.limit * 10 );
+  log_output.norm =  malloc( sizeof(double) * log_output.limit * 10 );
 
   // Allocate dir/path/file memory
   datalog.dir  = malloc(16);
@@ -88,7 +106,7 @@ void log_exit ( void )  {
 
   // Local ariables
   char *file = malloc(64);
-  FILE *fnote, *fgyr, *facc, *fmag;
+  FILE *fnote, *fgyr, *facc, *fmag, *fin, *fout;
   ushort i;
   ulong row;
 
@@ -156,11 +174,41 @@ void log_exit ( void )  {
     for ( i=0; i<3; i++ )  fprintf( fmag, "%07.4f  ", log_mag.cal[ row*3 +i ] );   fprintf( fmag, "   " );
   }
 
+  // Create input datalog file
+  sprintf( file, "%sinput.txt", datalog.path );
+  fin = fopen( file, "w" );
+  if( fin == NULL )  printf( "Error (log_XX): Cannot open 'input' file. \n" );
+  fprintf( fin, "       Itime      I0    I1    I2    I3    I4    I5    I6    I7    I8    I9");
+
+  // Loop through input data
+  for ( row = 0; row < log_input.count; row++ ) {
+    fprintf( fin, "\n %011.6f    ", log_input.time[row] );
+    //for ( i=0; i<10; i++ )  fprintf( fin, "%05d  ",  log_input.reg  [ row*10 +i ] );   fprintf( fin, "   " );
+    for ( i=0; i<10; i++ )  fprintf( fin, "%04d  ",  log_input.pwm  [ row*10 +i ] );   fprintf( fin, "   " );
+    //for ( i=0; i<10; i++ )  fprintf( fin, "%7.4f  ", log_input.norm [ row*10 +i ] );   fprintf( fin, "   " );
+  }
+
+  // Create output datalog file
+  sprintf( file, "%soutput.txt", datalog.path );
+  fout = fopen( file, "w" );
+  if( fout == NULL )  printf( "Error (log_XX): Cannot open 'input' file. \n" );
+  fprintf( fout, "       Otime      O0    O1    O2    O3    O4    O5    O6    O7    O8    O9");
+
+  // Loop through output data
+  for ( row = 0; row < log_output.count; row++ ) {
+    fprintf( fout, "\n %011.6f    ", log_output.time[row] );
+    //for ( i=0; i<10; i++ )  fprintf( fout, "%05d  ",  log_output.reg  [ row*10 +i ] );   fprintf( fout, "   " );
+    for ( i=0; i<10; i++ )  fprintf( fout, "%04d  ",  log_output.pwm  [ row*10 +i ] );   fprintf( fout, "   " );
+    //for ( i=0; i<10; i++ )  fprintf( fout, "%7.4f  ", log_output.norm [ row*10 +i ] );   fprintf( fout, "   " );
+  }
+
   // Close files
   fclose(fnote);
   fclose(fgyr);
   fclose(facc);
   fclose(fmag);
+  fclose(fin);
+  fclose(fout);
 
   // Free memory for 'gyr'
   if(DEBUG)  printf("  Free 'gyr' memory \n");
@@ -186,6 +234,20 @@ void log_exit ( void )  {
   free(log_mag.avg);
   free(log_mag.cal);
 
+  // Free memory for 'input'
+  if(DEBUG)  printf("  Free 'input' memory \n");
+  free(log_input.time);
+  free(log_input.reg);
+  free(log_input.pwm);
+  free(log_input.norm);
+
+  // Free memory for 'output'
+  if(DEBUG)  printf("  Free 'output' memory \n");
+  free(log_output.time);
+  free(log_output.reg);
+  free(log_output.pwm);
+  free(log_output.norm);
+
   led_off( LED_LOG );
   return;
 }
@@ -199,13 +261,13 @@ void log_record ( enum log_index index )  {
 
   // Local variables
   ushort i;
-  ulong row;
-  float timestamp;
+  ulong  row;
+  float  timestamp;
 
   // Jump to appropriate log 
   switch(index) {
 
-    // Record IMU data
+  // Record IMU data
   case LOG_IMU :
 
     timestamp = (float) ( tmr_imu.start_sec + ( tmr_imu.start_usec / 1000000.0f ) ) - datalog.offset;
@@ -247,8 +309,37 @@ void log_record ( enum log_index index )  {
     pthread_mutex_unlock(&mutex_imu);
     return;
 
-    // Record FUS data
-  case LOG_FUS :
+  // Record AHRS data
+  case LOG_AHRS :
+    return;
+
+  // Record system input/output data
+  case LOG_SIO :
+
+    timestamp = (float) ( tmr_sio.start_sec + ( tmr_sio.start_usec / 1000000.0f ) ) - datalog.offset;
+    pthread_mutex_lock(&mutex_sio);
+
+    // Input data
+    if ( log_input.count <= log_input.limit ) {
+      row = log_input.count;
+      log_input.time[row] = timestamp;
+      //for ( i=0; i<10; i++ )  log_input.reg  [ row*10 +i ] = input.reg[i];
+      for ( i=0; i<10; i++ )  log_input.pwm  [ row*10 +i ] = input.pwm[i];
+      //for ( i=0; i<10; i++ )  log_input.norm [ row*10 +i ] = input.norm[i];
+      log_input.count++;
+    }
+
+    // Output data
+    if ( log_output.count <= log_output.limit ) {
+      row = log_output.count;
+      log_output.time[row] = timestamp;
+      //for ( i=0; i<10; i++ )  log_output.reg  [ row*10 +i ] = output.reg[i];
+      for ( i=0; i<10; i++ )  log_output.pwm  [ row*10 +i ] = output.pwm[i];
+      //for ( i=0; i<10; i++ )  log_output.norm [ row*10 +i ] = output.norm[i];
+      log_output.count++;
+    }
+
+    pthread_mutex_unlock(&mutex_sio);
     return;
 
   default :

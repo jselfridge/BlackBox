@@ -7,12 +7,27 @@
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  pru_init
-//  Initializes the PRU subsystems.
+//  sio_init
+//  Initializes the system input/output PRU subcomponents.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void pru_init ( void )  {
-  if(DEBUG)  printf("Initializing PRU \n");
+void sio_init ( void )  {
+  if(DEBUG)  printf("Initializing system inputs/outputs \n");
 
+  ushort iarray[10]  = { 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900 };
+  ushort oarray[10] = { 1900, 1800, 1700, 1600, 1500, 1400, 1300, 1200, 1100, 1000 };
+
+  ushort i;
+  for ( i=0; i<10; i++ ) {
+    input.pwm[i]  = iarray[i];
+    output.pwm[i] = oarray[i];
+  }
+
+  //sio.input  = input;
+  //sio.output = output;
+
+
+
+  /*
   // Initialise driver
   prussdrv_init();
   
@@ -39,23 +54,23 @@
 
   // Set LED indicator
   led_on(LED_PRU);
-
+  */
   return;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  pru_exit
-//  Exits the PRU subsystems.
+//  sio_exit
+//  Exits the system input/output PRU subcomponents.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void pru_exit ( void )  {
-  if(DEBUG)  printf("Closing PRU \n");
-  prussdrv_pru_disable(0);
-  prussdrv_pru_disable(1);
-  prussdrv_exit(); 
+void sio_exit ( void )  {
+  if(DEBUG)  printf("Close system input/output \n");
+  //prussdrv_pru_disable(0);
+  //prussdrv_pru_disable(1);
+  //prussdrv_exit(); 
   return;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  pru_read_pulse

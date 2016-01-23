@@ -67,7 +67,11 @@ void sys_debug ( void )  {
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
-  pthread_mutex_lock(&mutex_imu);    sys_imu();    pthread_mutex_unlock(&mutex_imu);
+  //pthread_mutex_lock(&mutex_imu);    sys_imu();    pthread_mutex_unlock(&mutex_imu);
+
+  //pthread_mutex_lock(&mutex_sio);  
+  sys_sio();  
+  //pthread_mutex_unlock(&mutex_sio);
 
   // Complete debugging display 
   printf("  "); fflush(stdout);
@@ -103,6 +107,25 @@ void sys_imu ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  sys_sio
+//  Prints system input/output values to the terminal.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void sys_sio ( void )  {
+  ushort i;
+
+  // Input signals
+  for ( i=0; i<10; i++ )  printf("%04d ",   input.pwm[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<10; i++ )  printf("%07.4f ", input.norm[i] );  printf("   ");  fflush(stdout);
+
+  // Output signals
+  //for ( i=0; i<10; i++ )  printf("%04d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<10; i++ )  printf("%07.4f ", output.norm[i] );  printf("   ");  fflush(stdout);
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_exit
 //  Code that runs prior to exiting the system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -116,6 +139,7 @@ void sys_exit (  )  {
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   usleep(100000);
   tmr_exit();
+  sio_exit();
   imu_exit();
   log_exit();
 

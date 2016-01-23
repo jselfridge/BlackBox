@@ -16,18 +16,10 @@ int main ( void )  {
   if(DEBUG)  printf("\n--- Begin BlackBox program ---\n");
   led_on(LED_IMU);  led_on(LED_PRU);  led_on(LED_LOG);  led_on(LED_MOT);
 
-
-  ushort input[10]  = { 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900 };
-  ushort output[10] = { 1900, 1800, 1700, 1600, 1500, 1400, 1300, 1200, 1100, 1000 };
-  ushort i;
-  for ( i=0; i<10; i++ ) {
-    sio.pwm_in[i]  = input[i];
-    sio.pwm_out[i] = output[i];
-  }
-
   // Initialize subsystems
   sys_init();
   imu_init();
+  sio_init();
   log_init();
   tmr_init();
 

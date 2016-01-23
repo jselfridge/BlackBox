@@ -271,26 +271,25 @@ void *fcn_sio (  )  {
   tmr_create(&tmr_sio);
   while (running) {
     tmr_start(&tmr_sio);
-    sio_debug();
+    sio_update();
     tmr_finish(&tmr_sio);
-    //log_record(LOG_SIO);
+    log_record(LOG_SIO);
     tmr_pause(&tmr_sio);
   }
   pthread_exit(NULL);
   return NULL;
 }
 
-void sio_debug() {
+void sio_update() {
 
   ushort i;
   for ( i=0; i<10; i++ ) {
-    sio.pwm_in[i]  += 100;
-    sio.pwm_out[i] -= 100;
-    if ( sio.pwm_in[i]  == 2100 ) sio.pwm_in[i]  = 1000;
-    if ( sio.pwm_out[i] ==  900 ) sio.pwm_out[i] = 2000;
+    input.pwm[i]  += 100;
+    output.pwm[i] -= 100;
+    if ( input.pwm[i]  == 2100 )  input.pwm[i]  = 1000;
+    if ( output.pwm[i] ==  900 )  output.pwm[i] = 2000;
   }
 
-  printf( "%d \n", sio.pwm_out[0] );
   return;
 }
 
