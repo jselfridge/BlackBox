@@ -6,28 +6,36 @@ Develops a cape for a BeagleBone Black to enable "Black
 Box" functionality for research and development. 
 
 
+V0.0.1
+------
+<ul>
+  <li> Linux beaglebone 4.1.15-ti-rt-r41 SMP PREEMPT RT armv7l </li>
+  <li> Program exit condition </li>
+  <li> Establish real time priority </li>
+  <li> Lock and reserve memeory </li>
+  <li> Setup multithread for 'debug' and 'imu' systems </li> 
+  <li> Established mutex conditions for data protection </li>
+  <li> Enable single IMU sensor </li>
+  <li> Read calibration data from file </li>
+  <li> Read gyr/acc at 1000hz, and mag at 100 hz </li>
+  <li> Low pass filter on IMU data </li>
+  <li> Scale raw IMU data to physical values </li> 
+  <li> Setup crude initial datalogging system </li>
+  <li> GPIO functions to toggle pins </li>
+  <li> LED functions to manipulate user LEDs </li>
+</ul>
+
+
 Pending
 -------
 The following list outlines proposed upcoming changes 
 <ul>
-<<<<<<< HEAD
 
-  <li><b>Get flying again</b></li>
-  <li>Ctrl struct and thread</li>
-  <li>Revamp controller code</li>
-  <li>Calibrate IMU values</li>
-  <li>Tune PID gains</li>
-
-  <li><b>Immediate development</b></li>
-  <li>Code to TX/RX serial data</li>
-  <li>Integrate serial transmission into thread</li>
-=======
   <li><b>Priority</b></li>
   <li>Identify timing loop issues</li>
   <li>Reestablish PRU functionality</li>
   <li>Reestablish controller code</li>
   <li>Add health/status monitoring thread</li>
->>>>>>> altlog
   <li>Mavlink serial output</li>
   <li>Develop GCS</li>
   <li>Add health/status monitoring thread</li>
