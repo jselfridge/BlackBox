@@ -9,11 +9,12 @@ Box" functionality for research and development.
 Current tasks
 -------------
 <ul>
-  <li> New timing thread for system I/O </li>
-  <li> Configure system for PRU capabilities (WIP) </li>
-  <li> Enable 10 PRU based PWM inputs (WIP) </li>
-  <li> Enable 10 PRU based PWM outputs (WIP) </li>
-  <li> Record system input/output in datalogger (WIP) </li>
+  <li> New timing thread for I/O signals </li>
+  <li> Develop data structure for I/O signals </li>
+  <li> Datalog system I/O signals </li>
+  <li> (WIP) Configure system for PRU capabilities </li>
+  <li> (WIP) Enable 10 PRU based PWM inputs </li>
+  <li> (WIP) Enable 10 PRU based PWM outputs </li>
 </ul>
 
 
