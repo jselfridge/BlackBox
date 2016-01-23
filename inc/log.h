@@ -45,6 +45,7 @@ log_imu_struct log_mag;
 
 
 // Log structure
+<<<<<<< HEAD:inc/log.X
 typedef struct {
 <<<<<<< HEAD:inc/log.X
   FILE* note;
@@ -63,22 +64,29 @@ typedef struct {
 } log_struct;
 //log_struct datalog; 
 =======
+=======
+typedef struct datalog_struct {
+>>>>>>> altlog:inc/log.h
   bool   enabled;
   //bool   open;
-  //float  offset;
+  float  offset;
   char   *dir;
   char   *path;
+<<<<<<< HEAD:inc/log.X
 } log_struct;
 log_struct datalog;
+>>>>>>> altlog:inc/log.h
+=======
+} datalog_struct;
+datalog_struct datalog;
 >>>>>>> altlog:inc/log.h
 
 
 // Log functions
 void  log_init   ( void );
 void  log_exit   ( void );
-//void  log_record ( enum log_index index );
+void  log_record ( enum log_index index );
 //void  log_write  ( enum log_index index );
-//void  log_open   ( void );
 
 
 #endif

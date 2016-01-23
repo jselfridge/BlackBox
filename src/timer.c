@@ -243,49 +243,7 @@ void *fcn_imu (  )  {
     tmr_start(&tmr_imu);
     imu_data();
     tmr_finish(&tmr_imu);
-    //log_record(LOG_IMU);
-    //printf(".");  fflush(stdout);
-
-    ulong i;
-    ushort j;
-    float timestamp = (float) ( tmr_imu.start_sec + ( tmr_imu.start_usec / 1000000.0f ) ) ;
-
-    pthread_mutex_lock(&mutex_imu);
-
-    if ( log_gyr.count <= log_gyr.limit ) {
-    i = log_gyr.count;
-    log_gyr.time[i] = timestamp;
-    log_gyr.dur[i]  = tmr_imu.dur;
-    for ( j=0; j<3; j++ )  log_gyr.raw[3*i+j] = gyr.raw[j];
-    for ( j=0; j<3; j++ )  log_gyr.avg[3*i+j] = gyr.avg[j];
-    for ( j=0; j<3; j++ )  log_gyr.cal[3*i+j] = gyr.cal[j];
-    log_gyr.count++;
-    }
-
-    if ( log_acc.count <= log_acc.limit ) {
-    i = log_acc.count;
-    log_acc.time[i] = timestamp;
-    log_acc.dur[i]  = tmr_imu.dur;
-    for ( j=0; j<3; j++ )  log_acc.raw[3*i+j] = acc.raw[j];
-    for ( j=0; j<3; j++ )  log_acc.avg[3*i+j] = acc.avg[j];
-    for ( j=0; j<3; j++ )  log_acc.cal[3*i+j] = acc.cal[j];
-    log_acc.count++;
-    }
-
-    if( imu.getmag && ( log_mag.count < log_mag.limit) ) {
-    i = log_mag.count;
-    log_mag.time[i] = timestamp;
-    log_mag.dur[i]  = tmr_imu.dur;
-    for ( j=0; j<3; j++ )  log_mag.raw[3*i+j] = mag.raw[j];
-    for ( j=0; j<3; j++ )  log_mag.avg[3*i+j] = mag.avg[j];
-    for ( j=0; j<3; j++ )  log_mag.cal[3*i+j] = mag.cal[j];
-    log_mag.count++;
-    }
-
-    pthread_mutex_unlock(&mutex_imu);
-
-    if ( log_gyr.count >= log_gyr.limit ) running = false;
-
+    log_record(LOG_IMU);
     tmr_pause(&tmr_imu);
   }
   pthread_exit(NULL);

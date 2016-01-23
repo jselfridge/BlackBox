@@ -73,6 +73,11 @@ void log_init ( void )  {
     if ( access( file , F_OK ) == -1 )  break;
   }
 
+  // Determine start second
+  struct timespec timeval;
+  clock_gettime( CLOCK_MONOTONIC, &timeval );
+  datalog.offset = timeval.tv_sec;
+
   return;
 }
 
@@ -203,6 +208,7 @@ void log_exit ( void )  {
 */
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<<<<<<< HEAD:src/log.X
 //  log_open
 //  Opens the next sequential log file and populates the header.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -312,22 +318,29 @@ void log_exit ( void )  {
 */
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=======
+>>>>>>> altlog:src/log.c
 //  log_record
 //  Records the data to the log file.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//void log_record ( enum log_index index )  {
+void log_record ( enum log_index index )  {
 
   // Local variables
-  //ushort i;
-  //static float timestamp = 0.0;
+  ushort i;
+  ulong row;
+  float timestamp;
 
   // Jump to appropriate log 
-  //switch(index) {
+  switch(index) {
 
   // Record IMU data
-  //case LOG_IMU :
+  case LOG_IMU :
 
+    timestamp = (float) ( tmr_imu.start_sec + ( tmr_imu.start_usec / 1000000.0f ) ) - datalog.offset;
+    pthread_mutex_lock(&mutex_imu);
+    
     // Gyroscope data
+<<<<<<< HEAD:src/log.X
     //timestamp = (float)( tmr_imu.start_sec + ( tmr_imu.start_usec / 1000000.0f ) ); // - datalog.offset );
     //log_gyr.time [log_gyr.count] = timestamp;
     //log_gyr.dur  [log_gyr.count] = &tmr_imu.dur;
@@ -426,6 +439,51 @@ void log_exit ( void )  {
 }
 =======
 //}
+>>>>>>> altlog:src/log.c
+=======
+    if ( log_gyr.count <= log_gyr.limit ) {
+      row = log_gyr.count;
+      log_gyr.time[row] = timestamp;
+      log_gyr.dur[row]  = tmr_imu.dur;
+      for ( i=0; i<3; i++ )  log_gyr.raw[ row*3 +i ] = gyr.raw[i];
+      for ( i=0; i<3; i++ )  log_gyr.avg[ row*3 +i ] = gyr.avg[i];
+      for ( i=0; i<3; i++ )  log_gyr.cal[ row*3 +i ] = gyr.cal[i];
+      log_gyr.count++;
+    }
+
+    // Accelerometer data
+    if ( log_acc.count <= log_acc.limit ) {
+      row = log_acc.count;
+      log_acc.time[row] = timestamp;
+      log_acc.dur[row]  = tmr_imu.dur;
+      for ( i=0; i<3; i++ )  log_acc.raw[ row*3 +i ] = acc.raw[i];
+      for ( i=0; i<3; i++ )  log_acc.avg[ row*3 +i ] = acc.avg[i];
+      for ( i=0; i<3; i++ )  log_acc.cal[ row*3 +i ] = acc.cal[i];
+      log_acc.count++;
+    }
+
+    // Magnetometer data
+    if( imu.getmag && ( log_mag.count < log_mag.limit) ) {
+      row = log_mag.count;
+      log_mag.time[row] = timestamp;
+      log_mag.dur[row]  = tmr_imu.dur;
+      for ( i=0; i<3; i++ )  log_mag.raw[ row*3 +i ] = mag.raw[i];
+      for ( i=0; i<3; i++ )  log_mag.avg[ row*3 +i ] = mag.avg[i];
+      for ( i=0; i<3; i++ )  log_mag.cal[ row*3 +i ] = mag.cal[i];
+      log_mag.count++;
+    }
+
+    pthread_mutex_unlock(&mutex_imu);
+    return;
+
+  // Record FUS data
+  case LOG_FUS :
+    return;
+
+  default :
+    return;
+  
+}}
 >>>>>>> altlog:src/log.c
 
 
