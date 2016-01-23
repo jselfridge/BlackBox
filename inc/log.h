@@ -35,22 +35,21 @@ log_imu_struct log_mag;
 
 
 // Log structure
-typedef struct {
+typedef struct datalog_struct {
   bool   enabled;
   //bool   open;
-  //float  offset;
+  float  offset;
   char   *dir;
   char   *path;
-} log_struct;
-log_struct datalog;
+} datalog_struct;
+datalog_struct datalog;
 
 
 // Log functions
 void  log_init   ( void );
 void  log_exit   ( void );
-//void  log_record ( enum log_index index );
+void  log_record ( enum log_index index );
 //void  log_write  ( enum log_index index );
-//void  log_open   ( void );
 
 
 #endif

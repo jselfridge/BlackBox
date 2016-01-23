@@ -69,6 +69,11 @@ void log_init ( void )  {
     if ( access( file , F_OK ) == -1 )  break;
   }
 
+  // Determine start second
+  struct timespec timeval;
+  clock_gettime( CLOCK_MONOTONIC, &timeval );
+  datalog.offset = timeval.tv_sec;
+
   return;
 }
 
@@ -198,156 +203,69 @@ void log_exit ( void )  {
 */
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  log_open
-//  Opens the next sequential log file and populates the header.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void log_open ( void )  {
-
-  // Local varaibales
-  int i = 0;
-  char *file;
-
-  // Allocate memory
-  datalog.dir  = malloc(16);
-  datalog.path = malloc(32);
-  file         = malloc(64);
-
-  // Find next available log directory
-  while (true) {
-    i++;
-    if      ( i<10   )  sprintf( datalog.dir, "Log_00%d", i );
-    else if ( i<100  )  sprintf( datalog.dir, "Log_0%d",  i );
-    else if ( i<1000 )  sprintf( datalog.dir, "Log_%d",   i );
-    else  sys_err( true, "Error (log_init): Exceeded maximum number of log directories." );
-    sprintf( file, "./log/%s/notes.txt", datalog.dir );
-    if ( access( file , F_OK ) == -1 )  break;
-  }
-
-  // Create new directory
-  sprintf( datalog.path, "./log/%s/", datalog.dir );
-  mkdir( datalog.path, 222 );
-  datalog.open = true;
-
-  // Create notes file
-  sprintf( file, "%snotes.txt", datalog.path );
-  datalog.note = fopen( file, "w" );
-  sys_err( datalog.note == NULL, "Error (log_init): Cannot open 'note' file. \n" );
-  fprintf( datalog.note, "%s \n", datalog.dir );
-  fprintf( datalog.note, "Add some more content... \n");
-  fprintf( datalog.note, "About the system parameters... ");
-  fclose(datalog.note);
-
-  // Create gyroscope datalog file
-  sprintf( file, "%sgyr.txt", datalog.path );
-  datalog.gyr = fopen( file, "w" );
-  sys_err( datalog.gyr == NULL, "Error (log_init): Cannot open 'gyro' file. \n" );
-  fprintf( datalog.gyr, 
-    " Gtime,       Gdur,  \
-    Grx1,   Gry1,   Grz1,  \
-    Gax1,      Gay1,      Gaz1      \
-    Gcx1,    Gcy1,    Gcz1   ");
-
-  // Create accelerometer datalog file
-  sprintf( file, "%sacc.txt", datalog.path );
-  datalog.acc = fopen( file, "w" );
-  sys_err( datalog.acc == NULL, "Error (log_init): Cannot open 'acc' file. \n" );
-  fprintf( datalog.acc, 
-    " Atime,       Adur,  \
-    Arx1,   Ary1,   Arz1,  \
-    Aax1,      Aay1,      Aaz1,     \
-    Acx1,    Acy1,    Acz1,   ");
-
-  // Create magnetometer datalog file
-  sprintf( file, "%smag.txt", datalog.path );
-  datalog.mag = fopen( file, "w" );
-  sys_err( datalog.mag == NULL, "Error (log_init): Cannot open 'mag' file. \n" );
-  fprintf( datalog.mag, 
-    " Mtime,       Mdur,  \
-    Mrx1, Mry1, Mrz1,\
-    Max1,    May1,    Maz1,   \
-    Mcx1,    Mcy1,    Mcz1,   ");
-
-  // Create data fusion datalog file
-  sprintf( file, "%sfusion.txt", datalog.path );
-  datalog.fusion = fopen( file, "w" );
-  sys_err( datalog.fusion == NULL, "Error (log_init): Cannot open 'fusion' file. \n" );
-  fprintf( datalog.fusion, 
-    " Ftime,       Fdur,  \
-    Qw1,     Qx1,     Qy1,     Qz1,    \
-    Ex1,     Ey1,     Ez1,  \
-    dEx1, dEy1, dEz1  ");
-
-  // Determine start second
-  struct timespec timeval;
-  clock_gettime( CLOCK_MONOTONIC, &timeval );
-  datalog.offset = timeval.tv_sec;
-
-  return;
-}
-*/
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  log_record
 //  Records the data to the log file.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//void log_record ( enum log_index index )  {
+void log_record ( enum log_index index )  {
 
   // Local variables
-  //ushort i;
-  //static float timestamp = 0.0;
+  ushort i;
+  ulong row;
+  float timestamp;
 
   // Jump to appropriate log 
-  //switch(index) {
+  switch(index) {
 
   // Record IMU data
-  //case LOG_IMU :
+  case LOG_IMU :
 
+    timestamp = (float) ( tmr_imu.start_sec + ( tmr_imu.start_usec / 1000000.0f ) ) - datalog.offset;
+    pthread_mutex_lock(&mutex_imu);
+    
     // Gyroscope data
-    //timestamp = (float)( tmr_imu.start_sec + ( tmr_imu.start_usec / 1000000.0f ) ); // - datalog.offset );
-    //log_gyr.time [log_gyr.count] = timestamp;
-    //log_gyr.dur  [log_gyr.count] = &tmr_imu.dur;
-    //log_gyr.count++;
-    //timestamp += 0.1;
+    if ( log_gyr.count <= log_gyr.limit ) {
+      row = log_gyr.count;
+      log_gyr.time[row] = timestamp;
+      log_gyr.dur[row]  = tmr_imu.dur;
+      for ( i=0; i<3; i++ )  log_gyr.raw[ row*3 +i ] = gyr.raw[i];
+      for ( i=0; i<3; i++ )  log_gyr.avg[ row*3 +i ] = gyr.avg[i];
+      for ( i=0; i<3; i++ )  log_gyr.cal[ row*3 +i ] = gyr.cal[i];
+      log_gyr.count++;
+    }
 
-    //fprintf( datalog.gyr, "\n %011.6f, %06ld,    ", timestamp, thr_imu.dur );
-    //for ( i=0; i<3; i++ )  fprintf( datalog.gyr, "%06d, ",   imu1.rawGyr[i] );   fprintf( datalog.gyr, "   " );
-    //for ( i=0; i<3; i++ )  fprintf( datalog.gyr, "%09.2f, ", imu1.avgGyr[i] );   fprintf( datalog.gyr, "   " );
-    //for ( i=0; i<3; i++ )  fprintf( datalog.gyr, "%07.4f, ", imu1.calGyr[i] );   fprintf( datalog.gyr, "   " );
+    // Accelerometer data
+    if ( log_acc.count <= log_acc.limit ) {
+      row = log_acc.count;
+      log_acc.time[row] = timestamp;
+      log_acc.dur[row]  = tmr_imu.dur;
+      for ( i=0; i<3; i++ )  log_acc.raw[ row*3 +i ] = acc.raw[i];
+      for ( i=0; i<3; i++ )  log_acc.avg[ row*3 +i ] = acc.avg[i];
+      for ( i=0; i<3; i++ )  log_acc.cal[ row*3 +i ] = acc.cal[i];
+      log_acc.count++;
+    }
 
-    //return;
+    // Magnetometer data
+    if( imu.getmag && ( log_mag.count < log_mag.limit) ) {
+      row = log_mag.count;
+      log_mag.time[row] = timestamp;
+      log_mag.dur[row]  = tmr_imu.dur;
+      for ( i=0; i<3; i++ )  log_mag.raw[ row*3 +i ] = mag.raw[i];
+      for ( i=0; i<3; i++ )  log_mag.avg[ row*3 +i ] = mag.avg[i];
+      for ( i=0; i<3; i++ )  log_mag.cal[ row*3 +i ] = mag.cal[i];
+      log_mag.count++;
+    }
 
-  /*  // Record 'accelerometer' datalog
-  case LOG_ACC :
-    timestamp = (float)( thr_imu.start_sec + ( thr_imu.start_usec / 1000000.0f ) - datalog.offset );
-    fprintf( datalog.acc, "\n %011.6f, %06ld,    ", timestamp, thr_imu.dur );
-    for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%06d, ",   imu1.rawAcc[i] );  fprintf( datalog.acc, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%09.2f, ", imu1.avgAcc[i] );  fprintf( datalog.acc, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%07.4f, ", imu1.calAcc[i] );  fprintf( datalog.acc, "   " );
-    return;*/
+    pthread_mutex_unlock(&mutex_imu);
+    return;
 
-  /*  // Record 'magnetometer' datalog
-  case LOG_MAG :
-    timestamp = (float)( thr_imu.start_sec + ( thr_imu.start_usec / 1000000.0f ) - datalog.offset );
-    fprintf( datalog.mag, "\n %011.6f, %06ld,    ", timestamp, thr_imu.dur );
-    for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%04d, ",   imu1.rawMag[i] );  fprintf( datalog.mag, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%07.2f, ", imu1.avgMag[i] );  fprintf( datalog.mag, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%07.4f, ", imu1.calMag[i] );  fprintf( datalog.mag, "   " );
-    return;*/
+  // Record FUS data
+  case LOG_FUS :
+    return;
 
-  /*  // Record 'data fusion' datalog
-  case LOG_FUSION :
-    timestamp = (float)( thr_fusion.start_sec + ( thr_fusion.start_usec / 1000000.0f ) - datalog.offset );
-    fprintf( datalog.fusion, "\n %011.6f, %06ld,    ", timestamp, thr_fusion.dur );
-    for ( i=0; i<4; i++ )  fprintf( datalog.fusion, "%07.4f, ", imu1.Quat[i] );  fprintf( datalog.fusion, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fusion, "%07.4f, ", imu1.Eul[i]  );  fprintf( datalog.fusion, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fusion, "%07.4f, ", imu1.dEul[i] );  fprintf( datalog.fusion, "   " );
-    return;*/
-
-  //default :
-//return;
-    //}
-
-//}
+  default :
+    return;
+  
+}}
 
 
 

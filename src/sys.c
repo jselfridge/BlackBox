@@ -63,7 +63,7 @@ void sys_debug ( void )  {
   fflush(stdout);
 
   // Time values
-  float timestamp = (float) ( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f ) ); //- datalog.offset );
+  float timestamp = (float) ( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f ) - datalog.offset );
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
