@@ -27,16 +27,11 @@ OBJ   := $(foreach o, $(CNAME), obj/$(o).o )
 
 all : $(EXEC)
 
-<<<<<<< HEAD
-$(EXEC) : $(OBJ) $(BIN)
-	$(CC) -O3 -o $@ $(OBJ) $(LIB) # $(MPU) -L$(LDIR)
-=======
 $(EXEC) : $(OBJ) #$(BIN)
-	$(CC) -o $@ $(OBJ) $(LIB) $(MPU)  # -L$(LDIR)
->>>>>>> altlog
+	$(CC) -O3 -o $@ $(OBJ) $(LIB) $(MPU)  # -L$(LDIR)
 
 obj/%.o : src/%.c inc/%.h
-	$(CC) $(CFLAGS) -Iinc -o $@ $<  # -Impu -I$(IDIR)
+	$(CC) $(CFLAGS) -Iinc -Impu -o $@ $<  # -I$(IDIR)
 
 #bin/%.bin : pru/%.p
 #	pasm -b $<
