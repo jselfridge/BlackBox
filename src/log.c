@@ -13,6 +13,9 @@
 void log_init ( void )  {
   if(DEBUG)  printf("Initializing log parameters \n");
 
+  // DEBUGGING PLACEMENT
+  datalog.enabled = true;
+
   // Set counters to zero
   if(DEBUG)  printf("  Clear counters \n");
   log_gyr.count = 0;
@@ -49,6 +52,23 @@ void log_init ( void )  {
   log_mag.avg  =  malloc( sizeof(float) * log_mag.limit * 3 );
   log_mag.cal  =  malloc( sizeof(float) * log_mag.limit * 3 );
 
+  // Allocate dir/path/file memory
+  datalog.dir  = malloc(16);
+  datalog.path = malloc(32);
+  char *file   = malloc(64);
+
+  // Find next available log directory
+  ushort i;
+  while (true) {
+    i++;
+    if      ( i<10   )  sprintf( datalog.dir, "00%d", i );
+    else if ( i<100  )  sprintf( datalog.dir, "0%d",  i );
+    else if ( i<1000 )  sprintf( datalog.dir, "%d",   i );
+    else    printf( "Error (log_XX): Exceeded maximum number of log directories. \n" );
+    sprintf( file, "../Log/%s/notes.txt", datalog.dir );
+    if ( access( file , F_OK ) == -1 )  break;
+  }
+
   return;
 }
 
@@ -59,6 +79,83 @@ void log_init ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void log_exit ( void )  {
   if(DEBUG)  printf("Close log files \n");
+  led_blink( LED_LOG, 500, 500 );
+
+  // Local ariables
+  char *file = malloc(64);
+  FILE *fnote, *fgyr, *facc, *fmag;
+  ushort i;
+  ulong row;
+
+  // Create new directory
+  sprintf( datalog.path, "../Log/%s/", datalog.dir );
+  mkdir( datalog.path, 222 );
+
+  // Create notes datalog file
+  sprintf( file, "%snotes.txt", datalog.path );
+  fnote = fopen( file, "w" );
+  if( fnote == NULL )  printf( "Error (log_XX): Cannot open 'notes' file. \n" );
+  fprintf( fnote, " Assign some system parameteres like gains, or telemetry waypoint updates... " );
+
+  // Create gyroscope datalog file
+  sprintf( file, "%sgyr.txt", datalog.path );
+  fgyr = fopen( file, "w" );
+  if( fgyr == NULL )  printf( "Error (log_XX): Cannot open 'gyr' file. \n" );
+  fprintf( fgyr,
+    "       Gtime    Gdur   \
+    Grx     Gry     Grz       \
+    Gax        Gay        Gaz     \
+    Gcx      Gcy      Gcz      ");
+
+  // Loop through gyroscope data
+  for ( row = 0; row < log_gyr.count; row++ ) {
+    fprintf( fgyr, "\n %011.6f  %06d    ", log_gyr.time[row], log_gyr.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( fgyr, "%06d  ",   log_gyr.raw[ row*3 +i ] );   fprintf( fgyr, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fgyr, "%09.2f  ", log_gyr.avg[ row*3 +i ] );   fprintf( fgyr, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fgyr, "%07.4f  ", log_gyr.cal[ row*3 +i ] );   fprintf( fgyr, "   " );
+  }
+
+  // Create accelerometer datalog file
+  sprintf( file, "%sacc.txt", datalog.path );
+  facc = fopen( file, "w" );
+  if( facc == NULL )  printf( "Error (log_XX): Cannot open 'acc' file. \n" );
+  fprintf( facc, 
+    "       Atime    Adur   \
+    Arx     Ary     Arz       \
+    Aax        Aay        Aaz     \
+    Acx      Acy      Acz      ");
+
+  // Loop through accelerometer data
+  for ( row = 0; row < log_acc.count; row++ ) {
+    fprintf( facc, "\n %011.6f  %06d    ", log_acc.time[row], log_acc.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( facc, "%06d  ",   log_acc.raw[ row*3 +i ] );   fprintf( facc, "   " );
+    for ( i=0; i<3; i++ )  fprintf( facc, "%09.2f  ", log_acc.avg[ row*3 +i ] );   fprintf( facc, "   " );
+    for ( i=0; i<3; i++ )  fprintf( facc, "%07.4f  ", log_acc.cal[ row*3 +i ] );   fprintf( facc, "   " );
+  }
+
+  // Create magnetometer datalog file
+  sprintf( file, "%smag.txt", datalog.path );
+  fmag = fopen( file, "w" );
+  if( fmag == NULL )  printf( "Error (log_XX): Cannot open 'mag' file. \n" );
+  fprintf( fmag,
+    "       Mtime    Mdur   \
+    Mrx     Mry     Mrz       \
+    Max        May        Maz     \
+    Mcx      Mcy      Mcz      ");
+
+  // Loop through magnetometer data
+  for ( row = 0; row < log_mag.count; row++ ) {
+    fprintf( fmag, "\n %011.6f  %06d    ", log_mag.time[row], log_mag.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( fmag, "%06d  ",   log_mag.raw[ row*3 +i ] );   fprintf( fmag, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fmag, "%09.2f  ", log_mag.avg[ row*3 +i ] );   fprintf( fmag, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fmag, "%07.4f  ", log_mag.cal[ row*3 +i ] );   fprintf( fmag, "   " );
+  }
+
+  // Close files
+  fclose(fnote);
+  fclose(fgyr);
+  fclose(facc);
+  fclose(fmag);
 
   // Free memory for 'gyr'
   if(DEBUG)  printf("  Free 'gyr' memory \n");
@@ -84,6 +181,7 @@ void log_exit ( void )  {
   free(log_mag.avg);
   free(log_mag.cal);
 
+  led_off( LED_LOG );
   return;
 }
 
@@ -192,7 +290,7 @@ void log_exit ( void )  {
 //  log_record
 //  Records the data to the log file.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void log_record ( enum log_index index )  {
+//void log_record ( enum log_index index )  {
 
   // Local variables
   //ushort i;
@@ -246,10 +344,10 @@ void log_record ( enum log_index index )  {
     return;*/
 
   //default :
-    return;
+//return;
     //}
 
-}
+//}
 
 
 

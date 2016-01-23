@@ -58,8 +58,9 @@ void sys_debug ( void )  {
   printf("\r");  fflush(stdout);
 
   // Datalog status
-  //if (datalog.enabled)  printf(" %s: ", datalog.dir );  fflush(stdout);
-  //else                  printf(" - - - -  ");  fflush(stdout);
+  if (datalog.enabled)  printf(" Log %s: ", datalog.dir );
+  else                  printf(" - - - -  ");
+  fflush(stdout);
 
   // Time values
   float timestamp = (float) ( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f ) ); //- datalog.offset );
