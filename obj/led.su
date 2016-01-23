@@ -1,4 +1,0 @@
-led.c:13:5:led_rmtrig	112	dynamic,bounded
-led.c:37:5:led_on	112	dynamic,bounded
-led.c:63:5:led_off	112	dynamic,bounded
-led.c:89:5:led_blink	192	dynamic,bounded
