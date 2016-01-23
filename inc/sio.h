@@ -8,7 +8,7 @@
 #include <main.h>
 
 
-// PRU driver includes
+// PRU driver include (shouldn't need this here)
 //#include <prussdrv.h>
 //#include <pruss_intc_mapping.h>
 
@@ -26,6 +26,15 @@
 //#define OUT_CH      10
 //#define OUT_MIN     1000
 //#define OUT_MAX     2000
+
+// System input and output structure
+typedef struct sio_struct {
+  ushort pwm_in  [10];
+  ushort pwm_out [10];
+  double norm_in   [10];
+  double norm_out  [10];
+} sio_struct;
+sio_struct sio;
 
 
 // Global variables

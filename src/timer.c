@@ -282,18 +282,15 @@ void *fcn_sio (  )  {
 
 void sio_debug() {
 
-  static ushort input[10]  = { 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900 };
-  static ushort output[10] = { 1900, 1800, 1700, 1600, 1500, 1400, 1300, 1200, 1100, 1000 };
-
   ushort i;
   for ( i=0; i<10; i++ ) {
-    input[i]  += 100;
-    output[i] -= 100;
-    if ( input[i]  == 2100 ) input[i]  = 1000;
-    if ( output[i] ==  900 ) output[i] = 2000;
+    sio.pwm_in[i]  += 100;
+    sio.pwm_out[i] -= 100;
+    if ( sio.pwm_in[i]  == 2100 ) sio.pwm_in[i]  = 1000;
+    if ( sio.pwm_out[i] ==  900 ) sio.pwm_out[i] = 2000;
   }
 
-  printf( "%d \n", output[0] );
+  printf( "%d \n", sio.pwm_out[0] );
   return;
 }
 
