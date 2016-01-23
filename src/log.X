@@ -17,7 +17,7 @@ void log_init ( void )  {
 =======
   if(DEBUG)  printf("Initializing log parameters \n");
 
-  // DEBUGGING PLACEMENT
+  // DEBUGGING PLACEMENT (enabled by flags)
   datalog.enabled = true;
 
   // Set counters to zero
