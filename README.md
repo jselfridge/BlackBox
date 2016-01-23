@@ -6,10 +6,21 @@ Develops a cape for a BeagleBone Black to enable "Black
 Box" functionality for research and development. 
 
 
+Current tasks
+-------------
+<ul>
+  <li> Configure system for PRU capabilities (WIP) </li>
+  <li> Enable 10 PRU based PWM inputs (WIP) </li>
+  <li> Enable 10 PRU based PWM outputs (WIP) </li>
+  <li> Record system input/output in datalogger (WIP) </li>
+</ul>
+
+
 V0.0.1
 ------
 <ul>
   <li> Linux beaglebone 4.1.15-ti-rt-r41 SMP PREEMPT RT armv7l </li>
+  <li> Configured high speed 400kHz I2C timer </li>
   <li> Program exit condition </li>
   <li> Establish real time priority </li>
   <li> Lock and reserve memeory </li>
