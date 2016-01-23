@@ -192,17 +192,6 @@ void log_exit ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  log_write
-//  Top level function for writing data log commands.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void log_write ( enum log_index index )  {
-  if (datalog.enabled) {  if (!datalog.open)  log_open();  log_record(index);  }
-  else                 {  if (datalog.open)   log_exit();  }
-  return;
-}
-*/
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  log_record
 //  Records the data to the log file.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -267,5 +256,16 @@ void log_record ( enum log_index index )  {
   
 }}
 
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  log_BLAH
+//  Top level function for writing data log commands.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/*void log_BLAH ( enum log_index index )  {
+  if (datalog.enabled) {  if (!datalog.open)  log_open();  log_record(index);  }
+  else                 {  if (datalog.open)   log_exit();  }
+  return;
+}
+*/
 
 
