@@ -9,6 +9,7 @@ Box" functionality for research and development.
 Current tasks
 -------------
 <ul>
+  <li> New timing thread for system I/O </li>
   <li> Configure system for PRU capabilities (WIP) </li>
   <li> Enable 10 PRU based PWM inputs (WIP) </li>
   <li> Enable 10 PRU based PWM outputs (WIP) </li>

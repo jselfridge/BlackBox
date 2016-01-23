@@ -23,8 +23,11 @@ void tmr_init ( void )  {
   // Begin each thread and mutex
   if(DEBUG)  printf("  Create threads and mutexes: ");
 
+  // Create primary timing threads
   tmr_thread( &tmr_imu, &attr, fcn_imu );  pthread_mutex_init( &mutex_imu, NULL );
+  tmr_thread( &tmr_sio, &attr, fcn_sio );  pthread_mutex_init( &mutex_sio, NULL );
 
+  // Possibly create debugging thread
   if(DEBUG) {
     tmr_thread( &tmr_debug, &attr, fcn_debug );
     printf("\n");
@@ -45,6 +48,11 @@ void tmr_setup ( void )  {
   tmr_imu.name     =  "imu";
   tmr_imu.prio     =  PRIO_IMU;
   tmr_imu.per      =  1000000 / HZ_IMU_FAST;
+
+  // SIO timer
+  tmr_sio.name     =  "sio";
+  tmr_sio.prio     =  PRIO_SIO;
+  tmr_sio.per      =  1000000 / HZ_SIO;
 
   // Debugging timer
   tmr_debug.name   =  "debug";
@@ -122,14 +130,18 @@ void tmr_exit ( void )  {
     printf( "Error (tmr_exit): Failed to exit 'imu' thread. \n" );
   if(DEBUG)  printf( "imu " );
 
+  // Exit system input/output thread
+  pthread_mutex_destroy(&mutex_sio);
+  if( pthread_join ( tmr_sio.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'sio' thread. \n" );
+  if(DEBUG)  printf( "sio " );
+
   // Exit debugging thread
   if(DEBUG) {
   if( pthread_join ( tmr_debug.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'debug' thread. \n" );
-  printf( "debug " );
+  printf( "debug \n" );
   }
-
-  if(DEBUG)  printf("\n");
 
   return;
 }
@@ -248,6 +260,41 @@ void *fcn_imu (  )  {
   }
   pthread_exit(NULL);
   return NULL;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  fcn_sio
+//  Function handler for the system input/output timing thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void *fcn_sio (  )  {
+  tmr_create(&tmr_sio);
+  while (running) {
+    tmr_start(&tmr_sio);
+    sio_debug();
+    tmr_finish(&tmr_sio);
+    //log_record(LOG_SIO);
+    tmr_pause(&tmr_sio);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+void sio_debug() {
+
+  static ushort input[10]  = { 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900 };
+  static ushort output[10] = { 1900, 1800, 1700, 1600, 1500, 1400, 1300, 1200, 1100, 1000 };
+
+  ushort i;
+  for ( i=0; i<10; i++ ) {
+    input[i]  += 100;
+    output[i] -= 100;
+    if ( input[i]  == 2100 ) input[i]  = 1000;
+    if ( output[i] ==  900 ) output[i] = 2000;
+  }
+
+  printf( "%d \n", output[0] );
+  return;
 }
 
 
