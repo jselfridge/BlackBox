@@ -86,7 +86,7 @@ datalog_struct datalog;
 void  log_init   ( void );
 void  log_exit   ( void );
 void  log_record ( enum log_index index );
-//void  log_write  ( enum log_index index );
+//void  log_BLAH  ( enum log_index index );
 
 
 #endif
