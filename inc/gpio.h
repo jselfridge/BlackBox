@@ -10,7 +10,7 @@
 
 // Local definitions
 #define GPIO_PATH  "/sys/class/gpio"
-#define MAX_BUF     64
+#define GPIO_BUF     64
 
 
 // Enumerations
@@ -25,14 +25,14 @@ enum PIN_VAL {
 
 
 // GPIO functions
-void  gpio_export    ( unsigned int gpio );
-void  gpio_unexport  ( unsigned int gpio );
-void  gpio_set_dir   ( unsigned int gpio, enum PIN_DIR dir );
-void  gpio_set_val   ( unsigned int gpio, enum PIN_VAL val );
-void  gpio_get_val   ( unsigned int gpio, unsigned int *val );
-void  gpio_set_edge  ( unsigned int gpio, char *edge );
-int   gpio_fd_open   ( unsigned int gpio );
-void  gpio_fd_close  ( int fd );
+void  gpio_export    ( uint gpio );
+void  gpio_unexport  ( uint gpio );
+void  gpio_setdir    ( uint gpio, enum PIN_DIR dir );
+void  gpio_setval    ( uint gpio, enum PIN_VAL val );
+void  gpio_getval    ( uint gpio, uint *val );
+void  gpio_setedge   ( uint gpio, char *edge );
+int   gpio_fdopen    ( uint gpio );
+void  gpio_fdclose   ( int  fd );
 
 
 #endif

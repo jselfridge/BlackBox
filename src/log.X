@@ -11,8 +11,182 @@
 //  Initalizes the datalog structure attributes.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void log_init ( void )  {
+<<<<<<< HEAD:src/log.X
   datalog.open     = false;
   datalog.enabled  = true;  // false;
+=======
+  if(DEBUG)  printf("Initializing log parameters \n");
+
+  // DEBUGGING PLACEMENT
+  datalog.enabled = true;
+
+  // Set counters to zero
+  if(DEBUG)  printf("  Clear counters \n");
+  log_gyr.count = 0;
+  log_acc.count = 0;
+  log_mag.count = 0;
+
+  // Establish datalog limits
+  if(DEBUG)  printf("  Establish datalog limits \n");
+  log_gyr.limit = MAX_LOG_DUR * HZ_IMU_FAST;
+  log_acc.limit = MAX_LOG_DUR * HZ_IMU_FAST;
+  log_mag.limit = MAX_LOG_DUR * HZ_IMU_SLOW;
+
+  // Allocate memory for 'gyr' storage arrays
+  if(DEBUG)  printf("  Allocate 'gyr' mem \n");
+  log_gyr.time =  malloc( sizeof(float) * log_gyr.limit * 1 );
+  log_gyr.dur  =  malloc( sizeof(ulong) * log_gyr.limit * 1 );
+  log_gyr.raw  =  malloc( sizeof(short) * log_gyr.limit * 3 );
+  log_gyr.avg  =  malloc( sizeof(float) * log_gyr.limit * 3 );
+  log_gyr.cal  =  malloc( sizeof(float) * log_gyr.limit * 3 );
+
+  // Allocate memory for 'acc' storage arrays
+  if(DEBUG)  printf("  Allocate 'acc' mem \n");
+  log_acc.time =  malloc( sizeof(float) * log_acc.limit * 1 );
+  log_acc.dur  =  malloc( sizeof(ulong) * log_acc.limit * 1 );
+  log_acc.raw  =  malloc( sizeof(short) * log_acc.limit * 3 );
+  log_acc.avg  =  malloc( sizeof(float) * log_acc.limit * 3 );
+  log_acc.cal  =  malloc( sizeof(float) * log_acc.limit * 3 );
+
+  // Allocate memory for 'mag' storage arrays
+  if(DEBUG)  printf("  Allocate 'mag' mem \n");
+  log_mag.time =  malloc( sizeof(float) * log_mag.limit * 1 );
+  log_mag.dur  =  malloc( sizeof(ulong) * log_mag.limit * 1 );
+  log_mag.raw  =  malloc( sizeof(short) * log_mag.limit * 3 );
+  log_mag.avg  =  malloc( sizeof(float) * log_mag.limit * 3 );
+  log_mag.cal  =  malloc( sizeof(float) * log_mag.limit * 3 );
+
+  // Allocate dir/path/file memory
+  datalog.dir  = malloc(16);
+  datalog.path = malloc(32);
+  char *file   = malloc(64);
+
+  // Find next available log directory
+  ushort i;
+  while (true) {
+    i++;
+    if      ( i<10   )  sprintf( datalog.dir, "00%d", i );
+    else if ( i<100  )  sprintf( datalog.dir, "0%d",  i );
+    else if ( i<1000 )  sprintf( datalog.dir, "%d",   i );
+    else    printf( "Error (log_XX): Exceeded maximum number of log directories. \n" );
+    sprintf( file, "../Log/%s/notes.txt", datalog.dir );
+    if ( access( file , F_OK ) == -1 )  break;
+  }
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  log_exit
+//  Closes the data log files.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void log_exit ( void )  {
+  if(DEBUG)  printf("Close log files \n");
+  led_blink( LED_LOG, 500, 500 );
+
+  // Local ariables
+  char *file = malloc(64);
+  FILE *fnote, *fgyr, *facc, *fmag;
+  ushort i;
+  ulong row;
+
+  // Create new directory
+  sprintf( datalog.path, "../Log/%s/", datalog.dir );
+  mkdir( datalog.path, 222 );
+
+  // Create notes datalog file
+  sprintf( file, "%snotes.txt", datalog.path );
+  fnote = fopen( file, "w" );
+  if( fnote == NULL )  printf( "Error (log_XX): Cannot open 'notes' file. \n" );
+  fprintf( fnote, " Assign some system parameteres like gains, or telemetry waypoint updates... " );
+
+  // Create gyroscope datalog file
+  sprintf( file, "%sgyr.txt", datalog.path );
+  fgyr = fopen( file, "w" );
+  if( fgyr == NULL )  printf( "Error (log_XX): Cannot open 'gyr' file. \n" );
+  fprintf( fgyr,
+    "       Gtime    Gdur   \
+    Grx     Gry     Grz       \
+    Gax        Gay        Gaz     \
+    Gcx      Gcy      Gcz      ");
+
+  // Loop through gyroscope data
+  for ( row = 0; row < log_gyr.count; row++ ) {
+    fprintf( fgyr, "\n %011.6f  %06d    ", log_gyr.time[row], log_gyr.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( fgyr, "%06d  ",   log_gyr.raw[ row*3 +i ] );   fprintf( fgyr, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fgyr, "%09.2f  ", log_gyr.avg[ row*3 +i ] );   fprintf( fgyr, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fgyr, "%07.4f  ", log_gyr.cal[ row*3 +i ] );   fprintf( fgyr, "   " );
+  }
+
+  // Create accelerometer datalog file
+  sprintf( file, "%sacc.txt", datalog.path );
+  facc = fopen( file, "w" );
+  if( facc == NULL )  printf( "Error (log_XX): Cannot open 'acc' file. \n" );
+  fprintf( facc, 
+    "       Atime    Adur   \
+    Arx     Ary     Arz       \
+    Aax        Aay        Aaz     \
+    Acx      Acy      Acz      ");
+
+  // Loop through accelerometer data
+  for ( row = 0; row < log_acc.count; row++ ) {
+    fprintf( facc, "\n %011.6f  %06d    ", log_acc.time[row], log_acc.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( facc, "%06d  ",   log_acc.raw[ row*3 +i ] );   fprintf( facc, "   " );
+    for ( i=0; i<3; i++ )  fprintf( facc, "%09.2f  ", log_acc.avg[ row*3 +i ] );   fprintf( facc, "   " );
+    for ( i=0; i<3; i++ )  fprintf( facc, "%07.4f  ", log_acc.cal[ row*3 +i ] );   fprintf( facc, "   " );
+  }
+
+  // Create magnetometer datalog file
+  sprintf( file, "%smag.txt", datalog.path );
+  fmag = fopen( file, "w" );
+  if( fmag == NULL )  printf( "Error (log_XX): Cannot open 'mag' file. \n" );
+  fprintf( fmag,
+    "       Mtime    Mdur   \
+    Mrx     Mry     Mrz       \
+    Max        May        Maz     \
+    Mcx      Mcy      Mcz      ");
+
+  // Loop through magnetometer data
+  for ( row = 0; row < log_mag.count; row++ ) {
+    fprintf( fmag, "\n %011.6f  %06d    ", log_mag.time[row], log_mag.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( fmag, "%06d  ",   log_mag.raw[ row*3 +i ] );   fprintf( fmag, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fmag, "%09.2f  ", log_mag.avg[ row*3 +i ] );   fprintf( fmag, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fmag, "%07.4f  ", log_mag.cal[ row*3 +i ] );   fprintf( fmag, "   " );
+  }
+
+  // Close files
+  fclose(fnote);
+  fclose(fgyr);
+  fclose(facc);
+  fclose(fmag);
+
+  // Free memory for 'gyr'
+  if(DEBUG)  printf("  Free 'gyr' memory \n");
+  free(log_gyr.time);
+  free(log_gyr.dur);
+  free(log_gyr.raw);
+  free(log_gyr.avg);
+  free(log_gyr.cal);
+
+  // Free memory for 'acc'
+  if(DEBUG)  printf("  Free 'acc' memory \n");
+  free(log_acc.time);
+  free(log_acc.dur);
+  free(log_acc.raw);
+  free(log_acc.avg);
+  free(log_acc.cal);
+
+  // Free memory for 'mag'
+  if(DEBUG)  printf("  Free 'mag' memory \n");
+  free(log_mag.time);
+  free(log_mag.dur);
+  free(log_mag.raw);
+  free(log_mag.avg);
+  free(log_mag.cal);
+
+  led_off( LED_LOG );
+>>>>>>> altlog:src/log.c
   return;
 }
 
@@ -21,18 +195,18 @@ void log_init ( void )  {
 //  log_write
 //  Top level function for writing data log commands.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void log_write ( enum log_index index )  {
+/*void log_write ( enum log_index index )  {
   if (datalog.enabled) {  if (!datalog.open)  log_open();  log_record(index);  }
   else                 {  if (datalog.open)   log_exit();  }
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  log_open
 //  Opens the next sequential log file and populates the header.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void log_open ( void )  {
+/*void log_open ( void )  {
 
   // Local varaibales
   int i = 0;
@@ -135,55 +309,68 @@ void log_open ( void )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  log_record
 //  Records the data to the log file.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void log_record ( enum log_index index )  {
+//void log_record ( enum log_index index )  {
 
   // Local variables
-  ushort i;
-  float timestamp;
+  //ushort i;
+  //static float timestamp = 0.0;
 
   // Jump to appropriate log 
-  switch(index) {
+  //switch(index) {
 
-  // Record 'gyroscope' datalog
-  case LOG_GYR :
-    timestamp = (float)( thr_imu.start_sec + ( thr_imu.start_usec / 1000000.0f ) - datalog.offset );
-    fprintf( datalog.gyr, "\n %011.6f, %06ld,    ", timestamp, thr_imu.dur );
-    for ( i=0; i<3; i++ )  fprintf( datalog.gyr, "%06d, ",   imu1.rawGyr[i] );   fprintf( datalog.gyr, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.gyr, "%09.2f, ", imu1.avgGyr[i] );   fprintf( datalog.gyr, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.gyr, "%07.4f, ", imu1.calGyr[i] );   fprintf( datalog.gyr, "   " );
-    return;
+  // Record IMU data
+  //case LOG_IMU :
 
-  // Record 'accelerometer' datalog
+    // Gyroscope data
+    //timestamp = (float)( tmr_imu.start_sec + ( tmr_imu.start_usec / 1000000.0f ) ); // - datalog.offset );
+    //log_gyr.time [log_gyr.count] = timestamp;
+    //log_gyr.dur  [log_gyr.count] = &tmr_imu.dur;
+    //log_gyr.count++;
+    //timestamp += 0.1;
+
+    //fprintf( datalog.gyr, "\n %011.6f, %06ld,    ", timestamp, thr_imu.dur );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.gyr, "%06d, ",   imu1.rawGyr[i] );   fprintf( datalog.gyr, "   " );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.gyr, "%09.2f, ", imu1.avgGyr[i] );   fprintf( datalog.gyr, "   " );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.gyr, "%07.4f, ", imu1.calGyr[i] );   fprintf( datalog.gyr, "   " );
+
+    //return;
+
+  /*  // Record 'accelerometer' datalog
   case LOG_ACC :
     timestamp = (float)( thr_imu.start_sec + ( thr_imu.start_usec / 1000000.0f ) - datalog.offset );
     fprintf( datalog.acc, "\n %011.6f, %06ld,    ", timestamp, thr_imu.dur );
     for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%06d, ",   imu1.rawAcc[i] );  fprintf( datalog.acc, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%09.2f, ", imu1.avgAcc[i] );  fprintf( datalog.acc, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.acc, "%07.4f, ", imu1.calAcc[i] );  fprintf( datalog.acc, "   " );
-    return;
+    return;*/
 
-  // Record 'magnetometer' datalog
+  /*  // Record 'magnetometer' datalog
   case LOG_MAG :
     timestamp = (float)( thr_imu.start_sec + ( thr_imu.start_usec / 1000000.0f ) - datalog.offset );
     fprintf( datalog.mag, "\n %011.6f, %06ld,    ", timestamp, thr_imu.dur );
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%04d, ",   imu1.rawMag[i] );  fprintf( datalog.mag, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%07.2f, ", imu1.avgMag[i] );  fprintf( datalog.mag, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.mag, "%07.4f, ", imu1.calMag[i] );  fprintf( datalog.mag, "   " );
-    return;
+    return;*/
 
+<<<<<<< HEAD:src/log.X
     /*  // Record 'data fusion' datalog
+=======
+  /*  // Record 'data fusion' datalog
+>>>>>>> altlog:src/log.c
   case LOG_FUSION :
     timestamp = (float)( thr_fusion.start_sec + ( thr_fusion.start_usec / 1000000.0f ) - datalog.offset );
     fprintf( datalog.fusion, "\n %011.6f, %06ld,    ", timestamp, thr_fusion.dur );
     for ( i=0; i<4; i++ )  fprintf( datalog.fusion, "%07.4f, ", imu1.Quat[i] );  fprintf( datalog.fusion, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.fusion, "%07.4f, ", imu1.Eul[i]  );  fprintf( datalog.fusion, "   " );
     for ( i=0; i<3; i++ )  fprintf( datalog.fusion, "%07.4f, ", imu1.dEul[i] );  fprintf( datalog.fusion, "   " );
+<<<<<<< HEAD:src/log.X
     return; */
 
     /*  // Record 'system input/output' datalog
@@ -209,8 +396,15 @@ void log_record ( enum log_index index )  {
   }
 
 }
+=======
+    return;*/
+>>>>>>> altlog:src/log.c
 
+  //default :
+//return;
+    //}
 
+<<<<<<< HEAD:src/log.X
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  log_exit
 //  Closes the data log file.
@@ -230,6 +424,9 @@ void log_exit ( void )  {
 
   return;
 }
+=======
+//}
+>>>>>>> altlog:src/log.c
 
 
 

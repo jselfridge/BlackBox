@@ -72,8 +72,17 @@ typedef struct debug_arg_struct {
 // Custom includes
 #include <gpio.h>
 #include <led.h>
+<<<<<<< HEAD
+=======
+#include <log.h>
+>>>>>>> altlog
 #include <sys.h>
-#include <thread.h>
+#include <timer.h>
+
+
+// Under development
+//#include <ctrl.h>
+//#include <pru.h>
 
 
 // Add these in later
@@ -94,6 +103,12 @@ typedef struct debug_arg_struct {
 //#include <inv_mpu.h>
 //#include <inv_mpu_dmp_motion_driver.h>
 //#include <inv_glue.h>
+
+
+// Global variables (remove as quickly as possible)
+bool running;
+bool armed;
+struct sigaction sys_signal;
 
 
 #endif

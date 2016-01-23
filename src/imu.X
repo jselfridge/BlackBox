@@ -10,11 +10,32 @@
 //  imu_init
 //  Initializes the MPU sensors.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<<<<<<< HEAD:src/imu.X
 void imu_init ( void )  {
   if(DEBUG)  printf( "Initializing IMU \n" );
   led_blink( LED_IMU, 500, 500 );
   imu1.id = 1;  imu1.addr = 0x68;  imu_setup(&imu1);
   //imu2.id = 2;  imu2.addr = 0x69;  imu_setup(&imu2);
+=======
+void imu_init (  )  {
+  if(DEBUG)  printf( "Initializing IMU \n" );
+
+  // Start initialization
+  led_blink( LED_IMU, 500, 500 );
+  imu.id   = 1;
+  imu.addr = 0x68;
+  imu.gyr  = &gyr;
+  imu.acc  = &acc;
+  imu.mag  = &mag;
+
+  // Init functions
+  imu_param();
+  imu_getcal();
+  imu_setic();
+
+  // IMU warmup period
+  usleep(500000);
+>>>>>>> altlog:src/imu.c
   led_on(LED_IMU);
   return;
 }
@@ -24,10 +45,16 @@ void imu_init ( void )  {
 //  imu_setup
 //  Setup functions for each MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<<<<<<< HEAD:src/imu.X
 void imu_setup ( imu_struct* imu )  {
   imu_param(imu);
   imu_getcal(imu);
   imu_setic(imu);
+=======
+void imu_exit ( void )  {
+  if(DEBUG)  printf("Close IMU \n");
+  // Add IMU exit code here...
+>>>>>>> altlog:src/imu.c
   return;
 }
 
@@ -36,34 +63,47 @@ void imu_setup ( imu_struct* imu )  {
 //  imu_param
 //  Assign parameters to an MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_param ( imu_struct* imu )  {
+void imu_param (  )  {
 
+<<<<<<< HEAD:src/imu.X
   if(DEBUG) {  printf( "  Assigning IMU%d parameters ", imu->id );  fflush(stdout);  }
   linux_set_i2c_bus(1);
+=======
+  if(DEBUG) {  printf("  Assign IMU parameters ");  fflush(stdout);  }
+  linux_set_i2c_bus(imu.id);
+>>>>>>> altlog:src/imu.c
 
-  sys.ret = mpu_init_master(NULL);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( sys.ret, "Error (imu_init): 'mpu_init_master' failed." );
+  if( mpu_init_master(NULL) )
+    printf( "Error (imu_param): 'mpu_init_master' failed. \n" );
 
-  sys.ret = mpu_set_sensors( INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS );
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( sys.ret, "Error (imu_init): 'mpu_set_sensors' failed." );
+  if( mpu_set_sensors( INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS ) )
+    printf( "Error (imu_param): 'mpu_set_sensors' failed. \n" );
 
+<<<<<<< HEAD:src/imu.X
   sys.ret = mpu_set_sample_rate(HZ_IMU);
+=======
+>>>>>>> altlog:src/imu.c
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( sys.ret, "Error (imu_init): 'mpu_set_sample_rate' failed." );
+  if( mpu_set_sample_rate(HZ_IMU_FAST) )
+    printf( "Error (imu_param): 'mpu_set_sample_rate' failed. \n" );
 
+<<<<<<< HEAD:src/imu.X
   sys.ret = mpu_set_compass_sample_rate(HZ_ATT);
+=======
+>>>>>>> altlog:src/imu.c
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( sys.ret, "Error (imu_init): 'mpu_set_compass_sample_rate' failed." );
+  if( mpu_set_compass_sample_rate(HZ_IMU_SLOW) )
+    printf( "Error (imu_param): 'mpu_set_compass_sample_rate' failed. \n" );
 
-  sys.ret = mpu_set_gyro_fsr(GYR_FSR);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( sys.ret, "Error (imu_init): 'mpu_set_gyro_fsr' failed." );
+  if( mpu_set_gyro_fsr(GYR_FSR) )
+    printf( "Error (imu_param): 'mpu_set_gyro_fsr' failed. \n" );
 
-  sys.ret = mpu_set_accel_fsr(ACC_FSR);
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  sys_err( sys.ret, "Error (imu_init): 'mpu_set_accel_fsr' failed." );
+  if( mpu_set_accel_fsr(ACC_FSR) )
+    printf( "Error (imu_param): 'mpu_set_accel_fsr' failed. \n" );
 
   if(DEBUG)  printf(" complete \n");
   return;
@@ -74,65 +114,89 @@ void imu_param ( imu_struct* imu )  {
 //  imu_getcal
 //  Gets the calibration parameters for the MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<<<<<<< HEAD:src/imu.X
 void imu_getcal ( imu_struct* imu )  {
   if(DEBUG)  printf( "  IMU%d calibration values: \n", imu->id );
+=======
+void imu_getcal (  )  {
+  if(DEBUG)  printf("  IMU calibration values: \n");
+>>>>>>> altlog:src/imu.c
 
   // Local variables
   int i;
   FILE* f;
-  char buff [32];
-  char path [32];
-  memset( buff, 0, sizeof(buff) );
+  char buff [32];  memset( buff, 0, sizeof(buff) );
+  char path [32];  memset( path, 0, sizeof(path) );
 
+<<<<<<< HEAD:src/imu.X
   // Set magnetometer offset
   sprintf( path, "/root/BlackBox/cal/imu%d/moffset", imu->id );
+=======
+  // Set acceleration bias
+  sprintf( path, "cal/acc/bias" );
+>>>>>>> altlog:src/imu.c
   f = fopen( path, "r" );
-  sys_err( !f, "Error (imu_getcal): File 'moffset' not found." );
+  if(!f)  printf( "Error (imu_getcal): File 'acc/bias' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
-    imu->moffset[i] = atoi(buff);
+    acc.bias[i] = atoi(buff);
   }
   fclose(f);
 
+<<<<<<< HEAD:src/imu.X
   // Set magnetometer range
   sprintf( path, "/root/BlackBox/cal/imu%d/mrange", imu->id );
+=======
+  // Set acceleration range
+  sprintf( path, "cal/acc/range" );
+>>>>>>> altlog:src/imu.c
   f = fopen( path, "r" );
-  sys_err( !f, "Error (imu_getcal): File 'mrange' not found." );
+  if(!f)  printf( "Error (imu_getcal): File 'acc/range' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
-    imu->mrange[i] = atoi(buff);
+    acc.range[i] = atoi(buff);
   }
   fclose(f);
 
+<<<<<<< HEAD:src/imu.X
   // Set acceleration offset
   sprintf( path, "/root/BlackBox/cal/imu%d/aoffset", imu->id );
+=======
+  // Set magnetometer bias
+  sprintf( path, "cal/mag/bias" );
+>>>>>>> altlog:src/imu.c
   f = fopen( path, "r" );
-  sys_err( !f, "Error (imu_getcal): File 'aoffset' not found." );
+  if(!f)  printf( "Error (imu_getcal): File 'mag/bias' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
-    imu->aoffset[i] = atoi(buff);
+    mag.bias[i] = atoi(buff);
   }
   fclose(f);
 
+<<<<<<< HEAD:src/imu.X
   // Set acceleration range
   sprintf( path, "/root/BlackBox/cal/imu%d/arange", imu->id );
+=======
+  // Set magnetometer range
+  sprintf( path, "cal/mag/range" );
+>>>>>>> altlog:src/imu.c
   f = fopen( path, "r" );
-  sys_err( !f, "Error (imu_getcal): File 'arange' not found." );
+  if(!f)  printf( "Error (imu_getcal): File 'mag/range' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
-    imu->arange[i] = atoi(buff);
+    mag.range[i] = atoi(buff);
   }
   fclose(f);
 
   // Display calibration values
   if(DEBUG) {
-    printf("    moffset  mrange  aoffset  arange \n");
+    printf("    abias  arange    mbias  mrange \n");
     for ( i=0; i<3; i++ ) {
-      printf("      ");
-      printf( "%04d    ", imu->moffset[i] );
-      printf( "%04d    ", imu->mrange[i]  );
-      printf( "%04d    ", imu->aoffset[i] );
-      printf( "%06d  \n", imu->arange[i]  );
+      printf("     ");
+      printf( "%04d  ", acc.bias[i]  );
+      printf( "%06d     ", acc.range[i] );
+      printf( "%04d   ", mag.bias[i]  );
+      printf( "%04d  \n", mag.range[i] );
     } 
   }
 
@@ -144,6 +208,7 @@ void imu_getcal ( imu_struct* imu )  {
 //  imu_setic
 //  Sets the initial conditions for the MPU sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<<<<<<< HEAD:src/imu.X
 void imu_setic ( imu_struct* imu )  {
   if(DEBUG)  printf( "  Setting IMU%d initial conditions \n", imu->id );
 
@@ -206,6 +271,44 @@ void imu_setic ( imu_struct* imu )  {
     }
   }
   imu->Quat[0] = 1;
+=======
+void imu_setic (  )  {
+  if(DEBUG)  printf("  Set IMU initial conditions \n");
+
+  // Assign loop counter values
+  if ( HZ_IMU_FAST % HZ_IMU_SLOW != 0 )
+    printf( "  *** WARNING ***  Slow loop must divide evenly into fast loop. \n" );
+  imu.loops  = HZ_IMU_FAST / HZ_IMU_SLOW;
+  imu.count  = 0;
+  imu.getmag = false;
+
+  // Calculate time steps
+  float gyr_dt, acc_dt, mag_dt;
+  gyr_dt = 1.0 / HZ_IMU_FAST;
+  acc_dt = 1.0 / HZ_IMU_FAST;
+  mag_dt = 1.0 / HZ_IMU_SLOW;
+
+  // Determine time constants
+  float gyr_tc, acc_tc, mag_tc;
+  if ( GYR_LPF != 0.0 )  gyr_tc = 1.0/GYR_LPF;  else  gyr_tc = 0.0;
+  if ( ACC_LPF != 0.0 )  acc_tc = 1.0/ACC_LPF;  else  acc_tc = 0.0;
+  if ( MAG_LPF != 0.0 )  mag_tc = 1.0/MAG_LPF;  else  mag_tc = 0.0;
+
+  // Calculate filter gain values
+  gyr.gain = gyr_dt / ( gyr_tc + gyr_dt );
+  acc.gain = acc_dt / ( acc_tc + acc_dt );
+  mag.gain = mag_dt / ( mag_tc + mag_dt );
+
+  // Display settings
+  if (DEBUG) {
+    printf("    |  GYR  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
+	   HZ_IMU_FAST, gyr_dt, GYR_LPF, gyr_tc, gyr.gain );
+    printf("    |  ACC  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
+	   HZ_IMU_FAST, acc_dt, ACC_LPF, acc_tc, acc.gain );
+    printf("    |  MAG  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
+	   HZ_IMU_SLOW, mag_dt, MAG_LPF, mag_tc, mag.gain );
+  }
+>>>>>>> altlog:src/imu.c
 
   return;
 }
@@ -213,25 +316,49 @@ void imu_setic ( imu_struct* imu )  {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_data
-//  Obtain new IMU device data.
+//  Obtain new IMU sensor data.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_data ( imu_struct* imu )  {
+void imu_data (  )  {
 
   // Local variables
+<<<<<<< HEAD:src/imu.X
   //ushort i, j, k;
   //float g, a; //, m;
   //bool mag;
+=======
+  ushort i, j, k;
+  float g, a, m;
+
+  // Declare data history arrays
+  static short ghist[3][GYR_HIST];
+  static short ahist[3][ACC_HIST];
+  static short mhist[3][MAG_HIST];
+>>>>>>> altlog:src/imu.c
 
   // Try using local variables for history...
 
   /*
   // Increment counter
-  mag = false;
-  imu->count++;
-  if ( imu->count == imu->loops ) {
-    mag = true;
-    imu->count = 0;
+  imu.getmag = false;
+  if ( imu.count == 0 ) {
+    imu.getmag = true;
+    imu.count = imu.loops;
   }
+  imu.count--;
+
+  // Lock IMU data
+  pthread_mutex_lock(&mutex_imu);
+
+  // Sample IMU
+  if( mpu_get_gyro_reg( gyr.raw, NULL ) )
+    printf( "Error (imu_data): 'mpu_get_gyro_reg' failed. \n" );
+  if( mpu_get_accel_reg( acc.raw, NULL ) )
+    printf( "Error (imu_data): 'mpu_get_accel_reg' failed. \n" );
+  if(imu.getmag){
+  if( mpu_get_compass_reg( mag.raw, NULL ) )
+    printf( "Error (imu_data): 'mpu_get_compass_reg' failed. \n" );
+  }
+<<<<<<< HEAD:src/imu.X
   */
   /*
   // Sample IMU
@@ -260,9 +387,21 @@ void imu_data ( imu_struct* imu )  {
     g = (float) (imu->histGyr[i][0]);
     for ( j=1; j<k; j++ )  g = g + imu->gain_gyr * (float) ( imu->histGyr[i][j] - g );
     imu->avgGyr[i] = g;
+=======
+
+  // Gyroscope low pass filter
+  k = GYR_HIST;
+  for ( i=0; i<3; i++ ) {
+    for ( j=1; j<k; j++ )  ghist[i][j-1] = ghist[i][j];
+    ghist[i][k-1] = gyr.raw[i];
+    g = (float) (ghist[i][0]);
+    for ( j=1; j<k; j++ )  g = g + gyr.gain * (float) ( ghist[i][j] - g );
+    gyr.avg[i] = g;
+>>>>>>> altlog:src/imu.c
   }
   */
 
+<<<<<<< HEAD:src/imu.X
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Accelerometer
 
@@ -320,21 +459,88 @@ void imu_data ( imu_struct* imu )  {
   imu->calMag[X] = ( imu->avgMag[X] - imu->moffset[X] ) / (double)imu->mrange[X];
   imu->calMag[Y] = ( imu->avgMag[Y] - imu->moffset[Y] ) / (double)imu->mrange[Y];
   imu->calMag[Z] = ( imu->avgMag[Z] - imu->moffset[Z] ) / (double)imu->mrange[Z];
+=======
+  // Accelerometer low pass filter
+  k = ACC_HIST;
+  for ( i=0; i<3; i++ ) {
+    for ( j=1; j<k; j++ )  ahist[i][j-1] = ahist[i][j];
+    ahist[i][k-1] = acc.raw[i];
+    a = (float) (ahist[i][0]);
+    for ( j=1; j<k; j++ )  a = a + acc.gain * (float) ( ahist[i][j] - a );
+    acc.avg[i] = a;
+  }
+
+  // Magnetometer low pass filter
+  if(imu.getmag) {
+  k = MAG_HIST;
+  for ( i=0; i<3; i++ ) {
+    for ( j=1; j<k; j++ )  mhist[i][j-1] = mhist[i][j];
+    mhist[i][k-1] = mag.raw[i];
+    m = (float) (mhist[i][0]);
+    for ( j=1; j<k; j++ )  m = m + mag.gain * (float) ( mhist[i][j] - m );
+    mag.avg[i] = m;
+  }}
+
+  // Shift and orient gyroscope readings (add bias)
+  gyr.cal[X] =   ( gyr.avg[Y] - 0 ) * GYR_SCALE;
+  gyr.cal[Y] =   ( gyr.avg[X] - 0 ) * GYR_SCALE;
+  gyr.cal[Z] = - ( gyr.avg[Z] - 0 ) * GYR_SCALE;
+
+  // Shift and orient accelerometer readings
+  acc.cal[X] = - ( acc.avg[Y] - acc.bias[Y] ) / (double) (acc.range[Y]);
+  acc.cal[Y] = - ( acc.avg[X] - acc.bias[X] ) / (double) (acc.range[X]);
+  acc.cal[Z] =   ( acc.avg[Z] - acc.bias[Z] ) / (double) (acc.range[Z]);
+
+  // Shift and orient magnetometer readings
+  if(imu.getmag) {
+  mag.cal[X] = ( mag.avg[X] - mag.bias[X] ) / (double) (mag.range[X]);
+  mag.cal[Y] = ( mag.avg[Y] - mag.bias[Y] ) / (double) (mag.range[Y]);
+  mag.cal[Z] = ( mag.avg[Z] - mag.bias[Z] ) / (double) (mag.range[Z]);
+>>>>>>> altlog:src/imu.c
   }
   */
 
+<<<<<<< HEAD:src/imu.X
   // Unlock 'calibrated' variables
   //pthread_mutex_unlock(&mutex_imu);
+=======
+  // Unlock IMU data
+  pthread_mutex_unlock(&mutex_imu);
+>>>>>>> altlog:src/imu.c
 
   return;
 }
+
+
+
+
+
+
+
+
+/*
+  // Data fusion variables
+  imu->fx = 0.5;  imu->fz = 0.866;
+  for ( i=0; i<4; i++ ) {
+    imu->Prev[i]  = 0;
+    imu->Quat[i]  = 0;
+    imu->dQuat[i] = 0;
+    if (i<3) {
+      imu->Eul[i]  = 0;
+      imu->dEul[i] = 0;
+      imu->bias[i] = 0;
+    }
+  }
+  imu->Prev[0] = 1;
+  imu->Quat[0] = 1;
+*/
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  imu_fusion
 //  Applies sensor data fusion algorithm. 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_fusion ( imu_struct* imu )  {
+/*void imu_fusion ( imu_struct* imu )  {
 
   // Local variables
   unsigned short i;
@@ -495,6 +701,11 @@ void imu_fusion ( imu_struct* imu )  {
   }
   //pthread_mutex_unlock(&mutex_fusion);
 
+  return;
+}
+*/
+
+
   /*
   //~~~  MOVE TO 'IMU_CONV' FUNCTION  ~~~//
   
@@ -519,9 +730,6 @@ void imu_fusion ( imu_struct* imu )  {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   */
-
-  return;
-}
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

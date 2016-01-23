@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 gpio.c:13:6:gpio_export	96	dynamic,bounded
 gpio.c:37:6:gpio_unexport	96	dynamic,bounded
 gpio.c:61:6:gpio_set_dir	96	dynamic,bounded
@@ -6,3 +7,13 @@ gpio.c:111:6:gpio_get_val	104	dynamic,bounded
 gpio.c:138:6:gpio_set_edge	96	dynamic,bounded
 gpio.c:162:5:gpio_fd_open	96	dynamic,bounded
 gpio.c:183:6:gpio_fd_close	0	static
+=======
+gpio.c:13:6:gpio_export	112	dynamic,bounded
+gpio.c:35:6:gpio_unexport	112	dynamic,bounded
+gpio.c:57:6:gpio_setdir	112	dynamic,bounded
+gpio.c:80:6:gpio_setval	112	dynamic,bounded
+gpio.c:103:6:gpio_getval	112	dynamic,bounded
+gpio.c:128:6:gpio_setedge	112	dynamic,bounded
+gpio.c:150:5:gpio_fdopen	112	dynamic,bounded
+gpio.c:169:6:gpio_fdclose	16	static
+>>>>>>> altlog

@@ -12,6 +12,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int main ( void )  {
 
+<<<<<<< HEAD
   // Begin BlackBox program
   if(DEBUG)  printf("\n--- Begin BlackBox program ---\n");
   led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
@@ -90,8 +91,26 @@ int main ( void )  {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+=======
+  // Begin the program
+  if(DEBUG)  printf("\n--- Begin BlackBox program ---\n");
+  led_on(LED_IMU);  led_on(LED_PRU);  led_on(LED_LOG);  led_on(LED_MOT);
 
+  // Initialize subsystems
+  sys_init();
+  imu_init();
+  log_init();
+  tmr_init();
 
+  // Under development
+  //pru_init();
+  //ctrl_init();
+>>>>>>> altlog
+
+  // Wait for exit condition
+  while(running)  usleep(100000);
+
+<<<<<<< HEAD
 
   // Keep the program running
   while(running)  usleep(100000);
@@ -112,6 +131,9 @@ int main ( void )  {
 
   // Close subsystems
   //usleep(200000);
+=======
+  // Run exit functions
+>>>>>>> altlog
   sys_exit();
   //log_exit();  //~~~ DEBUGGING ~~~//
   //imu_exit();

@@ -1,0 +1,5 @@
+<<<<<<< HEAD
+=======
+log.c:13:6:log_init	16	static
+log.c:80:6:log_exit	48	static
+>>>>>>> altlog

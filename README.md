@@ -10,6 +10,7 @@ Pending
 -------
 The following list outlines proposed upcoming changes 
 <ul>
+<<<<<<< HEAD
 
   <li><b>Get flying again</b></li>
   <li>Ctrl struct and thread</li>
@@ -20,6 +21,13 @@ The following list outlines proposed upcoming changes
   <li><b>Immediate development</b></li>
   <li>Code to TX/RX serial data</li>
   <li>Integrate serial transmission into thread</li>
+=======
+  <li><b>Priority</b></li>
+  <li>Identify timing loop issues</li>
+  <li>Reestablish PRU functionality</li>
+  <li>Reestablish controller code</li>
+  <li>Add health/status monitoring thread</li>
+>>>>>>> altlog
   <li>Mavlink serial output</li>
   <li>Develop GCS</li>
   <li>Add health/status monitoring thread</li>

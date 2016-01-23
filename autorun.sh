@@ -31,4 +31,9 @@ echo BLACKBOX > /sys/devices/platform/bone_capemgr/slots
 #./RunBlackBox
 
 exit 0
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> altlog
 
