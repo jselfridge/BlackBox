@@ -9,7 +9,7 @@ EXEC   = RunBlackBox
 CC     = gcc
 CFLAGS = -Wall -g -c -fstack-check -fstack-usage -O3
 
-LIB    = -lm -lrt -lpthread #-lprussdrv
+LIB    = -lm -lrt -lpthread -lprussdrv
 #LDIR   = ../Libraries/lib/
 #IDIR   = ../Libraries/inc/
 
@@ -17,9 +17,9 @@ SRC   := $(shell cd src; ls -F | grep ".c" )
 CNAME := $(patsubst %.c, %, $(SRC) )
 OBJ   := $(foreach o, $(CNAME), obj/$(o).o )
 
-#PRU   := $(shell cd pru; ls -F | grep ".p" )
-#PNAME := $(patsubst %.p, %, $(PRU) )
-#BIN   := $(foreach b, $(PNAME), bin/$(b).bin )
+PRU   := $(shell cd pru; ls -F | grep ".p" )
+PNAME := $(patsubst %.p, %, $(PRU) )
+BIN   := $(foreach b, $(PNAME), bin/$(b).bin )
 
 MPU    = mpu/inv_glue.o \
          mpu/inv_mpu.o  \
@@ -27,18 +27,18 @@ MPU    = mpu/inv_glue.o \
 
 all : $(EXEC)
 
-$(EXEC) : $(OBJ) #$(BIN)
+$(EXEC) : $(OBJ) $(BIN)
 	$(CC) -o $@ $(OBJ) $(LIB) $(MPU)  # -L$(LDIR)
 
 obj/%.o : src/%.c inc/%.h
 	$(CC) $(CFLAGS) -Iinc -Impu -o $@ $<  # -I$(IDIR)
 
-#bin/%.bin : pru/%.p
-#	pasm -b $<
-#	mv *.bin bin
+bin/%.bin : pru/%.p
+	pasm -b $<
+	mv *.bin bin
 
 clean :
-	rm  $(EXEC) $(OBJ) #$(BIN)
+	rm  $(EXEC) $(OBJ) $(BIN)
 
 
 

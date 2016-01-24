@@ -23,10 +23,6 @@ int main ( void )  {
   log_init();
   tmr_init();
 
-  // Under development
-  //pru_init();
-  //ctrl_init();
-
   // Wait for exit condition
   while(running)  usleep(100000);
 
