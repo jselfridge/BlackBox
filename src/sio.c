@@ -22,13 +22,20 @@ void sio_init ( void )  {
     output.pwm[i] = oarray[i];
   }
 
-  // Initialise driver
-  prussdrv_init();
+  // Initialize driver
+  if( prussdrv_init() ) {
+    printf( "Error (sio_init): prussdrv_init failed. \n" ); }
+
+  //int rtn;
+  //if((rtn = prussdrv_open(PRU_EVTOUT_0)) != 0) {
+  //fprintf(stderr, "prussdrv_open() failed\n");
+  //}
 
   // Open interrupt
   if( prussdrv_open(PRU_EVTOUT_0) )
     printf( "Error (sio_init): prussdrv_open open failed. \n" );
 
+  /*
   //Initialise interrupt
   tpruss_intc_initdata pruss_intc_initdata = PRUSS_INTC_INITDATA;
   prussdrv_pruintc_init(&pruss_intc_initdata);
@@ -48,7 +55,7 @@ void sio_init ( void )  {
 
   // Set LED indicator
   led_on(LED_PRU);
-
+  */
   return;
 }
 

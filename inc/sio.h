@@ -9,8 +9,8 @@
 
 
 // PRU driver include (shouldn't need this here)
-//#include <prussdrv.h>
-//#include <pruss_intc_mapping.h>
+#include <prussdrv.h>
+#include <pruss_intc_mapping.h>
 
 
 // Input signal variables
