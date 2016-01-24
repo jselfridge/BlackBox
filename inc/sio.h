@@ -13,7 +13,7 @@
 //#include <pruss_intc_mapping.h>
 
 
-// Input (radio) variables
+// Input signal variables
 //#define IN_OFFSET   2049
 //#define IN_CH       10
 //#define IN_MIN      1000
@@ -21,8 +21,8 @@
 //#define IN_MAX      2000
 
 
-// Servo variables
-//#define OUT_OFFSET  2060
+// Output signal variables
+#define OUT_OFFSET  2060
 //#define OUT_CH      10
 //#define OUT_MIN     1000
 //#define OUT_MAX     2000
@@ -46,7 +46,7 @@ signal_struct output;
 
 
 // Global variables
-//uint* memoryPtr;
+uint* memoryPtr;
 
 
 // System input/output functions

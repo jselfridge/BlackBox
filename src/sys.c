@@ -67,11 +67,8 @@ void sys_debug ( void )  {
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
-  //pthread_mutex_lock(&mutex_imu);    sys_imu();    pthread_mutex_unlock(&mutex_imu);
-
-  //pthread_mutex_lock(&mutex_sio);  
-  sys_sio();  
-  //pthread_mutex_unlock(&mutex_sio);
+//pthread_mutex_lock(&mutex_imu);    sys_imu();    pthread_mutex_unlock(&mutex_imu);
+  pthread_mutex_lock(&mutex_sio);    sys_sio();    pthread_mutex_unlock(&mutex_sio);
 
   // Complete debugging display 
   printf("  "); fflush(stdout);
@@ -114,10 +111,12 @@ void sys_sio ( void )  {
   ushort i;
 
   // Input signals
+  //for ( i=0; i<10; i++ )  printf("%05d ",   input.reg[i]  );  printf("   ");  fflush(stdout);
   for ( i=0; i<10; i++ )  printf("%04d ",   input.pwm[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<10; i++ )  printf("%07.4f ", input.norm[i] );  printf("   ");  fflush(stdout);
 
   // Output signals
+  //for ( i=0; i<10; i++ )  printf("%05d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<10; i++ )  printf("%04d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<10; i++ )  printf("%07.4f ", output.norm[i] );  printf("   ");  fflush(stdout);
 
@@ -142,9 +141,6 @@ void sys_exit (  )  {
   sio_exit();
   imu_exit();
   log_exit();
-
-  // Under development
-  //pru_exit();
 
   // Shut everything down
   if(DEBUG)  printf("Program complete \n");

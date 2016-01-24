@@ -22,27 +22,21 @@ void sio_init ( void )  {
     output.pwm[i] = oarray[i];
   }
 
-  //sio.input  = input;
-  //sio.output = output;
-
-
-
-  /*
   // Initialise driver
   prussdrv_init();
-  
+
   // Open interrupt
-  sys.ret = prussdrv_open(PRU_EVTOUT_0);
-  sys_err( sys.ret, "Error (pru_init): prussdrv_open open failed" );
+  if( prussdrv_open(PRU_EVTOUT_0) )
+    printf( "Error (sio_init): prussdrv_open open failed. \n" );
 
   //Initialise interrupt
   tpruss_intc_initdata pruss_intc_initdata = PRUSS_INTC_INITDATA;
   prussdrv_pruintc_init(&pruss_intc_initdata);
-  
+
   // Point to PRU shared memory
   static void* sharedMem;
   prussdrv_map_prumem( PRUSS0_SHARED_DATARAM, &sharedMem );
-  memoryPtr = (unsigned int*) sharedMem;
+  memoryPtr = (uint*) sharedMem;
   memset( memoryPtr, 0, 4*24 );
 
   // Loops per PWM period [21800 => 400Hz]
@@ -54,7 +48,7 @@ void sio_init ( void )  {
 
   // Set LED indicator
   led_on(LED_PRU);
-  */
+
   return;
 }
 
@@ -65,9 +59,9 @@ void sio_init ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sio_exit ( void )  {
   if(DEBUG)  printf("Close system input/output \n");
-  //prussdrv_pru_disable(0);
-  //prussdrv_pru_disable(1);
-  //prussdrv_exit(); 
+  prussdrv_pru_disable(0);
+  prussdrv_pru_disable(1);
+  prussdrv_exit(); 
   return;
 }
 
