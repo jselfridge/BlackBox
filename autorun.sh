@@ -25,15 +25,12 @@ echo 1 > /sys/class/leds/beaglebone\:green\:usr1/brightness
 echo 1 > /sys/class/leds/beaglebone\:green\:usr2/brightness
 echo 1 > /sys/class/leds/beaglebone\:green\:usr3/brightness
 
-echo BLACKBOX > /sys/devices/platform/bone_capemgr/slots
+#echo BLACKBOX > /sys/devices/platform/bone_capemgr/slots
 
 #cd /root/BlackBox/
 #./RunBlackBox
 
 exit 0
-<<<<<<< HEAD
-=======
 
 
->>>>>>> altlog
 
