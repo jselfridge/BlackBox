@@ -224,6 +224,7 @@ void imu_data (  )  {
   pthread_mutex_lock(&mutex_imu);
 
   // Sample IMU
+  /*
   if( mpu_get_gyro_reg( gyr.raw, NULL ) )
     printf( "Error (imu_data): 'mpu_get_gyro_reg' failed. \n" );
   if( mpu_get_accel_reg( acc.raw, NULL ) )
@@ -231,6 +232,18 @@ void imu_data (  )  {
   if(imu.getmag){
     if( mpu_get_compass_reg( mag.raw, NULL ) )
       printf( "Error (imu_data): 'mpu_get_compass_reg' failed. \n" );
+  } 
+*/
+  gyr.raw[0] =   0;
+  gyr.raw[1] = 100;
+  gyr.raw[2] = 200;
+  acc.raw[0] =    0;
+  acc.raw[1] = 1000;
+  acc.raw[2] = 2000;
+  if(imu.getmag) {
+  mag.raw[0] =  0;
+  mag.raw[1] = 10;
+  mag.raw[2] = 20;
   }
 
   // Gyroscope low pass filter
