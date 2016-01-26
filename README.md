@@ -6,8 +6,8 @@ Develops a cape for a BeagleBone Black to enable "Black
 Box" functionality for research and development. 
 
 
-Current tasks
--------------
+V0.0.2
+------
 <ul>
   <li> New timing thread for I/O signals </li>
   <li> Developed data structure for I/O signals </li>
