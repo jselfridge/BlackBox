@@ -79,6 +79,8 @@ The following list outlines proposed upcoming changes
   <li> IMU indicator for successful convergence </li>
   <li> Transistor power distribution </li> 
   <li> Calibrated radio ranges </li>
+  <li> Define statements to enable specific datalogs </li>
+  <li> Log generation with a function </li>
 
 </ul>
 

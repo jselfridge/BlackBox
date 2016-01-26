@@ -22,6 +22,7 @@
     //--  Allocate hardware and pins  --//
     exclusive-use = 
 
+
         //--  INPUTS  --//
         "P8.15",
         "P8.16",
@@ -51,6 +52,7 @@
         "P9.18",
         "P9.19",
         "P9.20",
+
 /*
 |        //--  SERIAL  --//
 |        "P8.37",
@@ -66,6 +68,7 @@
 |	"P9.15",
 |	"P9.16",
 */
+
         //--  HARDWARE  --//
         //"uart1",
         //"uart2",
@@ -141,7 +144,6 @@
 |                >;
 |            };
 |
-|
 |            //--  UART2 pins  --//
 |            uart2_pins: pinmux_uart2_pins {
 |                pinctrl-single,pins = <
@@ -149,7 +151,6 @@
 |                    0x150  0x21      //  P9.22 | UART2_RX | MODE 1  //
 |                >;
 |            };
-|
 |
 |            //--  UART4 pins  --//
 |            uart4_pins: pinmux_uart4_pins {
@@ -159,7 +160,6 @@
 |                >;
 |            };
 |
-|
 |            //--  UART5 pins  --//
 |            uart5_pins: pinmux_uart5_pins {
 |                pinctrl-single,pins = <
@@ -167,7 +167,6 @@
 |                    0x0C4  0x24      //  P8.38 | UART5_RX | MODE 4  //
 |                >;
 |            };
-|
 |
 |            //--  GPIO pins  --//
 |            gpio_pins: pinmux_gpio_pins {
@@ -242,8 +241,6 @@
     };
 
 
-
-
     //--  I2C1  --//
     fragment@11 {
         target = <&i2c1>;
@@ -266,6 +263,7 @@
             pinctrl-0 = <&i2c2_pins>;
         };
     };
+
 
 /*
 |    //--  UART1  --//
