@@ -16,9 +16,9 @@ Current tasks
   <li> Enabled PRU-based PWM inputs </li>
   <li> Enabled PRU-based PWM outputs </li>
   <li> Added mutex conditions </li>
-  <li> (WIP) Enable CH5 input </li>
-  <li> (WIP) Enable I2C in DTO </li>
+  <li> Enabled I2C in DTO </li>
   <li> (WIP) ADjust PWM loop value (seems a bit high...) </li>
+  <li> (WIP) Confirm power distribution setup </li>
   <li> (WIP) Confirm signals on scope </li>
 </ul>
 
@@ -73,6 +73,7 @@ The following list outlines proposed upcoming changes
   <li> Second IMU sensor on single I2C channel </li>
   <li> Incorporate altitude hold </li> 
   <li> Add altitude sensor </li>
+  <li> Disable clkout2 to enable CH5 input </li>
 
   <li><b> Maybe next board </b></li>
   <li> IMU convergence on start up </li>
