@@ -280,19 +280,17 @@ void *fcn_sio (  )  {
   return NULL;
 }
 
+//~~~~~~~~~~~~~~~~~~~~
 void sio_debug() {
-
+  pthread_mutex_lock(&mutex_sio);
   sio_update();
-
   ushort ch;
   float norm;
-  for ( ch=0; ch<5; ch++ ) {
+  for ( ch=0; ch<10; ch++ ) {
     norm = input.norm[ch];
-    sio_setnorm( ch+5, norm );
+    sio_setnorm( ch, norm );
   }
-  sio_setnorm( 4, input.norm[3] );
-  sio_setnorm( 9, input.norm[3] );
-
+  pthread_mutex_unlock(&mutex_sio);
   return;
 }
 

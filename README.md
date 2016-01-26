@@ -10,12 +10,16 @@ Current tasks
 -------------
 <ul>
   <li> New timing thread for I/O signals </li>
-  <li> Develop data structure for I/O signals </li>
-  <li> Datalog system I/O signals </li>
-  <li> Configure system for PRU capabilities </li>
-  <li> Enable PRU-based PWM inputs </li>
-  <li> (WIP) Enable 10 PRU based PWM outputs </li>
+  <li> Developed data structure for I/O signals </li>
+  <li> Included datalog system I/O signals </li>
+  <li> Configured system for PRU capabilities </li>
+  <li> Enabled PRU-based PWM inputs </li>
+  <li> Enabled PRU-based PWM outputs </li>
+  <li> Added mutex conditions </li>
+  <li> (WIP) ADjust PWM loop value (seems a bit high...) </li>
+  <li> (WIP) Confirm signals on scope </li>
   <li> (WIP) Enable CH5 input </li>
+  <li> (WIP) Enable I2C in DTO </li>
 </ul>
 
 

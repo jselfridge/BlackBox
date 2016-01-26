@@ -17,7 +17,7 @@
 // Define timer frequencies
 #define HZ_IMU_FAST  1000
 #define HZ_IMU_SLOW   100
-#define HZ_SIO         10
+#define HZ_SIO        100
 #define HZ_DEBUG       10
 
 
@@ -64,6 +64,8 @@ void *fcn_imu    (  );
 void *fcn_sio    (  );
 void *fcn_debug  (  );
 
+
+// Debugging function
 void sio_debug();
 
 #endif

@@ -8,11 +8,6 @@
 #include <main.h>
 
 
-// PRU driver include (shouldn't need this here if it's in main.h)
-#include <prussdrv.h>
-#include <pruss_intc_mapping.h>
-
-
 // Input signal variables
 #define IN_OFFSET   2049
 #define IN_REG2PWM  (30.0/200.0)

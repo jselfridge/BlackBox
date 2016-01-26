@@ -51,7 +51,7 @@ log_sio_struct log_output;
 // Log structure
 typedef struct datalog_struct {
   bool   enabled;
-  //bool   open;
+//bool   open;
   float  offset;
   char   *dir;
   char   *path;
@@ -63,7 +63,6 @@ datalog_struct datalog;
 void  log_init   ( void );
 void  log_exit   ( void );
 void  log_record ( enum log_index index );
-//void  log_BLAH  ( enum log_index index );
 
 
 #endif
