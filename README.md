@@ -16,10 +16,10 @@ Current tasks
   <li> Enabled PRU-based PWM inputs </li>
   <li> Enabled PRU-based PWM outputs </li>
   <li> Added mutex conditions </li>
-  <li> (WIP) ADjust PWM loop value (seems a bit high...) </li>
-  <li> (WIP) Confirm signals on scope </li>
   <li> (WIP) Enable CH5 input </li>
   <li> (WIP) Enable I2C in DTO </li>
+  <li> (WIP) ADjust PWM loop value (seems a bit high...) </li>
+  <li> (WIP) Confirm signals on scope </li>
 </ul>
 
 
