@@ -35,16 +35,22 @@
 |        "P9.42",
 */
         //--  OUTPUTS  --//
-        "P8.27",
+        //"P8.27",
+        //"P8.39",
+        //"P8.41",
+        //"P8.43",
+
         //"P8.28",
-        "P8.39",
         //"P8.40",
-        "P8.41",
         //"P8.42",
-        "P8.43",
         //"P8.44",
         //"P8.45",
         //"P8.46",
+
+        //--  DEBUGGING  --//
+        "P8.15", 
+        "P8.16";  
+
 /*
 |        //--  I2C  --//
 |        "P9.17",
@@ -73,9 +79,9 @@
         //"uart5",
         //"i2c1",
         //"i2c2",
-        "pru0",
-        "pru1",
-        "pruss";
+        //"pru0",
+        //"pru1",
+        //"pruss";
 
 
     //--  Primary fragment  --//
@@ -105,14 +111,18 @@
                     //--  PRU1: Output  --//
                     //0x0A0  0x05      //  P8.45 | r31_00 | MODE 5  //
                     //0x0A4  0x05      //  P8.46 | r31_01 | MODE 5  //
-                    0x0A8  0x05      //  P8.43 | r31_02 | MODE 5  //
+                    //0x0A8  0x05      //  P8.43 | r31_02 | MODE 5  //
                     //0x0AC  0x05      //  P8.44 | r31_03 | MODE 5  //
-                    0x0B0  0x05      //  P8.41 | r31_04 | MODE 5  //
+                    //0x0B0  0x05      //  P8.41 | r31_04 | MODE 5  //
                     //0x0B4  0x05      //  P8.42 | r31_05 | MODE 5  //
-                    0x0B8  0x05      //  P8.39 | r31_06 | MODE 5  //
+                    //0x0B8  0x05      //  P8.39 | r31_06 | MODE 5  //
                     //0x0BC  0x05      //  P8.40 | r31_07 | MODE 5  //
-                    0x0E0  0x05      //  P8.27 | r31_08 | MODE 5  //
+                    //0x0E0  0x05      //  P8.27 | r31_08 | MODE 5  //
                     //0x0E8  0x05      //  P8.28 | r31_10 | MODE 5  //
+
+                    // DEBUGGING
+                    0x038 0x07  //  P8.16 GPIO.1.14
+                    0x03C 0x07  //  P8.15 GPIO.1.15
 
                 >;
             };
@@ -189,9 +199,15 @@
     fragment@1 {
         target = <&pruss>;
         __overlay__ {
-            status         = "okay";
-            pinctrl-names  = "default";
-            pinctrl-0      = <&pru_pins>;
+            status = "okay";
+            pinctrl-names = "default";
+            pinctrl-0 = <&pru_pins>;
+
+            groupname {
+                pin-names = "BlackBox:groupA", "BlackBox:groupB"; 
+                gpios     = <&gpio1 14 0 &gpio1 15 0 >;
+            };
+
         };
     };
 
