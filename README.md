@@ -9,6 +9,18 @@ Box" functionality for research and development.
 Current tasks
 -------------
 <ul>
+  <li> New timing thread for program execution flags </li>
+  <li> Trip flags for radio switches </li>
+  <li> Register stick hold positions </li>
+  <li> Counter to record hold duration </li> 
+  <li> Trip flags for stick positions </li> 
+  <li> Reset counters once stick condition is released </li>
+</ul>
+
+
+V0.0.2
+------
+<ul>
   <li> New timing thread for I/O signals </li>
   <li> Developed data structure for I/O signals </li>
   <li> Included datalog system I/O signals </li>
