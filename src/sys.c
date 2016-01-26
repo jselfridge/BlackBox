@@ -84,17 +84,17 @@ void sys_debug ( void )  {
 void sys_imu ( void )  {
 
   // Loop counter
-  //ushort i;
+  ushort i;
 
   // Gyroscope data
   //for ( i=0; i<3; i++ )  printf("%06d ",   gyr.raw[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%09.2f ", gyr.avg[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%06.3f ", gyr.cal[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%06.3f ", gyr.cal[i] );  printf("   ");  fflush(stdout);
 
   // Accelerometer data
   //for ( i=0; i<3; i++ )  printf("%06d ",   acc.raw[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%09.2f ", acc.avg[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%06.3f ", acc.cal[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%06.3f ", acc.cal[i] );  printf("   ");  fflush(stdout);
 
   // Magnetometer data
   //for ( i=0; i<3; i++ )  printf("%04d ",   mag.raw[i] );  printf("   ");  fflush(stdout);
