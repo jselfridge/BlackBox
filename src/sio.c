@@ -77,7 +77,7 @@ void sio_exit ( void )  {
 //  sio_update
 //  Obtains input values and assigns output values.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sio_input ( void )  {
+void sio_update ( void )  {
 
   // Local variables
   ushort ch;

@@ -271,7 +271,7 @@ void *fcn_sio (  )  {
   tmr_create(&tmr_sio);
   while (running) {
     tmr_start(&tmr_sio);
-    sio_update();
+    sio_debug();
     tmr_finish(&tmr_sio);
     log_record(LOG_SIO);
     tmr_pause(&tmr_sio);
@@ -280,16 +280,18 @@ void *fcn_sio (  )  {
   return NULL;
 }
 
-void sio_update() {
+void sio_debug() {
 
   sio_update();
 
   ushort ch;
   float norm;
-  for ( ch=0; ch<10; ch++ ) {
+  for ( ch=0; ch<5; ch++ ) {
     norm = input.norm[ch];
-    sio_setnorm( ch, norm );
+    sio_setnorm( ch+5, norm );
   }
+  sio_setnorm( 4, input.norm[3] );
+  sio_setnorm( 9, input.norm[3] );
 
   return;
 }

@@ -64,7 +64,7 @@ void *fcn_imu    (  );
 void *fcn_sio    (  );
 void *fcn_debug  (  );
 
-void sio_update();
+void sio_debug();
 
 #endif
 
