@@ -114,10 +114,12 @@ void sys_sio ( void )  {
   //ushort i;
 
   // Input signals
+  //for ( i=0; i<10; i++ )  printf("%05d ",   input.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<10; i++ )  printf("%04d ",   input.pwm[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<10; i++ )  printf("%07.4f ", input.norm[i] );  printf("   ");  fflush(stdout);
 
   // Output signals
+  //for ( i=0; i<10; i++ )  printf("%05d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<10; i++ )  printf("%04d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<10; i++ )  printf("%07.4f ", output.norm[i] );  printf("   ");  fflush(stdout);
 

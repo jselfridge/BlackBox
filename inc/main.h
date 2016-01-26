@@ -50,8 +50,8 @@
 
 // Global variables (remove as quickly as possible)
 bool running;
-bool armed;
 struct sigaction sys_signal;
+
 
 #endif
 
