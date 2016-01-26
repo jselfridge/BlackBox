@@ -35,8 +35,8 @@ void sio_init ( void )  {
   memoryPtr = (uint*) sharedMem;
   memset( memoryPtr, 0, 4*24 );
 
-  // Loops per PWM period [21800 => 400Hz]
-  memoryPtr[ OUT_OFFSET -1 ] = 44000;
+  // Loops per PWM period  [ 21800 loops => 400Hz ]
+  memoryPtr[ OUT_OFFSET -1 ] = 21800;
 
   // Load assembly code
   if(DEBUG)  printf("  Open interrupt \n");

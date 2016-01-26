@@ -17,9 +17,8 @@ Current tasks
   <li> Enabled PRU-based PWM outputs </li>
   <li> Added mutex conditions </li>
   <li> Enabled I2C in DTO </li>
-  <li> (WIP) ADjust PWM loop value (seems a bit high...) </li>
-  <li> (WIP) Confirm power distribution setup </li>
-  <li> (WIP) Confirm signals on scope </li>
+  <li> Confirmed signals on scope </li>
+  <li> Adjusted PWM loop value to achieve 400Hz </li>
 </ul>
 
 
