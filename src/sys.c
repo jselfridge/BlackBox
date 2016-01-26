@@ -141,7 +141,7 @@ void sys_exit (  )  {
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   usleep(100000);
   tmr_exit();
-  //sio_exit();
+  sio_exit();
   imu_exit();
   log_exit();
 

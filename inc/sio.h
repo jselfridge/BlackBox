@@ -8,7 +8,7 @@
 #include <main.h>
 
 
-// PRU driver include (shouldn't need this here)
+// PRU driver include (shouldn't need this here if it's in main.h)
 #include <prussdrv.h>
 #include <pruss_intc_mapping.h>
 
@@ -22,7 +22,7 @@
 
 
 // Output signal variables
-#define OUT_OFFSET  2060
+//#define OUT_OFFSET  2060
 //#define OUT_CH      10
 //#define OUT_MIN     1000
 //#define OUT_MAX     2000

@@ -1,2 +1,2 @@
-sio.c:13:6:sio_init	64	static
-sio.c:67:6:sio_exit	8	static
+sio.c:13:6:sio_init	8	static
+sio.c:64:6:sio_exit	8	static

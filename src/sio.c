@@ -13,23 +13,19 @@
 void sio_init ( void )  {
   if(DEBUG)  printf("Initializing system inputs/outputs \n");
 
-  ushort iarray[10]  = { 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900 };
-  ushort oarray[10] = { 1900, 1800, 1700, 1600, 1500, 1400, 1300, 1200, 1100, 1000 };
-
+  //ushort iarray[10] = { 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900 };
+  //ushort oarray[10] = { 1900, 1800, 1700, 1600, 1500, 1400, 1300, 1200, 1100, 1000 };
+  /*
   ushort i;
   for ( i=0; i<10; i++ ) {
     input.pwm[i]  = iarray[i];
     output.pwm[i] = oarray[i];
   }
+  */
 
   // Initialize driver
   if( prussdrv_init() ) {
     printf( "Error (sio_init): prussdrv_init failed. \n" ); }
-
-  //int rtn;
-  //if((rtn = prussdrv_open(PRU_EVTOUT_0)) != 0) {
-  //fprintf(stderr, "prussdrv_open() failed\n");
-  //}
 
   // Open interrupt
   if( prussdrv_open(PRU_EVTOUT_0) )
@@ -56,6 +52,7 @@ void sio_init ( void )  {
   // Set LED indicator
   led_on(LED_PRU);
   */
+
   return;
 }
 

@@ -12,7 +12,7 @@ Current tasks
   <li> New timing thread for I/O signals </li>
   <li> Develop data structure for I/O signals </li>
   <li> Datalog system I/O signals </li>
-  <li> (WIP) Configure system for PRU capabilities </li>
+  <li>  Configure system for PRU capabilities </li>
   <li> (WIP) Enable 10 PRU based PWM inputs </li>
   <li> (WIP) Enable 10 PRU based PWM outputs </li>
 </ul>
