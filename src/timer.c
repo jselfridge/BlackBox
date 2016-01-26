@@ -25,7 +25,7 @@ void tmr_init ( void )  {
 
   // Create primary timing threads
   tmr_thread( &tmr_imu, &attr, fcn_imu );  pthread_mutex_init( &mutex_imu, NULL );
-  //tmr_thread( &tmr_sio, &attr, fcn_sio );  pthread_mutex_init( &mutex_sio, NULL );
+  tmr_thread( &tmr_sio, &attr, fcn_sio );  pthread_mutex_init( &mutex_sio, NULL );
 
   // Possibly create debugging thread
   if(DEBUG) {
@@ -50,9 +50,9 @@ void tmr_setup ( void )  {
   tmr_imu.per      =  1000000 / HZ_IMU_FAST;
 
   // SIO timer
-  //tmr_sio.name     =  "sio";
-  //tmr_sio.prio     =  PRIO_SIO;
-  //tmr_sio.per      =  1000000 / HZ_SIO;
+  tmr_sio.name     =  "sio";
+  tmr_sio.prio     =  PRIO_SIO;
+  tmr_sio.per      =  1000000 / HZ_SIO;
 
   // Debugging timer
   tmr_debug.name   =  "debug";
@@ -131,10 +131,10 @@ void tmr_exit ( void )  {
   if(DEBUG)  printf( "imu " );
 
   // Exit system input/output thread
-  //pthread_mutex_destroy(&mutex_sio);
-  //if( pthread_join ( tmr_sio.id, NULL ) )
-  //printf( "Error (tmr_exit): Failed to exit 'sio' thread. \n" );
-  //if(DEBUG)  printf( "sio " );
+  pthread_mutex_destroy(&mutex_sio);
+  if( pthread_join ( tmr_sio.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'sio' thread. \n" );
+  if(DEBUG)  printf( "sio " );
 
   // Exit debugging thread
   if(DEBUG) {
@@ -268,7 +268,7 @@ void *fcn_imu (  )  {
 //  Function handler for the system input/output timing thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *fcn_sio (  )  {
-  /*  tmr_create(&tmr_sio);
+  tmr_create(&tmr_sio);
   while (running) {
     tmr_start(&tmr_sio);
     sio_update();
@@ -276,11 +276,12 @@ void *fcn_sio (  )  {
     log_record(LOG_SIO);
     tmr_pause(&tmr_sio);
   }
-  pthread_exit(NULL);  */
+  pthread_exit(NULL);
   return NULL;
 }
 
 void sio_update() {
+  sio_input();
   /*
   ushort i;
   for ( i=0; i<10; i++ ) {

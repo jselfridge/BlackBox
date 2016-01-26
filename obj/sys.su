@@ -2,4 +2,4 @@ sys.c:134:6:sys_exit	8	static
 sys.c:13:6:sys_init	184	dynamic,bounded
 sys.c:55:6:sys_debug	16	static
 sys.c:87:6:sys_imu	32	static
-sys.c:113:6:sys_sio	0	static
+sys.c:113:6:sys_sio	16	static

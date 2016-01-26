@@ -1,2 +1,4 @@
-sio.c:13:6:sio_init	8	static
-sio.c:64:6:sio_exit	8	static
+sio.c:13:6:sio_init	448	dynamic,bounded
+sio.c:67:6:sio_exit	8	static
+sio.c:80:8:sio_getreg	16	static
+sio.c:95:6:sio_input	16	static

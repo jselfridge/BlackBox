@@ -70,7 +70,7 @@ void sys_debug ( void )  {
   //pthread_mutex_lock(&mutex_imu);    sys_imu();    pthread_mutex_unlock(&mutex_imu);
 
   //pthread_mutex_lock(&mutex_sio);  
-  //sys_sio();  
+  sys_sio();  
   //pthread_mutex_unlock(&mutex_sio);
 
   // Complete debugging display 
@@ -111,10 +111,10 @@ void sys_imu ( void )  {
 //  Prints system input/output values to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_sio ( void )  {
-  //ushort i;
+  ushort i;
 
   // Input signals
-  //for ( i=0; i<10; i++ )  printf("%05d ",   input.reg[i]  );  printf("   ");  fflush(stdout);
+  for ( i=0; i<10; i++ )  printf("%05d ",   input.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<10; i++ )  printf("%04d ",   input.pwm[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<10; i++ )  printf("%07.4f ", input.norm[i] );  printf("   ");  fflush(stdout);
 
