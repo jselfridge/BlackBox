@@ -30,7 +30,7 @@ echo 0 > /sys/class/leds/beaglebone\:green\:usr3/brightness
 #echo BB-UART4 > /sys/devices/platform/bone_capemgr/slots
 #echo BB-UART5 > /sys/devices/platform/bone_capemgr/slots
 
-#echo BLACKBOX > /sys/devices/platform/bone_capemgr/slots
+echo BLACKBOX > /sys/devices/platform/bone_capemgr/slots
 
 #cd /root/BlackBox/
 #./RunBlackBox

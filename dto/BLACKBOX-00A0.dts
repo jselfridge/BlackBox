@@ -21,35 +21,34 @@
 
     //--  Allocate hardware and pins  --//
     exclusive-use = 
-/*
-|        //--  INPUTS  --//
-|        "P8.15",
-|        "P8.16",
-|        "P9.25",
-|        "P9.27",
-|        "P9.28",
-|        "P9.29",
-|        "P9.30",
-|        "P9.31",
-|        "P9.41",
-|        "P9.42",
-*/
+
+        //--  INPUTS  --//
+        "P8.15",
+        "P8.16",
+        "P9.25",
+        "P9.27",
+        "P9.28",
+        "P9.29",
+        "P9.30",
+        "P9.31",
+        "P9.41",
+        "P9.42",
+
         //--  OUTPUTS  --//
         //"P8.27",
         //"P8.39",
         //"P8.41",
         //"P8.43",
-
+        //"P8.45",
         //"P8.28",
         //"P8.40",
         //"P8.42",
         //"P8.44",
-        //"P8.45",
         //"P8.46",
 
         //--  DEBUGGING  --//
-        "P8.15", 
-        "P8.16";  
+        //"P8.15",
+        //"P8.16",
 
 /*
 |        //--  I2C  --//
@@ -79,9 +78,9 @@
         //"uart5",
         //"i2c1",
         //"i2c2",
-        //"pru0",
-        //"pru1",
-        //"pruss";
+        "pru0",
+        "pru1",
+        "pruss";
 
 
     //--  Primary fragment  --//
@@ -95,34 +94,30 @@
                 pinctrl-single,pins = <
 
                     //--  PRU0: Input  --//
-                    //0x190  0x26      //  P9.31 | r31_00 | MODE 6  //
-                    //0x194  0x26      //  P9.29 | r31_01 | MODE 6  //
-                    //0x198  0x26      //  P9.30 | r31_02 | MODE 6  //
-                    //0x19C  0x26      //  P9.28 | r31_03 | MODE 6  //
-                    //0x1A0  0x26      //  P9.42 | r31_04 | MODE 6  //
-                    //0x1A4  0x26      //  P9.27 | r31_05 | MODE 6  //
-                    //0x1A8  0x26      //  P9.41 | r31_06 | MODE 6  //
-                    //0x1AC  0x26      //  P9.25 | r31_07 | MODE 6  //
-                    //0x038  0x26      //  P8.16 | r31_14 | MODE 6  //
-                    //0x03C  0x26      //  P8.15 | r31_15 | MODE 6  //
+                    0x190  0x26      //  P9.31 | r31_00 | GPIO3.14 | MODE 6 | CH.4   //
+                    0x194  0x26      //  P9.29 | r31_01 | GPIO3.15 | MODE 6 | CH.3   //
+                    0x198  0x26      //  P9.30 | r31_02 | GPIO3.16 | MODE 6 | CH.7   //
+                    0x19C  0x26      //  P9.28 | r31_03 | GPIO3.17 | MODE 6 | CH.8   //
+                    0x1A0  0x26      //  P9.42 | r31_04 | GPIO3.18 | MODE 6 | CH.6   //
+                    0x1A4  0x26      //  P9.27 | r31_05 | GPIO3.19 | MODE 6 | CH.2   //
+                    0x1A8  0x26      //  P9.41 | r31_06 | GPIO3.20 | MODE 6 | CH.5   //
+                    0x1AC  0x26      //  P9.25 | r31_07 | GPIO3.21 | MODE 6 | CH.1   //
+                    0x038  0x26      //  P8.16 | r31_14 | GPIO1.14 | MODE 6 | CH.0  //
+                    0x03C  0x26      //  P8.15 | r31_15 | GPIO1.15 | MODE 6 | CH.9  //
                     //0x1B4  0x20      //  Enable P9.41  //
                     //0x164  0x20      //  Enable P9.42  //
 
                     //--  PRU1: Output  --//
-                    //0x0A0  0x05      //  P8.45 | r31_00 | MODE 5  //
-                    //0x0A4  0x05      //  P8.46 | r31_01 | MODE 5  //
-                    //0x0A8  0x05      //  P8.43 | r31_02 | MODE 5  //
-                    //0x0AC  0x05      //  P8.44 | r31_03 | MODE 5  //
-                    //0x0B0  0x05      //  P8.41 | r31_04 | MODE 5  //
-                    //0x0B4  0x05      //  P8.42 | r31_05 | MODE 5  //
-                    //0x0B8  0x05      //  P8.39 | r31_06 | MODE 5  //
-                    //0x0BC  0x05      //  P8.40 | r31_07 | MODE 5  //
-                    //0x0E0  0x05      //  P8.27 | r31_08 | MODE 5  //
-                    //0x0E8  0x05      //  P8.28 | r31_10 | MODE 5  //
-
-                    // DEBUGGING
-                    0x038 0x07  //  P8.16 GPIO.1.14
-                    0x03C 0x07  //  P8.15 GPIO.1.15
+                    //0x0A0  0x05      //  P8.45 | r31_00 | GPIO.2.06 | MODE 5 | CH.5  //
+                    //0x0A4  0x05      //  P8.46 | r31_01 |  | MODE 5  //
+                    //0x0A8  0x05      //  P8.43 | r31_02 | GPIO.2.08 | MODE 5 | CH.4  //
+                    //0x0AC  0x05      //  P8.44 | r31_03 |  | MODE 5  //
+                    //0x0B0  0x05      //  P8.41 | r31_04 | GPIO.2.10 | MODE 5 | CH.3  //
+                    //0x0B4  0x05      //  P8.42 | r31_05 |  | MODE 5  //
+                    //0x0B8  0x05      //  P8.39 | r31_06 | GPIO.2.12 | MODE 5 | CH.2  //
+                    //0x0BC  0x05      //  P8.40 | r31_07 |  | MODE 5  //
+                    //0x0E0  0x05      //  P8.27 | r31_08 | GPIO.2.22 | MODE 5 | CH.1  //
+                    //0x0E8  0x05      //  P8.28 | r31_10 |  | MODE 5  //
 
                 >;
             };
@@ -203,9 +198,9 @@
             pinctrl-names = "default";
             pinctrl-0 = <&pru_pins>;
 
-            groupname {
-                pin-names = "BlackBox:groupA", "BlackBox:groupB"; 
-                gpios     = <&gpio1 14 0 &gpio1 15 0 >;
+            system_inputs {
+                pin-names = "BlackBox:in1", "BlackBox:in2", "BlackBox:in3", "BlackBox:in4", "BlackBox:in5", "BlackBox:in6", "BlackBox:in7", "BlackBox:in8", "BlackBox:in9", "BlackBox:in0"; 
+                gpios     = <  &gpio3 21 0    &gpio3 19 0    &gpio3 15 0    &gpio3 14 0    &gpio3 20 0    &gpio3 18 0    &gpio3 16 0    &gpio3 17 0    &gpio1 15 0    &gpio1 14 0    >;
             };
 
         };
