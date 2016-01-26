@@ -1,6 +1,6 @@
 sio.c:13:6:sio_init	408	dynamic,bounded
-sio.c:67:6:sio_exit	8	static
-sio.c:80:6:sio_update	28	static
-sio.c:114:6:sio_setreg	24	static
-sio.c:140:6:sio_setpwm	16	static
-sio.c:166:6:sio_setnorm	24	static
+sio.c:57:6:sio_exit	8	static
+sio.c:70:6:sio_update	28	static
+sio.c:104:6:sio_setreg	16	static
+sio.c:130:6:sio_setpwm	16	static
+sio.c:156:6:sio_setnorm	24	static

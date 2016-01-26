@@ -13,16 +13,6 @@
 void sio_init ( void )  {
   if(DEBUG)  printf("Initializing system inputs/outputs \n");
 
-  //ushort iarray[10] = { 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900 };
-  //ushort oarray[10] = { 1900, 1800, 1700, 1600, 1500, 1400, 1300, 1200, 1100, 1000 };
-  /*
-  ushort i;
-  for ( i=0; i<10; i++ ) {
-    input.pwm[i]  = iarray[i];
-    output.pwm[i] = oarray[i];
-  }
-  */
-
   // Load PRU driver
   if(DEBUG)  printf("  Load driver \n");
   if( prussdrv_init() ) {
@@ -81,7 +71,7 @@ void sio_update ( void )  {
 
   // Local variables
   ushort ch;
-  float norm;
+  double norm;
 
   // Loop through input channels
   for ( ch=0; ch<IN_CH; ch++ ) {
@@ -90,10 +80,10 @@ void sio_update ( void )  {
     input.reg[ch] = memoryPtr[ IN_OFFSET + ch ];
 
     // Convert to PWM units
-    input.pwm[ch] = ( input.reg[ch] * 30 ) / 200;
+    input.pwm[ch] = input.reg[ch] * IN_REG2PWM;
 
     // Determine normalized input value
-    norm = ( 2.0 * (float) ( input.reg[ch] - IN_MIN ) / (float) ( IN_MAX - IN_MIN ) ) - 1.0;
+    norm = ( 2.0 * (double) ( input.reg[ch] - IN_MIN ) / (double) ( IN_MAX - IN_MIN ) ) - 1.0;
     if ( norm >  1.0 )  norm =  1.0;
     if ( norm < -1.0 )  norm = -1.0;
     input.norm[ch] = norm;
@@ -121,10 +111,10 @@ void sio_setreg ( ushort ch, ushort reg )  {
   output.reg[ch] = reg;
 
   // Calculate PWM value
-  output.pwm[ch] = ( reg * 23 ) / 200;
+  output.pwm[ch] = reg * OUT_REG2PWM;
 
   // Determine normalized input value
-  float norm = ( 2.0 * (float) ( output.reg[ch] - OUT_MIN ) / (float) ( OUT_MAX - OUT_MIN ) ) - 1.0;
+  double norm = ( 2.0 * (double) ( output.reg[ch] - OUT_MIN ) / (double) ( OUT_MAX - OUT_MIN ) ) - 1.0;
   if ( norm >  1.0 )  norm =  1.0;
   if ( norm < -1.0 )  norm = -1.0;
   output.norm[ch] = norm;
@@ -147,10 +137,10 @@ void sio_setpwm ( ushort ch, ushort pwm )  {
   output.pwm[ch] = pwm;
 
   // Calculate register value
-  output.reg[ch] = ( pwm * 200 ) / 23;
+  output.reg[ch] = pwm * OUT_PWM2REG;
 
   // Determine normalized input value
-  float norm = ( 2.0 * (float) ( output.reg[ch] - OUT_MIN ) / (float) ( OUT_MAX - OUT_MIN ) ) - 1.0;
+  double norm = ( 2.0 * (double) ( output.reg[ch] - OUT_MIN ) / (double) ( OUT_MAX - OUT_MIN ) ) - 1.0;
   if ( norm >  1.0 )  norm =  1.0;
   if ( norm < -1.0 )  norm = -1.0;
   output.norm[ch] = norm;
@@ -163,7 +153,7 @@ void sio_setpwm ( ushort ch, ushort pwm )  {
 //  sio_setnorm
 //  Assign normalized value output, and sync data structure.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sio_setnorm ( ushort ch, float norm )  {
+void sio_setnorm ( ushort ch, double norm )  {
 
   // Check function inputs
   if( ch<0 || ch>=OUT_CH )
@@ -175,89 +165,14 @@ void sio_setnorm ( ushort ch, float norm )  {
   output.norm[ch] = norm;
 
   // Determine register input value
-  ushort reg = (ushort) ( (1/2.0) * (float) ( OUT_MAX - OUT_MIN ) * ( norm + 1.0 ) ) + OUT_MIN;
+  ushort reg = (ushort) ( (1/2.0) * (double) ( OUT_MAX - OUT_MIN ) * ( norm + 1.0 ) ) + OUT_MIN;
   output.reg[ch] = reg;
 
   // Calculate pwm value
-  output.pwm[ch] = ( reg * 23 ) / 200;
+  output.pwm[ch] = reg * OUT_REG2PWM;
 
   return;
 }
 
-
-
-
-
-
-
-
-
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sio_output
-//  Assigns output values from the data structure.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*
-void sio_output ( void )  {
-
-  //if( memoryPtr == NULL )
-  //printf( "Error (sio_setreg): PRU output not initialized. \n" );
-  //memoryPtr[ OUT_OFFSET + ch ] = reg;     // (pwm*200)/23;
-
-
-  ushort i;
-  for ( i=0; i<10; i++ ) {
-    sio_setreg( i, output.reg[i] );
-  }
-
-  return;
-}
-*/
-
-
-
-
-
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  pru_read_norm
-//  Reads normalized value of PWM signal.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*float pru_read_norm ( int ch )  {
-  sys_err( ch<0 || ch>=IN_CH, "Error (pru_read_norm): Radio channel must be between 0-7.");
-  float pwm = pru_read_pulse (ch);
-  float norm = ( pwm - IN_MIN ) / (float)( IN_MAX - IN_MIN );
-  if (norm>1.0)  norm = 1.0;
-  if (norm<0.0)  norm = 0.0;
-  return norm;
-}
-*/
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  pru_send_pulse
-//  Sends pulse value of PWM signal.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void pru_send_pulse ( int ch, int pwm )  {
-  sys_err( ch<0 || ch>=OUT_CH, "Error (pru_send_pulse): Servo channel must be between 0-9."     );
-  sys_err( memoryPtr == NULL, "Error (pru_send_pulse): PRU servo controller not initialized." );
-  memoryPtr[ OUT_OFFSET +ch ] = (pwm*200)/23;
-  return;
-}
-*/
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  pru_send_norm
-//  Sends normalized value of PWM signal.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void pru_send_norm ( int ch, float norm )  {
-  sys_err( ch<0 || ch>=OUT_CH,  "Error (pru_send_norm): Servo channel must be between 0-7."        );
-  sys_err( norm<0.0 || norm>1.0, "Error (pru_send_norm): Normalized input must be between 0.0-1.0." );
-  float pulse = OUT_MIN + ( norm * ( OUT_MAX - OUT_MIN ) );
-  pru_send_pulse ( ch, pulse );
-  return;
-}
-*/
 
 
