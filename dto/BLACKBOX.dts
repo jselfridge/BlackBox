@@ -21,37 +21,37 @@
 
     //--  Allocate hardware and pins  --//
     exclusive-use = 
-
-        //--  INPUTS  --//
-        //"P8.15",
-        //"P8.16",
-        //"P9.25",
-        //"P9.27",
-        //"P9.28",
-        //"P9.29",
-        //"P9.30",
-        //"P9.31",
-        //"P9.41",
-        //"P9.42",
 /*
-|        //--  OUTPUTS  --//
-|        "P8.27",
-|        "P8.28",
-|        "P8.39",
-|        "P8.40",
-|        "P8.41",
-|        "P8.42",
-|        "P8.43",
-|        "P8.44",
-|        "P8.45",
-|        "P8.46",
+|        //--  INPUTS  --//
+|        "P8.15",
+|        "P8.16",
+|        "P9.25",
+|        "P9.27",
+|        "P9.28",
+|        "P9.29",
+|        "P9.30",
+|        "P9.31",
+|        "P9.41",
+|        "P9.42",
 */
-        //--  I2C  --//
-        "P9.17",
-        "P9.18",
-        "P9.19",
-        "P9.20",
+        //--  OUTPUTS  --//
+        "P8.27",
+        //"P8.28",
+        "P8.39",
+        //"P8.40",
+        "P8.41",
+        //"P8.42",
+        "P8.43",
+        //"P8.44",
+        //"P8.45",
+        //"P8.46",
 /*
+|        //--  I2C  --//
+|        "P9.17",
+|        "P9.18",
+|        "P9.19",
+|        "P9.20",
+|
 |        //--  SERIAL  --//
 |        "P8.37",
 |        "P8.38",
@@ -71,8 +71,8 @@
         //"uart2",
         //"uart4",
         //"uart5",
-        "i2c1",
-        "i2c2",
+        //"i2c1",
+        //"i2c2",
         "pru0",
         "pru1",
         "pruss";
@@ -85,8 +85,8 @@
 
 
             //--  PRU pins  --//
-//            pru_pins: pinmux_pru_pins {
-//                pinctrl-single,pins = <
+            pru_pins: pinmux_pru_pins {
+                pinctrl-single,pins = <
 
                     //--  PRU0: Input  --//
                     //0x190  0x26      //  P9.31 | r31_00 | MODE 6  //
@@ -101,41 +101,41 @@
                     //0x03C  0x26      //  P8.15 | r31_15 | MODE 6  //
                     //0x1B4  0x20      //  Enable P9.41  //
                     //0x164  0x20      //  Enable P9.42  //
-/*
-|                    //--  PRU1: Output  --//
-|                    0x0A0  0x05      //  P8.45 | r31_00 | MODE 5  //
-|                    0x0A4  0x05      //  P8.46 | r31_01 | MODE 5  //
-|                    0x0A8  0x05      //  P8.43 | r31_02 | MODE 5  //
-|                    0x0AC  0x05      //  P8.44 | r31_03 | MODE 5  //
-|                    0x0B0  0x05      //  P8.41 | r31_04 | MODE 5  //
-|                    0x0B4  0x05      //  P8.42 | r31_05 | MODE 5  //
-|                    0x0B8  0x05      //  P8.39 | r31_06 | MODE 5  //
-|                    0x0BC  0x05      //  P8.40 | r31_07 | MODE 5  //
-|                    0x0E0  0x05      //  P8.27 | r31_08 | MODE 5  //
-|                    0x0E8  0x05      //  P8.28 | r31_10 | MODE 5  //
-*/
-//                >;
-//            };
 
+                    //--  PRU1: Output  --//
+                    //0x0A0  0x05      //  P8.45 | r31_00 | MODE 5  //
+                    //0x0A4  0x05      //  P8.46 | r31_01 | MODE 5  //
+                    0x0A8  0x05      //  P8.43 | r31_02 | MODE 5  //
+                    //0x0AC  0x05      //  P8.44 | r31_03 | MODE 5  //
+                    0x0B0  0x05      //  P8.41 | r31_04 | MODE 5  //
+                    //0x0B4  0x05      //  P8.42 | r31_05 | MODE 5  //
+                    0x0B8  0x05      //  P8.39 | r31_06 | MODE 5  //
+                    //0x0BC  0x05      //  P8.40 | r31_07 | MODE 5  //
+                    0x0E0  0x05      //  P8.27 | r31_08 | MODE 5  //
+                    //0x0E8  0x05      //  P8.28 | r31_10 | MODE 5  //
 
-            //--  I2C1 pins  --//
-            i2c1_pins: pinmux_i2c1_pins {
-                pinctrl-single,pins = <
-                    0x15C  0x32      //  P9.17 | I2C1_SCL | MODE 2  //
-                    0x158  0x32      //  P9.18 | I2C1_SDA | MODE 2  //
-                >;
-            };
-
-
-            //--  I2C2 pins  --//
-            i2c2_pins: pinmux_i2c2_pins {
-                pinctrl-single,pins = <
-                    0x17C  0x33      //  P9.19 | I2C2_SCL | MODE 3  //
-                    0x178  0x33      //  P9.20 | I2C2_SDA | MODE 3  //
                 >;
             };
 
 /*
+|            //--  I2C1 pins  --//
+|            i2c1_pins: pinmux_i2c1_pins {
+|                pinctrl-single,pins = <
+|                    0x15C  0x32      //  P9.17 | I2C1_SCL | MODE 2  //
+|                    0x158  0x32      //  P9.18 | I2C1_SDA | MODE 2  //
+|                >;
+|            };
+|
+|
+|            //--  I2C2 pins  --//
+|            i2c2_pins: pinmux_i2c2_pins {
+|                pinctrl-single,pins = <
+|                    0x17C  0x33      //  P9.19 | I2C2_SCL | MODE 3  //
+|                    0x178  0x33      //  P9.20 | I2C2_SDA | MODE 3  //
+|                >;
+|            };
+|
+|
 |            //--  UART1 pins  --//
 |            uart1_pins: pinmux_uart1_pins {
 |                pinctrl-single,pins = <
@@ -184,8 +184,19 @@
         };
     };
 
+
+    //--  PRU INPUT/OUTPUT  --//
+    fragment@1 {
+        target = <&pruss>;
+        __overlay__ {
+            status         = "okay";
+            pinctrl-names  = "default";
+            pinctrl-0      = <&pru_pins>;
+        };
+    };
+
 /*
-|    //--  PRU Device  --//
+|    //--  PRU DEBUGGING  --//
 |    fragment@1 {
 |        target = <&pruss>;
 |        __overlay__ {
@@ -194,7 +205,7 @@
 |    };
 |
 |
-|    //--  PRU Pins  --//
+|    //--  PRU DEBUGGING  --//
 |    fragment@2 {
 |        target = <&ocp>;
 |        __overlay__ {
@@ -206,32 +217,32 @@
 |            };
 |        };
 |    };
-*/
-
-    //--  I2C1  --//
-    fragment@11 {
-        target = <&i2c1>;
-        __overlay__ {
-            status = "okay";
-            clock-frequency = <0x61a80>;
-            pinctrl-names = "default";
-            pinctrl-0 = <&i2c1_pins>;
-        };
-    };
-
-
-    //--  I2C2  --//
-    fragment@12 {
-        target = <&i2c2>;
-        __overlay__ {
-            status = "okay";
-            clock-frequency = <0x61a80>;
-            pinctrl-names = "default";
-            pinctrl-0 = <&i2c2_pins>;
-        };
-    };
-
-/*
+|
+|
+|    //--  I2C1  --//
+|    fragment@11 {
+|        target = <&i2c1>;
+|        __overlay__ {
+|            status = "okay";
+|            clock-frequency = <0x61a80>;
+|            pinctrl-names = "default";
+|            pinctrl-0 = <&i2c1_pins>;
+|        };
+|    };
+|
+|
+|    //--  I2C2  --//
+|    fragment@12 {
+|        target = <&i2c2>;
+|        __overlay__ {
+|            status = "okay";
+|            clock-frequency = <0x61a80>;
+|            pinctrl-names = "default";
+|            pinctrl-0 = <&i2c2_pins>;
+|        };
+|    };
+|
+|
 |    //--  UART1  --//
 |    fragment@21 {
 |        target = <&uart1>;
