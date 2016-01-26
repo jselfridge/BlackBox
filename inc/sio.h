@@ -23,7 +23,7 @@
 
 // Output signal variables
 #define OUT_OFFSET  2060
-//#define OUT_CH      10
+#define OUT_CH      10
 //#define OUT_MIN     1000
 //#define OUT_MAX     2000
 
@@ -53,7 +53,9 @@ uint* memoryPtr;
 void    sio_init    ( void );
 void    sio_exit    ( void );
 ushort  sio_getreg  ( ushort ch );
+void    sio_setreg  ( ushort ch, ushort reg );
 void    sio_input   ( void );
+void    sio_output  ( void );
 //void  sio_getpwm
 //void  sio_setpwm
 //void  sio_inputs
@@ -62,7 +64,7 @@ void    sio_input   ( void );
 //void  sio_setnorm
 //void  sio_update    // Gets all new data inputs and sends all new data outputs
 
-//float pru_read_pulse ( int ch );
+
 //float pru_read_norm  ( int ch );
 //void  pru_send_pulse ( int ch, int pwm );
 //void  pru_send_norm  ( int ch, float norm );

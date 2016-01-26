@@ -99,7 +99,7 @@
                     0x1AC  0x26      //  P9.25 | r31.07 | GPIO.3.21 | MODE 6 | CH.1   //
                     0x038  0x26      //  P8.16 | r31.14 | GPIO.1.14 | MODE 6 | CH.0  //
                     0x03C  0x26      //  P8.15 | r31.15 | GPIO.1.15 | MODE 6 | CH.9  //
-                    0x1B4  0x20      //  Enable P9.41  //
+                    //0x1B4  0x20      //  Enable P9.41  //
                     //0x164  0x20      //  Enable P9.42  //
 
                     //--  PRU1: Output  --//

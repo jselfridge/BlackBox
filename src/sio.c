@@ -75,7 +75,7 @@ void sio_exit ( void )  {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sio_getreg
-//  Returns the register value for a system input.
+//  Returns a register value for a system input.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ushort sio_getreg ( ushort ch )  {
 
@@ -85,8 +85,27 @@ ushort sio_getreg ( ushort ch )  {
   if( memoryPtr == NULL )
     printf( "Error (sio_getreg): PRU input not initialized. \n" );
 
-  return memoryPtr[ IN_OFFSET +ch ]; // * (30.0/200);
+  return memoryPtr[ IN_OFFSET + ch ]; // * (30.0/200);
 }
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  sio_setreg
+//  Assigns a register value to a system output.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void sio_setreg ( ushort ch, ushort reg )  {
+
+  if( ch<0 || ch>=OUT_CH )
+    printf( "Error (sio_setreg): Output channel must be between 0-9. \n" );
+
+  if( memoryPtr == NULL )
+    printf( "Error (sio_setreg): PRU output not initialized. \n" );
+
+  memoryPtr[ OUT_OFFSET + ch ] = reg;     // (pwm*200)/23;
+
+  return;
+}
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sio_input
@@ -103,17 +122,22 @@ void sio_input ( void )  {
 }
 
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  sio_output
+//  Assigns output values from the data structure.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void sio_output ( void )  {
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  pru_read_pulse
-//  Reads pulse value of PWM signal.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*float pru_read_pulse ( int ch )  {
-  sys_err( ch<0 || ch>=IN_CH, "Error (pru_read_pulse): Radio channel must be between 0-7."    );
-  sys_err( memoryPtr == NULL, "Error (pru_read_pulse): PRU radio controller not initialized." );
-  return memoryPtr[ IN_OFFSET +ch ] * (30.0/200);
+  ushort i;
+  for ( i=0; i<10; i++ ) {
+    sio_setreg( i, output.reg[i] );
+  }
+
+  return;
 }
-*/
+
+
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  pru_read_norm
@@ -136,7 +160,7 @@ void sio_input ( void )  {
 /*void pru_send_pulse ( int ch, int pwm )  {
   sys_err( ch<0 || ch>=OUT_CH, "Error (pru_send_pulse): Servo channel must be between 0-9."     );
   sys_err( memoryPtr == NULL, "Error (pru_send_pulse): PRU servo controller not initialized." );
-  memoryPtr[ OUT_OFFSET +ch ] = (pwm*200)/23;  // ORIG: /19
+  memoryPtr[ OUT_OFFSET +ch ] = (pwm*200)/23;
   return;
 }
 */

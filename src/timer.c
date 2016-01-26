@@ -282,15 +282,11 @@ void *fcn_sio (  )  {
 
 void sio_update() {
   sio_input();
-  /*
   ushort i;
   for ( i=0; i<10; i++ ) {
-    input.pwm[i]  += 100;
-    output.pwm[i] -= 100;
-    if ( input.pwm[i]  == 2100 )  input.pwm[i]  = 1000;
-    if ( output.pwm[i] ==  900 )  output.pwm[i] = 2000;
+    output.reg[i] = input.reg[i] + 1000;
   }
-  */
+  sio_output();
   return;
 }
 
