@@ -74,84 +74,124 @@ void sio_exit ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sio_input
-//  Assigns input reg/pwm/norm values to data structure. 
+//  sio_update
+//  Obtains input values and assigns output values.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sio_input ( void )  {
-  /*
-  if( ch<0 || ch>=IN_CH )
-    printf( "Error (sio_getreg): Input channel must be between 0-9. \n" );
 
-  if( memoryPtr == NULL )
-    printf( "Error (sio_getreg): PRU input not initialized. \n" );
-
-  return memoryPtr[ IN_OFFSET + ch ]; // * (30.0/200);
-  */
-
-  ushort i;
+  // Local variables
+  ushort ch;
   float norm;
-  for ( i=0; i<IN_CH; i++ ) {
+
+  // Loop through input channels
+  for ( ch=0; ch<IN_CH; ch++ ) {
 
     // Get raw register value
-    input.reg[i] = memoryPtr[ IN_OFFSET + i ];
+    input.reg[ch] = memoryPtr[ IN_OFFSET + ch ];
 
     // Convert to PWM units
-    input.pwm[i] = ( input.reg[i] * 30 ) / 200;
+    input.pwm[ch] = ( input.reg[ch] * 30 ) / 200;
 
     // Determine normalized input value
-    norm = ( 2.0 * (float) ( input.reg[i] - IN_MIN ) / (float) ( IN_MAX - IN_MIN ) ) - 1.0;
+    norm = ( 2.0 * (float) ( input.reg[ch] - IN_MIN ) / (float) ( IN_MAX - IN_MIN ) ) - 1.0;
     if ( norm >  1.0 )  norm =  1.0;
     if ( norm < -1.0 )  norm = -1.0;
-    input.norm[i] = norm;
+    input.norm[ch] = norm;
 
   }
 
+  // Assign output register values
+  for ( ch=0; ch<OUT_CH; ch++ )  memoryPtr[ OUT_OFFSET + ch ] = output.reg[ch];
+
   return;
 }
-
-
-
-
-
-
-
-
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sio_setreg
-//  Assigns a register value to a system output.
+//  Assign register value output, and sync data structure.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*
 void sio_setreg ( ushort ch, ushort reg )  {
 
+  // Check function inputs
   if( ch<0 || ch>=OUT_CH )
     printf( "Error (sio_setreg): Output channel must be between 0-9. \n" );
 
-  if( memoryPtr == NULL )
-    printf( "Error (sio_setreg): PRU output not initialized. \n" );
+  // Assign register value
+  output.reg[ch] = reg;
 
-  memoryPtr[ OUT_OFFSET + ch ] = reg;     // (pwm*200)/23;
+  // Calculate PWM value
+  output.pwm[ch] = ( reg * 23 ) / 200;
 
-  return;
-}
-*/
-
-/*
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sio_input
-//  Assigns input values to the data structure.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sio_input ( void )  {
-
-  ushort i;
-  for ( i=0; i<10; i++ ) {
-    input.reg[i] = sio_getreg(i);
-  }
+  // Determine normalized input value
+  float norm = ( 2.0 * (float) ( output.reg[ch] - OUT_MIN ) / (float) ( OUT_MAX - OUT_MIN ) ) - 1.0;
+  if ( norm >  1.0 )  norm =  1.0;
+  if ( norm < -1.0 )  norm = -1.0;
+  output.norm[ch] = norm;
 
   return;
 }
-*/
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  sio_setpwm
+//  Assign PWM value output, and sync data structure.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void sio_setpwm ( ushort ch, ushort pwm )  {
+
+  // Check function inputs
+  if( ch<0 || ch>=OUT_CH )
+    printf( "Error (sio_setpwm): Output channel must be between 0-9. \n" );
+
+  // Assign PWM value
+  output.pwm[ch] = pwm;
+
+  // Calculate register value
+  output.reg[ch] = ( pwm * 200 ) / 23;
+
+  // Determine normalized input value
+  float norm = ( 2.0 * (float) ( output.reg[ch] - OUT_MIN ) / (float) ( OUT_MAX - OUT_MIN ) ) - 1.0;
+  if ( norm >  1.0 )  norm =  1.0;
+  if ( norm < -1.0 )  norm = -1.0;
+  output.norm[ch] = norm;
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  sio_setnorm
+//  Assign normalized value output, and sync data structure.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void sio_setnorm ( ushort ch, float norm )  {
+
+  // Check function inputs
+  if( ch<0 || ch>=OUT_CH )
+    printf( "Error (sio_setnorm): Output channel must be between 0-9. \n" );
+
+  // Assign normalized value
+  if ( norm >  1.0 )  norm =  1.0;
+  if ( norm < -1.0 )  norm = -1.0;
+  output.norm[ch] = norm;
+
+  // Determine register input value
+  ushort reg = (ushort) ( (1/2.0) * (float) ( OUT_MAX - OUT_MIN ) * ( norm + 1.0 ) ) + OUT_MIN;
+  output.reg[ch] = reg;
+
+  // Calculate pwm value
+  output.pwm[ch] = ( reg * 23 ) / 200;
+
+  return;
+}
+
+
+
+
+
+
+
+
+
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -160,6 +200,11 @@ void sio_input ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /*
 void sio_output ( void )  {
+
+  //if( memoryPtr == NULL )
+  //printf( "Error (sio_setreg): PRU output not initialized. \n" );
+  //memoryPtr[ OUT_OFFSET + ch ] = reg;     // (pwm*200)/23;
+
 
   ushort i;
   for ( i=0; i<10; i++ ) {

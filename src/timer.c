@@ -282,15 +282,14 @@ void *fcn_sio (  )  {
 
 void sio_update() {
 
-  sio_input();
+  sio_update();
 
-  /*
-  ushort i;
-  for ( i=0; i<10; i++ ) {
-    output.reg[i] = input.reg[i];
+  ushort ch;
+  float norm;
+  for ( ch=0; ch<10; ch++ ) {
+    norm = input.norm[ch];
+    sio_setnorm( ch, norm );
   }
-  sio_output();
-  */
 
   return;
 }
