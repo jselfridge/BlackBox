@@ -16,9 +16,9 @@
 // Input signal variables
 #define IN_OFFSET   2049
 #define IN_CH       10
-//#define IN_MIN      1000
+#define IN_MIN      6667 // 1000
 //#define IN_MID      1500
-//#define IN_MAX      2000
+#define IN_MAX      13333 // 2000
 
 
 // Output signal variables
@@ -52,10 +52,11 @@ uint* memoryPtr;
 // System input/output functions
 void    sio_init    ( void );
 void    sio_exit    ( void );
-ushort  sio_getreg  ( ushort ch );
-void    sio_setreg  ( ushort ch, ushort reg );
 void    sio_input   ( void );
-void    sio_output  ( void );
+
+//ushort  sio_getreg  ( ushort ch );
+//void    sio_setreg  ( ushort ch, ushort reg );
+//void    sio_output  ( void );
 //void  sio_getpwm
 //void  sio_setpwm
 //void  sio_inputs

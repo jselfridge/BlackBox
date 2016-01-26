@@ -13,15 +13,15 @@
 void sio_init ( void )  {
   if(DEBUG)  printf("Initializing system inputs/outputs \n");
 
-  ushort iarray[10] = { 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900 };
-  ushort oarray[10] = { 1900, 1800, 1700, 1600, 1500, 1400, 1300, 1200, 1100, 1000 };
-
+  //ushort iarray[10] = { 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900 };
+  //ushort oarray[10] = { 1900, 1800, 1700, 1600, 1500, 1400, 1300, 1200, 1100, 1000 };
+  /*
   ushort i;
   for ( i=0; i<10; i++ ) {
     input.pwm[i]  = iarray[i];
     output.pwm[i] = oarray[i];
   }
-
+  */
 
   // Load PRU driver
   if(DEBUG)  printf("  Load driver \n");
@@ -74,11 +74,11 @@ void sio_exit ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sio_getreg
-//  Returns a register value for a system input.
+//  sio_input
+//  Assigns input reg/pwm/norm values to data structure. 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-ushort sio_getreg ( ushort ch )  {
-
+void sio_input ( void )  {
+  /*
   if( ch<0 || ch>=IN_CH )
     printf( "Error (sio_getreg): Input channel must be between 0-9. \n" );
 
@@ -86,13 +86,43 @@ ushort sio_getreg ( ushort ch )  {
     printf( "Error (sio_getreg): PRU input not initialized. \n" );
 
   return memoryPtr[ IN_OFFSET + ch ]; // * (30.0/200);
+  */
+
+  ushort i;
+  float norm;
+  for ( i=0; i<IN_CH; i++ ) {
+
+    // Get raw register value
+    input.reg[i] = memoryPtr[ IN_OFFSET + i ];
+
+    // Convert to PWM units
+    input.pwm[i] = ( input.reg[i] * 30 ) / 200;
+
+    // Determine normalized input value
+    norm = ( 2.0 * (float) ( input.reg[i] - IN_MIN ) / (float) ( IN_MAX - IN_MIN ) ) - 1.0;
+    if ( norm >  1.0 )  norm =  1.0;
+    if ( norm < -1.0 )  norm = -1.0;
+    input.norm[i] = norm;
+
+  }
+
+  return;
 }
+
+
+
+
+
+
+
+
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sio_setreg
 //  Assigns a register value to a system output.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/*
 void sio_setreg ( ushort ch, ushort reg )  {
 
   if( ch<0 || ch>=OUT_CH )
@@ -105,8 +135,9 @@ void sio_setreg ( ushort ch, ushort reg )  {
 
   return;
 }
+*/
 
-
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sio_input
 //  Assigns input values to the data structure.
@@ -120,12 +151,14 @@ void sio_input ( void )  {
 
   return;
 }
+*/
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sio_output
 //  Assigns output values from the data structure.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/*
 void sio_output ( void )  {
 
   ushort i;
@@ -135,6 +168,10 @@ void sio_output ( void )  {
 
   return;
 }
+*/
+
+
+
 
 
 

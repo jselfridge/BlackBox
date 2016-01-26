@@ -281,12 +281,17 @@ void *fcn_sio (  )  {
 }
 
 void sio_update() {
+
   sio_input();
+
+  /*
   ushort i;
   for ( i=0; i<10; i++ ) {
-    output.reg[i] = input.reg[i] + 1000;
+    output.reg[i] = input.reg[i];
   }
   sio_output();
+  */
+
   return;
 }
 
