@@ -23,9 +23,14 @@ void tmr_init ( void )  {
   // Begin each thread and mutex
   if(DEBUG)  printf("  Create threads and mutexes: ");
 
+  // Create mutex conditions
+  pthread_mutex_init( &mutex_imu, NULL );
+  pthread_mutex_init( &mutex_sio, NULL );
+
   // Create primary timing threads
-  tmr_thread( &tmr_imu, &attr, fcn_imu );  pthread_mutex_init( &mutex_imu, NULL );
-  tmr_thread( &tmr_sio, &attr, fcn_sio );  pthread_mutex_init( &mutex_sio, NULL );
+  tmr_thread( &tmr_imu,  &attr, fcn_imu  );
+  tmr_thread( &tmr_sio,  &attr, fcn_sio  );
+  tmr_thread( &tmr_flag, &attr, fcn_flag );
 
   // Possibly create debugging thread
   if(DEBUG) {
@@ -53,6 +58,11 @@ void tmr_setup ( void )  {
   tmr_sio.name     =  "sio";
   tmr_sio.prio     =  PRIO_SIO;
   tmr_sio.per      =  1000000 / HZ_SIO;
+
+  // Flags timer
+  tmr_flag.name    =  "flag";
+  tmr_flag.prio    =  PRIO_FLAG;
+  tmr_flag.per     =  1000000 / HZ_FLAG;
 
   // Debugging timer
   tmr_debug.name   =  "debug";
@@ -124,17 +134,24 @@ void tmr_thread ( timer_struct *tmr, pthread_attr_t *attr, void *fcn )  {
 void tmr_exit ( void )  {
   printf("Close timing threads: ");
 
-  // Exit imu thread
+  // Destroy mutex locks
   pthread_mutex_destroy(&mutex_imu);
+  pthread_mutex_destroy(&mutex_sio);
+
+  // Exit imu thread
   if( pthread_join ( tmr_imu.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'imu' thread. \n" );
   if(DEBUG)  printf( "imu " );
 
   // Exit system input/output thread
-  pthread_mutex_destroy(&mutex_sio);
   if( pthread_join ( tmr_sio.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'sio' thread. \n" );
   if(DEBUG)  printf( "sio " );
+
+  // Exit program execution flags thread
+  if( pthread_join ( tmr_flag.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'flag' thread. \n" );
+  if(DEBUG)  printf( "flag " );
 
   // Exit debugging thread
   if(DEBUG) {
@@ -292,6 +309,24 @@ void sio_debug() {
   }
   pthread_mutex_unlock(&mutex_sio);
   return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  fcn_flag
+//  Function handler for the program execution flag timing thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void *fcn_flag (  )  {
+  tmr_create(&tmr_flag);
+  while (running) {
+    tmr_start(&tmr_flag);
+    //something();
+    tmr_finish(&tmr_flag);
+    //log_record(LOG_FLAG);
+    tmr_pause(&tmr_flag);
+  }
+  pthread_exit(NULL);
+  return NULL;
 }
 
 
