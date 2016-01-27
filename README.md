@@ -3,20 +3,21 @@ BLACK BOX
 =========
 
 Develops a cape for a BeagleBone Black to enable "Black 
-Box" functionality for research and development. 
+Box" functionality for research and development.
 
 
-Current tasks
--------------
+V0.0.3
+------
 <ul>
   <li> New timing thread for program execution flags </li>
-  <li> Register stick hold positions </li>
-  <li> Reset counters once stick condition is released </li>
+  <li> Register stick endpoint positions </li>
   <li> Counter records hold duration </li> 
+  <li> Reset counters once stick condition is released </li>
   <li> Trips boolean flags for stick positions </li> 
   <li> Enable/Disable datalog </li>
   <li> Disable IMU and other loops during data download </li>
   <li> Arm/Disarm system outputs </li>
+  <li> Exit program through radio commands </li>
 </ul>
 
 
