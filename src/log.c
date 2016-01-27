@@ -309,7 +309,7 @@ void log_record ( enum log_index index )  {
     pthread_mutex_lock(&mutex_imu);
     
     // Gyroscope data
-    if ( log_gyr.count <= log_gyr.limit ) {
+    if ( log_gyr.count < log_gyr.limit ) {
       row = log_gyr.count;
       log_gyr.time[row] = timestamp;
       log_gyr.dur[row]  = tmr_imu.dur;
@@ -320,7 +320,7 @@ void log_record ( enum log_index index )  {
     }
 
     // Accelerometer data
-    if ( log_acc.count <= log_acc.limit ) {
+    if ( log_acc.count < log_acc.limit ) {
       row = log_acc.count;
       log_acc.time[row] = timestamp;
       log_acc.dur[row]  = tmr_imu.dur;
@@ -359,7 +359,7 @@ void log_record ( enum log_index index )  {
     pthread_mutex_lock(&mutex_sio);
 
     // Input data
-    if ( log_input.count <= log_input.limit ) {
+    if ( log_input.count < log_input.limit ) {
       row = log_input.count;
       log_input.time[row] = timestamp;
       //for ( i=0; i<4; i++ )  log_input.reg  [ row*10 +i ] = input.reg[i];
@@ -369,7 +369,7 @@ void log_record ( enum log_index index )  {
     }
 
     // Output data
-    if ( log_output.count <= log_output.limit ) {
+    if ( log_output.count < log_output.limit ) {
       row = log_output.count;
       log_output.time[row] = timestamp;
       //for ( i=0; i<4; i++ )  log_output.reg  [ row*10 +i ] = output.reg[i];

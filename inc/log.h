@@ -9,7 +9,7 @@
 
 
 // Define statements
-#define MAX_LOG_DUR  (20)
+#define MAX_LOG_DUR  (5)
 
 
 // Log enumerations

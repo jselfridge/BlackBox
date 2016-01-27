@@ -15,7 +15,6 @@ void sio_init ( void )  {
 
   // Set LED indicator
   led_blink( LED_SIO, 200, 200 );
-  usleep(2000000);  // debugging
 
   // Load PRU driver
   if(DEBUG)  printf("  Load driver \n");

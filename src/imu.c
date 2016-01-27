@@ -15,7 +15,6 @@ void imu_init (  )  {
 
   // Start initialization
   led_blink( LED_IMU, 200, 200 );
-  usleep(2000000);
 
   // IMU struct values
   imu.id   = 1;
@@ -43,7 +42,6 @@ void imu_init (  )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_exit ( void )  {
   if(DEBUG)  printf("Close IMU \n");
-  // Add IMU exit code here...
   led_off(LED_IMU);
   return;
 }
