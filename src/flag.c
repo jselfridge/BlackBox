@@ -12,23 +12,26 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void flg_init ( void )  {
   if(DEBUG)  printf("Initializing program execution flags \n");
-  // Add code and functions as needed...
 
   // Disarm the outputs
-  //sio_disarm();
+  if(DEBUG)  printf("  Disarm motors \n");
+  sio_disarm();
   
   // Set boolean values
-  //running = true;
-  //armed = false;
+  if(DEBUG)  printf(" Set run time flags \n");
+  running = true;
+  armed = false;
 
   // Zero out counters
+  if(DEBUG)  printf("  Zero out counters \n");
   ushort ch;
   for ( ch=0; ch<IN_CH; ch++ )  {
     flag.upper[ch] = 0;
     flag.lower[ch] = 0;
   }
 
-  // Set proper limits
+  // Set proper timing limits
+  if(DEBUG)  printf("  Set timing limits \n");
   flag.limit[0] = FLG_HOLD0 * HZ_FLAG;
   flag.limit[1] = FLG_HOLD1 * HZ_FLAG;
   flag.limit[2] = FLG_HOLD2 * HZ_FLAG;
@@ -39,10 +42,6 @@ void flg_init ( void )  {
   flag.limit[7] = FLG_HOLD7 * HZ_FLAG;
   flag.limit[8] = FLG_HOLD8 * HZ_FLAG;
   flag.limit[9] = FLG_HOLD9 * HZ_FLAG;
-
-  for ( ch=0; ch<IN_CH; ch++ ) {
-    printf("limit %d: %d \n", ch, flag.limit[ch] );
-  }
   
   return;
 }
@@ -60,51 +59,56 @@ void flg_exit ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  flg_debug
-//  BLAH...
+//  flg_check
+//  Check the current status of the flags.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void flg_debug ( void )  {
+void flg_check ( void )  {
 
   // Channel index
   ushort ch;
 
   // Adjust counters
-  for ( ch=0; ch<IN_CH; ch++ ) {
-    if ( input.norm[ch] >  0.95 )  flag.upper[ch]++;  else flag.upper[ch] = 0;
-    if ( input.norm[ch] < -0.95 )  flag.lower[ch]++;  else flag.lower[ch] = 0;
+  for ( ch=0; ch<4; ch++ ) {
+    ( input.norm[ch] >  0.95 ) ? ( flag.upper[ch]++ ) : ( flag.upper[ch] = 0 );
+    ( input.norm[ch] < -0.95 ) ? ( flag.lower[ch]++ ) : ( flag.lower[ch] = 0 );
   }
 
-  // Only execute stick commands with zero throttle
-  if ( input.norm[3] <= -0.95 )  {
-
-    // Data log: roll stick only, no yaw command
-    if ( !flag.lower[2] && !flag.upper[2] )  {
-      if ( flag.lower[0] >= flag.limit[0] ) {  /*datalog.enabled = true; */ led_on(LED_LOG);   }
-      if ( flag.upper[0] >= flag.limit[0] ) {  /*datalog.enabled = false;*/ led_off(LED_LOG);  }
+  // Update energized state flag
+  energized = ( input.norm[CH_T] <= -0.95 ) ? ( false ) : ( true );
+  
+  // Data log: roll stick only, no yaw command
+  if ( !energized && !flag.lower[CH_Y] && !flag.upper[CH_Y] )  {
+    if ( flag.lower[CH_R] >= flag.limit[CH_R] ) {
+      datalog.enabled = true;
+      led_on(LED_LOG);
     }
-
-    // Motor arming: yaw stick only, no roll command
-    if ( !flag.lower[0] && !flag.upper[0] )  {
-      if ( flag.upper[2] >= flag.limit[2] ) {
-	//ctrl.motorsArmed = true;
-	//ctrl.heading = imu1.Eul[Z];
-	led_on(LED_MOT);
-      }
-      if ( flag.lower[2]  >= flag.limit[2] ) {
-	//ctrl.motorsArmed = false;
-	led_off(LED_MOT);
-      }
-    }
-
-    // Exit program: roll and yaw together to exit program
-    if (  flag.lower[2] >= flag.limit[2]  &&  flag.upper[0] >= flag.limit[0]  ) {
-      //sys.running = false;
-      led_off(LED_IMU);
-      led_off(LED_PRU);
+    if ( flag.upper[CH_R] >= flag.limit[CH_R] ) {
+      datalog.enabled = false;
       led_off(LED_LOG);
+    }
+  }
+
+  // Motor arming: yaw stick only, no roll command
+  if ( !energized && !flag.lower[CH_R] && !flag.upper[CH_R] )  {
+    if ( flag.upper[CH_Y] >= flag.limit[CH_Y] ) {
+      armed = true;
+      //ctrl.heading = imu1.Eul[Z];
+      led_on(LED_MOT);
+    }
+    if ( flag.lower[CH_Y]  >= flag.limit[CH_Y] ) {
+      armed = false;
       led_off(LED_MOT);
     }
+  }
 
+  // Exit program: roll and yaw together to exit program
+  if (  !energized  &&  flag.lower[CH_Y] >= flag.limit[CH_Y]  &&  flag.upper[CH_R] >= flag.limit[CH_R]  )  {
+    sio_disarm();
+    running = false;
+    //led_off(LED_IMU);
+    //led_off(LED_PRU);
+    //led_off(LED_LOG);
+    //led_off(LED_MOT);
   }
 
   return;

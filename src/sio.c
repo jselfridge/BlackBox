@@ -43,6 +43,18 @@ void sio_init ( void )  {
   prussdrv_exec_program ( 0, "bin/input.bin" );
   prussdrv_exec_program ( 1, "bin/output.bin" );
 
+  // Asign values to disarm array (move to flag?)
+  off[0] = SIO_OFF0;
+  off[1] = SIO_OFF1;
+  off[2] = SIO_OFF2;
+  off[3] = SIO_OFF3;
+  off[4] = SIO_OFF4;
+  off[5] = SIO_OFF5;
+  off[6] = SIO_OFF6;
+  off[7] = SIO_OFF7;
+  off[8] = SIO_OFF8;
+  off[9] = SIO_OFF9;
+
   // Set LED indicator
   led_on(LED_PRU);
 
@@ -171,6 +183,17 @@ void sio_setnorm ( ushort ch, double norm )  {
   // Calculate pwm value
   output.pwm[ch] = reg * OUT_REG2PWM;
 
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  sio_disarm
+//  Set all system outputs to their disarmed state.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void sio_disarm ( void )  {
+  ushort ch;
+  for ( ch=0; ch<OUT_CH; ch++ )  sio_setpwm( ch, off[ch] );
   return;
 }
 

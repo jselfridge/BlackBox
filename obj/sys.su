@@ -1,5 +1,5 @@
 sys.c:135:6:sys_exit	8	static
 sys.c:13:6:sys_init	184	dynamic,bounded
 sys.c:55:6:sys_debug	24	static
-sys.c:84:6:sys_imu	24	static
+sys.c:84:6:sys_imu	0	static
 sys.c:112:6:sys_sio	24	static

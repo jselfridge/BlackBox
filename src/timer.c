@@ -306,9 +306,8 @@ void *fcn_flag (  )  {
   tmr_create(&tmr_flag);
   while (running) {
     tmr_start(&tmr_flag);
-    flg_debug();
+    flg_check();
     tmr_finish(&tmr_flag);
-    //log_record(LOG_FLAG);
     tmr_pause(&tmr_flag);
   }
   pthread_exit(NULL);
