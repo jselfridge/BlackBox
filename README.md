@@ -13,7 +13,7 @@ Current tasks
   <li> (WIP) Add AHRS data structure </li> 
   <li> (WIP) Add 9DOF data fusion algorithm </li>
   <li> (WIP) Enable AHRS datalogging </li>
-  <li> (WIP) Calibrate IMU/AHRS settings <li>
+  <li> (WIP) Calibrate IMU/AHRS settings </li>
   <li> (WIP) Evaluate LPF algorithm and settings </li>
   <li> (WIP) Check loop durations and CPU usage </li>
 </ul>
