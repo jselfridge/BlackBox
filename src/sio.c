@@ -107,7 +107,8 @@ void sio_update ( void )  {
   }
 
   // Assign output register values
-  for ( ch=0; ch<OUT_CH; ch++ )  memoryPtr[ OUT_OFFSET + ch ] = output.reg[ch];
+  if (!armed)  sio_disarm();
+  else         for ( ch=0; ch<OUT_CH; ch++ )  memoryPtr[ OUT_OFFSET + ch ] = output.reg[ch];
 
   return;
 }
@@ -198,24 +199,6 @@ void sio_setnorm ( ushort ch, double norm )  {
 void sio_disarm ( void )  {
   ushort ch;
   for ( ch=0; ch<OUT_CH; ch++ )  sio_setpwm( ch, off[ch] );
-  return;
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sio_debug
-//  BLAH...
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sio_debug() {
-  pthread_mutex_lock(&mutex_sio);
-  sio_update();
-  ushort ch;
-  float norm;
-  for ( ch=0; ch<10; ch++ ) {
-    norm = input.norm[ch];
-    sio_setnorm( ch, norm );
-  }
-  pthread_mutex_unlock(&mutex_sio);
   return;
 }
 

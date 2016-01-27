@@ -16,8 +16,7 @@ Current tasks
   <li> Trips boolean flags for stick positions </li> 
   <li> Enable/Disable datalog </li>
   <li> Disable IMU and other loops during data download </li>
-  <li> (WIP) Arm/Disarm system outputs </li>
-  <li> (WIP) Trip flags for radio switches </li>
+  <li> Arm/Disarm system outputs </li>
 </ul>
 
 

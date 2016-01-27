@@ -75,15 +75,9 @@ typedef struct signal_struct {
 signal_struct input;
 signal_struct output;
 
-// System input and output structure
-//typedef struct sio_struct {
-  //signal_struct input;
-  //signal_struct output;
-//} sio_struct;
-//sio_struct sio;
 
 
-// Global variables
+// Global variables (remove as quickly as possible)
 uint* memoryPtr;
 ushort off [10]; // Move to flags code?
 
@@ -96,10 +90,6 @@ void    sio_setreg  ( ushort ch, ushort reg  );
 void    sio_setpwm  ( ushort ch, ushort pwm  );
 void    sio_setnorm ( ushort ch, double norm );
 void    sio_disarm  ( void );
-
-
-// Debugging function
-void sio_debug();
 
 
 #endif

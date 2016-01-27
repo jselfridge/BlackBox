@@ -289,7 +289,7 @@ void *fcn_sio (  )  {
   tmr_create(&tmr_sio);
   while (running) {
     tmr_start(&tmr_sio);
-    sio_debug();
+    sio_update();
     tmr_finish(&tmr_sio);
     if (datalog.enabled)  log_record(LOG_SIO);
     tmr_pause(&tmr_sio);

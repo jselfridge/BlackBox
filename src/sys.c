@@ -121,7 +121,7 @@ void sys_sio ( void )  {
 
   // Output signals
   //for ( i=0; i<4; i++ )  printf("%05d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<6; i++ )  printf("%04d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
+  for ( i=0; i<6; i++ )  printf("%04d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%07.4f ", output.norm[i] );  printf("   ");  fflush(stdout);
 
   return;

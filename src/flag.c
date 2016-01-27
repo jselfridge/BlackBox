@@ -13,10 +13,6 @@
 void flg_init ( void )  {
   if(DEBUG)  printf("Initializing program execution flags \n");
 
-  // Disarm the outputs
-  if(DEBUG)  printf("  Disarm motors \n");
-  sio_disarm();
-
   // Set boolean values
   if(DEBUG)  printf("  Set run time flags \n");
   datalog.enabled = false;
@@ -97,7 +93,6 @@ void flg_check ( void )  {
   if ( !energized && !flag.lower[CH_R] && !flag.upper[CH_R] )  {
     if ( flag.upper[CH_Y] >= flag.limit[CH_Y] ) {
       armed = true;
-      //ctrl.heading = imu1.Eul[Z];
       led_on(LED_MOT);
     }
     if ( flag.lower[CH_Y]  >= flag.limit[CH_Y] ) {
@@ -107,14 +102,7 @@ void flg_check ( void )  {
   }
 
   // Exit program: roll and yaw together to exit program
-  if (  !energized  &&  flag.lower[CH_Y] >= flag.limit[CH_Y]  &&  flag.upper[CH_R] >= flag.limit[CH_R]  )  {
-    sio_disarm();
-    running = false;
-    //led_off(LED_IMU);
-    //led_off(LED_PRU);
-    //led_off(LED_LOG);
-    //led_off(LED_MOT);
-  }
+  if (  !energized  &&  flag.lower[CH_Y] >= flag.limit[CH_Y]  &&  flag.upper[CH_R] >= flag.limit[CH_R]  )  running = false;
 
   return;
 }
