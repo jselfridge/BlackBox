@@ -297,20 +297,6 @@ void *fcn_sio (  )  {
   return NULL;
 }
 
-//~~~~~~~~~~~~~~~~~~~~
-void sio_debug() {
-  pthread_mutex_lock(&mutex_sio);
-  sio_update();
-  ushort ch;
-  float norm;
-  for ( ch=0; ch<10; ch++ ) {
-    norm = input.norm[ch];
-    sio_setnorm( ch, norm );
-  }
-  pthread_mutex_unlock(&mutex_sio);
-  return;
-}
-
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  fcn_flag
@@ -320,7 +306,7 @@ void *fcn_flag (  )  {
   tmr_create(&tmr_flag);
   while (running) {
     tmr_start(&tmr_flag);
-    //something();
+    flg_debug();
     tmr_finish(&tmr_flag);
     //log_record(LOG_FLAG);
     tmr_pause(&tmr_flag);
@@ -338,7 +324,7 @@ void *fcn_debug (  )  {
   tmr_create(&tmr_debug);
   while (running) {
     tmr_start(&tmr_debug);
-    sys_debug();
+    //sys_debug();
     tmr_finish(&tmr_debug);
     tmr_pause(&tmr_debug);
   }

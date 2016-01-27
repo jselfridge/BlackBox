@@ -15,6 +15,8 @@ Current tasks
   <li> Counter to record hold duration </li> 
   <li> Trip flags for stick positions </li> 
   <li> Reset counters once stick condition is released </li>
+  <li> Arm/Disarm system outputs </li>
+  <li> Enable/Disable datalog </li>
 </ul>
 
 

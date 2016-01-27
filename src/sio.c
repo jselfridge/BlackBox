@@ -175,4 +175,22 @@ void sio_setnorm ( ushort ch, double norm )  {
 }
 
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  sio_debug
+//  BLAH...
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void sio_debug() {
+  pthread_mutex_lock(&mutex_sio);
+  sio_update();
+  ushort ch;
+  float norm;
+  for ( ch=0; ch<10; ch++ ) {
+    norm = input.norm[ch];
+    sio_setnorm( ch, norm );
+  }
+  pthread_mutex_unlock(&mutex_sio);
+  return;
+}
+
+
 

@@ -4,3 +4,4 @@ sio.c:70:6:sio_update	28	static
 sio.c:104:6:sio_setreg	16	static
 sio.c:130:6:sio_setpwm	16	static
 sio.c:156:6:sio_setnorm	24	static
+sio.c:182:6:sio_debug	8	static

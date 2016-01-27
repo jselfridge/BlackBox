@@ -28,6 +28,7 @@
 
 
 // Custom includes
+#include <flag.h>
 #include <gpio.h>
 #include <imu.h>
 #include <led.h>

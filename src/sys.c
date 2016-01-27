@@ -144,6 +144,7 @@ void sys_exit (  )  {
   tmr_exit();
   sio_exit();
   imu_exit();
+  flg_exit();
   log_exit();
 
   // Shut everything down

@@ -56,6 +56,10 @@ void    sio_setpwm  ( ushort ch, ushort pwm  );
 void    sio_setnorm ( ushort ch, double norm );
 
 
+// Debugging function
+void sio_debug();
+
+
 #endif
 
 
