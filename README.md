@@ -9,14 +9,28 @@ Box" functionality for research and development.
 Current tasks
 -------------
 <ul>
+  <li> (WIP) Add new timing thread for AHRS </li>
+  <li> (WIP) Add AHRS data structure </li> 
+  <li> (WIP) Add 9DOF data fusion algorithm </li>
+  <li> (WIP) Enable AHRS datalogging </li>
+  <li> (WIP) Calibrate IMU/AHRS settings <li>
+  <li> (WIP) Evaluate LPF algorithm and settings </li>
+  <li> (WIP) Check loop durations and CPU usage </li>
+</ul>
+
+
+V0.0.3
+------
+<ul>
   <li> New timing thread for program execution flags </li>
-  <li> Register stick hold positions </li>
-  <li> Reset counters once stick condition is released </li>
+  <li> Register stick endpoint positions </li>
   <li> Counter records hold duration </li> 
+  <li> Reset counters once stick condition is released </li>
   <li> Trips boolean flags for stick positions </li> 
   <li> Enable/Disable datalog </li>
   <li> Disable IMU and other loops during data download </li>
   <li> Arm/Disarm system outputs </li>
+  <li> Exit program through radio commands </li>
 </ul>
 
 
@@ -63,9 +77,8 @@ The following list outlines proposed upcoming changes
 <ul>
 
   <li><b> Priority </b></li>
-  <li> Identify timing loop issues </li>
-  <li> Reestablish PRU functionality </li>
   <li> Reestablish controller code </li>
+  <li> Transistor power distribution kill switch </li> 
   <li> Add health/status monitoring thread </li>
   <li> Mavlink serial output </li>
   <li> Develop GCS </li>
@@ -91,7 +104,6 @@ The following list outlines proposed upcoming changes
   <li><b> Maybe next board </b></li>
   <li> IMU convergence on start up </li>
   <li> IMU indicator for successful convergence </li>
-  <li> Transistor power distribution </li> 
   <li> Calibrated radio ranges </li>
   <li> Define statements to enable specific datalogs </li>
   <li> Log generation with a function </li>
