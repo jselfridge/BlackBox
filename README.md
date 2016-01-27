@@ -10,13 +10,13 @@ Current tasks
 -------------
 <ul>
   <li> New timing thread for program execution flags </li>
-  <li> Trip flags for radio switches </li>
   <li> Register stick hold positions </li>
+  <li> Reset counters once stick condition is released </li>
   <li> Counter to record hold duration </li> 
   <li> Trip flags for stick positions </li> 
-  <li> Reset counters once stick condition is released </li>
-  <li> Arm/Disarm system outputs </li>
-  <li> Enable/Disable datalog </li>
+  <li> (WIP) Enable/Disable datalog </li>
+  <li> (WIP) Arm/Disarm system outputs </li>
+  <li> (WIP) Trip flags for radio switches </li>
 </ul>
 
 
