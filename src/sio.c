@@ -39,7 +39,7 @@ void sio_init ( void )  {
   memoryPtr[ OUT_OFFSET -1 ] = 21800;
 
   // Load assembly code
-  if(DEBUG)  printf("  Open interrupt \n");
+  if(DEBUG)  printf("  Load PRU binaries \n");
   prussdrv_exec_program ( 0, "bin/input.bin" );
   prussdrv_exec_program ( 1, "bin/output.bin" );
 

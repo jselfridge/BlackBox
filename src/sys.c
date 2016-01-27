@@ -63,7 +63,7 @@ void sys_debug ( void )  {
   fflush(stdout);
 
   // Time values
-  float timestamp = (float) ( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f ) - datalog.offset );
+  float timestamp = (float) ( tmr_dbg.start_sec + ( tmr_dbg.start_usec / 1000000.0f ) - datalog.offset );
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
@@ -84,17 +84,17 @@ void sys_debug ( void )  {
 void sys_imu ( void )  {
 
   // Loop counter
-  //ushort i;
+  ushort i;
 
   // Gyroscope data
   //for ( i=0; i<3; i++ )  printf("%06d ",   gyr.raw[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%09.2f ", gyr.avg[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%06.3f ", gyr.cal[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%06.3f ", gyr.cal[i] );  printf("   ");  fflush(stdout);
 
   // Accelerometer data
   //for ( i=0; i<3; i++ )  printf("%06d ",   acc.raw[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%09.2f ", acc.avg[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%06.3f ", acc.cal[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%06.3f ", acc.cal[i] );  printf("   ");  fflush(stdout);
 
   // Magnetometer data
   //for ( i=0; i<3; i++ )  printf("%04d ",   mag.raw[i] );  printf("   ");  fflush(stdout);
@@ -121,7 +121,7 @@ void sys_sio ( void )  {
 
   // Output signals
   //for ( i=0; i<4; i++ )  printf("%05d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<6; i++ )  printf("%04d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<6; i++ )  printf("%04d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%07.4f ", output.norm[i] );  printf("   ");  fflush(stdout);
 
   return;
@@ -144,8 +144,8 @@ void sys_exit (  )  {
   tmr_exit();
   sio_exit();
   imu_exit();
-  flg_exit();
   log_exit();
+  flg_exit();
 
   // Shut everything down
   if(DEBUG)  printf("Program complete \n");

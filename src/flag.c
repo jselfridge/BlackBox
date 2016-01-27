@@ -16,9 +16,11 @@ void flg_init ( void )  {
   // Disarm the outputs
   if(DEBUG)  printf("  Disarm motors \n");
   sio_disarm();
-  
+
   // Set boolean values
-  if(DEBUG)  printf(" Set run time flags \n");
+  if(DEBUG)  printf("  Set run time flags \n");
+  datalog.enabled = false;
+  datalog.setup = false;
   running = true;
   armed = false;
 
@@ -80,10 +82,12 @@ void flg_check ( void )  {
   if ( !energized && !flag.lower[CH_Y] && !flag.upper[CH_Y] )  {
     if ( flag.lower[CH_R] >= flag.limit[CH_R] ) {
       datalog.enabled = true;
+      if (!datalog.setup)  log_open();
       led_on(LED_LOG);
     }
     if ( flag.upper[CH_R] >= flag.limit[CH_R] ) {
       datalog.enabled = false;
+      if (datalog.setup)  log_close();
       led_off(LED_LOG);
     }
   }

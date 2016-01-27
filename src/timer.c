@@ -30,13 +30,14 @@ void tmr_init ( void )  {
   // Create primary timing threads
   tmr_thread( &tmr_imu,  &attr, fcn_imu  );
   tmr_thread( &tmr_sio,  &attr, fcn_sio  );
-  tmr_thread( &tmr_flag, &attr, fcn_flag );
+  tmr_thread( &tmr_flg, &attr, fcn_flag );
 
   // Possibly create debugging thread
   if(DEBUG) {
-    tmr_thread( &tmr_debug, &attr, fcn_debug );
+    tmr_thread( &tmr_dbg, &attr, fcn_debug );
     printf("\n");
   }
+
 
   return;
 }
@@ -50,24 +51,24 @@ void tmr_setup ( void )  {
   if(DEBUG)  printf("  Assign thread structure elements \n");
 
   // IMU timer
-  tmr_imu.name     =  "imu";
-  tmr_imu.prio     =  PRIO_IMU;
-  tmr_imu.per      =  1000000 / HZ_IMU_FAST;
+  tmr_imu.name  =  "imu";
+  tmr_imu.prio  =  PRIO_IMU;
+  tmr_imu.per   =  1000000 / HZ_IMU_FAST;
 
   // SIO timer
-  tmr_sio.name     =  "sio";
-  tmr_sio.prio     =  PRIO_SIO;
-  tmr_sio.per      =  1000000 / HZ_SIO;
+  tmr_sio.name  =  "sio";
+  tmr_sio.prio  =  PRIO_SIO;
+  tmr_sio.per   =  1000000 / HZ_SIO;
 
   // Flags timer
-  tmr_flag.name    =  "flag";
-  tmr_flag.prio    =  PRIO_FLAG;
-  tmr_flag.per     =  1000000 / HZ_FLAG;
+  tmr_flg.name  =  "flag";
+  tmr_flg.prio  =  PRIO_FLAG;
+  tmr_flg.per   =  1000000 / HZ_FLAG;
 
   // Debugging timer
-  tmr_debug.name   =  "debug";
-  tmr_debug.prio   =  PRIO_DEBUG;
-  tmr_debug.per    =  1000000 / HZ_DEBUG;
+  tmr_dbg.name  =  "debug";
+  tmr_dbg.prio  =  PRIO_DEBUG;
+  tmr_dbg.per   =  1000000 / HZ_DEBUG;
 
   return;
 }
@@ -149,13 +150,13 @@ void tmr_exit ( void )  {
   if(DEBUG)  printf( "sio " );
 
   // Exit program execution flags thread
-  if( pthread_join ( tmr_flag.id, NULL ) )
+  if( pthread_join ( tmr_flg.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'flag' thread. \n" );
   if(DEBUG)  printf( "flag " );
 
   // Exit debugging thread
   if(DEBUG) {
-  if( pthread_join ( tmr_debug.id, NULL ) )
+  if( pthread_join ( tmr_dbg.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'debug' thread. \n" );
   printf( "debug \n" );
   }
@@ -272,7 +273,7 @@ void *fcn_imu (  )  {
     tmr_start(&tmr_imu);
     imu_data();
     tmr_finish(&tmr_imu);
-    log_record(LOG_IMU);
+    if (datalog.enabled)  log_record(LOG_IMU);
     tmr_pause(&tmr_imu);
   }
   pthread_exit(NULL);
@@ -290,7 +291,7 @@ void *fcn_sio (  )  {
     tmr_start(&tmr_sio);
     sio_debug();
     tmr_finish(&tmr_sio);
-    log_record(LOG_SIO);
+    if (datalog.enabled)  log_record(LOG_SIO);
     tmr_pause(&tmr_sio);
   }
   pthread_exit(NULL);
@@ -303,12 +304,12 @@ void *fcn_sio (  )  {
 //  Function handler for the program execution flag timing thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *fcn_flag (  )  {
-  tmr_create(&tmr_flag);
+  tmr_create(&tmr_flg);
   while (running) {
-    tmr_start(&tmr_flag);
+    tmr_start(&tmr_flg);
     flg_check();
-    tmr_finish(&tmr_flag);
-    tmr_pause(&tmr_flag);
+    tmr_finish(&tmr_flg);
+    tmr_pause(&tmr_flg);
   }
   pthread_exit(NULL);
   return NULL;
@@ -320,12 +321,12 @@ void *fcn_flag (  )  {
 //  Function handler for the debugging timing thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void *fcn_debug (  )  {
-  tmr_create(&tmr_debug);
+  tmr_create(&tmr_dbg);
   while (running) {
-    tmr_start(&tmr_debug);
-    //sys_debug();
-    tmr_finish(&tmr_debug);
-    tmr_pause(&tmr_debug);
+    tmr_start(&tmr_dbg);
+    sys_debug();
+    tmr_finish(&tmr_dbg);
+    tmr_pause(&tmr_dbg);
   }
   pthread_exit(NULL);
   return NULL;

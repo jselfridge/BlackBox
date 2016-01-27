@@ -13,17 +13,6 @@
 void log_init ( void )  {
   if(DEBUG)  printf("Initializing log parameters \n");
 
-  // DEBUGGING PLACEMENT (enabled by flags in the future)
-  datalog.enabled = true;
-
-  // Set counters to zero
-  if(DEBUG)  printf("  Clear counters \n");
-  log_gyr.count    = 0;
-  log_acc.count    = 0;
-  log_mag.count    = 0;
-  log_input.count  = 0;
-  log_output.count = 0;
-
   // Establish datalog limits
   if(DEBUG)  printf("  Establish datalog limits \n");
   log_gyr.limit    = MAX_LOG_DUR * HZ_IMU_FAST;
@@ -70,6 +59,23 @@ void log_init ( void )  {
   log_output.pwm  =  malloc( sizeof(ushort) * log_output.limit * 10 );
   log_output.norm =  malloc( sizeof(double) * log_output.limit * 10 );
 
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  log_open
+//  Prepares the system for the next datalog sequence.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void log_open ( void )  {
+
+  // Clear counters for new session
+  log_gyr.count    = 0;
+  log_acc.count    = 0;
+  log_mag.count    = 0;
+  log_input.count  = 0;
+  log_output.count = 0;
+
   // Allocate dir/path/file memory
   datalog.dir  = malloc(16);
   datalog.path = malloc(32);
@@ -91,17 +97,24 @@ void log_init ( void )  {
   struct timespec timeval;
   clock_gettime( CLOCK_MONOTONIC, &timeval );
   datalog.offset = timeval.tv_sec;
+  datalog.setup = true;
+
+  // Switch datalog setup flag
+  datalog.setup = true;
 
   return;
 }
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  log_exit
-//  Closes the data log files.
+//  log_close
+//  Completes a datalog session by writing out collected data.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void log_exit ( void )  {
-  if(DEBUG)  printf("Close log files \n");
+void log_close ( void )  {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // EACH TIME DATALOG FLAG IS TRIPPED
+
   led_blink( LED_LOG, 500, 500 );
 
   // Local ariables
@@ -210,6 +223,20 @@ void log_exit ( void )  {
   fclose(fin);
   fclose(fout);
 
+  // Switch datalog setup flag
+  datalog.setup = false;
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  log_exit
+//  Closes the data log files.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void log_exit ( void )  {
+  if(DEBUG)  printf("Close datalog system \n");
+
   // Free memory for 'gyr'
   if(DEBUG)  printf("  Free 'gyr' memory \n");
   free(log_gyr.time);
@@ -248,7 +275,6 @@ void log_exit ( void )  {
   free(log_output.pwm);
   free(log_output.norm);
 
-  led_off( LED_LOG );
   return;
 }
 

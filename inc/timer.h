@@ -41,8 +41,8 @@ typedef struct timer_struct {
 // Timer declarations
 timer_struct tmr_imu;
 timer_struct tmr_sio;
-timer_struct tmr_flag;
-timer_struct tmr_debug;
+timer_struct tmr_flg;
+timer_struct tmr_dbg;
 
 
 // Mutex declarations
