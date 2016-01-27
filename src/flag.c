@@ -21,6 +21,7 @@ void flg_init ( void )  {
   if(DEBUG)  printf("  Set run time flags \n");
   datalog.enabled = false;
   datalog.setup = false;
+  datalog.saving = false;
   running = true;
   armed = false;
 

@@ -13,6 +13,10 @@
 void sio_init ( void )  {
   if(DEBUG)  printf("Initializing system inputs/outputs \n");
 
+  // Set LED indicator
+  led_blink( LED_SIO, 200, 200 );
+  usleep(2000000);  // debugging
+
   // Load PRU driver
   if(DEBUG)  printf("  Load driver \n");
   if( prussdrv_init() ) {
@@ -56,7 +60,7 @@ void sio_init ( void )  {
   off[9] = SIO_OFF9;
 
   // Set LED indicator
-  led_on(LED_PRU);
+  led_on(LED_SIO);
 
   return;
 }
@@ -71,6 +75,7 @@ void sio_exit ( void )  {
   prussdrv_pru_disable(0);
   prussdrv_pru_disable(1);
   prussdrv_exit(); 
+  led_off(LED_SIO);
   return;
 }
 

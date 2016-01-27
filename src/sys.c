@@ -149,7 +149,6 @@ void sys_exit (  )  {
 
   // Shut everything down
   if(DEBUG)  printf("Program complete \n");
-  led_off(LED_IMU);  led_off(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
   if( sigaction( SIGINT, &sys_signal, NULL ) == -1 )
     printf( "Error (sys_exit): Function 'sigaction' failed. \n" );
   kill( 0, SIGINT );

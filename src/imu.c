@@ -14,7 +14,10 @@ void imu_init (  )  {
   if(DEBUG)  printf( "Initializing IMU \n" );
 
   // Start initialization
-  led_blink( LED_IMU, 500, 500 );
+  led_blink( LED_IMU, 200, 200 );
+  usleep(2000000);
+
+  // IMU struct values
   imu.id   = 1;
   imu.addr = 0x68;
   imu.gyr  = &gyr;
@@ -41,6 +44,7 @@ void imu_init (  )  {
 void imu_exit ( void )  {
   if(DEBUG)  printf("Close IMU \n");
   // Add IMU exit code here...
+  led_off(LED_IMU);
   return;
 }
 

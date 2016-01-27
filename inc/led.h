@@ -18,7 +18,7 @@ enum LED {
   LED_MOT = 0,
   LED_LOG = 1,
   LED_IMU = 2,
-  LED_PRU = 3
+  LED_SIO = 3
 };
 
 

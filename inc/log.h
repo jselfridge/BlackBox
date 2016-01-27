@@ -9,7 +9,7 @@
 
 
 // Define statements
-#define MAX_LOG_DUR  (2*60)
+#define MAX_LOG_DUR  (20)
 
 
 // Log enumerations
@@ -51,8 +51,8 @@ log_sio_struct log_output;
 // Log structure
 typedef struct datalog_struct {
   bool   enabled;
-  bool   open;
   bool   setup;
+  bool   saving;
   float  offset;
   char   *dir;
   char   *path;

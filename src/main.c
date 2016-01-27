@@ -14,14 +14,14 @@ int main ( void )  {
 
   // Begin the program
   if(DEBUG)  printf("\n--- Begin BlackBox program ---\n");
-  led_on(LED_IMU);  led_on(LED_PRU);  led_off(LED_LOG);  led_off(LED_MOT);
+  led_off(LED_SIO);  led_off(LED_IMU);  led_off(LED_LOG);  led_off(LED_MOT);
 
   // Initialize subsystems
   sys_init();
   flg_init();
   log_init();
-  imu_init();
   sio_init();
+  imu_init();
   tmr_init();
 
   // Wait for exit condition

@@ -118,10 +118,10 @@ void log_open ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void log_close ( void )  {
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // EACH TIME DATALOG FLAG IS TRIPPED
-
+  // Inidcate the download is in progress
+  datalog.saving = true;
   led_blink( LED_LOG, 500, 500 );
+  usleep(200000);
 
   // Local ariables
   char *file = malloc(64);
@@ -231,6 +231,7 @@ void log_close ( void )  {
 
   // Switch datalog setup flag
   datalog.setup = false;
+  datalog.saving = false;
 
   return;
 }
