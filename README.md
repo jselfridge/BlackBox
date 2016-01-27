@@ -14,7 +14,9 @@ Current tasks
   <li> Reset counters once stick condition is released </li>
   <li> Counter to record hold duration </li> 
   <li> Trip flags for stick positions </li> 
-  <li> (WIP) Enable/Disable datalog </li>
+  <li> Enable/Disable datalog </li>
+  <li> (WIP) Disable IMU and other loops during data download </li>
+  <li> (WIP) Reformat memory between datalogs </li>
   <li> (WIP) Arm/Disarm system outputs </li>
   <li> (WIP) Trip flags for radio switches </li>
 </ul>

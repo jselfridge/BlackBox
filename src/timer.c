@@ -21,7 +21,7 @@ void tmr_init ( void )  {
   tmr_attr(&attr);
 
   // Begin each thread and mutex
-  if(DEBUG)  printf("  Create threads and mutexes: ");
+  if(DEBUG)  printf("  Create threads and mutexes:  ");
 
   // Create mutex conditions
   pthread_mutex_init( &mutex_imu, NULL );
@@ -133,7 +133,7 @@ void tmr_thread ( timer_struct *tmr, pthread_attr_t *attr, void *fcn )  {
 //  Cleanly exits the timing threads.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void tmr_exit ( void )  {
-  printf("Close timing threads: ");
+  printf("Close timing threads:  ");
 
   // Destroy mutex locks
   pthread_mutex_destroy(&mutex_imu);

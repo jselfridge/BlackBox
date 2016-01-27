@@ -21,43 +21,49 @@ void log_init ( void )  {
   log_input.limit  = MAX_LOG_DUR * HZ_SIO;
   log_output.limit = MAX_LOG_DUR * HZ_SIO;
 
-  // Allocate memory for 'gyr' storage arrays
-  if(DEBUG)  printf("  Allocate 'gyr' mem \n");
+  // Allocate memory for storage arrays
+  if(DEBUG)  printf("  Allocate memory:  ");
+
+  // Gyroscope storage
+  if(DEBUG)  printf("gyr ");
   log_gyr.time =  malloc( sizeof(float) * log_gyr.limit     );
   log_gyr.dur  =  malloc( sizeof(ulong) * log_gyr.limit     );
   log_gyr.raw  =  malloc( sizeof(short) * log_gyr.limit * 3 );
   log_gyr.avg  =  malloc( sizeof(float) * log_gyr.limit * 3 );
   log_gyr.cal  =  malloc( sizeof(float) * log_gyr.limit * 3 );
 
-  // Allocate memory for 'acc' storage arrays
-  if(DEBUG)  printf("  Allocate 'acc' mem \n");
+  // Accelerometer storage
+  if(DEBUG)  printf("acc ");
   log_acc.time =  malloc( sizeof(float) * log_acc.limit     );
   log_acc.dur  =  malloc( sizeof(ulong) * log_acc.limit     );
   log_acc.raw  =  malloc( sizeof(short) * log_acc.limit * 3 );
   log_acc.avg  =  malloc( sizeof(float) * log_acc.limit * 3 );
   log_acc.cal  =  malloc( sizeof(float) * log_acc.limit * 3 );
 
-  // Allocate memory for 'mag' storage arrays
-  if(DEBUG)  printf("  Allocate 'mag' mem \n");
+  // Magnetometer storage
+  if(DEBUG)  printf("mag ");
   log_mag.time =  malloc( sizeof(float) * log_mag.limit     );
   log_mag.dur  =  malloc( sizeof(ulong) * log_mag.limit     );
   log_mag.raw  =  malloc( sizeof(short) * log_mag.limit * 3 );
   log_mag.avg  =  malloc( sizeof(float) * log_mag.limit * 3 );
   log_mag.cal  =  malloc( sizeof(float) * log_mag.limit * 3 );
 
-  // Allocate memory for 'input' storage arrays
-  if(DEBUG)  printf("  Allocate 'input' mem \n");
+  // Input signal storage
+  if(DEBUG)  printf("input ");
   log_input.time =  malloc( sizeof(float)  * log_input.limit      );
   log_input.reg  =  malloc( sizeof(ushort) * log_input.limit * 10 );
   log_input.pwm  =  malloc( sizeof(ushort) * log_input.limit * 10 );
   log_input.norm =  malloc( sizeof(double) * log_input.limit * 10 );
 
-  // Allocate memory for 'output' storage arrays
-  if(DEBUG)  printf("  Allocate 'output' mem \n");
+  // Output signal storage
+  if(DEBUG)  printf("output ");
   log_output.time =  malloc( sizeof(float)  * log_output.limit      );
   log_output.reg  =  malloc( sizeof(ushort) * log_output.limit * 10 );
   log_output.pwm  =  malloc( sizeof(ushort) * log_output.limit * 10 );
   log_output.norm =  malloc( sizeof(double) * log_output.limit * 10 );
+
+  // Complete datalog initialization 
+  if(DEBUG)  printf("\n");
 
   return;
 }
