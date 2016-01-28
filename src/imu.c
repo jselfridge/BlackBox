@@ -176,9 +176,9 @@ void imu_setic (  )  {
 
   // Determine time constants
   float gyr_tc, acc_tc, mag_tc;
-  if ( GYR_LPF != 0.0 )  gyr_tc = 1.0/GYR_LPF;  else  gyr_tc = 0.0;
-  if ( ACC_LPF != 0.0 )  acc_tc = 1.0/ACC_LPF;  else  acc_tc = 0.0;
-  if ( MAG_LPF != 0.0 )  mag_tc = 1.0/MAG_LPF;  else  mag_tc = 0.0;
+  if ( GYR_LPF != 0.0 )  gyr_tc = 1.0 / ( 2.0 * PI * GYR_LPF );  else  gyr_tc = 0.0;
+  if ( ACC_LPF != 0.0 )  acc_tc = 1.0 / ( 2.0 * PI * ACC_LPF );  else  acc_tc = 0.0;
+  if ( MAG_LPF != 0.0 )  mag_tc = 1.0 / ( 2.0 * PI * MAG_LPF );  else  mag_tc = 0.0;
 
   // Calculate filter gain values
   gyr.gain = gyr_dt / ( gyr_tc + gyr_dt );

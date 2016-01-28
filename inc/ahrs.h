@@ -10,20 +10,6 @@
 
 // Define statements
 
-/*
-#define GYR_HIST   10
-#define ACC_HIST   10
-#define MAG_HIST   10
-
-#define GYR_LPF    0.0f
-#define ACC_LPF    0.0f
-#define MAG_LPF    0.0f
-
-#define GYR_FSR   500
-#define ACC_FSR   4
-
-#define GYR_SCALE  ( 500.0f / 32768.0f ) * ( PI / 180.0f )
-*/
 
 //#define GYR_ERROR  5.0f * ( PI / 180.0 )
 //#define GYR_DRIFT  0.2f * ( PI / 180.0 )
@@ -33,54 +19,27 @@
 //#define P_BIAS     -1.0f * ( PI / 180.0 )
 //#define Y_BIAS      0.0f * ( PI / 180.0 )
 
-/*
-#define X   0
-#define Y   1
-#define Z   2
-#define PI  M_PI
-*/
 
-/*
-// IMU data structure
-typedef struct imu_data_struct {
-  float gain;
-  int   bias  [3];
-  int   range [3];
-  short raw   [3];
-  float avg   [3];
-  float cal   [3];
-} imu_data_struct;
-imu_data_struct gyr;
-imu_data_struct acc;
-imu_data_struct mag;
-*/
 
-/*
-// IMU structure
-typedef struct imu_struct {
-  ushort id;
-  ushort addr;
-  ushort loops;
-  ushort count;
-  bool   getmag;
-  imu_data_struct* gyr;
-  imu_data_struct* acc;
-  imu_data_struct* mag;
-} imu_struct;
-imu_struct imu;
-*/
 
-/*
+// AHRS data structure
+typedef struct ahrs_data_struct {
+  double  quat  [4];
+  double  dquat [4];
+  double  eul   [3];
+  double  deul  [3];
+  double  bias  [3];
+  double  fx;
+  double  fz;
+} ahrs_data_struct;
+ahrs_data_struct ahrs;
+
+
 // IMU functions
-void  imu_init    ( void );
-void  imu_exit    ( void );
-void  imu_param   ( void );
-void  imu_getcal  ( void );
-void  imu_setic   ( void );
-void  imu_data    ( void );
-*/
-
-//void    imu_fusion   ( imu_struct *imu );
+void  ahrs_init    ( void );
+void  ahrs_exit    ( void );
+void  ahrs_fusion  ( void );
+void  ahrs_kalman  ( void );
 
 
 #endif

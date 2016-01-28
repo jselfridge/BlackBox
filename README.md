@@ -9,12 +9,12 @@ Box" functionality for research and development.
 Current tasks
 -------------
 <ul>
-  <li> (WIP) Add new timing thread for AHRS </li>
-  <li> (WIP) Add AHRS data structure </li> 
+  <li> Add new timing thread for AHRS </li>
+  <li> Add AHRS data structure </li> 
+  <li> (WIP) Evaluate LPF algorithm and settings </li>
   <li> (WIP) Add 9DOF data fusion algorithm </li>
   <li> (WIP) Enable AHRS datalogging </li>
   <li> (WIP) Calibrate IMU/AHRS settings </li>
-  <li> (WIP) Evaluate LPF algorithm and settings </li>
   <li> (WIP) Check loop durations and CPU usage </li>
 </ul>
 
