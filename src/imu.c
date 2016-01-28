@@ -169,13 +169,13 @@ void imu_setic (  )  {
   imu.getmag = false;
 
   // Calculate time steps
-  float gyr_dt, acc_dt, mag_dt;
+  double gyr_dt, acc_dt, mag_dt;
   gyr_dt = 1.0 / HZ_IMU_FAST;
   acc_dt = 1.0 / HZ_IMU_FAST;
   mag_dt = 1.0 / HZ_IMU_SLOW;
 
   // Determine time constants
-  float gyr_tc, acc_tc, mag_tc;
+  double gyr_tc, acc_tc, mag_tc;
   if ( GYR_LPF != 0.0 )  gyr_tc = 1.0 / ( 2.0 * PI * GYR_LPF );  else  gyr_tc = 0.0;
   if ( ACC_LPF != 0.0 )  acc_tc = 1.0 / ( 2.0 * PI * ACC_LPF );  else  acc_tc = 0.0;
   if ( MAG_LPF != 0.0 )  mag_tc = 1.0 / ( 2.0 * PI * MAG_LPF );  else  mag_tc = 0.0;

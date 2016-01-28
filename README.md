@@ -11,7 +11,7 @@ Current tasks
 <ul>
   <li> Add new timing thread for AHRS </li>
   <li> Add AHRS data structure </li> 
-  <li> (WIP) Evaluate LPF algorithm and settings </li>
+  <li> Evaluate LPF algorithm </li>
   <li> (WIP) Add 9DOF data fusion algorithm </li>
   <li> (WIP) Enable AHRS datalogging </li>
   <li> (WIP) Calibrate IMU/AHRS settings </li>
@@ -90,6 +90,7 @@ The following list outlines proposed upcoming changes
 
   <li><b> Sooner than later </b></li>
   <li> Butterworth filter </li>
+  <li> Tunable LPF gains from GCS </li>
   <li> Test pull up resistors on Sparkfun breakout board </li>
   <li> IMU interrupt when data is available </li>
   <li> Add notes section to data log </li>

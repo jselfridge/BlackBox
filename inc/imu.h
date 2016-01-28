@@ -10,13 +10,13 @@
 
 // Define statements
 
-#define GYR_HIST   2
-#define ACC_HIST   4
-#define MAG_HIST   6
+#define GYR_HIST   1
+#define ACC_HIST   3
+#define MAG_HIST   5
 
-#define GYR_LPF   50.0f
-#define ACC_LPF   10.0f
-#define MAG_LPF    2.0f
+#define GYR_LPF    159.1549
+#define ACC_LPF    159.1549
+#define MAG_LPF    15.91549
 
 #define GYR_FSR   500
 #define ACC_FSR   4
