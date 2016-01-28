@@ -69,7 +69,7 @@ void sys_debug ( void )  {
   // Select data for display
   //pthread_mutex_lock(&mutex_imu);    sys_imu();    pthread_mutex_unlock(&mutex_imu);
   //pthread_mutex_lock(&mutex_ahrs);
-  //sys_ahr();
+  sys_ahr();
   //pthread_mutex_unlock(&mutex_imu);
   //pthread_mutex_lock(&mutex_sio);    sys_sio();    pthread_mutex_unlock(&mutex_sio);
 
