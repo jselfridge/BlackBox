@@ -14,7 +14,7 @@ Current tasks
   <li> Evaluate LPF algorithm </li>
   <li> (WIP) Add 9DOF data fusion algorithm </li>
   <li> Enable AHR datalogging </li>
-  <li> (WIP) Calibrate IMU/AHR settings </li>
+  <li> Calibrate IMU/AHR settings </li>
   <li> Check loop durations and CPU usage </li>
 </ul>
 
