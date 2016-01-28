@@ -11,12 +11,12 @@
 // Define statements
 
 #define GYR_HIST   1
-#define ACC_HIST   3
+#define ACC_HIST   1
 #define MAG_HIST   5
 
-#define GYR_LPF    159.1549
-#define ACC_LPF    159.1549
-#define MAG_LPF    15.91549
+#define GYR_LPF    100.0
+#define ACC_LPF    0.0
+#define MAG_LPF    0.0
 
 #define GYR_FSR   500
 #define ACC_FSR   4
