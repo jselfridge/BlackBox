@@ -10,8 +10,8 @@
 //  ahr_init
 //  Initializes the attitude and heading reference algorithms.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ahr_init (  )  {
-  if(DEBUG)  printf( "Initializing AHRS \n" );
+void ahr_init ( void )  {
+  if(DEBUG)  printf( "Initializing AHR \n" );
 
   // Loop through entries with known zero values
   ushort i;
@@ -26,8 +26,9 @@ void ahr_init (  )  {
   // Populate remaining values
   ahr.quat[0]  = 1.0;
   ahr.dquat[0] = 0.0;
-  ahr.fx       = 0.5;
+  ahr.fx       = 0.500;
   ahr.fz       = 0.866;
+  ahr.dt       = 1.0 / HZ_AHR;
 
   return;
 }
@@ -45,16 +46,13 @@ void ahr_exit ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ahr_data
+//  ahr_run
 //  Run appropriate functions for the AHR execution loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ahr_data ( void )  {
+void ahr_run ( void )  {
 
-  ushort i;
-  for ( i=0; i<4; i++ )  {
-    ahr.quat[i] = ahr.quat[i] + 0.01;
-    if ( ahr.quat[i] >= 1.01 )  ahr.quat[i] = -1.0;
-  }
+  ahr_fusion();
+  ahr_kalman();  // Future work
 
   return;
 }
@@ -66,28 +64,25 @@ void ahr_data ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void ahr_fusion ( void )  {
 
-  /*
   // Local variables
-  unsigned short i;
+  ushort i;
   double norm;
 
   // Quaternion index
-  unsigned short w=0, x=1, y=2, z=3;
+  ushort w=0, x=1, y=2, z=3;
 
   // Get values from mpu structure
-  double q[4], m[3], a[3], g[3], b[3], fx, fz, dt;
-  fx = imu->fx;  fz = imu->fz;  dt = imu->fus_dt;
+  double q[4], g[3], a[3], m[3], b[3], fx, fz, dt;
+  fx = ahr.fx;  fz = ahr.fz;  dt = ahr.dt;
 
   //pthread_mutex_lock(&mutex_cal);
 
-  for ( i=0; i<4; i++ ) {
-    q[i] = imu->Quat[i];
-    if (i<3) {
-      g[i] = imu->calGyr[i];
-      a[i] = imu->calAcc[i];
-      m[i] = imu->calMag[i];
-      b[i] = imu->bias[i];
-    }
+  for ( i=0; i<4; i++ )  q[i] = ahr.quat[i];
+  for ( i=0; i<3; i++ ) {
+    g[i] = gyr.cal[i];
+    a[i] = acc.cal[i];
+    m[i] = mag.cal[i];
+    b[i] = ahr.bias[i];
   }
 
   //pthread_mutex_unlock(&mutex_cal);
@@ -106,13 +101,13 @@ void ahr_fusion ( void )  {
 
   // Define auxiliary vectors
   double halfq[4], twoq[4], twom[3], twofxq[4], twofzq[4], twofx, twofz;
-  twofx = 2.0f * fx;  twofz = 2.0f * fz;
-  for ( i=0; i<4; i++ ) {
-    halfq[i]  =  0.5f * q[i];
-    twoq[i]   =  2.0f * q[i];
+  twofx = 2.0 * fx;  twofz = 2.0 * fz;
+  for ( i=0; i<4; i++ )  {
+    halfq[i]  =   0.5 * q[i];
+    twoq[i]   =   2.0 * q[i];
     twofxq[i] = twofx * q[i];
     twofzq[i] = twofz * q[i];
-    if(i<3)  twom[i] = 2.0f * m[i];
+    if(i<3)  twom[i] = 2.0 * m[i];
   }
 
   // Quaternion multiplication values 
@@ -123,12 +118,12 @@ void ahr_fusion ( void )  {
 
   // Calculate objective function
   double F1, F2, F3, F4, F5, F6;
-  F1 =        twoq[x] * q[z]        - twoq[w] * q[y]               - a[X];
-  F2 =        twoq[w] * q[x]        + twoq[y] * q[z]               - a[Y];
-  F3 = 1.0f - twoq[x] * q[x]        - twoq[y] * q[y]               - a[Z];
-  F4 = twofx * ( 0.5f - qyy - qzz ) + twofz * (        qxz - qwy ) - m[X]; 
-  F5 = twofx * (        qxy - qwz ) + twofz * (        qwx + qyz ) - m[Y];
-  F6 = twofx * (        qwy + qxz ) + twofz * ( 0.5f - qxx - qyy ) - m[Z];
+  F1 =        twoq[x] * q[z]        - twoq[w] * q[y]             - a[X];
+  F2 =        twoq[w] * q[x]        + twoq[y] * q[z]             - a[Y];
+  F3 = 1.0  - twoq[x] * q[x]        - twoq[y] * q[y]             - a[Z];
+  F4 = twofx * ( 0.5 - qyy - qzz ) + twofz * (       qxz - qwy ) - m[X]; 
+  F5 = twofx * (       qxy - qwz ) + twofz * (       qwx + qyz ) - m[Y];
+  F6 = twofx * (       qwy + qxz ) + twofz * ( 0.5 - qxx - qyy ) - m[Z];
 
   // Calculate jacobian matrix
   double J11J24, J12J23, J13J22, J14J21, J32, J33;
@@ -136,22 +131,22 @@ void ahr_fusion ( void )  {
   double J51, J52, J53, J54;
   double J61, J62, J63, J64;
   J11J24 = twoq[y];
-  J12J23 = 2.0f * q[z];
+  J12J23 = 2.0 * q[z];
   J13J22 = twoq[w];
   J14J21 = twoq[x];
-  J32 = 2.0f * J14J21;
-  J33 = 2.0f * J11J24;
+  J32 = 2.0 * J14J21;
+  J33 = 2.0 * J11J24;
   J41 = twofzq[y];
   J42 = twofzq[z];
-  J43 = 2.0f * twofxq[y] + twofzq[w]; 
-  J44 = 2.0f * twofxq[z] - twofzq[x];
+  J43 = 2.0 * twofxq[y] + twofzq[w]; 
+  J44 = 2.0 * twofxq[z] - twofzq[x];
   J51 = twofxq[z] - twofzq[x];
   J52 = twofxq[y] + twofzq[w];
   J53 = twofxq[x] + twofzq[z];
   J54 = twofxq[w] - twofzq[y];
   J61 = twofxq[y];
-  J62 = twofxq[z] - 2.0f * twofzq[x];
-  J63 = twofxq[w] - 2.0f * twofzq[y];
+  J62 = twofxq[z] - 2.0 * twofzq[x];
+  J63 = twofxq[w] - 2.0 * twofzq[y];
   J64 = twofxq[x];
 
   // Quaternion gradient from objective function
@@ -174,7 +169,7 @@ void ahr_fusion ( void )  {
   err[Z] = twoq[w] * qdf[z] - twoq[x] * qdf[y] + twoq[y] * qdf[x] - twoq[z] * qdf[w];
 
   // Adjust for gyroscope baises
-  for ( i=0; i<3; i++ ) {
+  for ( i=0; i<3; i++ )  {
     b[i] += err[i] * dt * IMU_ZETA;
     g[i] -= b[i];
   }
@@ -188,7 +183,7 @@ void ahr_fusion ( void )  {
 
   // Fused quaternion and derivative values
   double qd[4];
-  for ( i=0; i<4; i++ ) {
+  for ( i=0; i<4; i++ )  {
     qd[i] = qdr[i] - ( IMU_BETA * qdf[i] );
     q[i] += qd[i] * dt;
   }
@@ -201,9 +196,9 @@ void ahr_fusion ( void )  {
 
   // Compute earth frame flux
   float h[3];
-  h[X] = twom[X] * ( 0.5f - qyy - qzz ) + twom[Y] * ( qxy - qwz ) + twom[Z] * ( qxz + qwy );
-  h[Y] = twom[X] * ( qxy + qwz ) + twom[Y] * ( 0.5f - qxx - qzz ) + twom[Z] * ( qyz - qwx ); 
-  h[Z] = twom[X] * ( qxz - qwy ) + twom[Y] * ( qyz + qwx ) + twom[Z] * ( 0.5f - qxx - qyy );
+  h[X] = twom[X] * ( 0.5 - qyy - qzz ) + twom[Y] * ( qxy - qwz ) + twom[Z] * ( qxz + qwy );
+  h[Y] = twom[X] * ( qxy + qwz ) + twom[Y] * ( 0.5 - qxx - qzz ) + twom[Z] * ( qyz - qwx ); 
+  h[Z] = twom[X] * ( qxz - qwy ) + twom[Y] * ( qyz + qwx ) + twom[Z] * ( 0.5 - qxx - qyy );
 
   // Adjust flux vector
   fx = sqrt( ( h[X] * h[X] ) + ( h[Y] * h[Y] ) );
@@ -211,27 +206,26 @@ void ahr_fusion ( void )  {
 
   // Calculate euler angles
   double e[3];
-  e[X] = atan2 ( ( 2* ( qwx + qyz ) ), ( 1- 2* ( qxx + qyy ) ) ) - R_BIAS;
-  e[Y] = asin  (   2* ( qwy - qxz ) )                            - P_BIAS;
-  e[Z] = atan2 ( ( 2* ( qwz + qxy ) ), ( 1- 2* ( qyy + qzz ) ) ) - Y_BIAS;
-
-  // Update imu structure
+  e[X] = atan2 ( ( 2.0 * ( qwx + qyz ) ), ( 1.0 - 2.0 * ( qxx + qyy ) ) ) - R_BIAS;
+  e[Y] = asin  (   2.0 * ( qwy - qxz ) )                                  - P_BIAS;
+  e[Z] = atan2 ( ( 2.0 * ( qwz + qxy ) ), ( 1.0 - 2.0 * ( qyy + qzz ) ) ) - Y_BIAS;
 
   //pthread_mutex_lock(&mutex_fusion);
 
-  imu->fx = fx;  imu->fz = fz;
-  for ( i=0; i<4; i++ ) {
-    imu->Quat[i]  = q[i];
-    imu->dQuat[i] = qd[i];
-    if(i<3) {
-      imu->Eul[i]  = e[i];
-      imu->dEul[i] = g[i];
-      imu->bias[i] = b[i];
-    }
+  ahr.fx = fx;  ahr.fz = fz;
+
+  for ( i=0; i<4; i++ )  {
+    ahr.quat[i]  = q[i];
+    ahr.dquat[i] = qd[i];
   }
 
-  //pthread_mutex_unlock(&mutex_fusion);
-  */
+  for ( i=0; i<3; i++ ) {
+    ahr.eul[i]  = e[i];
+    ahr.deul[i] = g[i];
+    ahr.bias[i] = b[i];
+  }
+
+  //pthread_mutex_unlock(&mutex_ahr);
 
   return;
 }
@@ -270,7 +264,7 @@ void ahr_kalman ( void )  {
   // Assign previous value
   for ( i=0; i<3; i++ )  imu->Prev[i] = imu->Eul[i];
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-  */
+*/
 
 
 
