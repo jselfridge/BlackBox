@@ -22,6 +22,7 @@ int main ( void )  {
   log_init();
   sio_init();
   imu_init();
+  ahr_init();
   tmr_init();
 
   // Wait for exit condition

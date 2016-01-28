@@ -28,7 +28,7 @@
 
 
 // Custom includes
-#include <ahrs.h>
+#include <ahr.h>
 #include <flag.h>
 #include <gpio.h>
 #include <imu.h>

@@ -1,10 +1,10 @@
 
 //============================================================
-//  ahrs.h
+//  ahr.h
 //  Justin M Selfridge
 //============================================================
-#ifndef _AHRS_H_
-#define _AHRS_H_
+#ifndef _AHR_H_
+#define _AHR_H_
 #include <main.h>
 
 
@@ -23,7 +23,7 @@
 
 
 // AHRS data structure
-typedef struct ahrs_data_struct {
+typedef struct ahr_data_struct {
   double  quat  [4];
   double  dquat [4];
   double  eul   [3];
@@ -31,15 +31,16 @@ typedef struct ahrs_data_struct {
   double  bias  [3];
   double  fx;
   double  fz;
-} ahrs_data_struct;
-ahrs_data_struct ahrs;
+} ahr_data_struct;
+ahr_data_struct ahr;
 
 
 // IMU functions
-void  ahrs_init    ( void );
-void  ahrs_exit    ( void );
-void  ahrs_fusion  ( void );
-void  ahrs_kalman  ( void );
+void  ahr_init    ( void );
+void  ahr_exit    ( void );
+void  ahr_data    ( void );
+void  ahr_fusion  ( void );
+void  ahr_kalman  ( void );
 
 
 #endif

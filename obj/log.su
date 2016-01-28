@@ -1,5 +1,5 @@
-log.c:13:6:log_init	40	static
-log.c:76:6:log_open	32	static
-log.c:119:6:log_close	64	static
-log.c:244:6:log_exit	24	static
-log.c:293:6:log_record	56	static
+log.c:13:6:log_init	48	static
+log.c:89:6:log_open	32	static
+log.c:133:6:log_close	80	static
+log.c:287:6:log_exit	32	static
+log.c:348:6:log_record	152	static

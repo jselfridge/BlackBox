@@ -24,13 +24,13 @@ void tmr_init ( void )  {
   if(DEBUG)  printf("  Create threads and mutexes:  ");
 
   // Create mutex conditions
-  pthread_mutex_init( &mutex_imu,  NULL );
-  pthread_mutex_init( &mutex_ahrs, NULL );
-  pthread_mutex_init( &mutex_sio,  NULL );
+  pthread_mutex_init( &mutex_imu, NULL );
+  pthread_mutex_init( &mutex_ahr, NULL );
+  pthread_mutex_init( &mutex_sio, NULL );
 
   // Create primary timing threads
   tmr_thread( &tmr_imu,  &attr, fcn_imu  );
-  tmr_thread( &tmr_ahrs, &attr, fcn_ahrs );
+  tmr_thread( &tmr_ahr,  &attr, fcn_ahr  );
   tmr_thread( &tmr_sio,  &attr, fcn_sio  );
   tmr_thread( &tmr_flag, &attr, fcn_flag );
 
@@ -57,9 +57,9 @@ void tmr_setup ( void )  {
   tmr_imu.per    =  1000000 / HZ_IMU_FAST;
 
   // AHRS timer
-  tmr_ahrs.name  =  "ahrs";
-  tmr_ahrs.prio  =  PRIO_AHRS;
-  tmr_ahrs.per   =  1000000 / HZ_AHRS;
+  tmr_ahr.name  =  "ahr";
+  tmr_ahr.prio  =  PRIO_AHR;
+  tmr_ahr.per   =  1000000 / HZ_AHR;
 
   // System I/O timer
   tmr_sio.name   =  "sio";
@@ -143,7 +143,7 @@ void tmr_exit ( void )  {
 
   // Destroy mutex locks
   pthread_mutex_destroy(&mutex_imu);
-  pthread_mutex_destroy(&mutex_ahrs);
+  pthread_mutex_destroy(&mutex_ahr);
   pthread_mutex_destroy(&mutex_sio);
 
   // Exit IMU thread
@@ -151,10 +151,10 @@ void tmr_exit ( void )  {
     printf( "Error (tmr_exit): Failed to exit 'imu' thread. \n" );
   if(DEBUG)  printf( "imu " );
 
-  // Exit AHRS thread
-  if( pthread_join ( tmr_ahrs.id, NULL ) )
-    printf( "Error (tmr_exit): Failed to exit 'ahrs' thread. \n" );
-  if(DEBUG)  printf( "ahrs " );
+  // Exit AHR thread
+  if( pthread_join ( tmr_ahr.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'ahr' thread. \n" );
+  if(DEBUG)  printf( "ahr " );
 
   // Exit system input/output thread
   if( pthread_join ( tmr_sio.id, NULL ) )
@@ -294,17 +294,17 @@ void *fcn_imu (  )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_ahrs
-//  Function handler for the AHRS timing thread.
+//  fcn_ahr
+//  Function handler for the AHR timing thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void *fcn_ahrs (  )  {
-  tmr_create(&tmr_ahrs);
+void *fcn_ahr (  )  {
+  tmr_create(&tmr_ahr);
   while (running) {
-    tmr_start(&tmr_ahrs);
-    //imu_data();
-    tmr_finish(&tmr_ahrs);
-    //if (datalog.enabled)  log_record(LOG_AHRS);
-    tmr_pause(&tmr_ahrs);
+    tmr_start(&tmr_ahr);
+    ahr_data();
+    tmr_finish(&tmr_ahr);
+    if (datalog.enabled)  log_record(LOG_AHR);
+    tmr_pause(&tmr_ahr);
   }
   pthread_exit(NULL);
   return NULL;

@@ -18,6 +18,7 @@ void log_init ( void )  {
   log_gyr.limit    = MAX_LOG_DUR * HZ_IMU_FAST;
   log_acc.limit    = MAX_LOG_DUR * HZ_IMU_FAST;
   log_mag.limit    = MAX_LOG_DUR * HZ_IMU_SLOW;
+  log_ahr.limit    = MAX_LOG_DUR * HZ_AHR;
   log_input.limit  = MAX_LOG_DUR * HZ_SIO;
   log_output.limit = MAX_LOG_DUR * HZ_SIO;
 
@@ -47,6 +48,18 @@ void log_init ( void )  {
   log_mag.raw  =  malloc( sizeof(short) * log_mag.limit * 3 );
   log_mag.avg  =  malloc( sizeof(float) * log_mag.limit * 3 );
   log_mag.cal  =  malloc( sizeof(float) * log_mag.limit * 3 );
+
+  // Attitude/Heading reference storage
+  if(DEBUG)  printf("ahr ");
+  log_ahr.time  =  malloc( sizeof(float) * log_ahr.limit     );
+  log_ahr.dur   =  malloc( sizeof(ulong) * log_ahr.limit     );
+  log_ahr.quat  =  malloc( sizeof(float) * log_ahr.limit * 4 );
+  log_ahr.dquat =  malloc( sizeof(float) * log_ahr.limit * 4 );
+  log_ahr.eul   =  malloc( sizeof(float) * log_ahr.limit * 3 );
+  log_ahr.deul  =  malloc( sizeof(float) * log_ahr.limit * 3 );
+  log_ahr.bias  =  malloc( sizeof(float) * log_ahr.limit * 3 );
+  log_ahr.fx    =  malloc( sizeof(float) * log_ahr.limit     );
+  log_ahr.fz    =  malloc( sizeof(float) * log_ahr.limit     );
 
   // Input signal storage
   if(DEBUG)  printf("input ");
@@ -79,6 +92,7 @@ void log_open ( void )  {
   log_gyr.count    = 0;
   log_acc.count    = 0;
   log_mag.count    = 0;
+  log_ahr.count    = 0;
   log_input.count  = 0;
   log_output.count = 0;
 
@@ -125,7 +139,7 @@ void log_close ( void )  {
 
   // Local ariables
   char *file = malloc(64);
-  FILE *fnote, *fgyr, *facc, *fmag, *fin, *fout;
+  FILE *fnote, *fgyr, *facc, *fmag, *fahr, *fin, *fout;
   ushort i;
   ulong row;
 
@@ -147,11 +161,11 @@ void log_close ( void )  {
     "       Gtime    Gdur   \
     Grx     Gry     Grz       \
     Gax        Gay        Gaz     \
-    Gcx      Gcy      Gcz      ");
+    Gcx      Gcy      Gcz");
 
   // Loop through gyroscope data
   for ( row = 0; row < log_gyr.count; row++ ) {
-    fprintf( fgyr, "\n %011.6f  %06d    ", log_gyr.time[row], log_gyr.dur[row] );
+    fprintf( fgyr, "\n %011.6f  %06ld    ", log_gyr.time[row], log_gyr.dur[row] );
     for ( i=0; i<3; i++ )  fprintf( fgyr, "%06d  ",   log_gyr.raw[ row*3 +i ] );   fprintf( fgyr, "   " );
     for ( i=0; i<3; i++ )  fprintf( fgyr, "%09.2f  ", log_gyr.avg[ row*3 +i ] );   fprintf( fgyr, "   " );
     for ( i=0; i<3; i++ )  fprintf( fgyr, "%07.4f  ", log_gyr.cal[ row*3 +i ] );   fprintf( fgyr, "   " );
@@ -165,11 +179,11 @@ void log_close ( void )  {
     "       Atime    Adur   \
     Arx     Ary     Arz       \
     Aax        Aay        Aaz     \
-    Acx      Acy      Acz      ");
+    Acx      Acy      Acz");
 
   // Loop through accelerometer data
   for ( row = 0; row < log_acc.count; row++ ) {
-    fprintf( facc, "\n %011.6f  %06d    ", log_acc.time[row], log_acc.dur[row] );
+    fprintf( facc, "\n %011.6f  %06ld    ", log_acc.time[row], log_acc.dur[row] );
     for ( i=0; i<3; i++ )  fprintf( facc, "%06d  ",   log_acc.raw[ row*3 +i ] );   fprintf( facc, "   " );
     for ( i=0; i<3; i++ )  fprintf( facc, "%09.2f  ", log_acc.avg[ row*3 +i ] );   fprintf( facc, "   " );
     for ( i=0; i<3; i++ )  fprintf( facc, "%07.4f  ", log_acc.cal[ row*3 +i ] );   fprintf( facc, "   " );
@@ -183,14 +197,42 @@ void log_close ( void )  {
     "       Mtime    Mdur   \
     Mrx     Mry     Mrz       \
     Max        May        Maz     \
-    Mcx      Mcy      Mcz      ");
+    Mcx      Mcy      Mcz");
 
   // Loop through magnetometer data
   for ( row = 0; row < log_mag.count; row++ ) {
-    fprintf( fmag, "\n %011.6f  %06d    ", log_mag.time[row], log_mag.dur[row] );
+    fprintf( fmag, "\n %011.6f  %06ld    ", log_mag.time[row], log_mag.dur[row] );
     for ( i=0; i<3; i++ )  fprintf( fmag, "%06d  ",   log_mag.raw[ row*3 +i ] );   fprintf( fmag, "   " );
     for ( i=0; i<3; i++ )  fprintf( fmag, "%09.2f  ", log_mag.avg[ row*3 +i ] );   fprintf( fmag, "   " );
     for ( i=0; i<3; i++ )  fprintf( fmag, "%07.4f  ", log_mag.cal[ row*3 +i ] );   fprintf( fmag, "   " );
+  }
+
+  // Create attitude/heading reference datalog file
+  sprintf( file, "%sahr.txt", datalog.path );
+  fahr = fopen( file, "w" );
+  if( fahr == NULL )  printf( "Error (log_XX): Cannot open 'ahr' file. \n" );
+  fprintf( fahr,
+    "       Rtime    Rdur     \
+    Qw       Qx       Qy       Qz     \
+    dQw      dQx      dQy      dQz      \
+    Ex       Ey       Ez     \
+    dEx      dEy      dEz      \
+    bx       by       bz      \
+    fx       fz");
+
+  // Loop through attitude/heading reference data
+  for ( row = 0; row < log_ahr.count; row++ ) {
+    fprintf( fahr, "\n %011.6f  %06ld    ", log_ahr.time[row], log_ahr.dur[row] );
+
+    for ( i=0; i<4; i++ )  fprintf( fahr, "%07.4f  ", log_ahr.quat[ row*4 +i ]  );  fprintf( fahr, "   " );
+    for ( i=0; i<4; i++ )  fprintf( fahr, "%07.4f  ", log_ahr.dquat[ row*4 +i ] );  fprintf( fahr, "   " );
+
+    for ( i=0; i<3; i++ )  fprintf( fahr, "%07.4f  ", log_ahr.eul[ row*3 +i ]  );  fprintf( fahr, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fahr, "%07.4f  ", log_ahr.deul[ row*3 +i ] );  fprintf( fahr, "   " );
+
+    for ( i=0; i<3; i++ )  fprintf( fahr, "%07.4f  ", log_ahr.bias[ row*3 +i ] );  fprintf( fahr, "   " );
+    fprintf( fahr, "%07.4f  ", log_ahr.fx[ row +i ] );  fprintf( fahr, "%07.4f  ", log_ahr.fz[ row +i ] );  fprintf( fahr, "   " );
+
   }
 
   // Create input datalog file
@@ -226,6 +268,7 @@ void log_close ( void )  {
   fclose(fgyr);
   fclose(facc);
   fclose(fmag);
+  fclose(fahr);
   fclose(fin);
   fclose(fout);
 
@@ -267,6 +310,18 @@ void log_exit ( void )  {
   free(log_mag.raw);
   free(log_mag.avg);
   free(log_mag.cal);
+
+  // Free memory for 'ahr'
+  if(DEBUG)  printf("  Free 'ahr' memory \n");
+  free(log_ahr.time);
+  free(log_ahr.dur);
+  free(log_ahr.quat);
+  free(log_ahr.dquat);
+  free(log_ahr.eul);
+  free(log_ahr.deul);
+  free(log_ahr.bias);
+  free(log_ahr.fx);
+  free(log_ahr.fz);
 
   // Free memory for 'input'
   if(DEBUG)  printf("  Free 'input' memory \n");
@@ -346,8 +401,29 @@ void log_record ( enum log_index index )  {
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Record AHRS data
-  case LOG_AHRS :
+  // Record AHR data
+  case LOG_AHR :
+
+    timestamp = (float) ( tmr_ahr.start_sec + ( tmr_ahr.start_usec / 1000000.0f ) ) - datalog.offset;
+
+    //pthread_mutex_lock(&mutex_ahr);
+
+    // XxXxXxX data
+    if ( log_ahr.count < log_ahr.limit ) {
+      row = log_ahr.count;
+      log_ahr.time[row] = timestamp;
+      log_ahr.dur[row]  = tmr_ahr.dur;
+      for ( i=0; i<4; i++ )  log_ahr.quat  [ row*4 +i ] = ahr.quat  [i];
+      for ( i=0; i<4; i++ )  log_ahr.dquat [ row*4 +i ] = ahr.dquat [i];
+      for ( i=0; i<3; i++ )  log_ahr.eul   [ row*3 +i ] = ahr.eul   [i];
+      for ( i=0; i<3; i++ )  log_ahr.deul  [ row*3 +i ] = ahr.deul  [i];
+      for ( i=0; i<3; i++ )  log_ahr.bias  [ row*3 +i ] = ahr.bias  [i];
+                             log_ahr.fx    [ row   +i ] = ahr.fx;
+                             log_ahr.fz    [ row   +i ] = ahr.fz;
+      log_ahr.count++;
+    }
+
+    //pthread_mutex_unlock(&mutex_ahr);
     return;
 
 

@@ -1,56 +1,70 @@
 
 //============================================================
-//  ahrs.c
+//  ahr.c
 //  Justin M Selfridge
 //============================================================
-#include "ahrs.h"
+#include "ahr.h"
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ahrs_init
-//  Initializes the AHRS algorithms.
+//  ahr_init
+//  Initializes the attitude and heading reference algorithms.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ahrs_init (  )  {
+void ahr_init (  )  {
   if(DEBUG)  printf( "Initializing AHRS \n" );
 
-/*
-  // Data fusion variables
-  imu->fx = 0.5;  imu->fz = 0.866;
-  for ( i=0; i<4; i++ ) {
-    //imu->Prev[i]  = 0;
-    imu->Quat[i]  = 0;
-    imu->dQuat[i] = 0;
-    if (i<3) {
-      imu->Eul[i]  = 0;
-      imu->dEul[i] = 0;
-      imu->bias[i] = 0;
-    }
+  // Loop through entries with known zero values
+  ushort i;
+  for ( i=0; i<3; i++ ) {
+    ahr.quat  [i+1] = 0.0;
+    ahr.dquat [i+1] = 0.0;
+    ahr.eul   [i]   = 0.0;
+    ahr.deul  [i]   = 0.0;
+    ahr.bias  [i]   = 0.0;
   }
-  //imu->Prev[0] = 1;
-  imu->Quat[0] = 1;
-*/
 
+  // Populate remaining values
+  ahr.quat[0]  = 1.0;
+  ahr.dquat[0] = 0.0;
+  ahr.fx       = 0.5;
+  ahr.fz       = 0.866;
 
   return;
 }
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ahrs_exit
-//  Terminate the AHRS algorithms.
+//  ahr_exit
+//  Terminate the AHR algorithms.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ahrs_exit ( void )  {
-  if(DEBUG)  printf("Close AHRS \n");
+void ahr_exit ( void )  {
+  if(DEBUG)  printf("Close AHR \n");
   // Insert code if needed...
   return;
 }
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ahrs_fusion
+//  ahr_data
+//  Run appropriate functions for the AHR execution loop.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void ahr_data ( void )  {
+
+  ushort i;
+  for ( i=0; i<4; i++ )  {
+    ahr.quat[i] = ahr.quat[i] + 0.01;
+    if ( ahr.quat[i] >= 1.01 )  ahr.quat[i] = -1.0;
+  }
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  ahr_fusion
 //  Implement 9DOF data fusion algorithm.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ahrs_fusion ( void )  {
+void ahr_fusion ( void )  {
 
   /*
   // Local variables
@@ -226,10 +240,10 @@ void ahrs_fusion ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ahrs_kalman
+//  ahr_kalman
 //  Implement Kalman filter algorithm.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ahrs_kalman ( void )  {
+void ahr_kalman ( void )  {
   // Future work
   return;
 }
