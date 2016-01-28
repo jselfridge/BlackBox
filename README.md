@@ -101,6 +101,8 @@ The following list outlines proposed upcoming changes
   <li> Incorporate altitude hold </li> 
   <li> Add altitude sensor </li>
   <li> Disable clkout2 to enable CH5 input </li>
+  <li> Replace hard coded gyr bias with saved parameters from a file </li>
+  <li> Calculate and apply rotation transformation for accelerometer mounting errors </li>
 
   <li><b> Maybe next board </b></li>
   <li> IMU convergence on start up </li>

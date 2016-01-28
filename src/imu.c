@@ -98,6 +98,11 @@ void imu_getcal (  )  {
   char buff [32];  memset( buff, 0, sizeof(buff) );
   char path [32];  memset( path, 0, sizeof(path) );
 
+  // Set gyroscope bias
+  gyr.bias[X] = -41;
+  gyr.bias[Y] =  68;
+  gyr.bias[Z] = -39;
+
   // Set acceleration bias
   sprintf( path, "cal/acc/bias" );
   f = fopen( path, "r" );
@@ -143,10 +148,10 @@ void imu_getcal (  )  {
     printf("    abias  arange    mbias  mrange \n");
     for ( i=0; i<3; i++ ) {
       printf("     ");
-      printf( "%04d  ", acc.bias[i]  );
+      printf( "%04d  ",    acc.bias[i]  );
       printf( "%06d     ", acc.range[i] );
-      printf( "%04d   ", mag.bias[i]  );
-      printf( "%04d  \n", mag.range[i] );
+      printf( "%04d   ",   mag.bias[i]  );
+      printf( "%04d  \n",  mag.range[i] );
     } 
   }
 
@@ -267,20 +272,20 @@ void imu_data (  )  {
     }}
 
   // Shift and orient gyroscope readings (add bias)
-  gyr.cal[X] =   ( gyr.avg[Y] - 0 ) * GYR_SCALE;
-  gyr.cal[Y] =   ( gyr.avg[X] - 0 ) * GYR_SCALE;
-  gyr.cal[Z] = - ( gyr.avg[Z] - 0 ) * GYR_SCALE;
+  gyr.cal[X] =   ( gyr.avg[Y] - gyr.bias[Y] ) * GYR_SCALE;
+  gyr.cal[Y] =   ( gyr.avg[X] - gyr.bias[X] ) * GYR_SCALE;
+  gyr.cal[Z] = - ( gyr.avg[Z] - gyr.bias[Z] ) * GYR_SCALE;
 
   // Shift and orient accelerometer readings
-  acc.cal[X] = - ( acc.avg[Y] - acc.bias[Y] ) / (double) (acc.range[Y]);
-  acc.cal[Y] = - ( acc.avg[X] - acc.bias[X] ) / (double) (acc.range[X]);
-  acc.cal[Z] =   ( acc.avg[Z] - acc.bias[Z] ) / (double) (acc.range[Z]);
+  acc.cal[X] =   ( acc.avg[Y] - acc.bias[Y] ) / (double) (acc.range[Y]);
+  acc.cal[Y] =   ( acc.avg[X] - acc.bias[X] ) / (double) (acc.range[X]);
+  acc.cal[Z] = - ( acc.avg[Z] - acc.bias[Z] ) / (double) (acc.range[Z]);
 
   // Shift and orient magnetometer readings
   if(imu.getmag) {
-    mag.cal[X] = ( mag.avg[X] - mag.bias[X] ) / (double) (mag.range[X]);
-    mag.cal[Y] = ( mag.avg[Y] - mag.bias[Y] ) / (double) (mag.range[Y]);
-    mag.cal[Z] = ( mag.avg[Z] - mag.bias[Z] ) / (double) (mag.range[Z]);
+    mag.cal[X] = ( mag.avg[X] /*- mag.bias[X]*/ ) / (double) (mag.range[X]);
+    mag.cal[Y] = ( mag.avg[Y] /*- mag.bias[Y]*/ ) / (double) (mag.range[Y]);
+    mag.cal[Z] = ( mag.avg[Z] /*- mag.bias[Z]*/ ) / (double) (mag.range[Z]);
   }
 
   // Unlock IMU data

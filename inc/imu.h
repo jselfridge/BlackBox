@@ -12,9 +12,9 @@
 
 #define GYR_HIST   1
 #define ACC_HIST   1
-#define MAG_HIST   5
+#define MAG_HIST   1
 
-#define GYR_LPF    100.0
+#define GYR_LPF    0.0
 #define ACC_LPF    0.0
 #define MAG_LPF    0.0
 
