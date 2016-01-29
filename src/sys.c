@@ -68,7 +68,7 @@ void sys_debug ( void )  {
 
   // Select data for display
   sys_imu();
-  sys_ahr();
+  //sys_ahr();
   //sys_sio();
 
   // Complete debugging display 

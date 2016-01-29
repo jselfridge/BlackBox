@@ -33,6 +33,8 @@ void ahr_init ( void )  {
   // Wait for IMU to initialize
   //usleep(1000000);
 
+  //for ( i=0; i<4; i++ ) printf("%f ", ahr.dquat[i]);
+
   return;
 }
 
