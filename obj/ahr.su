@@ -1,5 +1,5 @@
-ahr.c:13:6:ahr_init	32	static
-ahr.c:46:6:ahr_exit	0	static
-ahr.c:70:6:ahr_fusion	760	static
-ahr.c:57:6:ahr_run	0	static
-ahr.c:253:6:ahr_kalman	0	static
+ahr.c:13:6:ahr_init	16	static
+ahr.c:41:6:ahr_exit	0	static
+ahr.c:65:6:ahr_fusion	760	static
+ahr.c:52:6:ahr_run	0	static
+ahr.c:261:6:ahr_kalman	0	static

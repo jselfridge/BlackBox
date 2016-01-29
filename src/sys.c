@@ -68,7 +68,7 @@ void sys_debug ( void )  {
 
   // Select data for display
   sys_imu();
-  //sys_ahr();
+  sys_ahr();
   //sys_sio();
 
   // Complete debugging display 
@@ -129,8 +129,8 @@ void sys_ahr ( void )  {
 
   // Euler data
   pthread_mutex_lock(&mutex_eul);
-  for ( i=0; i<3; i++ )  printf("%7.4f ", ahr.eul[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%7.4f ", ahr.deul[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%7.4f ", ahr.eul[i]  * (180.0/PI) );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%7.4f ", ahr.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_eul); 
 
   return;

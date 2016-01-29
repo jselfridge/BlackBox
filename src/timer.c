@@ -33,10 +33,10 @@ void tmr_init ( void )  {
   pthread_mutex_init( &mutex_output, NULL );
 
   // Create primary timing threads
-  tmr_thread( &tmr_imu,  &attr, fcn_imu  );
-  tmr_thread( &tmr_ahr,  &attr, fcn_ahr  );
-  tmr_thread( &tmr_sio,  &attr, fcn_sio  );
-  tmr_thread( &tmr_flag, &attr, fcn_flag );
+  tmr_thread( &tmr_imu,  &attr, fcn_imu  );  usleep(100000);
+  tmr_thread( &tmr_ahr,  &attr, fcn_ahr  );  usleep(100000);
+  tmr_thread( &tmr_sio,  &attr, fcn_sio  );  usleep(100000);
+  tmr_thread( &tmr_flag, &attr, fcn_flag );  usleep(100000);
 
   // Possibly create debugging thread
   if(DEBUG) {

@@ -30,11 +30,6 @@ void ahr_init ( void )  {
   ahr.fz       = 0.866;
   ahr.dt       = 1.0 / HZ_AHR;
 
-  // Wait for IMU to initialize
-  //usleep(1000000);
-
-  //for ( i=0; i<4; i++ ) printf("%f ", ahr.dquat[i]);
-
   return;
 }
 
@@ -88,9 +83,9 @@ void ahr_fusion ( void )  {
   double g[3], a[3], m[3];
   pthread_mutex_lock(&mutex_cal);
   for ( i=0; i<3; i++ )  {
-    g[i] = gyr.cal[i];
-    a[i] = acc.cal[i];
-    m[i] = mag.cal[i];
+    g[i] =  gyr.cal[i];
+    a[i] = -acc.cal[i];
+    m[i] =  mag.cal[i];
   }
   pthread_mutex_unlock(&mutex_cal);
 
@@ -99,7 +94,7 @@ void ahr_fusion ( void )  {
   for ( i=0; i<3; i++ )  norm += m[i] * m[i];
   norm = sqrt(norm);
   for ( i=0; i<3; i++ )  m[i] /= norm;
-
+ 
   // Normalize accelerometer
   norm = 0.0;
   for ( i=0; i<3; i++ )  norm += a[i] * a[i];
