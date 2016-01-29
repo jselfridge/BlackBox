@@ -67,9 +67,9 @@ void sys_debug ( void )  {
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
-  sys_imu();
-  sys_ahr();
-  sys_sio();
+  //sys_imu();
+  //sys_ahr();
+  //sys_sio();
 
   // Complete debugging display 
   printf("  "); fflush(stdout);
@@ -172,7 +172,7 @@ void sys_exit (  )  {
   tmr_exit();
   sio_exit();
   imu_exit();
-  ahr_exit();
+  //ahr_exit();
   log_exit();
   flg_exit();
 

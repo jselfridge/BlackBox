@@ -24,13 +24,13 @@ void tmr_init ( void )  {
   if(DEBUG)  printf("  Create threads and mutexes:  ");
 
   // Create mutex conditions
-  pthread_mutex_init( &mutex_imu, NULL );
-  pthread_mutex_init( &mutex_ahr, NULL );
-  pthread_mutex_init( &mutex_sio, NULL );
+  //pthread_mutex_init( &mutex_imu, NULL );
+  //pthread_mutex_init( &mutex_ahr, NULL );
+  //pthread_mutex_init( &mutex_sio, NULL );
 
   // Create primary timing threads
   tmr_thread( &tmr_imu,  &attr, fcn_imu  );
-  tmr_thread( &tmr_ahr,  &attr, fcn_ahr  );
+  //tmr_thread( &tmr_ahr,  &attr, fcn_ahr  );
   tmr_thread( &tmr_sio,  &attr, fcn_sio  );
   tmr_thread( &tmr_flag, &attr, fcn_flag );
 
@@ -142,9 +142,9 @@ void tmr_exit ( void )  {
   printf("Close timing threads:  ");
 
   // Destroy mutex locks
-  pthread_mutex_destroy(&mutex_imu);
-  pthread_mutex_destroy(&mutex_ahr);
-  pthread_mutex_destroy(&mutex_sio);
+  //pthread_mutex_destroy(&mutex_imu);
+  //pthread_mutex_destroy(&mutex_ahr);
+  //pthread_mutex_destroy(&mutex_sio);
 
   // Exit IMU thread
   if( pthread_join ( tmr_imu.id, NULL ) )
@@ -152,9 +152,9 @@ void tmr_exit ( void )  {
   if(DEBUG)  printf( "imu " );
 
   // Exit AHR thread
-  if( pthread_join ( tmr_ahr.id, NULL ) )
-    printf( "Error (tmr_exit): Failed to exit 'ahr' thread. \n" );
-  if(DEBUG)  printf( "ahr " );
+  //if( pthread_join ( tmr_ahr.id, NULL ) )
+  //printf( "Error (tmr_exit): Failed to exit 'ahr' thread. \n" );
+  //if(DEBUG)  printf( "ahr " );
 
   // Exit system input/output thread
   if( pthread_join ( tmr_sio.id, NULL ) )

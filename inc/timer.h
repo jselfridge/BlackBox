@@ -49,9 +49,9 @@ timer_struct tmr_debug;
 
 
 // Mutex declarations
-pthread_mutex_t mutex_imu;
-pthread_mutex_t mutex_ahr;
-pthread_mutex_t mutex_sio;
+//pthread_mutex_t mutex_imu;
+//pthread_mutex_t mutex_ahr;
+//pthread_mutex_t mutex_sio;
 
 
 // Thread functions
