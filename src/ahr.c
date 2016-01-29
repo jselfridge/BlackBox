@@ -51,6 +51,7 @@ void ahr_exit ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void ahr_run ( void )  {
 
+  printf("  DEBUG: fx=%f \n", ahr.fx );
   ahr_fusion();
   ahr_kalman();  // Future work
 
@@ -63,7 +64,7 @@ void ahr_run ( void )  {
 //  Implement 9DOF data fusion algorithm.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void ahr_fusion ( void )  {
-
+  /*
   // Local variables
   ushort i;
   double norm;
@@ -73,11 +74,11 @@ void ahr_fusion ( void )  {
 
   // Get values from AHR data structure
   double q[4], b[3], fx, fz, dt;
-  pthread_mutex_lock(&mutex_quat);
+  //pthread_mutex_lock(&mutex_quat);
   fx = ahr.fx;  fz = ahr.fz;  dt = ahr.dt;
   for ( i=0; i<4; i++ )  q[i] = ahr.quat[i];
   for ( i=0; i<3; i++ )  b[i] = ahr.bias[i];
-  pthread_mutex_unlock(&mutex_quat);
+  //pthread_mutex_unlock(&mutex_quat);
 
   // Get values from IMU data structure
   double g[3], a[3], m[3];
@@ -231,7 +232,7 @@ void ahr_fusion ( void )  {
     ahr.bias[i] = b[i];
   }
   pthread_mutex_unlock(&mutex_eul);
-
+  */
   return;
 }
 
