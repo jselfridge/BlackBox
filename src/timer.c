@@ -24,9 +24,9 @@ void tmr_init ( void )  {
   if(DEBUG)  printf("  Create threads and mutexes:  ");
 
   // Create mutex conditions
-  //pthread_mutex_init( &mutex_imu, NULL );
-  //pthread_mutex_init( &mutex_ahr, NULL );
-  //pthread_mutex_init( &mutex_sio, NULL );
+  pthread_mutex_init( &mutex_raw, NULL );
+  pthread_mutex_init( &mutex_avg, NULL );
+  pthread_mutex_init( &mutex_cal, NULL );
 
   // Create primary timing threads
   tmr_thread( &tmr_imu,  &attr, fcn_imu  );
@@ -142,9 +142,9 @@ void tmr_exit ( void )  {
   printf("Close timing threads:  ");
 
   // Destroy mutex locks
-  //pthread_mutex_destroy(&mutex_imu);
-  //pthread_mutex_destroy(&mutex_ahr);
-  //pthread_mutex_destroy(&mutex_sio);
+  pthread_mutex_destroy(&mutex_raw);
+  pthread_mutex_destroy(&mutex_avg);
+  pthread_mutex_destroy(&mutex_cal);
 
   // Exit IMU thread
   if( pthread_join ( tmr_imu.id, NULL ) )
@@ -301,9 +301,9 @@ void *fcn_ahr (  )  {
   tmr_create(&tmr_ahr);
   while (running) {
     tmr_start(&tmr_ahr);
-    ahr_run();
+    //ahr_run();
     tmr_finish(&tmr_ahr);
-    if (datalog.enabled)  log_record(LOG_AHR);
+    //if (datalog.enabled)  log_record(LOG_AHR);
     tmr_pause(&tmr_ahr);
   }
   pthread_exit(NULL);

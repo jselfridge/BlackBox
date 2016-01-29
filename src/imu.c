@@ -214,13 +214,15 @@ void imu_data (  )  {
   ushort i, j, k;
   float g, a, m;
 
+  // Local IMU struct arrays
+  short gyr_raw[3], acc_raw[3], mag_raw[3];
+  float gyr_avg[3], acc_avg[3], mag_avg[3];
+  float gyr_cal[3], acc_cal[3], mag_cal[3];
+
   // Declare data history arrays
   static short ghist[3][GYR_HIST];
   static short ahist[3][ACC_HIST];
   static short mhist[3][MAG_HIST];
-
-  // Lock IMU data
-  //pthread_mutex_lock(&mutex_imu);
 
   // Increment counter
   imu.getmag = false;
@@ -231,33 +233,42 @@ void imu_data (  )  {
   imu.count--;
 
   // Sample IMU
-  if( mpu_get_gyro_reg( gyr.raw, NULL ) )
+  if( mpu_get_gyro_reg( gyr_raw, NULL ) )
     printf( "Error (imu_data): 'mpu_get_gyro_reg' failed. \n" );
-  if( mpu_get_accel_reg( acc.raw, NULL ) )
+  if( mpu_get_accel_reg( acc_raw, NULL ) )
     printf( "Error (imu_data): 'mpu_get_accel_reg' failed. \n" );
   if(imu.getmag){
-    if( mpu_get_compass_reg( mag.raw, NULL ) )
+    if( mpu_get_compass_reg( mag_raw, NULL ) )
       printf( "Error (imu_data): 'mpu_get_compass_reg' failed. \n" );
   } 
+
+  // Store 'raw' data
+  pthread_mutex_lock(&mutex_raw);
+  for ( i=0; i<3; i++ )  {
+    gyr.raw[i] = gyr_raw[i];
+    acc.raw[i] = acc_raw[i];
+    mag.raw[i] = mag_raw[i];
+  }
+  pthread_mutex_unlock(&mutex_raw);
 
   // Gyroscope low pass filter
   k = GYR_HIST;
   for ( i=0; i<3; i++ ) {
     for ( j=1; j<k; j++ )  ghist[i][j-1] = ghist[i][j];
-    ghist[i][k-1] = gyr.raw[i];
+    ghist[i][k-1] = gyr_raw[i];
     g = (float) (ghist[i][0]);
     for ( j=1; j<k; j++ )  g = g + gyr.gain * (float) ( ghist[i][j] - g );
-    gyr.avg[i] = g;
+    gyr_avg[i] = g;
   }
 
   // Accelerometer low pass filter
   k = ACC_HIST;
   for ( i=0; i<3; i++ ) {
     for ( j=1; j<k; j++ )  ahist[i][j-1] = ahist[i][j];
-    ahist[i][k-1] = acc.raw[i];
+    ahist[i][k-1] = acc_raw[i];
     a = (float) (ahist[i][0]);
     for ( j=1; j<k; j++ )  a = a + acc.gain * (float) ( ahist[i][j] - a );
-    acc.avg[i] = a;
+    acc_avg[i] = a;
   }
 
   // Magnetometer low pass filter
@@ -265,31 +276,46 @@ void imu_data (  )  {
     k = MAG_HIST;
     for ( i=0; i<3; i++ ) {
       for ( j=1; j<k; j++ )  mhist[i][j-1] = mhist[i][j];
-      mhist[i][k-1] = mag.raw[i];
+      mhist[i][k-1] = mag_raw[i];
       m = (float) (mhist[i][0]);
       for ( j=1; j<k; j++ )  m = m + mag.gain * (float) ( mhist[i][j] - m );
-      mag.avg[i] = m;
+      mag_avg[i] = m;
     }}
 
+  // Store 'avg' data
+  pthread_mutex_lock(&mutex_avg);
+  for ( i=0; i<3; i++ )  {
+    gyr.avg[i] = gyr_avg[i];
+    acc.avg[i] = acc_avg[i];
+    mag.avg[i] = mag_avg[i];
+  }
+  pthread_mutex_unlock(&mutex_avg);
+
   // Shift and orient gyroscope readings (add bias)
-  gyr.cal[X] =   ( gyr.avg[Y] - gyr.bias[Y] ) * GYR_SCALE;
-  gyr.cal[Y] =   ( gyr.avg[X] - gyr.bias[X] ) * GYR_SCALE;
-  gyr.cal[Z] = - ( gyr.avg[Z] - gyr.bias[Z] ) * GYR_SCALE;
+  gyr_cal[X] =   ( gyr_avg[Y] - gyr.bias[Y] ) * GYR_SCALE;
+  gyr_cal[Y] =   ( gyr_avg[X] - gyr.bias[X] ) * GYR_SCALE;
+  gyr_cal[Z] = - ( gyr_avg[Z] - gyr.bias[Z] ) * GYR_SCALE;
 
   // Shift and orient accelerometer readings
-  acc.cal[X] =   ( acc.avg[Y] - acc.bias[Y] ) / (double) (acc.range[Y]);
-  acc.cal[Y] =   ( acc.avg[X] - acc.bias[X] ) / (double) (acc.range[X]);
-  acc.cal[Z] = - ( acc.avg[Z] - acc.bias[Z] ) / (double) (acc.range[Z]);
+  acc_cal[X] =   ( acc_avg[Y] - acc.bias[Y] ) / (double) (acc.range[Y]);
+  acc_cal[Y] =   ( acc_avg[X] - acc.bias[X] ) / (double) (acc.range[X]);
+  acc_cal[Z] = - ( acc_avg[Z] - acc.bias[Z] ) / (double) (acc.range[Z]);
 
   // Shift and orient magnetometer readings
   if(imu.getmag) {
-    mag.cal[X] = ( mag.avg[X] /*- mag.bias[X]*/ ) / (double) (mag.range[X]);
-    mag.cal[Y] = ( mag.avg[Y] /*- mag.bias[Y]*/ ) / (double) (mag.range[Y]);
-    mag.cal[Z] = ( mag.avg[Z] /*- mag.bias[Z]*/ ) / (double) (mag.range[Z]);
+    mag_cal[X] = ( mag_avg[X] /*- mag.bias[X]*/ ) / (double) (mag.range[X]);
+    mag_cal[Y] = ( mag_avg[Y] /*- mag.bias[Y]*/ ) / (double) (mag.range[Y]);
+    mag_cal[Z] = ( mag_avg[Z] /*- mag.bias[Z]*/ ) / (double) (mag.range[Z]);
   }
 
-  // Unlock IMU data
-  //pthread_mutex_unlock(&mutex_imu);
+  // Store 'cal' data
+  pthread_mutex_lock(&mutex_cal);
+  for ( i=0; i<3; i++ )  {
+    gyr.cal[i] = gyr_cal[i];
+    acc.cal[i] = acc_cal[i];
+    mag.cal[i] = mag_cal[i];
+  }
+  pthread_mutex_unlock(&mutex_cal);
 
   return;
 }

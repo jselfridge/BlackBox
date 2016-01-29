@@ -20,15 +20,7 @@
 
 #define GYR_FSR   500
 #define ACC_FSR   4
-
-#define GYR_SCALE  ( 500.0f / 32768.0f ) * ( PI / 180.0f )
-//#define GYR_ERROR  5.0f * ( PI / 180.0 )
-//#define GYR_DRIFT  0.2f * ( PI / 180.0 )
-//#define IMU_BETA   sqrt( 3.0f / 4.0f ) * GYR_ERROR
-//#define IMU_ZETA   sqrt( 3.0f / 4.0f ) * GYR_DRIFT
-//#define R_BIAS     -3.9f * ( PI / 180.0 )
-//#define P_BIAS     -1.0f * ( PI / 180.0 )
-//#define Y_BIAS      0.0f * ( PI / 180.0 )
+#define GYR_SCALE  ( 500.0 / 32768.0 ) * ( PI / 180.0 )
 
 #define X   0
 #define Y   1

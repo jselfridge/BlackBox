@@ -1,6 +1,6 @@
 timer.c:51:6:tmr_setup	16	static
 timer.c:87:6:tmr_attr	8	static
-timer.c:13:6:tmr_init	64	static
+timer.c:13:6:tmr_init	72	static
 timer.c:118:6:tmr_thread	32	static
 timer.c:141:6:tmr_exit	8	static
 timer.c:184:6:tmr_create	40	static
