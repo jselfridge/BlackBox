@@ -85,30 +85,20 @@ void sio_exit ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sio_update ( void )  {
 
-  // Local variables
+  // Channel index
   ushort ch;
-  double norm;
 
-  // Loop through input channels
+  // Update input channels
   for ( ch=0; ch<IN_CH; ch++ ) {
-
-    // Get raw register value
-    input.reg[ch] = memoryPtr[ IN_OFFSET + ch ];
-
-    // Convert to PWM units
-    input.pwm[ch] = input.reg[ch] * IN_REG2PWM;
-
-    // Determine normalized input value
-    norm = ( 2.0 * (double) ( input.reg[ch] - IN_MIN ) / (double) ( IN_MAX - IN_MIN ) ) - 1.0;
-    if ( norm >  1.0 )  norm =  1.0;
-    if ( norm < -1.0 )  norm = -1.0;
-    input.norm[ch] = norm;
-
+    input.reg[ch]  = memoryPtr[ IN_OFFSET + ch ];
+    input.pwm[ch]  = input.reg[ch] * IN_REG2PWM;
+    input.norm[ch] = sio_norm( input.reg[ch], 'i' );
   }
 
   // Assign output register values
-  if (!armed)  sio_disarm();
-  else         for ( ch=0; ch<OUT_CH; ch++ )  memoryPtr[ OUT_OFFSET + ch ] = output.reg[ch];
+  //if (!armed)  sio_disarm();
+  //else         for ( ch=0; ch<OUT_CH; ch++ )  memoryPtr[ OUT_OFFSET + ch ] = output.reg[ch];
+  for ( ch=0; ch<OUT_CH; ch++ )  memoryPtr[ OUT_OFFSET + ch ] = output.reg[ch];
 
   return;
 }
@@ -124,17 +114,12 @@ void sio_setreg ( ushort ch, ushort reg )  {
   if( ch<0 || ch>=OUT_CH )
     printf( "Error (sio_setreg): Output channel must be between 0-9. \n" );
 
-  // Assign register value
-  output.reg[ch] = reg;
-
-  // Calculate PWM value
-  output.pwm[ch] = reg * OUT_REG2PWM;
-
-  // Determine normalized input value
-  double norm = ( 2.0 * (double) ( output.reg[ch] - OUT_MIN ) / (double) ( OUT_MAX - OUT_MIN ) ) - 1.0;
-  if ( norm >  1.0 )  norm =  1.0;
-  if ( norm < -1.0 )  norm = -1.0;
-  output.norm[ch] = norm;
+  // Assign output values
+  pthread_mutex_lock(&mutex_output);
+  output.reg[ch]  = reg;
+  output.pwm[ch]  = reg * OUT_REG2PWM;
+  output.norm[ch] = sio_norm( reg, 'o' );
+  pthread_mutex_unlock(&mutex_output);
 
   return;
 }
@@ -150,17 +135,12 @@ void sio_setpwm ( ushort ch, ushort pwm )  {
   if( ch<0 || ch>=OUT_CH )
     printf( "Error (sio_setpwm): Output channel must be between 0-9. \n" );
 
-  // Assign PWM value
-  output.pwm[ch] = pwm;
-
-  // Calculate register value
-  output.reg[ch] = pwm * OUT_PWM2REG;
-
-  // Determine normalized input value
-  double norm = ( 2.0 * (double) ( output.reg[ch] - OUT_MIN ) / (double) ( OUT_MAX - OUT_MIN ) ) - 1.0;
-  if ( norm >  1.0 )  norm =  1.0;
-  if ( norm < -1.0 )  norm = -1.0;
-  output.norm[ch] = norm;
+  // Assign output values
+  pthread_mutex_lock(&mutex_output);
+  output.pwm[ch]  = pwm;
+  output.reg[ch]  = pwm * OUT_PWM2REG;
+  output.norm[ch] = sio_norm( output.reg[ch], 'o' );
+  pthread_mutex_unlock(&mutex_output);
 
   return;
 }
@@ -176,19 +156,58 @@ void sio_setnorm ( ushort ch, double norm )  {
   if( ch<0 || ch>=OUT_CH )
     printf( "Error (sio_setnorm): Output channel must be between 0-9. \n" );
 
-  // Assign normalized value
+  // Perform local calculations
   if ( norm >  1.0 )  norm =  1.0;
   if ( norm < -1.0 )  norm = -1.0;
-  output.norm[ch] = norm;
-
-  // Determine register input value
   ushort reg = (ushort) ( (1/2.0) * (double) ( OUT_MAX - OUT_MIN ) * ( norm + 1.0 ) ) + OUT_MIN;
-  output.reg[ch] = reg;
 
-  // Calculate pwm value
-  output.pwm[ch] = reg * OUT_REG2PWM;
+  // Assign output values
+  pthread_mutex_lock(&mutex_output);
+  output.norm[ch] = norm;
+  output.reg[ch]  = reg;
+  output.pwm[ch]  = reg * OUT_REG2PWM;
+  pthread_mutex_unlock(&mutex_output);
 
   return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  sio_norm
+//  Converts a register value into a normalized range.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+double sio_norm ( ushort reg, char dir )  {
+
+  // Local variables
+  double num, den, norm;
+
+  // Identify correct range
+  switch(dir) {
+
+  case 'i' :
+    num = (double) (    reg - IN_MIN );
+    den = (double) ( IN_MAX - IN_MIN );
+    break;
+
+  case 'o' :
+    num = (double) (     reg - OUT_MIN );
+    den = (double) ( OUT_MAX - OUT_MIN );
+    break;
+
+  default :
+    printf( "Error (sio_norm): Specify the value as an input(i) or an output(o). \n" );
+    num = 1.0;
+    den = 2.0;
+    break;
+
+  }
+
+  // Calculate normalized value
+  norm = ( 2.0 * num / den ) - 1.0;
+  if ( norm >  1.0 )  norm =  1.0;
+  if ( norm < -1.0 )  norm = -1.0;
+
+  return norm;
 }
 
 
@@ -196,11 +215,12 @@ void sio_setnorm ( ushort ch, double norm )  {
 //  sio_disarm
 //  Set all system outputs to their disarmed state.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sio_disarm ( void )  {
+/*void sio_disarm ( void )  {
   ushort ch;
   for ( ch=0; ch<OUT_CH; ch++ )  sio_setpwm( ch, off[ch] );
   return;
 }
+*/
 
 
 

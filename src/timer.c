@@ -27,7 +27,8 @@ void tmr_init ( void )  {
   pthread_mutex_init( &mutex_raw,    NULL );
   pthread_mutex_init( &mutex_avg,    NULL );
   pthread_mutex_init( &mutex_cal,    NULL );
-  pthread_mutex_init( &mutex_ahr,    NULL );
+  pthread_mutex_init( &mutex_quat,   NULL );
+  pthread_mutex_init( &mutex_eul,    NULL );
   pthread_mutex_init( &mutex_input,  NULL );
   pthread_mutex_init( &mutex_output, NULL );
 
@@ -148,7 +149,8 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&mutex_raw);
   pthread_mutex_destroy(&mutex_avg);
   pthread_mutex_destroy(&mutex_cal);
-  pthread_mutex_destroy(&mutex_ahr);
+  pthread_mutex_destroy(&mutex_quat);
+  pthread_mutex_destroy(&mutex_eul);
   pthread_mutex_destroy(&mutex_input);
   pthread_mutex_destroy(&mutex_output);
 
@@ -307,9 +309,9 @@ void *fcn_ahr (  )  {
   tmr_create(&tmr_ahr);
   while (running) {
     tmr_start(&tmr_ahr);
-    //ahr_run();
+    ahr_run();
     tmr_finish(&tmr_ahr);
-    //if (datalog.enabled)  log_record(LOG_AHR);
+    if (datalog.enabled)  log_record(LOG_AHR);
     tmr_pause(&tmr_ahr);
   }
   pthread_exit(NULL);

@@ -73,11 +73,11 @@ void ahr_fusion ( void )  {
 
   // Get values from AHR data structure
   double q[4], b[3], fx, fz, dt;
-  pthread_mutex_lock(&mutex_ahr);
+  pthread_mutex_lock(&mutex_quat);
   fx = ahr.fx;  fz = ahr.fz;  dt = ahr.dt;
   for ( i=0; i<4; i++ )  q[i] = ahr.quat[i];
   for ( i=0; i<3; i++ )  b[i] = ahr.bias[i];
-  pthread_mutex_unlock(&mutex_ahr);
+  pthread_mutex_unlock(&mutex_quat);
 
   // Get values from IMU data structure
   double g[3], a[3], m[3];
@@ -212,19 +212,25 @@ void ahr_fusion ( void )  {
   e[Y] = asin  (   2.0 * ( qwy - qxz ) )                                  - P_BIAS;
   e[Z] = atan2 ( ( 2.0 * ( qwz + qxy ) ), ( 1.0 - 2.0 * ( qyy + qzz ) ) ) - Y_BIAS;
 
-  // Push to 'AHR' data structure
-  pthread_mutex_lock(&mutex_ahr);
+  // Update 'AHR' values
   ahr.fx = fx;  ahr.fz = fz;
+
+  // Push 'quat' data to struct
+  pthread_mutex_lock(&mutex_quat);
   for ( i=0; i<4; i++ )  {
     ahr.quat[i]  = q[i];
     ahr.dquat[i] = qd[i];
   }
+  pthread_mutex_unlock(&mutex_quat);
+
+  // Push 'eul' data to struct
+  pthread_mutex_unlock(&mutex_eul);
   for ( i=0; i<3; i++ ) {
     ahr.eul[i]  = e[i];
     ahr.deul[i] = g[i];
     ahr.bias[i] = b[i];
   }
-  pthread_mutex_unlock(&mutex_ahr);
+  pthread_mutex_unlock(&mutex_eul);
 
   return;
 }

@@ -13,8 +13,8 @@
 #define SIO_OFF1  1000
 #define SIO_OFF2  1000
 #define SIO_OFF3  1000
-#define SIO_OFF4  1500
-#define SIO_OFF5  2000
+#define SIO_OFF4  1000
+#define SIO_OFF5  0000
 #define SIO_OFF6  1000
 #define SIO_OFF7  1000
 #define SIO_OFF8  1000
@@ -22,21 +22,21 @@
 
 
 // Input signal variables
+#define IN_CH       10
 #define IN_OFFSET   2049
 #define IN_REG2PWM  (30.0/200.0)
 #define IN_PWM2REG  (200.0/30.0)
-#define IN_CH       10
-#define IN_MIN      6667  // ( 1000 pwm ) * (200/30)
-#define IN_MAX      13333 // ( 2000 pwm ) * (200/30)
+#define IN_MIN      ( 1000 * IN_PWM2REG )
+#define IN_MAX      ( 2000 * IN_PWM2REG )
 
 
 // Output signal variables
+#define OUT_CH      10
 #define OUT_OFFSET  2060
 #define OUT_REG2PWM (23.0/200.0)
 #define OUT_PWM2REG (200.0/23.0)
-#define OUT_CH      10
-#define OUT_MIN     8695  // ( 1000 pwm ) * (200/23)
-#define OUT_MAX     17390 // ( 2000 pwm ) * (200/23)
+#define OUT_MIN     ( 1000 * OUT_PWM2REG )
+#define OUT_MAX     ( 2000 * OUT_PWM2REG )
 
 
 // Channel enumerations
@@ -89,7 +89,8 @@ void    sio_update  ( void );
 void    sio_setreg  ( ushort ch, ushort reg  );
 void    sio_setpwm  ( ushort ch, ushort pwm  );
 void    sio_setnorm ( ushort ch, double norm );
-void    sio_disarm  ( void );
+double  sio_norm    ( ushort reg, char dir   );
+//void    sio_disarm  ( void );
 
 
 #endif

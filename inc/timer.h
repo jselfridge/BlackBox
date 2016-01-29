@@ -52,7 +52,8 @@ timer_struct tmr_debug;
 pthread_mutex_t mutex_raw;
 pthread_mutex_t mutex_avg;
 pthread_mutex_t mutex_cal;
-pthread_mutex_t mutex_ahr;
+pthread_mutex_t mutex_quat;
+pthread_mutex_t mutex_eul;
 pthread_mutex_t mutex_input;
 pthread_mutex_t mutex_output;
 
