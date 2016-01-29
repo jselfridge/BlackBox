@@ -67,11 +67,9 @@ void sys_debug ( void )  {
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
-  //pthread_mutex_lock(&mutex_imu);    sys_imu();    pthread_mutex_unlock(&mutex_imu);
-  //pthread_mutex_lock(&mutex_ahrs);
+  sys_imu();
   sys_ahr();
-  //pthread_mutex_unlock(&mutex_imu);
-  //pthread_mutex_lock(&mutex_sio);    sys_sio();    pthread_mutex_unlock(&mutex_sio);
+  sys_sio();
 
   // Complete debugging display 
   printf("  "); fflush(stdout);
@@ -89,6 +87,9 @@ void sys_imu ( void )  {
   // Loop counter
   ushort i;
 
+  // Lock IMU data
+  //pthread_mutex_lock(&mutex_imu);
+
   // Gyroscope data
   //for ( i=0; i<3; i++ )  printf("%06d ",   gyr.raw[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%09.2f ", gyr.avg[i] );  printf("   ");  fflush(stdout);
@@ -103,6 +104,9 @@ void sys_imu ( void )  {
   //for ( i=0; i<3; i++ )  printf("%04d ",   mag.raw[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%07.2f ", mag.avg[i] );  printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%06.3f ", mag.cal[i] );  printf("   ");  fflush(stdout);
+
+  // Unlock IMU data
+  //pthread_mutex_unlock(&mutex_imu);
 
   return;
 }

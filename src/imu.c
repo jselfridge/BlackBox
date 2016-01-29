@@ -219,6 +219,9 @@ void imu_data (  )  {
   static short ahist[3][ACC_HIST];
   static short mhist[3][MAG_HIST];
 
+  // Lock IMU data
+  //pthread_mutex_lock(&mutex_imu);
+
   // Increment counter
   imu.getmag = false;
   if ( imu.count == 0 ) {
@@ -226,9 +229,6 @@ void imu_data (  )  {
     imu.count = imu.loops;
   }
   imu.count--;
-
-  // Lock IMU data
-  pthread_mutex_lock(&mutex_imu);
 
   // Sample IMU
   if( mpu_get_gyro_reg( gyr.raw, NULL ) )
@@ -289,7 +289,7 @@ void imu_data (  )  {
   }
 
   // Unlock IMU data
-  pthread_mutex_unlock(&mutex_imu);
+  //pthread_mutex_unlock(&mutex_imu);
 
   return;
 }
