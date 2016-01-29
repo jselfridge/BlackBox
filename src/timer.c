@@ -24,13 +24,16 @@ void tmr_init ( void )  {
   if(DEBUG)  printf("  Create threads and mutexes:  ");
 
   // Create mutex conditions
-  pthread_mutex_init( &mutex_raw, NULL );
-  pthread_mutex_init( &mutex_avg, NULL );
-  pthread_mutex_init( &mutex_cal, NULL );
+  pthread_mutex_init( &mutex_raw,    NULL );
+  pthread_mutex_init( &mutex_avg,    NULL );
+  pthread_mutex_init( &mutex_cal,    NULL );
+  pthread_mutex_init( &mutex_ahr,    NULL );
+  pthread_mutex_init( &mutex_input,  NULL );
+  pthread_mutex_init( &mutex_output, NULL );
 
   // Create primary timing threads
   tmr_thread( &tmr_imu,  &attr, fcn_imu  );
-  //tmr_thread( &tmr_ahr,  &attr, fcn_ahr  );
+  tmr_thread( &tmr_ahr,  &attr, fcn_ahr  );
   tmr_thread( &tmr_sio,  &attr, fcn_sio  );
   tmr_thread( &tmr_flag, &attr, fcn_flag );
 
@@ -52,24 +55,24 @@ void tmr_setup ( void )  {
   if(DEBUG)  printf("  Assign thread structure elements \n");
 
   // IMU timer
-  tmr_imu.name   =  "imu";
-  tmr_imu.prio   =  PRIO_IMU;
-  tmr_imu.per    =  1000000 / HZ_IMU_FAST;
+  tmr_imu.name    =  "imu";
+  tmr_imu.prio    =  PRIO_IMU;
+  tmr_imu.per     =  1000000 / HZ_IMU_FAST;
 
   // AHRS timer
-  tmr_ahr.name  =  "ahr";
-  tmr_ahr.prio  =  PRIO_AHR;
-  tmr_ahr.per   =  1000000 / HZ_AHR;
+  tmr_ahr.name    =  "ahr";
+  tmr_ahr.prio    =  PRIO_AHR;
+  tmr_ahr.per     =  1000000 / HZ_AHR;
 
   // System I/O timer
-  tmr_sio.name   =  "sio";
-  tmr_sio.prio   =  PRIO_SIO;
-  tmr_sio.per    =  1000000 / HZ_SIO;
+  tmr_sio.name    =  "sio";
+  tmr_sio.prio    =  PRIO_SIO;
+  tmr_sio.per     =  1000000 / HZ_SIO;
 
   // Flags timer
-  tmr_flag.name  =  "flag";
-  tmr_flag.prio  =  PRIO_FLAG;
-  tmr_flag.per   =  1000000 / HZ_FLAG;
+  tmr_flag.name   =  "flag";
+  tmr_flag.prio   =  PRIO_FLAG;
+  tmr_flag.per    =  1000000 / HZ_FLAG;
 
   // Debugging timer
   tmr_debug.name  =  "debug";
@@ -145,6 +148,9 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&mutex_raw);
   pthread_mutex_destroy(&mutex_avg);
   pthread_mutex_destroy(&mutex_cal);
+  pthread_mutex_destroy(&mutex_ahr);
+  pthread_mutex_destroy(&mutex_input);
+  pthread_mutex_destroy(&mutex_output);
 
   // Exit IMU thread
   if( pthread_join ( tmr_imu.id, NULL ) )
@@ -152,9 +158,9 @@ void tmr_exit ( void )  {
   if(DEBUG)  printf( "imu " );
 
   // Exit AHR thread
-  //if( pthread_join ( tmr_ahr.id, NULL ) )
-  //printf( "Error (tmr_exit): Failed to exit 'ahr' thread. \n" );
-  //if(DEBUG)  printf( "ahr " );
+  if( pthread_join ( tmr_ahr.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'ahr' thread. \n" );
+  if(DEBUG)  printf( "ahr " );
 
   // Exit system input/output thread
   if( pthread_join ( tmr_sio.id, NULL ) )

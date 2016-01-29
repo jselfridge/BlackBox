@@ -71,21 +71,23 @@ void ahr_fusion ( void )  {
   // Quaternion index
   ushort w=0, x=1, y=2, z=3;
 
-  // Get values from mpu structure
-  double q[4], g[3], a[3], m[3], b[3], fx, fz, dt;
+  // Get values from AHR data structure
+  double q[4], b[3], fx, fz, dt;
+  pthread_mutex_lock(&mutex_ahr);
   fx = ahr.fx;  fz = ahr.fz;  dt = ahr.dt;
-
-  //pthread_mutex_lock(&mutex_cal);
-
   for ( i=0; i<4; i++ )  q[i] = ahr.quat[i];
-  for ( i=0; i<3; i++ ) {
+  for ( i=0; i<3; i++ )  b[i] = ahr.bias[i];
+  pthread_mutex_unlock(&mutex_ahr);
+
+  // Get values from IMU data structure
+  double g[3], a[3], m[3];
+  pthread_mutex_lock(&mutex_cal);
+  for ( i=0; i<3; i++ )  {
     g[i] = gyr.cal[i];
     a[i] = acc.cal[i];
     m[i] = mag.cal[i];
-    b[i] = ahr.bias[i];
   }
-
-  //pthread_mutex_unlock(&mutex_cal);
+  pthread_mutex_unlock(&mutex_cal);
 
   // Normalize magnetometer
   norm = 0.0;
@@ -210,27 +212,22 @@ void ahr_fusion ( void )  {
   e[Y] = asin  (   2.0 * ( qwy - qxz ) )                                  - P_BIAS;
   e[Z] = atan2 ( ( 2.0 * ( qwz + qxy ) ), ( 1.0 - 2.0 * ( qyy + qzz ) ) ) - Y_BIAS;
 
-  //pthread_mutex_lock(&mutex_fusion);
-
+  // Push to 'AHR' data structure
+  pthread_mutex_lock(&mutex_ahr);
   ahr.fx = fx;  ahr.fz = fz;
-
   for ( i=0; i<4; i++ )  {
     ahr.quat[i]  = q[i];
     ahr.dquat[i] = qd[i];
   }
-
   for ( i=0; i<3; i++ ) {
     ahr.eul[i]  = e[i];
     ahr.deul[i] = g[i];
     ahr.bias[i] = b[i];
   }
-
-  //pthread_mutex_unlock(&mutex_ahr);
+  pthread_mutex_unlock(&mutex_ahr);
 
   return;
 }
-
-
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

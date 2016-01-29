@@ -66,6 +66,11 @@ void flg_check ( void )  {
   // Channel index
   ushort ch;
 
+  // Pull shared data
+  //pthread_mutex_lock(&mutex_???);
+  // input.norm[];
+  //pthread_mutex_unlock(&mutex_???);
+
   // Adjust counters
   for ( ch=0; ch<4; ch++ ) {
     ( input.norm[ch] >  0.95 ) ? ( flag.upper[ch]++ ) : ( flag.upper[ch] = 0 );
