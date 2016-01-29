@@ -89,16 +89,20 @@ void sio_update ( void )  {
   ushort ch;
 
   // Update input channels
+  pthread_mutex_lock(&mutex_input);
   for ( ch=0; ch<IN_CH; ch++ ) {
     input.reg[ch]  = memoryPtr[ IN_OFFSET + ch ];
     input.pwm[ch]  = input.reg[ch] * IN_REG2PWM;
     input.norm[ch] = sio_norm( input.reg[ch], 'i' );
   }
+  pthread_mutex_unlock(&mutex_input);
 
   // Assign output register values
   //if (!armed)  sio_disarm();
   //else         for ( ch=0; ch<OUT_CH; ch++ )  memoryPtr[ OUT_OFFSET + ch ] = output.reg[ch];
+  pthread_mutex_lock(&mutex_output);
   for ( ch=0; ch<OUT_CH; ch++ )  memoryPtr[ OUT_OFFSET + ch ] = output.reg[ch];
+  pthread_mutex_unlock(&mutex_output);
 
   return;
 }
@@ -184,21 +188,21 @@ double sio_norm ( ushort reg, char dir )  {
   // Identify correct range
   switch(dir) {
 
-  case 'i' :
-    num = (double) (    reg - IN_MIN );
-    den = (double) ( IN_MAX - IN_MIN );
-    break;
+    case 'i' :
+      num = (double) (    reg - IN_MIN );
+      den = (double) ( IN_MAX - IN_MIN );
+      break;
 
-  case 'o' :
-    num = (double) (     reg - OUT_MIN );
-    den = (double) ( OUT_MAX - OUT_MIN );
-    break;
+    case 'o' :
+      num = (double) (     reg - OUT_MIN );
+      den = (double) ( OUT_MAX - OUT_MIN );
+      break;
 
-  default :
-    printf( "Error (sio_norm): Specify the value as an input(i) or an output(o). \n" );
-    num = 1.0;
-    den = 2.0;
-    break;
+    default :
+      printf( "Error (sio_norm): Specify the value as an input(i) or an output(o). \n" );
+      num = 1.0;
+      den = 2.0;
+      break;
 
   }
 
