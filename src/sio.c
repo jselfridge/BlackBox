@@ -97,9 +97,8 @@ void sio_update ( void )  {
   }
   pthread_mutex_unlock(&mutex_input);
 
-  // Assign output register values
-  //if (!armed)  sio_disarm();
-  //else         for ( ch=0; ch<OUT_CH; ch++ )  memoryPtr[ OUT_OFFSET + ch ] = output.reg[ch];
+  // Assign output signal register values
+  if (!armed)  sio_disarm();
   pthread_mutex_lock(&mutex_output);
   for ( ch=0; ch<OUT_CH; ch++ )  memoryPtr[ OUT_OFFSET + ch ] = output.reg[ch];
   pthread_mutex_unlock(&mutex_output);
@@ -219,12 +218,11 @@ double sio_norm ( ushort reg, char dir )  {
 //  sio_disarm
 //  Set all system outputs to their disarmed state.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void sio_disarm ( void )  {
+void sio_disarm ( void )  {
   ushort ch;
   for ( ch=0; ch<OUT_CH; ch++ )  sio_setpwm( ch, off[ch] );
   return;
 }
-*/
 
 
 

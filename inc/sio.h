@@ -10,9 +10,9 @@
 
 // Define disarm values (move to flags code?)
 #define SIO_OFF0  1000
-#define SIO_OFF1  1000
-#define SIO_OFF2  1000
-#define SIO_OFF3  1000
+#define SIO_OFF1  1200
+#define SIO_OFF2  1400
+#define SIO_OFF3  1600
 #define SIO_OFF4  1000
 #define SIO_OFF5  0000
 #define SIO_OFF6  1000
@@ -90,7 +90,7 @@ void    sio_setreg  ( ushort ch, ushort reg  );
 void    sio_setpwm  ( ushort ch, ushort pwm  );
 void    sio_setnorm ( ushort ch, double norm );
 double  sio_norm    ( ushort reg, char dir   );
-//void    sio_disarm  ( void );
+void    sio_disarm  ( void );
 
 
 #endif

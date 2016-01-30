@@ -72,7 +72,14 @@ void ctl_exit ( void )  {
 //  Executes the top level logic for each control loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void ctl_exec ( void )  {
-  // Do something...
+
+  ushort ch;
+  pthread_mutex_lock(&mutex_input);
+  pthread_mutex_lock(&mutex_output);
+  for ( ch=0; ch<10; ch++ )  output.norm[ch] = input.norm[ch];
+  pthread_mutex_unlock(&mutex_input);
+  pthread_mutex_unlock(&mutex_output);
+
   return;
 }
 
