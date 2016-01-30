@@ -9,10 +9,6 @@
 
 
 // Define misc items
-//#define CTRL_HZ     100
-//#define DEG2RAD     (PI/180.0f)
-//#define RAD2DEG     (180.0f/PI)
-//#define STICK_HOLD  3.0
 #define IRESET     0.25
 
 
@@ -23,19 +19,19 @@
 #define MOT_BR  3
 
 
-// Define range values (enumerate?)
+// Define range values
 // Maximum reference commands
-// R: rad  P: rad  Y: rad/s  T:??
+// R: rad  P: rad  Y: rad/s  T:%thrust
 #define R_RANGE   0.50
 #define P_RANGE   0.50
 #define Y_RANGE   1.50
-#define T_RANGE   0.00
+#define T_RANGE   0.40
 
 
-// Define throttle gains
-//#define T_MIN     1500
-//#define T_MAX     1650
-//#define T_TILT   30.0f
+// Define throttle gains    // TILT = 1.0
+#define TMIN   0.00
+#define TMAX   0.30
+#define TILT   0.00
 
 
 // Full scale ranges (enumerate???)

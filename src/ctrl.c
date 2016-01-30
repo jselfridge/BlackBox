@@ -67,7 +67,7 @@ void ctl_pid ( void )  {
   // Local variables
   ushort i, T=4;
   bool reset;
-  double eul[3], ang[3], in[4], ref[4], cmd[4], out[4], heading;
+  double eul[3], ang[3], in[4], ref[4], cmd[4], out[4], heading, dial;
   static double perr[3] = { 0.0, 0.0, 0.0 };
   static double ierr[3] = { 0.0, 0.0, 0.0 };
   static double derr[3] = { 0.0, 0.0, 0.0 };
@@ -80,6 +80,7 @@ void ctl_pid ( void )  {
   // Obtain inputs
   pthread_mutex_lock(&mutex_input);
   for ( i=0; i<4; i++ )  in[i] = input.norm[i];
+  dial = input.norm[CH_D];
   pthread_mutex_unlock(&mutex_input);
 
   // Obtain vehicle heading
@@ -125,17 +126,24 @@ void ctl_pid ( void )  {
            ierr[Z] * ctrl.igain[Z] + 
            derr[Z] * ctrl.dgain[Z];
 
-  /* // Determine throttle adjustment
-  double tilt, threshold, range;
-  tilt = 1 - ( cos(eul[X]) * cos(eul[Y]) );
-  threshold = T_MIN + (0.5) * ( norm[CH_D] + 1.0 ) * ( T_MAX - T_MIN ) - T_RANGE;
-  if ( norm[CH_T] <=0 )  range = threshold - 1000;
-  else                   range = 2.0 * T_RANGE;
-  cmd[T] = threshold + norm[CH_T] * range + T_TILT * tilt;
-  */
+  // Determine throttle adjustment
+
+  //double tilt;
+  //tilt = 1 - ( cos(eul[X]) * cos(eul[Y]) );
 
 
-  cmd[T] = 0.0;  // Debugging Hover
+  double threshold;
+  double range;
+  threshold =  ( 0.5 * ( dial + 1.0 ) * ( TMAX - TMIN ) ) + TMIN - T_RANGE;
+  if ( in[CH_T] <= -0.6 )  range = threshold + 1.0;
+  else                     range = 2.0 * T_RANGE;
+
+  //cmd[T] = threshold + in[CH_T] * range + T_TILT * tilt;
+
+  cmd[T]  = 0.0;
+  //cmd[T] += TILT * tilt;
+  cmd[T] += hover; 
+
 
   // Assign motor outputs
   if ( in[CH_T] > -0.9 ) {
