@@ -80,7 +80,8 @@ void log_init ( void )  {
   if(DEBUG)  printf("ctrl ");
   log_ctrl.time =  malloc( sizeof(float)  * log_ctrl.limit     );
   log_ctrl.dur  =  malloc( sizeof(ushort) * log_ctrl.limit     );
-  log_ctrl.blah =  malloc( sizeof(ushort) * log_ctrl.limit * 3 );
+  log_ctrl.err  =  malloc( sizeof(double) * log_ctrl.limit * 9 );
+  log_ctrl.cmd  =  malloc( sizeof(double) * log_ctrl.limit * 4 );
 
   // Complete datalog initialization 
   if(DEBUG)  printf("\n");
@@ -273,12 +274,18 @@ void log_close ( void )  {
   sprintf( file, "%sctrl.txt", datalog.path );
   fctl = fopen( file, "w" );
   if( fctl == NULL )  printf( "Error (log_XX): Cannot open 'ctrl' file. \n" );
-  fprintf( fctl, "       Ctime      Cblah" );
+  fprintf( fctl,
+    "       Ctime      Cblah    \
+    Exx      Exx      Exx    \
+    Exx      Exx      Exx    \
+    Exx      Exx      Exx    \
+    CX       CY       CZ       CT" );
 
   // Loop through controller data
   for ( row = 0; row < log_ctrl.count; row++ ) {
     fprintf( fctl, "\n %011.6f    ", log_ctrl.time[row] );
-    for ( i=0; i<3; i++ )  fprintf( fctl, "%04d ",  log_ctrl.blah[ row*3 +i ] );   fprintf( fout, "   " );
+    for ( i=0; i<9; i++ )  fprintf( fctl, "%09.4f ",  log_ctrl.err[ row*9 +i ] );   fprintf( fout, "   " );
+    for ( i=0; i<4; i++ )  fprintf( fctl, "%09.4f ",  log_ctrl.cmd[ row*4 +i ] );   fprintf( fout, "   " );
   }
 
   // Close files
@@ -360,7 +367,8 @@ void log_exit ( void )  {
   if(DEBUG)  printf("ctrl ");
   free(log_ctrl.time);
   free(log_ctrl.dur);
-  free(log_ctrl.blah);
+  free(log_ctrl.err);
+  free(log_ctrl.cmd);
 
   if(DEBUG)  printf("\n");
   return;
@@ -486,7 +494,8 @@ void log_record ( enum log_index index )  {
       row = log_ctrl.count;
       log_ctrl.time[row] = timestamp;
       log_ctrl.dur[row]  = tmr_ctrl.dur;
-      for ( i=0; i<3; i++ )  log_ctrl.blah[ row*3 +i ] = ctrl.blah[i];
+      for ( i=0; i<9; i++ )  log_ctrl.err[ row*9 +i ] = ctrl.err[i/3][i%3];
+      for ( i=0; i<4; i++ )  log_ctrl.cmd[ row*4 +i ] = ctrl.cmd[i];
       log_ctrl.count++;
     }
 

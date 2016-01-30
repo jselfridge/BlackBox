@@ -61,11 +61,11 @@
 
 // CTRL structure
 typedef struct ctrl_struct {
-  ushort  blah[3];
   float   dt;
-  double  err[3][3];
-  double  gain[3][3];
-  double  scale[4];
+  double  scale [4];
+  double  gain  [3][3];
+  double  err   [3][3];
+  double  cmd   [4];
 } ctrl_struct;
 ctrl_struct ctrl;
 

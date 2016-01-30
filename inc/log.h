@@ -72,7 +72,8 @@ typedef struct log_ctrl_struct {
   ulong  limit;
   float  *time;
   ushort *dur;
-  ushort *blah;
+  double *err;
+  double *cmd;
 } log_ctrl_struct;
 log_ctrl_struct log_ctrl;
 

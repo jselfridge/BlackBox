@@ -14,28 +14,28 @@ void ctl_init ( void )  {
   if (DEBUG)  printf("Initializing controller \n");
 
   // Local variables
-  ushort i, j;
+  //ushort i, j;
 
-  // Set timing values
+  // Set timing values (make 'const' during initialization)
   ctrl.dt = 1.0 / HZ_CTRL;
 
-  // Set reference ranges
+  // Set reference ranges (make 'const' during initialization)
   ctrl.scale[CH_R] = R_RANGE;
   ctrl.scale[CH_P] = P_RANGE;
   ctrl.scale[CH_Y] = Y_RANGE;
   ctrl.scale[CH_T] = T_RANGE;
 
-  // Zero out error values
+  /*// Zero out error values
   for ( i=0; i<3; i++ ) {
     for ( j=0; j<3; j++ ) {
       ctrl.err[i][j] = 0.0;
     }
-  }
+  }*/
 
-  // Set gain values
-  ctrl.gain[X][P] = 150.0;  ctrl.gain[Y][P] = 150.0;  ctrl.gain[Z][P] =   0.0;
+  // Set gain values (make 'const' during initialization) P 150  I 0  D 35
+  ctrl.gain[X][P] =   0.0;  ctrl.gain[Y][P] =   0.0;  ctrl.gain[Z][P] =   0.0;
   ctrl.gain[X][I] =   0.0;  ctrl.gain[Y][I] =   0.0;  ctrl.gain[Z][I] =   0.0;
-  ctrl.gain[X][D] =  35.0;  ctrl.gain[Y][D] =  35.0;  ctrl.gain[Z][D] =   0.0;
+  ctrl.gain[X][D] =   0.0;  ctrl.gain[Y][D] =   0.0;  ctrl.gain[Z][D] =   0.0;
 
   return;
 }
@@ -70,8 +70,9 @@ void ctl_exec ( void )  {
 void ctl_pid ( void )  {
 
   // Local variables
-  ushort i;
+  ushort i, j;
   double eul[3], ang[3], norm[4], ref[4], cmd[4];
+  static double err[3][3] = { { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 } };
 
   // Obtain states
   pthread_mutex_lock(&mutex_eul);
@@ -85,15 +86,13 @@ void ctl_pid ( void )  {
   for ( i=0; i<4; i++ )  ref[i] = norm[i] * ctrl.scale[i];
 
   // Determine roll (X) adjustment
-  ctrl.err[X][P] = -eul[X] + ref[CH_R];
-  ctrl.err[X][D] = -ang[X];
-  if ( norm[CH_R] < -IRESET || norm[CH_R] > IRESET )  
-    ctrl.err[X][I] = 0.0;
-  else
-    ctrl.err[X][I] += ctrl.err[X][P] * ctrl.dt;
-  cmd[X] = ctrl.err[X][P] * ctrl.gain[X][P] + 
-                  ctrl.err[X][I] * ctrl.gain[X][I] + 
-                  ctrl.err[X][D] * ctrl.gain[X][D];
+  err[X][P] = -eul[X] + ref[CH_R];
+  err[X][D] = -ang[X];
+  if ( norm[CH_R] < -IRESET || norm[CH_R] > IRESET )  err[X][I] = 0.0;
+  else                                                err[X][I] += err[X][P] * ctrl.dt;
+  cmd[X] = err[X][P] * ctrl.gain[X][P] + 
+           err[X][I] * ctrl.gain[X][I] + 
+           err[X][D] * ctrl.gain[X][D];
 		  /*
   // Determine pitch (Y) adjustment
   double P_KIreset;
@@ -145,6 +144,11 @@ void ctl_pid ( void )  {
   } else {  for ( i=0; i<4; i++ )  sys.output[i] = 1000;  }
   */
 
+  // Push to data structure
+  pthread_mutex_lock(&mutex_ctrl);
+  for ( i=0; i<3; i++ )  for ( j=0; j<3; j++ )  ctrl.err[i][j] = err[i][j];
+  for ( i=0; i<4; i++ )  ctrl.cmd[i] = cmd[i];
+  pthread_mutex_unlock(&mutex_ctrl);
 
   return;
 }
