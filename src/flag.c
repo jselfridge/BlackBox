@@ -68,7 +68,7 @@ void flg_check ( void )  {
 
   // Adjust state and counters
   pthread_mutex_lock(&mutex_input);
-  energized = ( input.norm[CH_T] <= -0.95 ) ? ( false ) : ( true );
+  energized = ( input.norm[CH_T] <= -0.9 ) ? ( false ) : ( true );
   for ( ch=0; ch<4; ch++ ) {
     ( input.norm[ch] >  0.95 ) ? ( flag.upper[ch]++ ) : ( flag.upper[ch] = 0 );
     ( input.norm[ch] < -0.95 ) ? ( flag.lower[ch]++ ) : ( flag.lower[ch] = 0 );
@@ -93,6 +93,11 @@ void flg_check ( void )  {
   if ( !energized && !flag.lower[CH_R] && !flag.upper[CH_R] )  {
     if ( flag.upper[CH_Y] >= flag.limit[CH_Y] ) {
       armed = true;
+      pthread_mutex_lock(&mutex_ctrl);
+      pthread_mutex_lock(&mutex_eul);
+      ctrl.heading = ahr.eul[Z];
+      pthread_mutex_unlock(&mutex_eul);
+      pthread_mutex_unlock(&mutex_ctrl);
       led_on(LED_MOT);
     }
     if ( flag.lower[CH_Y]  >= flag.limit[CH_Y] ) {

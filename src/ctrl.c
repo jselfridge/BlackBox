@@ -25,10 +25,12 @@ void ctl_init ( void )  {
   ctrl.scale[CH_Y] = Y_RANGE;
   ctrl.scale[CH_T] = T_RANGE;
 
-  // Set gain values (make 'const' during initialization) P 150  I 0  D 35
-  ctrl.pgain[X] =   0.0;  ctrl.pgain[Y] =   0.0;  ctrl.pgain[Z] =   0.0;
-  ctrl.igain[X] =   0.0;  ctrl.igain[Y] =   0.0;  ctrl.igain[Z] =   0.0;
-  ctrl.dgain[X] =   0.0;  ctrl.dgain[Y] =   0.0;  ctrl.dgain[Z] =   0.0;
+  // Set gain values (make 'const' during initialization)
+  // ORIG:   P  150  I 0  D 35
+  // NORM:   P 0.30  I 0  D 0.06
+  ctrl.pgain[X] = 0.00;  ctrl.pgain[Y] = 0.00;  ctrl.pgain[Z] = 0.00;
+  ctrl.igain[X] = 0.00;  ctrl.igain[Y] = 0.00;  ctrl.igain[Z] = 0.00;
+  ctrl.dgain[X] = 0.00;  ctrl.dgain[Y] = 0.00;  ctrl.dgain[Z] = 0.00;
 
   return;
 }
@@ -63,9 +65,9 @@ void ctl_exec ( void )  {
 void ctl_pid ( void )  {
 
   // Local variables
-  ushort i;
+  ushort i, T=4;
   bool reset;
-  double eul[3], ang[3], norm[4], ref[4], cmd[4];
+  double eul[3], ang[3], in[4], ref[4], cmd[4], out[4], heading;
   static double perr[3] = { 0.0, 0.0, 0.0 };
   static double ierr[3] = { 0.0, 0.0, 0.0 };
   static double derr[3] = { 0.0, 0.0, 0.0 };
@@ -75,16 +77,23 @@ void ctl_pid ( void )  {
   for ( i=0; i<3; i++ )  {  eul[i] = ahr.eul[i];  ang[i] = ahr.deul[i];  }
   pthread_mutex_unlock(&mutex_eul);
 
-  // Obtain inputs and references
+  // Obtain inputs
   pthread_mutex_lock(&mutex_input);
-  for ( i=0; i<4; i++ )  norm[i] = input.norm[i];
+  for ( i=0; i<4; i++ )  in[i] = input.norm[i];
   pthread_mutex_unlock(&mutex_input);
-  for ( i=0; i<4; i++ )  ref[i] = norm[i] * ctrl.scale[i];
+
+  // Obtain vehicle heading
+  pthread_mutex_lock(&mutex_ctrl);
+  heading = ctrl.heading;
+  pthread_mutex_unlock(&mutex_ctrl);
+
+  // Calculate reference signals
+  for ( i=0; i<4; i++ )  ref[i] = in[i] * ctrl.scale[i];
 
   // Determine roll (X) adjustment
   perr[X] = -eul[X] + ref[CH_R];
   derr[X] = -ang[X];
-  reset = ( norm[CH_R] < -IRESET || norm[CH_R] > IRESET );
+  reset = ( in[CH_R] < -IRESET || in[CH_R] > IRESET );
   if (reset)  ierr[X] = 0.0;
   else        ierr[X] += perr[X] * ctrl.dt;
   cmd[X] = perr[X] * ctrl.pgain[X] +
@@ -94,51 +103,50 @@ void ctl_pid ( void )  {
   // Determine pitch (Y) adjustment
   perr[Y] = -eul[Y] + ref[CH_P];
   derr[Y] = -ang[Y];
-  reset = ( norm[CH_P] < -IRESET || norm[CH_P] > IRESET );
+  reset = ( in[CH_P] < -IRESET || in[CH_P] > IRESET );
   if (reset)  ierr[Y] = 0.0; 
   else        ierr[Y] += perr[Y] * ctrl.dt;
   cmd[Y] = perr[Y] * ctrl.pgain[Y] + 
            ierr[Y] * ctrl.igain[Y] + 
            derr[Y] * ctrl.dgain[Y];
-  /*
+
   // Determine yaw (Z) adjustment
-  double Y_KIreset;
-  if ( ctrl.norm[CH_T] > -0.9 && fabs(ctrl.norm[CH_Y]) > 0.15 )  ctrl.heading += ctrl.ref[CH_Y] * ctrl.dt;
-  while ( ctrl.heading >   PI )  ctrl.heading -= 2.0*PI;
-  while ( ctrl.heading <= -PI )  ctrl.heading += 2.0*PI;
-  ctrl.err[Z][P] = -Eul[Z] + ctrl.heading;
-  while ( ctrl.err[Z][P] >   PI )  ctrl.heading -= 2.0*PI;
-  while ( ctrl.err[Z][P] <= -PI )  ctrl.heading += 2.0*PI;
-  ctrl.err[Z][D] = -dEul[Z];
-  Y_KIreset = ctrl.ref[CH_Y] / ctrl.range[CH_Y];
-  if ( Y_KIreset < -I_RESET || Y_KIreset > I_RESET )
-    ctrl.err[Z][I] = 0; 
-  else
-    ctrl.err[Z][I] += ctrl.err[Z][P] * ctrl.dt;
-  ctrl.input[Z] = ctrl.err[Z][P] * ctrl.gain[Z][P] + 
-                  ctrl.err[Z][I] * ctrl.gain[Z][I] + 
-                  ctrl.err[Z][D] * ctrl.gain[Z][D];
+  if ( in[CH_T] > -0.9 && fabs(in[CH_Y]) > 0.15 )  heading += ref[CH_Y] * ctrl.dt;
+  while ( heading >   PI )  heading -= 2.0*PI;
+  while ( heading <= -PI )  heading += 2.0*PI;
+  perr[Z] = -eul[Z] + heading;
+  while ( perr[Z] >   PI )  heading -= 2.0*PI;
+  while ( perr[Z] <= -PI )  heading += 2.0*PI;
+  derr[Z] = -ang[Z];
+  reset = ( in[CH_Y] < -IRESET || in[CH_Y] > IRESET );
+  if (reset)  ierr[Z] = 0.0; 
+  else        ierr[Z] += perr[Z] * ctrl.dt;
+  cmd[Z] = perr[Z] * ctrl.pgain[Z] + 
+           ierr[Z] * ctrl.igain[Z] + 
+           derr[Z] * ctrl.dgain[Z];
 
-  // Determine throttle adjustment
+  /* // Determine throttle adjustment
   double tilt, threshold, range;
-  tilt = 1 - ( cos(Eul[X]) * cos(Eul[Y]) );
-  threshold = T_MIN + (0.5) * ( ctrl.norm[CH_D] + 1.0 ) * ( T_MAX - T_MIN ) - T_RANGE;
-  if ( ctrl.norm[CH_T] <=0 )  range = threshold - 1000;
-  else                        range = 2.0 * T_RANGE;
-  ctrl.input[T] = threshold + ctrl.norm[CH_T] * range + T_TILT * tilt;
-  ctrl.input[T] = 1500;  // Debugging
-
-  // Set motor outputs
-  ushort i;
-  if ( ctrl.norm[CH_T] > -0.9 ) {
-  sys.output[MOT_FR] = ctrl.input[T] - ctrl.input[X] + ctrl.input[Y] + ctrl.input[Z];
-  sys.output[MOT_BL] = ctrl.input[T] + ctrl.input[X] - ctrl.input[Y] + ctrl.input[Z];
-  sys.output[MOT_FL] = ctrl.input[T] + ctrl.input[X] + ctrl.input[Y] - ctrl.input[Z];
-  sys.output[MOT_BR] = ctrl.input[T] - ctrl.input[X] - ctrl.input[Y] - ctrl.input[Z];
-  } else {  for ( i=0; i<4; i++ )  sys.output[i] = 1000;  }
+  tilt = 1 - ( cos(eul[X]) * cos(eul[Y]) );
+  threshold = T_MIN + (0.5) * ( norm[CH_D] + 1.0 ) * ( T_MAX - T_MIN ) - T_RANGE;
+  if ( norm[CH_T] <=0 )  range = threshold - 1000;
+  else                   range = 2.0 * T_RANGE;
+  cmd[T] = threshold + norm[CH_T] * range + T_TILT * tilt;
   */
 
-  // Push to data structure
+
+  cmd[T] = 0.0;  // Debugging Hover
+
+  // Assign motor outputs
+  if ( in[CH_T] > -0.9 ) {
+  out[MOT_FR] = cmd[T] - cmd[X] + cmd[Y] + cmd[Z];
+  out[MOT_BL] = cmd[T] + cmd[X] - cmd[Y] + cmd[Z];
+  out[MOT_FL] = cmd[T] + cmd[X] + cmd[Y] - cmd[Z];
+  out[MOT_BR] = cmd[T] - cmd[X] - cmd[Y] - cmd[Z];
+  } else {  for ( i=0; i<4; i++ )  out[i] = -1.0;  }
+
+
+  // Push control data
   pthread_mutex_lock(&mutex_ctrl);
   for ( i=0; i<3; i++ )  {
     ctrl.perr[i] = perr[i];
@@ -146,7 +154,11 @@ void ctl_pid ( void )  {
     ctrl.derr[i] = derr[i];
   }
   for ( i=0; i<4; i++ )  ctrl.cmd[i] = cmd[i];
+  ctrl.heading = heading;
   pthread_mutex_unlock(&mutex_ctrl);
+
+  // Push system outputs
+  for ( i=0; i<4; i++ )  sio_setnorm( i, out[i] );
 
   return;
 }

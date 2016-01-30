@@ -16,11 +16,11 @@
 #define IRESET     0.25
 
 
-// Define motor channel index
-//#define MOT_FR  0
-//#define MOT_BL  1
-//#define MOT_FL  2
-//#define MOT_BR  3
+// Define motor channel index (enumerate??)
+#define MOT_FR  0
+#define MOT_BL  1
+#define MOT_FL  2
+#define MOT_BR  3
 
 
 // Define range values (enumerate?)
@@ -58,6 +58,7 @@ typedef struct ctrl_struct {
   double  ierr  [3];
   double  derr  [3];
   double  cmd   [4];
+  double  heading;
 } ctrl_struct;
 ctrl_struct ctrl;
 
