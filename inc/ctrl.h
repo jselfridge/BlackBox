@@ -77,15 +77,15 @@ typedef struct {
 */
 
 // CTRL functions
-//void  ctrl_init    ( void );
-//void  ctrl_exit    ( void );
-//void  ctrl_disarm  ( void );
-//void  ctrl_law     ( void );
-//void  ctrl_ref     ( void );
-//void  ctrl_flags   ( void );
-//void  ctrl_switch  ( void );
-//void  ctrl_pid     ( void );
-//void  ctrl_limit   ( void );
+void  ctl_init    ( void );
+void  ctl_exit    ( void );
+//void  ctl_disarm  ( void );
+//void  ctl_law     ( void );
+//void  ctl_ref     ( void );
+//void  ctl_flags   ( void );
+//void  ctl_switch  ( void );
+//void  ctl_pid     ( void );
+//void  ctl_limit   ( void );
 
 
 #endif

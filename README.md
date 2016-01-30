@@ -9,10 +9,12 @@ Box" functionality for research and development.
 Current Tasks - Controller framework
 -------------
 <ul>
-  <li> (WIP) Modular structure to allow for differnet vehicles </li>
+  <li> (WIP) Add new timing thread for control loop </li>
+  <li> (WIP) Add control data structure </li>
   <li> (WIP) Develop pass through one-to-one I/O mapping for debugging </li>
   <li> (WIP) Test the disarm feature with system output </li>
   <li> (WIP) Implement first pass PID control law for quadrotor </li>
+  <li> (WIP) Enable datalog for control parameters </li>
 </ul>
 
 
@@ -120,6 +122,7 @@ The following list outlines proposed upcoming changes
   <li> Calibrated radio ranges </li>
   <li> Define statements to enable specific datalogs </li>
   <li> Log generation with a function </li>
+  <li> Modular structure to allow for differnet vehicles </li>
 
 </ul>
 

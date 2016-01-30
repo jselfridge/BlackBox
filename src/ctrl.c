@@ -7,12 +7,13 @@
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ctrl_init
+//  ctl_init
 //  Initializes the control structure.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void ctrl_init ( void )  {
+void ctl_init ( void )  {
   if (DEBUG)  printf("Initializing controller \n");
 
+  /*
   // Local variables
   ushort i, j, k;
 
@@ -50,20 +51,21 @@
   ctrl.gain[X][P] = 150.0;  ctrl.gain[Y][P] = 150.0;  ctrl.gain[Z][P] = 150.0;
   ctrl.gain[X][I] =   0.0;  ctrl.gain[Y][I] =   0.0;  ctrl.gain[Z][I] =   0.0;
   ctrl.gain[X][D] =  35.0;  ctrl.gain[Y][D] =  35.0;  ctrl.gain[Z][D] =  35.0;
-
+  */
   return;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ctrl_exit
+//  ctl_exit
 //  Exits the controller code.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void ctrl_exit ( void )  {
-  if (DEBUG)  printf("Closing CTRL \n");
+void ctl_exit ( void )  {
+  if (DEBUG)  printf("Close controller \n");
+  // Add exit code as needed...
   return;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctrl_disarm
