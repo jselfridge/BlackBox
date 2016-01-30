@@ -129,8 +129,8 @@ void sys_ahr ( void )  {
 
   // Euler data
   pthread_mutex_lock(&mutex_eul);
-  for ( i=0; i<3; i++ )  printf("%7.4f ", ahr.eul[i]  * (180.0/PI) );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%7.4f ", ahr.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%7.2f ", ahr.eul[i]  * (180.0/PI) );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%7.2f ", ahr.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_eul); 
 
   return;
@@ -178,11 +178,11 @@ void sys_exit (  )  {
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   usleep(100000);
   tmr_exit();
-  sio_exit();
-  imu_exit();
-  ahr_exit();
   log_exit();
+  ahr_exit();
+  imu_exit();
   flg_exit();
+  sio_exit();
 
   // Shut everything down
   if(DEBUG)  printf("Program complete \n");

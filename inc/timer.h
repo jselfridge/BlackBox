@@ -19,7 +19,7 @@
 // Define timer frequencies
 #define HZ_IMU_FAST  1000
 #define HZ_IMU_SLOW   100
-#define HZ_AHR         10
+#define HZ_AHR        100
 #define HZ_SIO        100
 #define HZ_DEBUG       10
 #define HZ_FLAG        10

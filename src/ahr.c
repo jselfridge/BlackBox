@@ -212,12 +212,7 @@ void ahr_fusion ( void )  {
   e[Y] = asin  (   2.0 * ( qwy - qxz ) )                                  - P_BIAS;
   e[Z] = atan2 ( ( 2.0 * ( qwz + qxy ) ), ( 1.0 - 2.0 * ( qyy + qzz ) ) ) - Y_BIAS;
 
-
-  // DEBUGGING
-  //q[0]  = 1.0;  q[1]  = 0.0;  q[2]  = 0.0;  q[3]  = 0.0;
-  //qd[0] = 1.0;  qd[1] = 2.0;  qd[2] = 3.0;  qd[3] = 4.0;
-
-  // Update 'AHR' values
+  // Update AHR values
   ahr.fx = fx;  ahr.fz = fz;
 
   // Push 'quat' data to struct

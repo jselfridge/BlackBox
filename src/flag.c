@@ -66,19 +66,14 @@ void flg_check ( void )  {
   // Channel index
   ushort ch;
 
-  // Pull shared data
-  //pthread_mutex_lock(&mutex_???);
-  // input.norm[];
-  //pthread_mutex_unlock(&mutex_???);
-
-  // Adjust counters
+  // Adjust state and counters
+  pthread_mutex_lock(&mutex_input);
+  energized = ( input.norm[CH_T] <= -0.95 ) ? ( false ) : ( true );
   for ( ch=0; ch<4; ch++ ) {
     ( input.norm[ch] >  0.95 ) ? ( flag.upper[ch]++ ) : ( flag.upper[ch] = 0 );
     ( input.norm[ch] < -0.95 ) ? ( flag.lower[ch]++ ) : ( flag.lower[ch] = 0 );
   }
-
-  // Update energized state flag
-  energized = ( input.norm[CH_T] <= -0.95 ) ? ( false ) : ( true );
+  pthread_mutex_unlock(&mutex_input);
   
   // Data log: roll stick only, no yaw command
   if ( !energized && !flag.lower[CH_Y] && !flag.upper[CH_Y] )  {
@@ -107,7 +102,9 @@ void flg_check ( void )  {
   }
 
   // Exit program: roll and yaw together to exit program
-  if (  !energized  &&  flag.lower[CH_Y] >= flag.limit[CH_Y]  &&  flag.upper[CH_R] >= flag.limit[CH_R]  )  running = false;
+  if (  flag.lower[CH_Y] >= flag.limit[CH_Y]  &&
+        flag.upper[CH_R] >= flag.limit[CH_R]  &&
+        !energized  )  running = false;
 
   return;
 }

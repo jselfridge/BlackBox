@@ -311,7 +311,7 @@ void *fcn_ahr (  )  {
     tmr_start(&tmr_ahr);
     ahr_run();
     tmr_finish(&tmr_ahr);
-    //if (datalog.enabled)  log_record(LOG_AHR);
+    if (datalog.enabled)  log_record(LOG_AHR);
     tmr_pause(&tmr_ahr);
   }
   pthread_exit(NULL);

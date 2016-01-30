@@ -283,34 +283,34 @@ void log_close ( void )  {
 //  Closes the data log files.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void log_exit ( void )  {
-  if(DEBUG)  printf("Close datalog system \n");
+  if(DEBUG)  printf("Close logs:  ");
 
-  // Free memory for 'gyr'
-  if(DEBUG)  printf("  Free 'gyr' memory \n");
+  // Free gyroscope memory
+  if(DEBUG)  printf("gyr ");
   free(log_gyr.time);
   free(log_gyr.dur);
   free(log_gyr.raw);
   free(log_gyr.avg);
   free(log_gyr.cal);
 
-  // Free memory for 'acc'
-  if(DEBUG)  printf("  Free 'acc' memory \n");
+  // Free accelerometer memory
+  if(DEBUG)  printf("acc ");
   free(log_acc.time);
   free(log_acc.dur);
   free(log_acc.raw);
   free(log_acc.avg);
   free(log_acc.cal);
 
-  // Free memory for 'mag'
-  if(DEBUG)  printf("  Free 'mag' memory \n");
+  // Free magnetometer memory
+  if(DEBUG)  printf("mag ");
   free(log_mag.time);
   free(log_mag.dur);
   free(log_mag.raw);
   free(log_mag.avg);
   free(log_mag.cal);
 
-  // Free memory for 'ahr'
-  if(DEBUG)  printf("  Free 'ahr' memory \n");
+  // Free attitude/heading memory
+  if(DEBUG)  printf("ahr ");
   free(log_ahr.time);
   free(log_ahr.dur);
   free(log_ahr.quat);
@@ -321,20 +321,21 @@ void log_exit ( void )  {
   free(log_ahr.fx);
   free(log_ahr.fz);
 
-  // Free memory for 'input'
-  if(DEBUG)  printf("  Free 'input' memory \n");
+  // Free input memory
+  if(DEBUG)  printf("input ");
   free(log_input.time);
   free(log_input.reg);
   free(log_input.pwm);
   free(log_input.norm);
 
-  // Free memory for 'output'
-  if(DEBUG)  printf("  Free 'output' memory \n");
+  // Free output memory
+  if(DEBUG)  printf("output ");
   free(log_output.time);
   free(log_output.reg);
   free(log_output.pwm);
   free(log_output.norm);
 
+  if(DEBUG)  printf("\n");
   return;
 }
 

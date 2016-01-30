@@ -9,13 +9,14 @@ Box" functionality for research and development.
 Current tasks
 -------------
 <ul>
-  <li> Add new timing thread for AHR </li>
-  <li> Add AHR data structure </li> 
-  <li> Evaluate LPF algorithm </li>
-  <li> (WIP) Add 9DOF data fusion algorithm </li>
-  <li> Enable AHR datalogging </li>
-  <li> Calibrate IMU/AHR settings </li>
-  <li> Check loop durations and CPU usage </li>
+  <li> Work on attitude/heading reference (AHR) data fusion </li>
+  <li> Added new timing thread for AHR </li>
+  <li> Added AHR data structure </li> 
+  <li> Evaluated LPF algorithm </li>
+  <li> Added 9DOF data fusion algorithm </li>
+  <li> Enabled AHR datalogging </li>
+  <li> Calibrated IMU/AHR settings </li>
+  <li> Performance stats: IMU 827us | AHR 15us | CPU 7% | MEM 26% </li>
 </ul>
 
 
