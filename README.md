@@ -3,11 +3,21 @@ BLACK BOX
 =========
 
 Develops a cape for a BeagleBone Black to enable "Black 
-Box" functionality for research and development. 
+Box" functionality for research and development.
 
 
-V0.0.4 - Attitude/Heading Reference
------------------------------------
+Current Tasks - Controller framework
+-------------
+<ul>
+  <li> (WIP) Modular structure to allow for differnet vehicles </li>
+  <li> (WIP) Develop pass through one-to-one I/O mapping for debugging </li>
+  <li> (WIP) Test the disarm feature with system output </li>
+  <li> (WIP) Implement first pass PID control law for quadrotor </li>
+</ul>
+
+
+V0.0.4 - Attitude and heading reference system
+----------------------------------------------
 <ul>
   <li> Added new timing thread for AHR </li>
   <li> Added AHR data structure </li> 
