@@ -12,7 +12,7 @@ Current Tasks - Controller framework
   <li> Added new timing thread for control loop </li>
   <li> Developed a "pass through" one-to-one I/O mapping for debugging </li>
   <li> Add control data structure </li>
-  <li> (WIP) Test the disarm feature with system output </li>
+  <li> Test the disarm feature with system output </li>
   <li> (WIP) Implement first pass PID control law for quadrotor </li>
   <li> Enable datalog for control parameters </li>
 </ul>
@@ -115,6 +115,7 @@ The following list outlines proposed upcoming changes
   <li> Disable clkout2 to enable CH5 input </li>
   <li> Replace hard coded gyr bias with saved parameters from a file </li>
   <li> Calculate and apply rotation transformation for accelerometer mounting errors </li>
+  <li> Abstract the controller to be applied to various vehicles with same structure </li>
 
   <li><b> Maybe next board </b></li>
   <li> IMU convergence on start up </li>

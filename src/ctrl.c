@@ -13,45 +13,30 @@
 void ctl_init ( void )  {
   if (DEBUG)  printf("Initializing controller \n");
 
-  /*
   // Local variables
-  ushort i, j, k;
-
-  // Ensure motors are off
-  ctrl_disarm();
+  ushort i, j;
 
   // Set timing values
-  ctrl.hz = CTRL_HZ;
-  ctrl.dt = 1.0/CTRL_HZ;
+  ctrl.dt = 1.0 / HZ_CTRL;
 
   // Set reference ranges
-  ctrl.range[CH_R] = R_RANGE;
-  ctrl.range[CH_P] = P_RANGE;
-  ctrl.range[CH_Y] = Y_RANGE;
-  ctrl.range[CH_T] = T_RANGE;
+  ctrl.scale[CH_R] = R_RANGE;
+  ctrl.scale[CH_P] = P_RANGE;
+  ctrl.scale[CH_Y] = Y_RANGE;
+  ctrl.scale[CH_T] = T_RANGE;
 
-  // Set command flags
-  ctrl.motorsArmed = false;
-
-  // Set error values
+  // Zero out error values
   for ( i=0; i<3; i++ ) {
     for ( j=0; j<3; j++ ) {
-      ctrl.err[i][j] = 0;
+      ctrl.err[i][j] = 0.0;
     }
   }
 
-  // Set full stick counters
-  for ( k=0; k<4; k++ ) {
-    ctrl.fullStick[k][HIGH] = 0;
-    ctrl.fullStick[k][LOW]  = 0;
-  }
-  ctrl.stickHold = STICK_HOLD * CTRL_HZ;
-
-  // Set gain values  P 150, I 0, D 35;
-  ctrl.gain[X][P] = 150.0;  ctrl.gain[Y][P] = 150.0;  ctrl.gain[Z][P] = 150.0;
+  // Set gain values
+  ctrl.gain[X][P] = 150.0;  ctrl.gain[Y][P] = 150.0;  ctrl.gain[Z][P] =   0.0;
   ctrl.gain[X][I] =   0.0;  ctrl.gain[Y][I] =   0.0;  ctrl.gain[Z][I] =   0.0;
-  ctrl.gain[X][D] =  35.0;  ctrl.gain[Y][D] =  35.0;  ctrl.gain[Z][D] =  35.0;
-  */
+  ctrl.gain[X][D] =  35.0;  ctrl.gain[Y][D] =  35.0;  ctrl.gain[Z][D] =   0.0;
+
   return;
 }
 
@@ -72,167 +57,44 @@ void ctl_exit ( void )  {
 //  Executes the top level logic for each control loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void ctl_exec ( void )  {
-
-  ushort ch;
-  if (armed)  for ( ch=0; ch<10; ch++ )  sio_setpwm( ch, input.pwm[ch] );
+  if (armed)  ctl_pid();
   else        sio_disarm();
-
-  //static ushort tmp = 1;
-  //ctrl.blah[0] = tmp;  ctrl.blah[1] = tmp+10;  ctrl.blah[2] = tmp+20;
-  //tmp++;
-
   return;
 }
 
 
-
-
-
-
-
-
-
-
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ctrl_disarm
-//  Disarms all the motors
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void ctrl_disarm ( void )  {
-  ushort i;
-  for ( i=0; i<10; i++ )  sys.output[i] = 1000;
-  return;
-}
-*/
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ctrl_law
-//  Top level function to run the control law
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void ctrl_law ( void )  {
-  ctrl_ref();
-  ctrl_flags();
-  ctrl_switch();
-  ctrl_limit();
-  return;
-}
-*/
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ctrl_ref
-//  Takes PWM inputs and converts to suitable reference signals.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void ctrl_ref ( void )  {
-  ushort i;
-  for ( i=0; i<10; i++ ) {
-    ctrl.norm[i] = 2.0 * ( sys.input[i] - IN_MID ) / (float)( IN_MAX - IN_MIN );
-    if ( ctrl.norm[i] >  1.0 )  ctrl.norm[i] =  1.0;
-    if ( ctrl.norm[i] < -1.0 )  ctrl.norm[i] = -1.0;
-    if (i<4)  ctrl.ref[i] = ctrl.norm[i] * ctrl.range[i];
-  }
-  return;
-}
-*/
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ctrl_flags
-//  Checks radio stick positions for commands. 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void ctrl_flags ( void )  {
-
-  // Update full stick counter
-  ushort i;
-  for ( i=0; i<4; i++ ) {
-    if ( ctrl.norm[i] >  0.95 ) {  ctrl.fullStick[i][HIGH]++;  }  else {  ctrl.fullStick[i][HIGH] = 0;  }
-    if ( ctrl.norm[i] < -0.95 ) {  ctrl.fullStick[i][LOW]++;   }  else {  ctrl.fullStick[i][LOW]  = 0;  }
-  }
-
-  // Only execute stick commands with zero throttle
-  if ( ctrl.fullStick[CH_T][DOWN] >= ctrl.stickHold )  {
-    
-    // Data log: roll stick only, no yaw command
-    if ( !ctrl.fullStick[CH_Y][LEFT] && !ctrl.fullStick[CH_Y][RIGHT] )  {
-      if ( ctrl.fullStick[CH_R][LEFT]  >= ctrl.stickHold ) {  datalog.enabled = true;  led_on(LED_LOG);   }
-      if ( ctrl.fullStick[CH_R][RIGHT] >= ctrl.stickHold ) {  datalog.enabled = false; led_off(LED_LOG);  }
-    }
-
-    // Motor arming: yaw stick only, no roll command
-    if ( !ctrl.fullStick[CH_R][LEFT] && !ctrl.fullStick[CH_R][RIGHT] )  {
-      if ( ctrl.fullStick[CH_Y][RIGHT] >= ctrl.stickHold ) {
-	ctrl.motorsArmed = true;
-	led_on(LED_MOT);
-	ctrl.heading = imu1.Eul[Z];
-      }
-      if ( ctrl.fullStick[CH_Y][LEFT]  >= ctrl.stickHold ) {
-	ctrl.motorsArmed = false;
-	led_off(LED_MOT);
-      }
-    }
-
-    // Exit program: roll and yaw together to exit program
-    if (  ctrl.fullStick[CH_Y][LEFT] >= ctrl.stickHold  &&  ctrl.fullStick[CH_R][RIGHT] >= ctrl.stickHold  ) {
-      sys.running = false;
-      led_off(LED_IMU);
-      led_off(LED_PRU);
-      led_off(LED_LOG);
-      led_off(LED_MOT);
-    }
-
-  }
-
-  return;
-}
-*/
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ctrl_switch
-//  Monitor radio switch to implement different control laws.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void ctrl_switch ( void )  {
-
-  // Check arming flag
-  if (ctrl.motorsArmed) {
-
-  // Run switch command
-  ctrl_pid();
-  //ctrl_siso_sf();
-  //ctrl_mimo_sf();
-  //ctrl_sysid();
-  //ctrl_mrac();
-
-  }
-
-  else ctrl_disarm();
-
-  return;
-}
-*/
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ctrl_pid
+//  ctl_pid
 //  Apply PID control to vehcile attitude.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void ctrl_pid ( void )  {
+void ctl_pid ( void )  {
+
+  // Local variables
+  ushort i;
+  double eul[3], ang[3], norm[4], ref[4], cmd[4];
 
   // Obtain states
-  //pthread_mutex_lock(&mutex_fusion);
-  float Eul[3]  = { imu1.Eul[X],  imu1.Eul[Y],  imu1.Eul[Z]  };
-  float dEul[3] = { imu1.dEul[X], imu1.dEul[Y], imu1.dEul[Z] };
-  //pthread_mutex_unlock(&mutex_fusion);
+  pthread_mutex_lock(&mutex_eul);
+  for ( i=0; i<3; i++ )  {  eul[i] = ahr.eul[i];  ang[i] = ahr.deul[i];  }
+  pthread_mutex_unlock(&mutex_eul);
+
+  // Obtain inputs and references
+  pthread_mutex_lock(&mutex_input);
+  for ( i=0; i<4; i++ )  norm[i] = input.norm[i];
+  pthread_mutex_unlock(&mutex_input);
+  for ( i=0; i<4; i++ )  ref[i] = norm[i] * ctrl.scale[i];
 
   // Determine roll (X) adjustment
-  double R_KIreset;
-  ctrl.err[X][P] = -Eul[X] + ctrl.ref[CH_R];
-  ctrl.err[X][D] = -dEul[X];
-  R_KIreset = ctrl.ref[CH_R] / ctrl.range[CH_R];
-  if ( R_KIreset < -I_RESET || R_KIreset > I_RESET )  
-    ctrl.err[X][I] = 0; 
+  ctrl.err[X][P] = -eul[X] + ref[CH_R];
+  ctrl.err[X][D] = -ang[X];
+  if ( norm[CH_R] < -IRESET || norm[CH_R] > IRESET )  
+    ctrl.err[X][I] = 0.0;
   else
     ctrl.err[X][I] += ctrl.err[X][P] * ctrl.dt;
-  ctrl.input[X] = ctrl.err[X][P] * ctrl.gain[X][P] + 
+  cmd[X] = ctrl.err[X][P] * ctrl.gain[X][P] + 
                   ctrl.err[X][I] * ctrl.gain[X][I] + 
                   ctrl.err[X][D] * ctrl.gain[X][D];
-
+		  /*
   // Determine pitch (Y) adjustment
   double P_KIreset;
   ctrl.err[Y][P] = -Eul[Y] + ctrl.ref[CH_P];
@@ -281,23 +143,22 @@ void ctl_exec ( void )  {
   sys.output[MOT_FL] = ctrl.input[T] + ctrl.input[X] + ctrl.input[Y] - ctrl.input[Z];
   sys.output[MOT_BR] = ctrl.input[T] - ctrl.input[X] - ctrl.input[Y] - ctrl.input[Z];
   } else {  for ( i=0; i<4; i++ )  sys.output[i] = 1000;  }
+  */
+
 
   return;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ctrl_limit
-//  Limits the motor outputs to within their min and max ranges.
+//  ctl_debug
+//  Debugging control law with direct input to output mapping.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void ctrl_limit ( void )  {
-  ushort i;
-  for ( i=0; i<4; i++ ) {
-    if ( sys.output[i] > OUT_MAX )  sys.output[i] = OUT_MAX;
-    if ( sys.output[i] < OUT_MIN )  sys.output[i] = OUT_MIN;
-  }
+void ctl_debug ( void )  {
+  ushort ch;
+  for ( ch=0; ch<10; ch++ )  sio_setpwm( ch, input.pwm[ch] );
   return;
 }
-*/
+
 
 

@@ -68,8 +68,9 @@ void sys_debug ( void )  {
 
   // Select data for display
   //sys_imu();
-  //sys_ahr();
+  sys_ahr();
   sys_sio();
+  sys_ctrl();
 
   // Complete debugging display 
   printf("  "); fflush(stdout);
@@ -148,17 +149,44 @@ void sys_sio ( void )  {
 
   // Input signals
   pthread_mutex_lock(&mutex_input);
-  //for ( i=0; i<4; i++ )  printf("%05d ",   input.reg[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<10; i++ )  printf("%04d ",   input.pwm[i]  );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<4; i++ )  printf("%07.4f ", input.norm[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%5d ",   input.reg[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%4d ",   input.pwm[i]  );  printf("   ");  fflush(stdout);
+  for ( i=0; i<4; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_input);
 
   // Output signals
   pthread_mutex_lock(&mutex_output);
-  //for ( i=0; i<4; i++ )  printf("%05d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<10; i++ )  printf("%04d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<4; i++ )  printf("%07.4f ", output.norm[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%5d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%4d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
+  for ( i=0; i<4; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_output);
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  sys_ctrl
+//  Prints controller values to the terminal.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void sys_ctrl ( void )  {
+
+  // Loop counter
+  //ushort i;
+
+  // Input signals
+  //pthread_mutex_lock(&mutex_input);
+  //for ( i=0; i<4; i++ )  printf("%5d ",   input.reg[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%4d ",   input.pwm[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
+  //pthread_mutex_unlock(&mutex_input);
+
+  // Output signals
+  //pthread_mutex_lock(&mutex_output);
+  //for ( i=0; i<4; i++ )  printf("%5d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%4d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
+  //pthread_mutex_unlock(&mutex_output);
 
   return;
 }

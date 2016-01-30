@@ -13,7 +13,7 @@
 //#define DEG2RAD     (PI/180.0f)
 //#define RAD2DEG     (180.0f/PI)
 //#define STICK_HOLD  3.0
-//#define I_RESET     0.25
+#define IRESET     0.25
 
 
 // Define motor channel index
@@ -30,20 +30,21 @@
 //#define T  3
 
 
-// PID index
-//#define P  0
-//#define I  1
-//#define D  2
+// PID index (enumerate???)
+#define P  0
+#define I  1
+#define D  2
 
-
-// Define range values
-//#define R_RANGE   0.50f
-//#define P_RANGE   0.50f
-//#define Y_RANGE   1.50f
+// Define range values (enumerate?)
+// Maximum reference commands
+// R: rad  P: rad  Y: rad/s  T:??
+#define R_RANGE   0.50
+#define P_RANGE   0.50
+#define Y_RANGE   1.50
+#define T_RANGE   0.00
 
 
 // Define throttle gains
-//#define T_RANGE    100
 //#define T_MIN     1500
 //#define T_MAX     1650
 //#define T_TILT   30.0f
@@ -61,6 +62,10 @@
 // CTRL structure
 typedef struct ctrl_struct {
   ushort  blah[3];
+  float   dt;
+  double  err[3][3];
+  double  gain[3][3];
+  double  scale[4];
 } ctrl_struct;
 ctrl_struct ctrl;
 
@@ -69,15 +74,8 @@ ctrl_struct ctrl;
 void  ctl_init    ( void );
 void  ctl_exit    ( void );
 void  ctl_exec    ( void );
-
-//void  ctl_disarm  ( void );
-//void  ctl_law     ( void );
-//void  ctl_ref     ( void );
-//void  ctl_flags   ( void );
-//void  ctl_switch  ( void );
-//void  ctl_pid     ( void );
-//void  ctl_limit   ( void );
-
+void  ctl_pid     ( void );
+void  ctl_debug   ( void );
 
 #endif
 

@@ -215,7 +215,7 @@ void ahr_fusion ( void )  {
   // Update AHR values
   ahr.fx = fx;  ahr.fz = fz;
 
-  // Push 'quat' data to struct
+  // Push quaternion data to struct
   pthread_mutex_lock(&mutex_quat);
   for ( i=0; i<4; i++ )  {
     ahr.quat[i]  = q[i];
@@ -223,7 +223,7 @@ void ahr_fusion ( void )  {
   }
   pthread_mutex_unlock(&mutex_quat);
 
-  // Push 'eul' data to struct
+  // Push Euler data to struct
   pthread_mutex_unlock(&mutex_eul);
   for ( i=0; i<3; i++ ) {
     ahr.eul[i]  = e[i];

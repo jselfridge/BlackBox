@@ -10,11 +10,11 @@
 
 // Define disarm values (move to flags code?)
 #define SIO_OFF0  1000
-#define SIO_OFF1  1200
-#define SIO_OFF2  1400
-#define SIO_OFF3  1600
+#define SIO_OFF1  1000
+#define SIO_OFF2  1000
+#define SIO_OFF3  1000
 #define SIO_OFF4  1000
-#define SIO_OFF5  0000
+#define SIO_OFF5  1000
 #define SIO_OFF6  1000
 #define SIO_OFF7  1000
 #define SIO_OFF8  1000

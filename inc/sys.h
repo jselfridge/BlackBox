@@ -19,6 +19,7 @@ void sys_debug  ( void );
 void sys_imu    ( void );
 void sys_ahr    ( void );
 void sys_sio    ( void );
+void sys_ctrl   ( void );
 void sys_exit   (  );
 
 
