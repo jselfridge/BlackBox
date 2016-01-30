@@ -78,9 +78,9 @@ void log_init ( void )  {
 
   // Controller parameter storage
   if(DEBUG)  printf("ctrl ");
-  log_ctrl.time =  malloc( sizeof(float)  * log_output.limit     );
-  log_ctrl.dur  =  malloc( sizeof(ushort) * log_output.limit     );
-  log_ctrl.blah =  malloc( sizeof(ushort) * log_output.limit * 3 );
+  log_ctrl.time =  malloc( sizeof(float)  * log_ctrl.limit     );
+  log_ctrl.dur  =  malloc( sizeof(ushort) * log_ctrl.limit     );
+  log_ctrl.blah =  malloc( sizeof(ushort) * log_ctrl.limit * 3 );
 
   // Complete datalog initialization 
   if(DEBUG)  printf("\n");
@@ -145,7 +145,7 @@ void log_close ( void )  {
   led_blink( LED_LOG, 500, 500 );
   usleep(200000);
 
-  // Local ariables
+  // Local variables
   char *file = malloc(64);
   FILE *fnote, *fgyr, *facc, *fmag, *fahr, *fin, *fout, *fctl;
   ushort i;
@@ -278,7 +278,7 @@ void log_close ( void )  {
   // Loop through controller data
   for ( row = 0; row < log_ctrl.count; row++ ) {
     fprintf( fctl, "\n %011.6f    ", log_ctrl.time[row] );
-    for ( i=0; i<3; i++ )  fprintf( fctl, "%04d  ",  log_ctrl.blah  [ row*3 +i ] );   fprintf( fout, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fctl, "%04d ",  log_ctrl.blah[ row*3 +i ] );   fprintf( fout, "   " );
   }
 
   // Close files
@@ -482,9 +482,17 @@ void log_record ( enum log_index index )  {
 
     timestamp = (float) ( tmr_ctrl.start_sec + ( tmr_ctrl.start_usec / 1000000.0f ) ) - datalog.offset;
 
+    if ( log_ctrl.count < log_ctrl.limit ) {
+      row = log_ctrl.count;
+      log_ctrl.time[row] = timestamp;
+      log_ctrl.dur[row]  = tmr_ctrl.dur;
+      for ( i=0; i<3; i++ )  log_ctrl.blah[ row*3 +i ] = ctrl.blah[i];
+      log_ctrl.count++;
+    }
+
     return;
 
-    
+
   default :
     return;
   

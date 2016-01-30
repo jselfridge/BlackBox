@@ -80,6 +80,10 @@ void ctl_exec ( void )  {
   pthread_mutex_unlock(&mutex_input);
   pthread_mutex_unlock(&mutex_output);
 
+  static ushort tmp = 1;
+  ctrl.blah[0] = tmp;  ctrl.blah[1] = tmp+10;  ctrl.blah[2] = tmp+20;
+  tmp++;
+
   return;
 }
 

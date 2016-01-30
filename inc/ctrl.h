@@ -58,23 +58,12 @@
 //#define UP    1
 
 
-/*// CTRL structure
-typedef struct {
-  ushort  hz;
-  float   dt;
-  double  norm[10];
-  double  range[4];
-  double  ref[4];
-  double  heading;
-  double  err[3][3];
-  double  gain[3][3];
-  double  input[4];
-  uint    fullStick[4][2];
-  uint    stickHold;
-  bool    motorsArmed;
+// CTRL structure
+typedef struct ctrl_struct {
+  ushort  blah[3];
 } ctrl_struct;
-//ctrl_struct ctrl;
-*/
+ctrl_struct ctrl;
+
 
 // CTRL functions
 void  ctl_init    ( void );
