@@ -16,7 +16,8 @@
 enum log_index {
   LOG_IMU  = 0,
   LOG_AHR  = 1,
-  LOG_SIO  = 2
+  LOG_SIO  = 2,
+  LOG_CTL  = 3
 } log_index;
 
 
@@ -63,6 +64,17 @@ typedef struct log_sio_struct {
 } log_sio_struct;
 log_sio_struct log_input;
 log_sio_struct log_output;
+
+
+// Log controller structure
+typedef struct log_ctrl_struct {
+  ulong  count;
+  ulong  limit;
+  float  *time;
+  ushort *dur;
+  ushort *blah;
+} log_ctrl_struct;
+log_ctrl_struct log_ctrl;
 
 
 // Log structure

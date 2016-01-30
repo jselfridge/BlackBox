@@ -21,6 +21,7 @@ void log_init ( void )  {
   log_ahr.limit    = MAX_LOG_DUR * HZ_AHR;
   log_input.limit  = MAX_LOG_DUR * HZ_SIO;
   log_output.limit = MAX_LOG_DUR * HZ_SIO;
+  log_ctrl.limit   = MAX_LOG_DUR * HZ_CTRL;
 
   // Allocate memory for storage arrays
   if(DEBUG)  printf("  Allocate memory:  ");
@@ -75,6 +76,12 @@ void log_init ( void )  {
   log_output.pwm  =  malloc( sizeof(ushort) * log_output.limit * 10 );
   log_output.norm =  malloc( sizeof(double) * log_output.limit * 10 );
 
+  // Controller parameter storage
+  if(DEBUG)  printf("ctrl ");
+  log_ctrl.time =  malloc( sizeof(float)  * log_output.limit     );
+  log_ctrl.dur  =  malloc( sizeof(ushort) * log_output.limit     );
+  log_ctrl.blah =  malloc( sizeof(ushort) * log_output.limit * 3 );
+
   // Complete datalog initialization 
   if(DEBUG)  printf("\n");
 
@@ -95,6 +102,7 @@ void log_open ( void )  {
   log_ahr.count    = 0;
   log_input.count  = 0;
   log_output.count = 0;
+  log_ctrl.count   = 0;
 
   // Allocate dir/path/file memory
   datalog.dir  = malloc(16);
@@ -139,7 +147,7 @@ void log_close ( void )  {
 
   // Local ariables
   char *file = malloc(64);
-  FILE *fnote, *fgyr, *facc, *fmag, *fahr, *fin, *fout;
+  FILE *fnote, *fgyr, *facc, *fmag, *fahr, *fin, *fout, *fctl;
   ushort i;
   ulong row;
 
@@ -261,6 +269,18 @@ void log_close ( void )  {
     //for ( i=0; i<4; i++ )  fprintf( fout, "%7.4f  ", log_output.norm [ row*10 +i ] );   fprintf( fout, "   " );
   }
 
+  // Create controller datalog file
+  sprintf( file, "%sctrl.txt", datalog.path );
+  fctl = fopen( file, "w" );
+  if( fctl == NULL )  printf( "Error (log_XX): Cannot open 'ctrl' file. \n" );
+  fprintf( fctl, "       Ctime      Cblah" );
+
+  // Loop through controller data
+  for ( row = 0; row < log_ctrl.count; row++ ) {
+    fprintf( fctl, "\n %011.6f    ", log_ctrl.time[row] );
+    for ( i=0; i<3; i++ )  fprintf( fctl, "%04d  ",  log_ctrl.blah  [ row*3 +i ] );   fprintf( fout, "   " );
+  }
+
   // Close files
   fclose(fnote);
   fclose(fgyr);
@@ -269,6 +289,7 @@ void log_close ( void )  {
   fclose(fahr);
   fclose(fin);
   fclose(fout);
+  fclose(fctl);
 
   // Switch datalog setup flag
   datalog.setup = false;
@@ -334,6 +355,12 @@ void log_exit ( void )  {
   free(log_output.reg);
   free(log_output.pwm);
   free(log_output.norm);
+
+  // Free controller memory
+  if(DEBUG)  printf("ctrl ");
+  free(log_ctrl.time);
+  free(log_ctrl.dur);
+  free(log_ctrl.blah);
 
   if(DEBUG)  printf("\n");
   return;
@@ -448,6 +475,16 @@ void log_record ( enum log_index index )  {
 
     return;
 
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Record CTRL data
+  case LOG_CTL :
+
+    timestamp = (float) ( tmr_ctrl.start_sec + ( tmr_ctrl.start_usec / 1000000.0f ) ) - datalog.offset;
+
+    return;
+
+    
   default :
     return;
   
