@@ -67,7 +67,7 @@ void sys_debug ( void )  {
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
-  sys_imu();
+  //sys_imu();
   //sys_ahr();
   sys_sio();
 
@@ -149,15 +149,15 @@ void sys_sio ( void )  {
   // Input signals
   pthread_mutex_lock(&mutex_input);
   //for ( i=0; i<4; i++ )  printf("%05d ",   input.reg[i]  );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<4; i++ )  printf("%04d ",   input.pwm[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<4; i++ )  printf("%07.4f ", input.norm[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<10; i++ )  printf("%04d ",   input.pwm[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%07.4f ", input.norm[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_input);
 
   // Output signals
   pthread_mutex_lock(&mutex_output);
   //for ( i=0; i<4; i++ )  printf("%05d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<6; i++ )  printf("%04d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<4; i++ )  printf("%07.4f ", output.norm[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<10; i++ )  printf("%04d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%07.4f ", output.norm[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_output);
 
   return;

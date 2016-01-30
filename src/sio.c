@@ -98,7 +98,6 @@ void sio_update ( void )  {
   pthread_mutex_unlock(&mutex_input);
 
   // Assign output signal register values
-  if (!armed)  sio_disarm();
   pthread_mutex_lock(&mutex_output);
   for ( ch=0; ch<OUT_CH; ch++ )  memoryPtr[ OUT_OFFSET + ch ] = output.reg[ch];
   pthread_mutex_unlock(&mutex_output);

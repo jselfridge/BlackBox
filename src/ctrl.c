@@ -74,15 +74,12 @@ void ctl_exit ( void )  {
 void ctl_exec ( void )  {
 
   ushort ch;
-  pthread_mutex_lock(&mutex_input);
-  pthread_mutex_lock(&mutex_output);
-  for ( ch=0; ch<10; ch++ )  output.norm[ch] = input.norm[ch];
-  pthread_mutex_unlock(&mutex_input);
-  pthread_mutex_unlock(&mutex_output);
+  if (armed)  for ( ch=0; ch<10; ch++ )  sio_setpwm( ch, input.pwm[ch] );
+  else        sio_disarm();
 
-  static ushort tmp = 1;
-  ctrl.blah[0] = tmp;  ctrl.blah[1] = tmp+10;  ctrl.blah[2] = tmp+20;
-  tmp++;
+  //static ushort tmp = 1;
+  //ctrl.blah[0] = tmp;  ctrl.blah[1] = tmp+10;  ctrl.blah[2] = tmp+20;
+  //tmp++;
 
   return;
 }
