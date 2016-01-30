@@ -1,5 +1,5 @@
 ctrl.c:13:6:ctl_init	24	static
-ctrl.c:48:6:ctl_exit	0	static
-ctrl.c:70:6:ctl_pid	168	static
-ctrl.c:59:6:ctl_exec	0	static
-ctrl.c:173:6:ctl_debug	8	static
+ctrl.c:41:6:ctl_exit	0	static
+ctrl.c:63:6:ctl_pid	168	static
+ctrl.c:52:6:ctl_exec	0	static
+ctrl.c:159:6:ctl_debug	8	static

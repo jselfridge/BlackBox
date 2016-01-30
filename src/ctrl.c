@@ -25,13 +25,6 @@ void ctl_init ( void )  {
   ctrl.scale[CH_Y] = Y_RANGE;
   ctrl.scale[CH_T] = T_RANGE;
 
-  /*// Zero out error values
-  for ( i=0; i<3; i++ ) {
-    for ( j=0; j<3; j++ ) {
-      ctrl.err[i][j] = 0.0;
-    }
-  }*/
-
   // Set gain values (make 'const' during initialization) P 150  I 0  D 35
   ctrl.pgain[X] =   0.0;  ctrl.pgain[Y] =   0.0;  ctrl.pgain[Z] =   0.0;
   ctrl.igain[X] =   0.0;  ctrl.igain[Y] =   0.0;  ctrl.igain[Z] =   0.0;
@@ -71,10 +64,11 @@ void ctl_pid ( void )  {
 
   // Local variables
   ushort i;
+  bool reset;
   double eul[3], ang[3], norm[4], ref[4], cmd[4];
-  static double perr[3] = { 1.0, 2.0, 3.0 };
-  static double ierr[3] = { 0.1, 0.2, 0.3 };
-  static double derr[3] = { 3.0, 6.0, 9.0 };
+  static double perr[3] = { 0.0, 0.0, 0.0 };
+  static double ierr[3] = { 0.0, 0.0, 0.0 };
+  static double derr[3] = { 0.0, 0.0, 0.0 };
 
   // Obtain states
   pthread_mutex_lock(&mutex_eul);
@@ -90,26 +84,23 @@ void ctl_pid ( void )  {
   // Determine roll (X) adjustment
   perr[X] = -eul[X] + ref[CH_R];
   derr[X] = -ang[X];
-  if ( norm[CH_R] < -IRESET || norm[CH_R] > IRESET )  ierr[X] = 0.0;
-  else                                                ierr[X] += perr[X] * ctrl.dt;
+  reset = ( norm[CH_R] < -IRESET || norm[CH_R] > IRESET );
+  if (reset)  ierr[X] = 0.0;
+  else        ierr[X] += perr[X] * ctrl.dt;
   cmd[X] = perr[X] * ctrl.pgain[X] +
            ierr[X] * ctrl.igain[X] +
            derr[X] * ctrl.dgain[X];
 
-	   /*
   // Determine pitch (Y) adjustment
-  double P_KIreset;
-  ctrl.err[Y][P] = -Eul[Y] + ctrl.ref[CH_P];
-  ctrl.err[Y][D] = -dEul[Y];
-  P_KIreset = ctrl.ref[CH_P] / ctrl.range[CH_P];
-  if ( P_KIreset < -I_RESET || P_KIreset > I_RESET )
-    ctrl.err[Y][I] = 0; 
-  else
-    ctrl.err[Y][I] += ctrl.err[Y][P] * ctrl.dt;
-  ctrl.input[Y] = ctrl.err[Y][P] * ctrl.gain[Y][P] + 
-                  ctrl.err[Y][I] * ctrl.gain[Y][I] + 
-                  ctrl.err[Y][D] * ctrl.gain[Y][D];
-
+  perr[Y] = -eul[Y] + ref[CH_P];
+  derr[Y] = -ang[Y];
+  reset = ( norm[CH_P] < -IRESET || norm[CH_P] > IRESET );
+  if (reset)  ierr[Y] = 0.0; 
+  else        ierr[Y] += perr[Y] * ctrl.dt;
+  cmd[Y] = perr[Y] * ctrl.pgain[Y] + 
+           ierr[Y] * ctrl.igain[Y] + 
+           derr[Y] * ctrl.dgain[Y];
+  /*
   // Determine yaw (Z) adjustment
   double Y_KIreset;
   if ( ctrl.norm[CH_T] > -0.9 && fabs(ctrl.norm[CH_Y]) > 0.15 )  ctrl.heading += ctrl.ref[CH_Y] * ctrl.dt;

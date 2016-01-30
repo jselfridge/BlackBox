@@ -23,18 +23,6 @@
 //#define MOT_BR  3
 
 
-// Axes index
-//#define X  0
-//#define Y  1
-//#define Z  2
-//#define T  3
-
-
-// PID index (enumerate???)
-//#define P  0
-//#define I  1
-//#define D  2
-
 // Define range values (enumerate?)
 // Maximum reference commands
 // R: rad  P: rad  Y: rad/s  T:??
@@ -50,7 +38,7 @@
 //#define T_TILT   30.0f
 
 
-// Full scale ranges
+// Full scale ranges (enumerate???)
 //#define MIN   0
 //#define MAX   1
 //#define LEFT  0
