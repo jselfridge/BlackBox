@@ -9,7 +9,7 @@ Box" functionality for research and development.
 Current Tasks - Controller framework
 -------------
 <ul>
-  <li> (WIP) Add new timing thread for control loop </li>
+  <li> Added new timing thread for control loop </li>
   <li> (WIP) Add control data structure </li>
   <li> (WIP) Develop pass through one-to-one I/O mapping for debugging </li>
   <li> (WIP) Test the disarm feature with system output </li>

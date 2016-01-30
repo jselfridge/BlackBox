@@ -79,6 +79,8 @@ typedef struct {
 // CTRL functions
 void  ctl_init    ( void );
 void  ctl_exit    ( void );
+void  ctl_exec    ( void );
+
 //void  ctl_disarm  ( void );
 //void  ctl_law     ( void );
 //void  ctl_ref     ( void );

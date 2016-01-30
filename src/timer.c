@@ -358,9 +358,9 @@ void *fcn_ctrl (  )  {
   tmr_create(&tmr_ctrl);
   while (running) {
     tmr_start(&tmr_ctrl);
-    //ctl_blah();
+    ctl_exec();
     tmr_finish(&tmr_ctrl);
-    //if (datalog.enabled)  log_record(LOG_CTL);
+    if (datalog.enabled)  log_record(LOG_CTL);
     tmr_pause(&tmr_ctrl);
   }
   pthread_exit(NULL);
