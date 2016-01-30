@@ -6,10 +6,9 @@ Develops a cape for a BeagleBone Black to enable "Black
 Box" functionality for research and development. 
 
 
-Current tasks
--------------
+V0.0.4 - Attitude/Heading Reference
+-----------------------------------
 <ul>
-  <li> Work on attitude/heading reference (AHR) data fusion </li>
   <li> Added new timing thread for AHR </li>
   <li> Added AHR data structure </li> 
   <li> Evaluated LPF algorithm </li>
@@ -20,8 +19,8 @@ Current tasks
 </ul>
 
 
-V0.0.3
-------
+V0.0.3 - Program execution flags
+--------------------------------
 <ul>
   <li> New timing thread for program execution flags </li>
   <li> Register stick endpoint positions </li>
@@ -35,8 +34,8 @@ V0.0.3
 </ul>
 
 
-V0.0.2
-------
+V0.0.2 - System input and output signals 
+----------------------------------------
 <ul>
   <li> New timing thread for I/O signals </li>
   <li> Developed data structure for I/O signals </li>
@@ -51,8 +50,8 @@ V0.0.2
 </ul>
 
 
-V0.0.1
-------
+V0.0.1 - Real time multithreading development
+---------------------------------------------
 <ul>
   <li> Linux beaglebone 4.1.15-ti-rt-r41 SMP PREEMPT RT armv7l </li>
   <li> Configured high speed 400kHz I2C timer </li>
