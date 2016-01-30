@@ -79,7 +79,7 @@ void log_init ( void )  {
   // Controller parameter storage
   if(DEBUG)  printf("ctrl ");
   log_ctrl.time =  malloc( sizeof(float)  * log_ctrl.limit     );
-  log_ctrl.dur  =  malloc( sizeof(ushort) * log_ctrl.limit     );
+  log_ctrl.dur  =  malloc( sizeof(ulong)  * log_ctrl.limit     );
   log_ctrl.err  =  malloc( sizeof(double) * log_ctrl.limit * 9 );
   log_ctrl.cmd  =  malloc( sizeof(double) * log_ctrl.limit * 4 );
 
@@ -275,17 +275,17 @@ void log_close ( void )  {
   fctl = fopen( file, "w" );
   if( fctl == NULL )  printf( "Error (log_XX): Cannot open 'ctrl' file. \n" );
   fprintf( fctl,
-    "       Ctime      Cblah    \
-    Exx      Exx      Exx    \
-    Exx      Exx      Exx    \
-    Exx      Exx      Exx    \
+    "       Ctime    Cdur    \
+    Exx      Exx      Exx       \
+    Exx      Exx      Exx       \
+    Exx      Exx      Exx       \
     CX       CY       CZ       CT" );
 
   // Loop through controller data
   for ( row = 0; row < log_ctrl.count; row++ ) {
-    fprintf( fctl, "\n %011.6f    ", log_ctrl.time[row] );
-    for ( i=0; i<9; i++ )  fprintf( fctl, "%09.4f ",  log_ctrl.err[ row*9 +i ] );   fprintf( fout, "   " );
-    for ( i=0; i<4; i++ )  fprintf( fctl, "%09.4f ",  log_ctrl.cmd[ row*4 +i ] );   fprintf( fout, "   " );
+    fprintf( fctl, "\n %011.6f  %06ld    ", log_ctrl.time[row], log_ctrl.dur[row] );
+    for ( i=0; i<9; i++ )  fprintf( fctl, "%07.4f  ",  log_ctrl.err[ row*9 +i ] );   fprintf( fctl, "   " );
+    for ( i=0; i<4; i++ )  fprintf( fctl, "%07.4f  ",  log_ctrl.cmd[ row*4 +i ] );   fprintf( fctl, "   " );
   }
 
   // Close files
