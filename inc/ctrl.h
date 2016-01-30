@@ -31,9 +31,9 @@
 
 
 // PID index (enumerate???)
-#define P  0
-#define I  1
-#define D  2
+//#define P  0
+//#define I  1
+//#define D  2
 
 // Define range values (enumerate?)
 // Maximum reference commands
@@ -63,8 +63,12 @@
 typedef struct ctrl_struct {
   float   dt;
   double  scale [4];
-  double  gain  [3][3];
-  double  err   [3][3];
+  double  pgain [3];
+  double  igain [3];
+  double  dgain [3];
+  double  perr  [3];
+  double  ierr  [3];
+  double  derr  [3];
   double  cmd   [4];
 } ctrl_struct;
 ctrl_struct ctrl;

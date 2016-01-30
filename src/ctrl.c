@@ -33,9 +33,9 @@ void ctl_init ( void )  {
   }*/
 
   // Set gain values (make 'const' during initialization) P 150  I 0  D 35
-  ctrl.gain[X][P] =   0.0;  ctrl.gain[Y][P] =   0.0;  ctrl.gain[Z][P] =   0.0;
-  ctrl.gain[X][I] =   0.0;  ctrl.gain[Y][I] =   0.0;  ctrl.gain[Z][I] =   0.0;
-  ctrl.gain[X][D] =   0.0;  ctrl.gain[Y][D] =   0.0;  ctrl.gain[Z][D] =   0.0;
+  ctrl.pgain[X] =   0.0;  ctrl.pgain[Y] =   0.0;  ctrl.pgain[Z] =   0.0;
+  ctrl.igain[X] =   0.0;  ctrl.igain[Y] =   0.0;  ctrl.igain[Z] =   0.0;
+  ctrl.dgain[X] =   0.0;  ctrl.dgain[Y] =   0.0;  ctrl.dgain[Z] =   0.0;
 
   return;
 }
@@ -70,9 +70,11 @@ void ctl_exec ( void )  {
 void ctl_pid ( void )  {
 
   // Local variables
-  ushort i, j;
+  ushort i;
   double eul[3], ang[3], norm[4], ref[4], cmd[4];
-  static double err[3][3] = { { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 } };
+  static double perr[3] = { 1.0, 2.0, 3.0 };
+  static double ierr[3] = { 0.1, 0.2, 0.3 };
+  static double derr[3] = { 3.0, 6.0, 9.0 };
 
   // Obtain states
   pthread_mutex_lock(&mutex_eul);
@@ -86,14 +88,15 @@ void ctl_pid ( void )  {
   for ( i=0; i<4; i++ )  ref[i] = norm[i] * ctrl.scale[i];
 
   // Determine roll (X) adjustment
-  err[X][P] = -eul[X] + ref[CH_R];
-  err[X][D] = -ang[X];
-  if ( norm[CH_R] < -IRESET || norm[CH_R] > IRESET )  err[X][I] = 0.0;
-  else                                                err[X][I] += err[X][P] * ctrl.dt;
-  cmd[X] = err[X][P] * ctrl.gain[X][P] + 
-           err[X][I] * ctrl.gain[X][I] + 
-           err[X][D] * ctrl.gain[X][D];
-		  /*
+  perr[X] = -eul[X] + ref[CH_R];
+  derr[X] = -ang[X];
+  if ( norm[CH_R] < -IRESET || norm[CH_R] > IRESET )  ierr[X] = 0.0;
+  else                                                ierr[X] += perr[X] * ctrl.dt;
+  cmd[X] = perr[X] * ctrl.pgain[X] +
+           ierr[X] * ctrl.igain[X] +
+           derr[X] * ctrl.dgain[X];
+
+	   /*
   // Determine pitch (Y) adjustment
   double P_KIreset;
   ctrl.err[Y][P] = -Eul[Y] + ctrl.ref[CH_P];
@@ -146,7 +149,11 @@ void ctl_pid ( void )  {
 
   // Push to data structure
   pthread_mutex_lock(&mutex_ctrl);
-  for ( i=0; i<3; i++ )  for ( j=0; j<3; j++ )  ctrl.err[i][j] = err[i][j];
+  for ( i=0; i<3; i++ )  {
+    ctrl.perr[i] = perr[i];
+    ctrl.ierr[i] = ierr[i];
+    ctrl.derr[i] = derr[i];
+  }
   for ( i=0; i<4; i++ )  ctrl.cmd[i] = cmd[i];
   pthread_mutex_unlock(&mutex_ctrl);
 

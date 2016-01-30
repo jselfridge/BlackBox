@@ -80,7 +80,9 @@ void log_init ( void )  {
   if(DEBUG)  printf("ctrl ");
   log_ctrl.time =  malloc( sizeof(float)  * log_ctrl.limit     );
   log_ctrl.dur  =  malloc( sizeof(ulong)  * log_ctrl.limit     );
-  log_ctrl.err  =  malloc( sizeof(double) * log_ctrl.limit * 9 );
+  log_ctrl.perr =  malloc( sizeof(double) * log_ctrl.limit * 3 );
+  log_ctrl.ierr =  malloc( sizeof(double) * log_ctrl.limit * 3 );
+  log_ctrl.derr =  malloc( sizeof(double) * log_ctrl.limit * 3 );
   log_ctrl.cmd  =  malloc( sizeof(double) * log_ctrl.limit * 4 );
 
   // Complete datalog initialization 
@@ -276,16 +278,18 @@ void log_close ( void )  {
   if( fctl == NULL )  printf( "Error (log_XX): Cannot open 'ctrl' file. \n" );
   fprintf( fctl,
     "       Ctime    Cdur    \
-    Exx      Exx      Exx       \
-    Exx      Exx      Exx       \
-    Exx      Exx      Exx       \
+    EPX      EPY      EPZ     \
+    EIX      EIY      EIZ     \
+    EDX      EDY      EDZ      \
     CX       CY       CZ       CT" );
 
   // Loop through controller data
   for ( row = 0; row < log_ctrl.count; row++ ) {
     fprintf( fctl, "\n %011.6f  %06ld    ", log_ctrl.time[row], log_ctrl.dur[row] );
-    for ( i=0; i<9; i++ )  fprintf( fctl, "%07.4f  ",  log_ctrl.err[ row*9 +i ] );   fprintf( fctl, "   " );
-    for ( i=0; i<4; i++ )  fprintf( fctl, "%07.4f  ",  log_ctrl.cmd[ row*4 +i ] );   fprintf( fctl, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fctl, "%07.4f  ",  log_ctrl.perr[ row*3 +i ] );   fprintf( fctl, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fctl, "%07.4f  ",  log_ctrl.ierr[ row*3 +i ] );   fprintf( fctl, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fctl, "%07.4f  ",  log_ctrl.derr[ row*3 +i ] );   fprintf( fctl, "   " );
+    for ( i=0; i<4; i++ )  fprintf( fctl, "%07.4f  ",  log_ctrl.cmd [ row*4 +i ] );   fprintf( fctl, "   " );
   }
 
   // Close files
@@ -367,7 +371,9 @@ void log_exit ( void )  {
   if(DEBUG)  printf("ctrl ");
   free(log_ctrl.time);
   free(log_ctrl.dur);
-  free(log_ctrl.err);
+  free(log_ctrl.perr);
+  free(log_ctrl.ierr);
+  free(log_ctrl.derr);
   free(log_ctrl.cmd);
 
   if(DEBUG)  printf("\n");
@@ -494,8 +500,10 @@ void log_record ( enum log_index index )  {
       row = log_ctrl.count;
       log_ctrl.time[row] = timestamp;
       log_ctrl.dur[row]  = tmr_ctrl.dur;
-      for ( i=0; i<9; i++ )  log_ctrl.err[ row*9 +i ] = ctrl.err[i/3][i%3];
-      for ( i=0; i<4; i++ )  log_ctrl.cmd[ row*4 +i ] = ctrl.cmd[i];
+      for ( i=0; i<3; i++ )  log_ctrl.perr[ row*3 +i ] = ctrl.perr[i];
+      for ( i=0; i<3; i++ )  log_ctrl.ierr[ row*3 +i ] = ctrl.ierr[i];
+      for ( i=0; i<3; i++ )  log_ctrl.derr[ row*3 +i ] = ctrl.derr[i];
+      for ( i=0; i<4; i++ )  log_ctrl.cmd [ row*4 +i ] = ctrl.cmd[i];
       log_ctrl.count++;
     }
 
