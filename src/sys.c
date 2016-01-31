@@ -68,7 +68,7 @@ void sys_debug ( void )  {
 
   // Select data for display
   //sys_imu();
-  //sys_ahr();
+  sys_ahr();
   sys_sio();
   sys_ctrl();
 
@@ -151,7 +151,7 @@ void sys_sio ( void )  {
   pthread_mutex_lock(&mutex_input);
   //for ( i=0; i<4; i++ )  printf("%5d ",   input.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%4d ",   input.pwm[i]  );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<4; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<4; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_input);
 
   // Output signals

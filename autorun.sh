@@ -36,8 +36,8 @@ echo 1 > /sys/class/leds/beaglebone\:green\:usr3/brightness
 #echo BB-UART5 > /sys/devices/platform/bone_capemgr/slots
 
 sleep 5
-#cd /root/BlackBox/
-#./RunBlackBox
+cd /root/BlackBox/
+./RunBlackBox
 
 exit 0
 
