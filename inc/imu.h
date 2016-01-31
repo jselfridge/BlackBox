@@ -22,10 +22,6 @@
 #define ACC_FSR   4
 #define GYR_SCALE  ( 500.0 / 32768.0 ) * ( PI / 180.0 )
 
-#define X   0
-#define Y   1
-#define Z   2
-
 #define PI  M_PI
 
 

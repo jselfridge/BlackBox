@@ -60,7 +60,7 @@ typedef struct log_sio_struct {
   float  *time;
   ushort *reg;
   ushort *pwm;
-  double *norm;
+  float  *norm;
 } log_sio_struct;
 log_sio_struct log_input;
 log_sio_struct log_output;
@@ -72,10 +72,10 @@ typedef struct log_ctrl_struct {
   ulong  limit;
   float  *time;
   ulong  *dur;
-  double *perr;
-  double *ierr;
-  double *derr;
-  double *cmd;
+  float  *perr;
+  float  *ierr;
+  float  *derr;
+  float  *cmd;
 } log_ctrl_struct;
 log_ctrl_struct log_ctrl;
 

@@ -1,5 +1,0 @@
-loop.c:13:6:loop_init	48	static
-loop.c:172:6:loop_start	24	static
-loop.c:190:6:loop_finish	24	static
-loop.c:215:6:loop_exit	16	static
-loop.c:374:7:timer_debug	24	static

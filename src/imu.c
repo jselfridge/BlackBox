@@ -100,9 +100,9 @@ void imu_getcal (  )  {
 
   // Set gyroscope bias 
   // WIP: Obtain data from file, and record updated values upon exit
-  gyr.bias[X] = -41;
-  gyr.bias[Y] =  68;
-  gyr.bias[Z] = -39;
+  gyr.bias[0] = -41;
+  gyr.bias[1] =  68;
+  gyr.bias[2] = -39;
 
   // Set acceleration bias
   sprintf( path, "cal/acc/bias" );
@@ -213,12 +213,15 @@ void imu_data (  )  {
 
   // Local variables
   ushort i, j, k;
-  float g, a, m;
+  double g, a, m;
+
+  // Array index
+  ushort x=0, y=1, z=2;
 
   // Local IMU struct arrays
-  short Graw[3], Araw[3], Mraw[3];
-  float Gavg[3], Aavg[3], Mavg[3];
-  float Gcal[3], Acal[3], Mcal[3];
+  short  Graw[3], Araw[3], Mraw[3];
+  double Gavg[3], Aavg[3], Mavg[3];
+  double Gcal[3], Acal[3], Mcal[3];
 
   // Declare data history arrays
   static short Ghist[3][GYR_HIST];
@@ -293,20 +296,20 @@ void imu_data (  )  {
   pthread_mutex_unlock(&mutex_avg);
 
   // Shift and orient gyroscope readings
-  Gcal[X] =   ( Gavg[Y] - gyr.bias[Y] ) * GYR_SCALE;
-  Gcal[Y] =   ( Gavg[X] - gyr.bias[X] ) * GYR_SCALE;
-  Gcal[Z] = - ( Gavg[Z] - gyr.bias[Z] ) * GYR_SCALE;
+  Gcal[x] =   ( Gavg[y] - gyr.bias[y] ) * GYR_SCALE;
+  Gcal[y] =   ( Gavg[x] - gyr.bias[x] ) * GYR_SCALE;
+  Gcal[z] = - ( Gavg[z] - gyr.bias[z] ) * GYR_SCALE;
 
   // Shift and orient accelerometer readings
-  Acal[X] =   ( Aavg[Y] - acc.bias[Y] ) / (double) (acc.range[Y]);
-  Acal[Y] =   ( Aavg[X] - acc.bias[X] ) / (double) (acc.range[X]);
-  Acal[Z] = - ( Aavg[Z] - acc.bias[Z] ) / (double) (acc.range[Z]);
+  Acal[x] =   ( Aavg[y] - acc.bias[y] ) / (double) (acc.range[y]);
+  Acal[y] =   ( Aavg[x] - acc.bias[x] ) / (double) (acc.range[x]);
+  Acal[z] = - ( Aavg[z] - acc.bias[z] ) / (double) (acc.range[z]);
 
   // Shift and orient magnetometer readings
   if(imu.getmag) {
-    Mcal[X] = ( Mavg[X] - mag.bias[X] ) / (double) (mag.range[X]);
-    Mcal[Y] = ( Mavg[Y] - mag.bias[Y] ) / (double) (mag.range[Y]);
-    Mcal[Z] = ( Mavg[Z] - mag.bias[Z] ) / (double) (mag.range[Z]);
+    Mcal[x] = ( Mavg[x] - mag.bias[x] ) / (double) (mag.range[x]);
+    Mcal[y] = ( Mavg[y] - mag.bias[y] ) / (double) (mag.range[y]);
+    Mcal[z] = ( Mavg[z] - mag.bias[z] ) / (double) (mag.range[z]);
   }
 
   // Store 'cal' values to data structure

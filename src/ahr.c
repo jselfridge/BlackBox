@@ -70,6 +70,7 @@ void ahr_fusion ( void )  {
 
   // Quaternion index
   ushort w=0, x=1, y=2, z=3;
+  ushort X=0, Y=1, Z=2;
 
   // Get values from AHR data structure
   double q[4], b[3], fx, fz, dt;

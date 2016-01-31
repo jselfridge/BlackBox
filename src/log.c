@@ -67,23 +67,23 @@ void log_init ( void )  {
   log_input.time =  malloc( sizeof(float)  * log_input.limit      );
   log_input.reg  =  malloc( sizeof(ushort) * log_input.limit * 10 );
   log_input.pwm  =  malloc( sizeof(ushort) * log_input.limit * 10 );
-  log_input.norm =  malloc( sizeof(double) * log_input.limit * 10 );
+  log_input.norm =  malloc( sizeof(float)  * log_input.limit * 10 );
 
   // Output signal storage
   if(DEBUG)  printf("output ");
   log_output.time =  malloc( sizeof(float)  * log_output.limit      );
   log_output.reg  =  malloc( sizeof(ushort) * log_output.limit * 10 );
   log_output.pwm  =  malloc( sizeof(ushort) * log_output.limit * 10 );
-  log_output.norm =  malloc( sizeof(double) * log_output.limit * 10 );
+  log_output.norm =  malloc( sizeof(float)  * log_output.limit * 10 );
 
   // Controller parameter storage
   if(DEBUG)  printf("ctrl ");
-  log_ctrl.time =  malloc( sizeof(float)  * log_ctrl.limit     );
-  log_ctrl.dur  =  malloc( sizeof(ulong)  * log_ctrl.limit     );
-  log_ctrl.perr =  malloc( sizeof(double) * log_ctrl.limit * 3 );
-  log_ctrl.ierr =  malloc( sizeof(double) * log_ctrl.limit * 3 );
-  log_ctrl.derr =  malloc( sizeof(double) * log_ctrl.limit * 3 );
-  log_ctrl.cmd  =  malloc( sizeof(double) * log_ctrl.limit * 4 );
+  log_ctrl.time =  malloc( sizeof(float) * log_ctrl.limit     );
+  log_ctrl.dur  =  malloc( sizeof(ulong) * log_ctrl.limit     );
+  log_ctrl.perr =  malloc( sizeof(float) * log_ctrl.limit * 3 );
+  log_ctrl.ierr =  malloc( sizeof(float) * log_ctrl.limit * 3 );
+  log_ctrl.derr =  malloc( sizeof(float) * log_ctrl.limit * 3 );
+  log_ctrl.cmd  =  malloc( sizeof(float) * log_ctrl.limit * 4 );
 
   // Complete datalog initialization 
   if(DEBUG)  printf("\n");

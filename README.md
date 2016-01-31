@@ -11,10 +11,10 @@ Current Tasks - Controller framework
 <ul>
   <li> Added new timing thread for control loop </li>
   <li> Developed a "pass through" one-to-one I/O mapping for debugging </li>
-  <li> Add control data structure </li>
-  <li> Test the disarm feature with system output </li>
-  <li> (WIP) Implement first pass PID control law for quadrotor </li>
-  <li> Enable datalog for control parameters </li>
+  <li> Added control data structure </li>
+  <li> Tested the disarm feature with system output </li>
+  <li> Implemented first pass PID control law for quadrotor </li>
+  <li> Enableed datalog for control parameters </li>
 </ul>
 
 

@@ -45,7 +45,7 @@
 
 // CTRL structure
 typedef struct ctrl_struct {
-  float   dt;
+  double  dt;
   double  scale [4];
   double  pgain [3];
   double  igain [3];

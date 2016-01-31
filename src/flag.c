@@ -95,7 +95,7 @@ void flg_check ( void )  {
       armed = true;
       pthread_mutex_lock(&mutex_ctrl);
       pthread_mutex_lock(&mutex_eul);
-      ctrl.heading = ahr.eul[Z];
+      ctrl.heading = ahr.eul[2];
       pthread_mutex_unlock(&mutex_eul);
       pthread_mutex_unlock(&mutex_ctrl);
       led_on(LED_MOT);

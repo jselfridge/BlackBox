@@ -13,8 +13,8 @@
 void ctl_init ( void )  {
   if (DEBUG)  printf("Initializing controller \n");
 
-  // Local variables
-  //ushort i, j;
+  // Array index
+  ushort x=0, y=1, z=2;
 
   // Set timing values (make 'const' during initialization)
   ctrl.dt = 1.0 / HZ_CTRL;
@@ -28,9 +28,9 @@ void ctl_init ( void )  {
   // Set gain values (make 'const' during initialization)
   // ORIG:   P  150  I 0  D 35
   // NORM:   P 0.30  I 0  D 0.06
-  ctrl.pgain[X] = 0.00;  ctrl.pgain[Y] = 0.00;  ctrl.pgain[Z] = 0.00;
-  ctrl.igain[X] = 0.00;  ctrl.igain[Y] = 0.00;  ctrl.igain[Z] = 0.00;
-  ctrl.dgain[X] = 0.00;  ctrl.dgain[Y] = 0.00;  ctrl.dgain[Z] = 0.00;
+  ctrl.pgain[x] = 0.00;  ctrl.pgain[y] = 0.00;  ctrl.pgain[z] = 0.00;
+  ctrl.igain[x] = 0.00;  ctrl.igain[y] = 0.00;  ctrl.igain[z] = 0.00;
+  ctrl.dgain[x] = 0.00;  ctrl.dgain[y] = 0.00;  ctrl.dgain[z] = 0.00;
 
   return;
 }
@@ -65,8 +65,8 @@ void ctl_exec ( void )  {
 void ctl_pid ( void )  {
 
   // Local variables
-  ushort i, T=4;
   bool reset;
+  ushort i, x=0, y=1, z=2, t=3;
   double eul[3], ang[3], in[4], ref[4], cmd[4], out[4], heading, dial;
   static double perr[3] = { 0.0, 0.0, 0.0 };
   static double ierr[3] = { 0.0, 0.0, 0.0 };
@@ -92,52 +92,52 @@ void ctl_pid ( void )  {
   for ( i=0; i<4; i++ )  ref[i] = in[i] * ctrl.scale[i];
 
   // Determine roll (X) adjustment
-  perr[X] = -eul[X] + ref[CH_R];
-  derr[X] = -ang[X];
+  perr[x] = -eul[x] + ref[CH_R];
+  derr[x] = -ang[x];
   reset = ( in[CH_R] < -IRESET || in[CH_R] > IRESET );
-  if (reset)  ierr[X] = 0.0;
-  else        ierr[X] += perr[X] * ctrl.dt;
-  cmd[X] = perr[X] * ctrl.pgain[X] +
-           ierr[X] * ctrl.igain[X] +
-           derr[X] * ctrl.dgain[X];
+  if (reset)  ierr[x] = 0.0;
+  else        ierr[x] += perr[x] * ctrl.dt;
+  cmd[x] = perr[x] * ctrl.pgain[x] +
+           ierr[x] * ctrl.igain[x] +
+           derr[x] * ctrl.dgain[x];
 
   // Determine pitch (Y) adjustment
-  perr[Y] = -eul[Y] + ref[CH_P];
-  derr[Y] = -ang[Y];
+  perr[y] = -eul[y] + ref[CH_P];
+  derr[y] = -ang[y];
   reset = ( in[CH_P] < -IRESET || in[CH_P] > IRESET );
-  if (reset)  ierr[Y] = 0.0; 
-  else        ierr[Y] += perr[Y] * ctrl.dt;
-  cmd[Y] = perr[Y] * ctrl.pgain[Y] + 
-           ierr[Y] * ctrl.igain[Y] + 
-           derr[Y] * ctrl.dgain[Y];
+  if (reset)  ierr[y] = 0.0; 
+  else        ierr[y] += perr[y] * ctrl.dt;
+  cmd[y] = perr[y] * ctrl.pgain[y] + 
+           ierr[y] * ctrl.igain[y] + 
+           derr[y] * ctrl.dgain[y];
 
   // Determine yaw (Z) adjustment
   if ( in[CH_T] > -0.9 && fabs(in[CH_Y]) > 0.15 )  heading += ref[CH_Y] * ctrl.dt;
   while ( heading >   PI )  heading -= 2.0*PI;
   while ( heading <= -PI )  heading += 2.0*PI;
-  perr[Z] = -eul[Z] + heading;
-  while ( perr[Z] >   PI )  heading -= 2.0*PI;
-  while ( perr[Z] <= -PI )  heading += 2.0*PI;
-  derr[Z] = -ang[Z];
+  perr[z] = -eul[z] + heading;
+  while ( perr[z] >   PI )  heading -= 2.0*PI;
+  while ( perr[z] <= -PI )  heading += 2.0*PI;
+  derr[z] = -ang[z];
   reset = ( in[CH_Y] < -IRESET || in[CH_Y] > IRESET );
-  if (reset)  ierr[Z] = 0.0; 
-  else        ierr[Z] += perr[Z] * ctrl.dt;
-  cmd[Z] = perr[Z] * ctrl.pgain[Z] + 
-           ierr[Z] * ctrl.igain[Z] + 
-           derr[Z] * ctrl.dgain[Z];
+  if (reset)  ierr[z] = 0.0; 
+  else        ierr[z] += perr[z] * ctrl.dt;
+  cmd[z] = perr[z] * ctrl.pgain[z] + 
+           ierr[z] * ctrl.igain[z] + 
+           derr[z] * ctrl.dgain[z];
 
   // Determine throttle adjustment
-  double tilt = ( 1 - ( cos(eul[X]) * cos(eul[Y]) ) ) * TILT;
+  double tilt = ( 1 - ( cos(eul[x]) * cos(eul[y]) ) ) * TILT;
   double thresh = ( 0.5 * ( dial + 1.0 ) * ( TMAX - TMIN ) ) + TMIN - T_RANGE;
-  if ( in[CH_T] <= -0.6 )  cmd[T] = ( 2.50 * ( in[CH_T] + 1.0 ) * ( thresh + 1.0 ) ) - 1.0 + tilt;
-  else                     cmd[T] = ( 1.25 * ( in[CH_T] + 0.6 ) * T_RANGE ) + thresh + tilt; 
+  if ( in[CH_T] <= -0.6 )  cmd[t] = ( 2.50 * ( in[CH_T] + 1.0 ) * ( thresh + 1.0 ) ) - 1.0 + tilt;
+  else                     cmd[t] = ( 1.25 * ( in[CH_T] + 0.6 ) * T_RANGE ) + thresh + tilt; 
 
   // Assign motor outputs
   if ( in[CH_T] > -0.9 ) {
-  out[MOT_FR] = cmd[T] - cmd[X] + cmd[Y] + cmd[Z];
-  out[MOT_BL] = cmd[T] + cmd[X] - cmd[Y] + cmd[Z];
-  out[MOT_FL] = cmd[T] + cmd[X] + cmd[Y] - cmd[Z];
-  out[MOT_BR] = cmd[T] - cmd[X] - cmd[Y] - cmd[Z];
+  out[MOT_FR] = cmd[t] - cmd[x] + cmd[y] + cmd[z];
+  out[MOT_BL] = cmd[t] + cmd[x] - cmd[y] + cmd[z];
+  out[MOT_FL] = cmd[t] + cmd[x] + cmd[y] - cmd[z];
+  out[MOT_BR] = cmd[t] - cmd[x] - cmd[y] - cmd[z];
   } else {  for ( i=0; i<4; i++ )  out[i] = -1.0;  }
 
 
