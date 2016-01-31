@@ -26,11 +26,9 @@ void ctl_init ( void )  {
   ctrl.scale[CH_T] = T_RANGE;
 
   // Set gain values (make 'const' during initialization)
-  // ORIG:   P  150  I 0  D 35
-  // NORM:   P 0.30  I 0  D 0.06
-  ctrl.pgain[x] = 0.00;  ctrl.pgain[y] = 0.00;  ctrl.pgain[z] = 0.00;
-  ctrl.igain[x] = 0.00;  ctrl.igain[y] = 0.00;  ctrl.igain[z] = 0.00;
-  ctrl.dgain[x] = 0.00;  ctrl.dgain[y] = 0.00;  ctrl.dgain[z] = 0.00;
+  ctrl.pgain[x] = GAIN_PX;  ctrl.pgain[y] = GAIN_PY;  ctrl.pgain[z] = GAIN_PZ;
+  ctrl.igain[x] = GAIN_IX;  ctrl.igain[y] = GAIN_IY;  ctrl.igain[z] = GAIN_IZ;
+  ctrl.dgain[x] = GAIN_DX;  ctrl.dgain[y] = GAIN_DY;  ctrl.dgain[z] = GAIN_DZ;
 
   return;
 }

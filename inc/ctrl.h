@@ -25,13 +25,29 @@
 #define R_RANGE   0.50
 #define P_RANGE   0.50
 #define Y_RANGE   1.50
-#define T_RANGE   0.30
+#define T_RANGE   0.00
 
 
-// Define throttle gains    // TILT = 1.0
+// Define throttle gains
+// MIN: 0.00    MAX: 0.30    TILT: 1.00
 #define TMIN   0.00
-#define TMAX   0.30
-#define TILT   1.00
+#define TMAX   0.00
+#define TILT   0.00
+
+
+// PID Gains
+// P: 0.30    I: 0.15    D: 0.06
+#define GAIN_PX    0.00
+#define GAIN_PY    0.00
+#define GAIN_PZ    0.00
+#define GAIN_IX    0.00
+#define GAIN_IY    0.00
+#define GAIN_IZ    0.00
+#define GAIN_DX    0.00
+#define GAIN_DY    0.00
+#define GAIN_DZ    0.00
+
+
 
 
 // Full scale ranges (enumerate???)
