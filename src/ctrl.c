@@ -127,23 +127,10 @@ void ctl_pid ( void )  {
            derr[Z] * ctrl.dgain[Z];
 
   // Determine throttle adjustment
-
-  //double tilt;
-  //tilt = 1 - ( cos(eul[X]) * cos(eul[Y]) );
-
-
-  double threshold;
-  double range;
-  threshold =  ( 0.5 * ( dial + 1.0 ) * ( TMAX - TMIN ) ) + TMIN - T_RANGE;
-  if ( in[CH_T] <= -0.6 )  range = threshold + 1.0;
-  else                     range = 2.0 * T_RANGE;
-
-  //cmd[T] = threshold + in[CH_T] * range + T_TILT * tilt;
-
-  cmd[T]  = 0.0;
-  //cmd[T] += TILT * tilt;
-  cmd[T] += hover; 
-
+  double tilt = ( 1 - ( cos(eul[X]) * cos(eul[Y]) ) ) * TILT;
+  double thresh = ( 0.5 * ( dial + 1.0 ) * ( TMAX - TMIN ) ) + TMIN - T_RANGE;
+  if ( in[CH_T] <= -0.6 )  cmd[T] = ( 2.50 * ( in[CH_T] + 1.0 ) * ( thresh + 1.0 ) ) - 1.0 + tilt;
+  else                     cmd[T] = ( 1.25 * ( in[CH_T] + 0.6 ) * T_RANGE ) + thresh + tilt; 
 
   // Assign motor outputs
   if ( in[CH_T] > -0.9 ) {

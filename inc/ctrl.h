@@ -25,13 +25,13 @@
 #define R_RANGE   0.50
 #define P_RANGE   0.50
 #define Y_RANGE   1.50
-#define T_RANGE   0.40
+#define T_RANGE   0.30
 
 
 // Define throttle gains    // TILT = 1.0
 #define TMIN   0.00
 #define TMAX   0.30
-#define TILT   0.00
+#define TILT   1.00
 
 
 // Full scale ranges (enumerate???)
