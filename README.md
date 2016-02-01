@@ -78,24 +78,30 @@ simple quadrotor system into the air.
 
 
 
-Pending
--------
-The following list outlines proposed upcoming changes 
-<ul>
+Pending Work
+------------
+The following list outlines some proposed upcoming change.
 
-  <li><b> Priority </b></li>
-  <li> Reestablish controller code </li>
+<ul>
+<li><b> Urgent: CSR Development </b></li>
+<ul>
+  <li> Digital state feedback contorller <li>
+  <li> System ID quad </li>
+  <li> SISO MRAC quad </li>
+  <li> Controller for CL aircraft </li>
+  <li> System ID on CL aircraft </li>
+  <li> SISO MRAC on satellite </li>
+<li><b> Priority </b></li>
+<ul>
   <li> Transistor power distribution kill switch </li> 
-  <li> Add health/status monitoring thread </li>
-  <li> Mavlink serial output </li>
   <li> Develop GCS </li>
+  <li> Mavlink serial output </li>
   <li> Add health/status monitoring thread </li>
-  <li> System identification </li>
-  <li> State feedback controller </li>
   <li> VICON data comparision </li>
   <li> Kalman filter </li>
-
-  <li><b> Sooner than later </b></li>
+</ul>
+<li><b> Sooner than later </b></li>
+<ul>
   <li> Butterworth filter </li>
   <li> Tunable LPF gains from GCS </li>
   <li> Test pull up resistors on Sparkfun breakout board </li>
@@ -111,15 +117,16 @@ The following list outlines proposed upcoming changes
   <li> Replace hard coded gyr bias with saved parameters from a file </li>
   <li> Calculate and apply rotation transformation for accelerometer mounting errors </li>
   <li> Abstract the controller to be applied to various vehicles with same structure </li>
-
-  <li><b> Maybe next board </b></li>
+</ul>
+<li><b> Maybe next board </b></li>
+<ul>
   <li> IMU convergence on start up </li>
   <li> IMU indicator for successful convergence </li>
   <li> Calibrated radio ranges </li>
   <li> Define statements to enable specific datalogs </li>
   <li> Log generation with a function </li>
   <li> Modular structure to allow for differnet vehicles </li>
-
+</ul>
 </ul>
 
 
