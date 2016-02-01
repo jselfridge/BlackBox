@@ -6,8 +6,15 @@ Develops a cape for a BeagleBone Black to enable "Black
 Box" functionality for research and development.
 
 
-v0.0.5 - Controller framework
------------------------------
+v0.1.0 - Operational system
+---------------------------
+This software version focused on making the BlackBox system operational
+as an avionics board.  It includes the bare essentials needed to get a 
+simple quadrotor system into the air.
+
+
+<ul>
+</li><b> v0.0.5 - Controller framework <\b></li>
 <ul>
   <li> Added new timing thread for control loop </li>
   <li> Developed a "pass through" one-to-one I/O mapping for debugging </li>
@@ -18,8 +25,7 @@ v0.0.5 - Controller framework
 </ul>
 
 
-V0.0.4 - Attitude and heading reference system
-----------------------------------------------
+<li><b> V0.0.4 - Attitude and heading reference system <\b></li>
 <ul>
   <li> Added new timing thread for AHR </li>
   <li> Added AHR data structure </li> 
@@ -30,8 +36,7 @@ V0.0.4 - Attitude and heading reference system
 </ul>
 
 
-V0.0.3 - Program execution flags
---------------------------------
+<li></b> V0.0.3 - Program execution flags </b></li>
 <ul>
   <li> New timing thread for program execution flags </li>
   <li> Register stick endpoint positions </li>
@@ -45,8 +50,7 @@ V0.0.3 - Program execution flags
 </ul>
 
 
-V0.0.2 - System input and output signals 
-----------------------------------------
+<li><b> V0.0.2 - System input and output signals </b></li>
 <ul>
   <li> New timing thread for I/O signals </li>
   <li> Developed data structure for I/O signals </li>
@@ -61,8 +65,7 @@ V0.0.2 - System input and output signals
 </ul>
 
 
-V0.0.1 - Real time multithreading development
----------------------------------------------
+</li><b> V0.0.1 - Real time multithreading development </b></li>
 <ul>
   <li> Linux beaglebone 4.1.15-ti-rt-r41 SMP PREEMPT RT armv7l </li>
   <li> Configured high speed 400kHz I2C timer </li>
@@ -80,6 +83,9 @@ V0.0.1 - Real time multithreading development
   <li> GPIO functions to toggle pins </li>
   <li> LED functions to manipulate user LEDs </li>
 </ul>
+
+</ul>
+
 
 
 Pending
