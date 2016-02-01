@@ -84,16 +84,14 @@ The following list outlines some proposed upcoming change.
 
 <ul>
 <li><b> Urgent: CSR Development </b></li>
-
 <ul>
-  <li> Digital state feedback contorller <li>
+  <li> Digital state feedback contorller </li>
   <li> System ID quad </li>
   <li> SISO MRAC quad </li>
   <li> Controller for CL aircraft </li>
   <li> System ID on CL aircraft </li>
   <li> SISO MRAC on satellite </li>
 </ul>
-
 <li><b> Priority </b></li>
 <ul>
   <li> Transistor power distribution kill switch </li> 
@@ -103,7 +101,6 @@ The following list outlines some proposed upcoming change.
   <li> VICON data comparision </li>
   <li> Kalman filter </li>
 </ul>
-
 <li><b> Sooner than later </b></li>
 <ul>
   <li> Butterworth filter </li>
@@ -122,7 +119,6 @@ The following list outlines some proposed upcoming change.
   <li> Calculate and apply rotation transformation for accelerometer mounting errors </li>
   <li> Abstract the controller to be applied to various vehicles with same structure </li>
 </ul>
-
 <li><b> Maybe next board </b></li>
 <ul>
   <li> IMU convergence on start up </li>
@@ -132,9 +128,7 @@ The following list outlines some proposed upcoming change.
   <li> Log generation with a function </li>
   <li> Modular structure to allow for differnet vehicles </li>
 </ul>
-
 </ul>
-
 
 
 
