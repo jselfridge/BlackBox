@@ -37,15 +37,15 @@
 
 // PID Gains
 // P: 0.30    I: 0.15    D: 0.06
-#define GAIN_PX    0.27
-#define GAIN_PY    0.27
-#define GAIN_PZ    0.27
+#define GAIN_PX    0.00
+#define GAIN_PY    0.00
+#define GAIN_PZ    0.00
 #define GAIN_IX    0.00
 #define GAIN_IY    0.00
 #define GAIN_IZ    0.00
-#define GAIN_DX    0.05
-#define GAIN_DY    0.05
-#define GAIN_DZ    0.05
+#define GAIN_DX    0.00
+#define GAIN_DY    0.00
+#define GAIN_DZ    0.00
 
 
 

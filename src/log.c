@@ -248,28 +248,28 @@ void log_close ( void )  {
   sprintf( file, "%sinput.txt", datalog.path );
   fin = fopen( file, "w" );
   if( fin == NULL )  printf( "Error (log_XX): Cannot open 'input' file. \n" );
-  fprintf( fin, "       Itime      I0    I1    I2    I3    I4    I5    I6    I7    I8    I9");
+  fprintf( fin, "       Itime         I0       I1       I2       I3       I4");
 
   // Loop through input data
   for ( row = 0; row < log_input.count; row++ ) {
     fprintf( fin, "\n %011.6f    ", log_input.time[row] );
     //for ( i=0; i<4; i++ )  fprintf( fin, "%05d  ",  log_input.reg  [ row*10 +i ] );   fprintf( fin, "   " );
-    for ( i=0; i<4; i++ )  fprintf( fin, "%04d  ",  log_input.pwm  [ row*10 +i ] );   fprintf( fin, "   " );
-    //for ( i=0; i<4; i++ )  fprintf( fin, "%7.4f  ", log_input.norm [ row*10 +i ] );   fprintf( fin, "   " );
+    //for ( i=0; i<4; i++ )  fprintf( fin, "%04d  ",  log_input.pwm  [ row*10 +i ] );   fprintf( fin, "   " );
+    for ( i=0; i<4; i++ )  fprintf( fin, "%7.4f  ", log_input.norm [ row*10 +i ] );   fprintf( fin, "   " );
   }
 
   // Create output datalog file
   sprintf( file, "%soutput.txt", datalog.path );
   fout = fopen( file, "w" );
   if( fout == NULL )  printf( "Error (log_XX): Cannot open 'input' file. \n" );
-  fprintf( fout, "       Otime      O0    O1    O2    O3    O4    O5    O6    O7    O8    O9");
+  fprintf( fout, "       Otime         O0       O1       O2       O3       O4");
 
   // Loop through output data
   for ( row = 0; row < log_output.count; row++ ) {
     fprintf( fout, "\n %011.6f    ", log_output.time[row] );
     //for ( i=0; i<4; i++ )  fprintf( fout, "%05d  ",  log_output.reg  [ row*10 +i ] );   fprintf( fout, "   " );
-    for ( i=0; i<4; i++ )  fprintf( fout, "%04d  ",  log_output.pwm  [ row*10 +i ] );   fprintf( fout, "   " );
-    //for ( i=0; i<4; i++ )  fprintf( fout, "%7.4f  ", log_output.norm [ row*10 +i ] );   fprintf( fout, "   " );
+    //for ( i=0; i<4; i++ )  fprintf( fout, "%04d  ",  log_output.pwm  [ row*10 +i ] );   fprintf( fout, "   " );
+    for ( i=0; i<4; i++ )  fprintf( fout, "%7.4f  ", log_output.norm [ row*10 +i ] );   fprintf( fout, "   " );
   }
 
   // Create controller datalog file
