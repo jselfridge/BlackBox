@@ -6,8 +6,8 @@ Develops a cape for a BeagleBone Black to enable "Black
 Box" functionality for research and development.
 
 
-Current Tasks - Controller framework
--------------
+v0.0.5 - Controller framework
+-----------------------------
 <ul>
   <li> Added new timing thread for control loop </li>
   <li> Developed a "pass through" one-to-one I/O mapping for debugging </li>
@@ -27,7 +27,6 @@ V0.0.4 - Attitude and heading reference system
   <li> Added 9DOF data fusion algorithm </li>
   <li> Enabled AHR datalogging </li>
   <li> Calibrated IMU/AHR settings </li>
-  <li> Performance stats: IMU 827us | AHR 15us | CPU 7% | MEM 26% </li>
 </ul>
 
 
