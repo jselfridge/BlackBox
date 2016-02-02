@@ -6,6 +6,28 @@ Develops a cape for a BeagleBone Black to enable "Black
 Box" functionality for research and development.
 
 
+Current Tasks
+-------------
+This software version focuses on getting multiple types of aircraft
+configured for the avionics board.  It adds controls for a standard
+tube-and-wing aircraft, enables the serial telemetry and incorporates
+a ground control station (GCS).
+
+<ul>
+<li><b> v0.1.6 - Receive parameter updates from GCS </b></li>
+<li><b> v0.1.5 - Send state info to GCS </b></li>
+<li><b> v0.1.4 - Send heartbeat to GCS </b></li>
+<li><b> v0.1.3 - Configure serial UARTs </b></li>
+<li><b> v0.1.1 - Compiler revisions </b></li>
+<li><b> v0.1.2 - Airplane controller </b></li>
+<ul>
+  <li> Indicate vehicle type in terminal </li>
+  <li> Abstract PID control to any system </li>
+  <li> Add function to map controls to particular system </li>
+</ul>
+</ul>
+
+
 v0.1.0 - Operational system
 ---------------------------
 This software version focused on making the BlackBox system operational
