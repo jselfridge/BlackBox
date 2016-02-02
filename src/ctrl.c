@@ -30,6 +30,9 @@ void ctl_init ( void )  {
   ctrl.igain[x] = GAIN_IX;  ctrl.igain[y] = GAIN_IY;  ctrl.igain[z] = GAIN_IZ;
   ctrl.dgain[x] = GAIN_DX;  ctrl.dgain[y] = GAIN_DY;  ctrl.dgain[z] = GAIN_DZ;
 
+  // Display system
+  if (DEBUG)  printf( "  System: %s \n", SYSTEM );
+
   return;
 }
 
@@ -50,17 +53,20 @@ void ctl_exit ( void )  {
 //  Executes the top level logic for each control loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void ctl_exec ( void )  {
-  if (armed)  ctl_pid();
+  if (armed)  {
+    if ( !strcmp( SYSTEM, "quad"  ) )  ctl_quad();
+    if ( !strcmp( SYSTEM, "plane" ) )  ctl_plane();
+  }
   else        sio_disarm();
   return;
 }
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ctl_pid
-//  Apply PID control to vehcile attitude.
+//  ctl_quad
+//  Apply control to quadrotor system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ctl_pid ( void )  {
+void ctl_quad ( void )  {
 
   // Local variables
   bool reset;
@@ -90,6 +96,10 @@ void ctl_pid ( void )  {
   for ( i=0; i<4; i++ )  ref[i] = in[i] * ctrl.scale[i];
 
   // Determine roll (X) adjustment
+  //~~~~~~~~~~~~~~~~
+  // double ctrl_pid_pos( double eul, double ang, double in, double ref, double ierr );
+  // double perr, derr;
+  // bool reset;
   perr[x] = -eul[x] + ref[CH_R];
   derr[x] = -ang[x];
   reset = ( in[CH_R] < -IRESET || in[CH_R] > IRESET );
@@ -98,6 +108,8 @@ void ctl_pid ( void )  {
   cmd[x] = perr[x] * ctrl.pgain[x] +
            ierr[x] * ctrl.igain[x] +
            derr[x] * ctrl.dgain[x];
+  // return cmd;
+  //~~~~~~~~~~~~~~
 
   // Determine pitch (Y) adjustment
   perr[y] = -eul[y] + ref[CH_P];
@@ -152,6 +164,35 @@ void ctl_pid ( void )  {
 
   // Push system outputs
   for ( i=0; i<4; i++ )  sio_setnorm( i, out[i] );
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  ctl_plane
+//  Apply control to plane configuration.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void ctl_plane ( void )  {
+
+  // Local variables
+  ushort ch;
+  double in[4], out[4];
+
+  // Move to #define section
+  double center[4] = { 0.00, 0.00, 0.00, 0.00 };
+  double scale[4]  = { 1.00, 1.00, 1.00, 1.00 };
+
+  // Obtain inputs
+  pthread_mutex_lock(&mutex_input);
+  for ( ch=0; ch<4; ch++ )  in[ch] = input.norm[ch];
+  pthread_mutex_unlock(&mutex_input);
+
+  // Scale and center outputs
+  for ( ch=0; ch<4; ch++ )  out[ch] = in[ch] * scale[ch] + center[ch];
+
+  // Push system outputs
+  for ( ch=0; ch<4; ch++ )  sio_setnorm( ch, out[ch] );
 
   return;
 }

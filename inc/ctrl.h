@@ -9,7 +9,8 @@
 
 
 // Define misc items
-#define IRESET     0.25
+#define IRESET    0.25
+#define SYSTEM    "quad"
 
 
 // Define motor channel index (enumerate??)
@@ -48,17 +49,6 @@
 #define GAIN_DZ    0.00
 
 
-
-
-// Full scale ranges (enumerate???)
-//#define MIN   0
-//#define MAX   1
-//#define LEFT  0
-//#define RIGHT 1
-//#define DOWN  0
-//#define UP    1
-
-
 // CTRL structure
 typedef struct ctrl_struct {
   double  dt;
@@ -79,7 +69,8 @@ ctrl_struct ctrl;
 void  ctl_init    ( void );
 void  ctl_exit    ( void );
 void  ctl_exec    ( void );
-void  ctl_pid     ( void );
+void  ctl_quad    ( void );
+void  ctl_plane   ( void );
 void  ctl_debug   ( void );
 
 #endif
