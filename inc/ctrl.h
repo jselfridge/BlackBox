@@ -69,6 +69,7 @@ ctrl_struct ctrl;
 void  ctl_init    ( void );
 void  ctl_exit    ( void );
 void  ctl_exec    ( void );
+void  ctl_pid     ( void );
 void  ctl_quad    ( void );
 void  ctl_plane   ( void );
 void  ctl_debug   ( void );
