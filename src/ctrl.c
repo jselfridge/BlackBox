@@ -69,11 +69,9 @@ void ctl_exec ( void )  {
 void ctl_quad ( void )  {
 
   // Local variables
-  //bool reset;
+  bool reset;
   ushort ch;
-  //ushort p=0, i=1, d=2;
   ushort x=0, y=1, z=2, t=3;
-  //double xstate[3], ystate[3], zstate[3];
   double eul[3], ang[3], in[4], ref[4], cmd[4], out[4], heading, dial;
   static double perr[3] = { 0.0, 0.0, 0.0 };
   static double ierr[3] = { 0.0, 0.0, 0.0 };
@@ -86,7 +84,7 @@ void ctl_quad ( void )  {
 
   // Obtain inputs
   pthread_mutex_lock(&mutex_input);
-  for ( ch=0; ch<4; ch++ )  in[i] = input.norm[i];
+  for ( ch=0; ch<4; ch++ )  in[ch] = input.norm[ch];
   dial = input.norm[CH_D];
   pthread_mutex_unlock(&mutex_input);
 
@@ -147,7 +145,7 @@ void ctl_quad ( void )  {
   out[MOT_BL] = cmd[t] + cmd[x] - cmd[y] + cmd[z];
   out[MOT_FL] = cmd[t] + cmd[x] + cmd[y] - cmd[z];
   out[MOT_BR] = cmd[t] - cmd[x] - cmd[y] - cmd[z];
-  } else {  for ( i=0; i<4; i++ )  out[i] = -1.0;  }
+  } else {  for ( ch=0; ch<4; ch++ )  out[ch] = -1.0;  }
 
   // Push control data
   pthread_mutex_lock(&mutex_ctrl);

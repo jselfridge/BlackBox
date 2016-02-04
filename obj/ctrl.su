@@ -1,7 +1,6 @@
 ctrl.c:13:6:ctl_init	24	static
 ctrl.c:44:6:ctl_exit	0	static
-ctrl.c:69:8:ctl_pid	0	static
-ctrl.c:97:6:ctl_quad	152	static
+ctrl.c:69:6:ctl_quad	264	static
 ctrl.c:55:6:ctl_exec	0	static
-ctrl.c:211:6:ctl_plane	160	static
-ctrl.c:240:6:ctl_debug	8	static
+ctrl.c:172:6:ctl_plane	160	static
+ctrl.c:201:6:ctl_debug	8	static
