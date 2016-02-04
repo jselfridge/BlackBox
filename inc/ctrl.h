@@ -31,13 +31,13 @@
 // Define throttle gains
 // MIN: 0.00    MAX: 0.30    TILT: 1.00
 #define TMIN   0.00
-#define TMAX   0.00
+#define TMAX   0.30
 #define TILT   0.00
 
 
 // PID Gains
 // P: 0.30    I: 0.15    D: 0.06
-#define GAIN_PX    0.00
+#define GAIN_PX    0.30
 #define GAIN_PY    0.00
 #define GAIN_PZ    0.00
 #define GAIN_IX    0.00
