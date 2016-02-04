@@ -63,34 +63,6 @@ void ctl_exec ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ctl_pid
-//  Apply SISO PID controller.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-double ctl_pid ( double Y[3], double K[3], double R, bool reset, double dt )  {
-
-  // Local variables
-  ushort p=0, i=1, d=2;
-  double E[3];
-
-  // P/D errors
-  E[d] = -Y[d];
-  E[p] = -Y[p] + R;
-
-  // Wrap P within range
-  while ( E[p] >   PI )  E[p] -= 2.0*PI;
-  while ( E[p] <= -PI )  E[p] += 2.0*PI;
-
-  // I error
-  if (reset)  E[i] = 0.0; 
-  else        E[i] += E[p] * dt;
-
-  // Return system output
-  return ( E[p] * K[p] ) + ( E[i] * K[i] ) + ( E[d] * K[d] );
-
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctl_quad
 //  Apply control to quadrotor system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
