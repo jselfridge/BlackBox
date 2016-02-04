@@ -10,7 +10,7 @@
 
 // Define misc items
 #define IRESET    0.25
-#define SYSTEM    "quad"
+#define SYSTEM    "plane"
 
 
 // Define motor channel index (enumerate??)
@@ -36,17 +36,27 @@
 #define TILT   0.00
 
 
-// PID Gains
+// Quad PID Gains
 // P: 0.30    I: 0.15    D: 0.06
-#define GAIN_PX    0.00
-#define GAIN_PY    0.00
-#define GAIN_PZ    0.00
-#define GAIN_IX    0.00
-#define GAIN_IY    0.00
-#define GAIN_IZ    0.05
-#define GAIN_DX    0.00
-#define GAIN_DY    0.00
-#define GAIN_DZ    0.00
+#define QUAD_PX    0.00
+#define QUAD_PY    0.00
+#define QUAD_PZ    0.00
+#define QUAD_IX    0.00
+#define QUAD_IY    0.00
+#define QUAD_IZ    0.00
+#define QUAD_DX    0.00
+#define QUAD_DY    0.00
+#define QUAD_DZ    0.00
+
+
+// Plane PD Gains
+// P: ????    I: ????    D: ????
+#define PLANE_PX    0.00
+#define PLANE_PY    0.00
+#define PLANE_PZ    0.00
+#define PLANE_DX    0.00
+#define PLANE_DY    0.00
+#define PLANE_DZ    0.00
 
 
 // CTRL structure

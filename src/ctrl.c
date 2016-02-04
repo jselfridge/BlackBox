@@ -25,10 +25,19 @@ void ctl_init ( void )  {
   ctrl.scale[CH_Y] = Y_RANGE;
   ctrl.scale[CH_T] = T_RANGE;
 
-  // Set gain values (make 'const' during initialization)
-  ctrl.pgain[x] = GAIN_PX;  ctrl.pgain[y] = GAIN_PY;  ctrl.pgain[z] = GAIN_PZ;
-  ctrl.igain[x] = GAIN_IX;  ctrl.igain[y] = GAIN_IY;  ctrl.igain[z] = GAIN_IZ;
-  ctrl.dgain[x] = GAIN_DX;  ctrl.dgain[y] = GAIN_DY;  ctrl.dgain[z] = GAIN_DZ;
+  // Set 'quad' gain values (make 'const' during initialization)
+  if ( !strcmp( SYSTEM, "quad" ) )  {
+  ctrl.pgain[x] = QUAD_PX;  ctrl.pgain[y] = QUAD_PY;  ctrl.pgain[z] = QUAD_PZ;
+  ctrl.igain[x] = QUAD_IX;  ctrl.igain[y] = QUAD_IY;  ctrl.igain[z] = QUAD_IZ;
+  ctrl.dgain[x] = QUAD_DX;  ctrl.dgain[y] = QUAD_DY;  ctrl.dgain[z] = QUAD_DZ;
+  }
+
+  // Set 'plane' gain values (make 'const' during initialization)
+  if ( !strcmp( SYSTEM, "plane" ) )  {
+  ctrl.pgain[x] = PLANE_PX;  ctrl.pgain[y] = PLANE_PY;  ctrl.pgain[z] = PLANE_PZ;
+  ctrl.dgain[x] = PLANE_DX;  ctrl.dgain[y] = PLANE_DY;  ctrl.dgain[z] = PLANE_DZ;
+  ctrl.igain[x] = 0.0;       ctrl.igain[y] = 0.0;       ctrl.igain[z] = 0.0;
+  }
 
   // Display system
   if (DEBUG)  printf( "  System: %s \n", SYSTEM );
