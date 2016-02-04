@@ -43,10 +43,10 @@
 #define GAIN_PZ    0.00
 #define GAIN_IX    0.00
 #define GAIN_IY    0.00
-#define GAIN_IZ    0.00
+#define GAIN_IZ    0.05
 #define GAIN_DX    0.00
 #define GAIN_DY    0.00
-#define GAIN_DZ    0.06
+#define GAIN_DZ    0.00
 
 
 // CTRL structure
