@@ -9,7 +9,8 @@
 
 
 // Define misc items
-#define IRESET     0.25
+#define IRESET    0.25
+#define SYSTEM    "quad"
 
 
 // Define motor channel index (enumerate??)
@@ -37,38 +38,27 @@
 
 // PID Gains
 // P: 0.30    I: 0.15    D: 0.06
-#define GAIN_PX    0.30
-#define GAIN_PY    0.00
-#define GAIN_PZ    0.00
-#define GAIN_IX    0.00
-#define GAIN_IY    0.00
-#define GAIN_IZ    0.00
-#define GAIN_DX    0.00
-#define GAIN_DY    0.00
-#define GAIN_DZ    0.00
-
-
-
-
-// Full scale ranges (enumerate???)
-//#define MIN   0
-//#define MAX   1
-//#define LEFT  0
-//#define RIGHT 1
-//#define DOWN  0
-//#define UP    1
+#define GAIN_XP    0.00
+#define GAIN_YP    0.00
+#define GAIN_ZP    0.00
+#define GAIN_XI    0.00
+#define GAIN_YI    0.00
+#define GAIN_ZI    0.00
+#define GAIN_XD    0.00
+#define GAIN_YD    0.00
+#define GAIN_ZD    0.00
 
 
 // CTRL structure
 typedef struct ctrl_struct {
   double  dt;
   double  scale [4];
-  double  pgain [3];
-  double  igain [3];
-  double  dgain [3];
-  double  perr  [3];
-  double  ierr  [3];
-  double  derr  [3];
+  double  xgain [3];
+  double  ygain [3];
+  double  zgain [3];
+  double  xerr  [3];
+  double  yerr  [3];
+  double  zerr  [3];
   double  cmd   [4];
   double  heading;
 } ctrl_struct;
@@ -76,11 +66,13 @@ ctrl_struct ctrl;
 
 
 // CTRL functions
-void  ctl_init    ( void );
-void  ctl_exit    ( void );
-void  ctl_exec    ( void );
-void  ctl_pid     ( void );
-void  ctl_debug   ( void );
+void    ctl_init    ( void );
+void    ctl_exit    ( void );
+void    ctl_exec    ( void );
+double  ctl_pid     ( double Y[3], double K[3], double R, bool reset, double dt );
+void    ctl_quad    ( void );
+void    ctl_plane   ( void );
+void    ctl_debug   ( void );
 
 #endif
 
