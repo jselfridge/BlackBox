@@ -19,24 +19,60 @@ void ctl_init ( void )  {
   // Set timing values (make 'const' during initialization)
   ctrl.dt = 1.0 / HZ_CTRL;
 
-  // Set reference ranges (make 'const' during initialization)
-  ctrl.scale[CH_R] = R_RANGE;
-  ctrl.scale[CH_P] = P_RANGE;
-  ctrl.scale[CH_Y] = Y_RANGE;
-  ctrl.scale[CH_T] = T_RANGE;
-
-  // Set 'quad' gain values (make 'const' during initialization)
+  // Set 'quad' parameters
   if ( !strcmp( SYSTEM, "quad" ) )  {
-  ctrl.pgain[x] = QUAD_PX;  ctrl.pgain[y] = QUAD_PY;  ctrl.pgain[z] = QUAD_PZ;
-  ctrl.igain[x] = QUAD_IX;  ctrl.igain[y] = QUAD_IY;  ctrl.igain[z] = QUAD_IZ;
-  ctrl.dgain[x] = QUAD_DX;  ctrl.dgain[y] = QUAD_DY;  ctrl.dgain[z] = QUAD_DZ;
+
+    // Asign disarming array values
+    ctrl.off[0] = QUAD_OFF0;
+    ctrl.off[1] = QUAD_OFF1;
+    ctrl.off[2] = QUAD_OFF2;
+    ctrl.off[3] = QUAD_OFF3;
+    ctrl.off[4] = QUAD_OFF4;
+    ctrl.off[5] = QUAD_OFF5;
+    ctrl.off[6] = QUAD_OFF6;
+    ctrl.off[7] = QUAD_OFF7;
+    ctrl.off[8] = QUAD_OFF8;
+    ctrl.off[9] = QUAD_OFF9;
+
+    // Reference ranges
+    ctrl.scale[CH_R] = QUAD_R_RANGE;
+    ctrl.scale[CH_P] = QUAD_P_RANGE;
+    ctrl.scale[CH_Y] = QUAD_Y_RANGE;
+    ctrl.scale[CH_T] = QUAD_T_RANGE;
+
+    // Gain values
+    ctrl.pgain[x] = QUAD_PX;  ctrl.pgain[y] = QUAD_PY;  ctrl.pgain[z] = QUAD_PZ;
+    ctrl.igain[x] = QUAD_IX;  ctrl.igain[y] = QUAD_IY;  ctrl.igain[z] = QUAD_IZ;
+    ctrl.dgain[x] = QUAD_DX;  ctrl.dgain[y] = QUAD_DY;  ctrl.dgain[z] = QUAD_DZ;
+
   }
 
-  // Set 'plane' gain values (make 'const' during initialization)
+  // Set 'plane' parameters
   if ( !strcmp( SYSTEM, "plane" ) )  {
-  ctrl.pgain[x] = PLANE_PX;  ctrl.pgain[y] = PLANE_PY;  ctrl.pgain[z] = PLANE_PZ;
-  ctrl.dgain[x] = PLANE_DX;  ctrl.dgain[y] = PLANE_DY;  ctrl.dgain[z] = PLANE_DZ;
-  ctrl.igain[x] = 0.0;       ctrl.igain[y] = 0.0;       ctrl.igain[z] = 0.0;
+
+    // Asign disarming array values
+    ctrl.off[0] = PLANE_OFF0;
+    ctrl.off[1] = PLANE_OFF1;
+    ctrl.off[2] = PLANE_OFF2;
+    ctrl.off[3] = PLANE_OFF3;
+    ctrl.off[4] = PLANE_OFF4;
+    ctrl.off[5] = PLANE_OFF5;
+    ctrl.off[6] = PLANE_OFF6;
+    ctrl.off[7] = PLANE_OFF7;
+    ctrl.off[8] = PLANE_OFF8;
+    ctrl.off[9] = PLANE_OFF9;
+
+    // Reference ranges
+    ctrl.scale[CH_R] = PLANE_R_RANGE;
+    ctrl.scale[CH_P] = PLANE_P_RANGE;
+    ctrl.scale[CH_Y] = PLANE_Y_RANGE;
+    ctrl.scale[CH_T] = PLANE_T_RANGE;
+
+    // Gain values
+    ctrl.pgain[x] = PLANE_PX;  ctrl.pgain[y] = PLANE_PY;  ctrl.pgain[z] = PLANE_PZ;
+    ctrl.dgain[x] = PLANE_DX;  ctrl.dgain[y] = PLANE_DY;  ctrl.dgain[z] = PLANE_DZ;
+    ctrl.igain[x] = 0.0;       ctrl.igain[y] = 0.0;       ctrl.igain[z] = 0.0;
+
   }
 
   // Display system
@@ -63,10 +99,11 @@ void ctl_exit ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void ctl_exec ( void )  {
   if (armed)  {
+    if ( !strcmp( SYSTEM, "debug" ) )  ctl_debug();
     if ( !strcmp( SYSTEM, "quad"  ) )  ctl_quad();
     if ( !strcmp( SYSTEM, "plane" ) )  ctl_plane();
   }
-  else        sio_disarm();
+  else        ctl_disarm();
   return;
 }
 
@@ -143,17 +180,17 @@ void ctl_quad ( void )  {
            derr[z] * ctrl.dgain[z];
 
   // Determine throttle adjustment
-  double tilt = ( 1 - ( cos(eul[x]) * cos(eul[y]) ) ) * TILT;
-  double thresh = ( 0.5 * ( dial + 1.0 ) * ( TMAX - TMIN ) ) + TMIN - T_RANGE;
+  double tilt = ( 1 - ( cos(eul[x]) * cos(eul[y]) ) ) * QUAD_TILT;
+  double thresh = ( 0.5 * ( dial + 1.0 ) * ( QUAD_TMAX - QUAD_TMIN ) ) + QUAD_TMIN - QUAD_T_RANGE;
   if ( in[CH_T] <= -0.6 )  cmd[t] = ( 2.50 * ( in[CH_T] + 1.0 ) * ( thresh + 1.0 ) ) - 1.0 + tilt;
-  else                     cmd[t] = ( 1.25 * ( in[CH_T] + 0.6 ) * T_RANGE ) + thresh + tilt; 
+  else                     cmd[t] = ( 1.25 * ( in[CH_T] + 0.6 ) * QUAD_T_RANGE ) + thresh + tilt; 
 
   // Assign motor outputs
   if ( in[CH_T] > -0.9 ) {
-  out[MOT_FR] = cmd[t] - cmd[x] + cmd[y] + cmd[z];
-  out[MOT_BL] = cmd[t] + cmd[x] - cmd[y] + cmd[z];
-  out[MOT_FL] = cmd[t] + cmd[x] + cmd[y] - cmd[z];
-  out[MOT_BR] = cmd[t] - cmd[x] - cmd[y] - cmd[z];
+  out[QUAD_FR] = cmd[t] - cmd[x] + cmd[y] + cmd[z];
+  out[QUAD_BL] = cmd[t] + cmd[x] - cmd[y] + cmd[z];
+  out[QUAD_FL] = cmd[t] + cmd[x] + cmd[y] - cmd[z];
+  out[QUAD_BR] = cmd[t] - cmd[x] - cmd[y] - cmd[z];
   } else {  for ( ch=0; ch<4; ch++ )  out[ch] = -1.0;  }
 
   // Push control data
@@ -182,24 +219,95 @@ void ctl_plane ( void )  {
 
   // Local variables
   ushort ch;
-  double in[4], out[4];
+  ushort x=0, y=1, z=2, t=3;
+  double eul[3], ang[3], in[4], ref[4], cmd[4], out[4], bank, climb, heading, dial;
+  static double perr[3] = { 0.0, 0.0, 0.0 };
+  static double derr[3] = { 0.0, 0.0, 0.0 };
 
-  // Move to #define section
-  double center[4] = { 0.00, 0.00, 0.00, 0.00 };
-  double scale[4]  = { 1.00, 1.00, 1.00, 1.00 };
+  // Obtain states
+  pthread_mutex_lock(&mutex_eul);
+  for ( ch=0; ch<3; ch++ )  {  eul[ch] = ahr.eul[ch];  ang[ch] = ahr.deul[ch];  }
+  pthread_mutex_unlock(&mutex_eul);
 
   // Obtain inputs
   pthread_mutex_lock(&mutex_input);
   for ( ch=0; ch<4; ch++ )  in[ch] = input.norm[ch];
+  dial = input.norm[CH_D];
   pthread_mutex_unlock(&mutex_input);
 
-  // Scale and center outputs
-  for ( ch=0; ch<4; ch++ )  out[ch] = in[ch] * scale[ch] + center[ch];
+  // Obtain vehicle heading
+  pthread_mutex_lock(&mutex_ctrl);
+  bank    = ctrl.bank;
+  climb   = ctrl.climb;
+  heading = ctrl.heading;
+  pthread_mutex_unlock(&mutex_ctrl);
+
+  // Calculate reference signals
+  for ( ch=0; ch<4; ch++ )  ref[ch] = in[ch] * ctrl.scale[ch];
+
+  // Determine desired bank
+  if ( in[CH_T] > -0.9 && fabs(in[CH_R]) > 0.15 )  bank += ref[CH_R] * ctrl.dt;
+  while ( bank >   PI )  bank -= 2.0*PI;
+  while ( bank <= -PI )  bank += 2.0*PI;
+
+  // Determine desired climb
+  if ( in[CH_T] > -0.9 && fabs(in[CH_P]) > 0.15 )  climb += ref[CH_P] * ctrl.dt;
+  while ( climb >   PI )  climb -= 2.0*PI;
+  while ( climb <= -PI )  climb += 2.0*PI;
+
+  // Determine desired heading
+  if ( in[CH_T] > -0.9 && fabs(in[CH_Y]) > 0.15 )  heading += ref[CH_Y] * ctrl.dt;
+  while ( heading >   PI )  heading -= 2.0*PI;
+  while ( heading <= -PI )  heading += 2.0*PI;
+
+  // Determine roll (X) adjustment
+  perr[x] = -eul[x] + bank;
+  while ( perr[x] >   PI )  perr[x] -= 2.0*PI;
+  while ( perr[x] <= -PI )  perr[x] += 2.0*PI;
+  derr[x] = -ang[x];
+  cmd[x] = ( perr[x] * ctrl.pgain[x] ) + ( derr[x] * ctrl.dgain[x] );
+
+  // Determine pitch (Y) adjustment
+  perr[y] = -eul[y] + climb;
+  while ( perr[y] >   PI )  perr[y] -= 2.0*PI;
+  while ( perr[y] <= -PI )  perr[y] += 2.0*PI;
+  derr[y] = -ang[y];
+  cmd[y] = ( perr[y] * ctrl.pgain[y] ) + ( derr[y] * ctrl.dgain[y] );
+
+  // Determine yaw (Z) adjustment
+  perr[z] = -eul[z] + heading;
+  while ( perr[z] >   PI )  perr[z] -= 2.0*PI;
+  while ( perr[z] <= -PI )  perr[z] += 2.0*PI;
+  derr[z] = -ang[z];
+  cmd[z] = ( perr[z] * ctrl.pgain[z] ) + ( derr[z] * ctrl.dgain[z] );
+
+  // Determine throttle adjustment
+  double thresh = ( 0.5 * ( dial + 1.0 ) * ( PLANE_TMAX - PLANE_TMIN ) ) + PLANE_TMIN - PLANE_T_RANGE;
+  if ( in[CH_T] <= -0.6 )  cmd[t] = ( 2.50 * ( in[CH_T] + 1.0 ) * ( thresh + 1.0 ) ) - 1.0;
+  else                     cmd[t] = ( 1.25 * ( in[CH_T] + 0.6 ) * PLANE_T_RANGE ) + thresh; 
+
+  // Assign signal outputs
+  if ( in[CH_T] > -0.9 )  {  for ( ch=0; ch<4; ch++ )  out[ch] = cmd[ch];  }
+  else                    {  for ( ch=0; ch<3; ch++ )  out[ch] = 0.0;  out[t] = -1.0;  }
+
+  // Push control data
+  pthread_mutex_lock(&mutex_ctrl);
+  for ( ch=0; ch<3; ch++ )  {
+    ctrl.perr[ch] = perr[ch];
+    ctrl.derr[ch] = derr[ch];
+    ctrl.ierr[ch] = 0.0;
+  }
+  for ( ch=0; ch<4; ch++ )  ctrl.cmd[ch] = cmd[ch];
+  ctrl.bank    = bank;
+  ctrl.climb   = climb;
+  ctrl.heading = heading;
+  pthread_mutex_unlock(&mutex_ctrl);
 
   // Push system outputs
   for ( ch=0; ch<4; ch++ )  sio_setnorm( ch, out[ch] );
 
   return;
+
 }
 
 
@@ -214,4 +322,14 @@ void ctl_debug ( void )  {
 }
 
 
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  ctl_disarm
+//  Set all system outputs to their disarmed state.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void ctl_disarm ( void )  {
+  ushort ch;
+  for ( ch=0; ch<OUT_CH; ch++ )  sio_setnorm( ch, ctrl.off[ch] );
+  return;
+}
 

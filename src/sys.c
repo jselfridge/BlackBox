@@ -68,7 +68,7 @@ void sys_debug ( void )  {
 
   // Select data for display
   //sys_imu();
-  sys_ahr();
+  //sys_ahr();
   sys_sio();
   sys_ctrl();
 
@@ -180,6 +180,8 @@ void sys_ctrl ( void )  {
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.ierr[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.derr[i] );  printf("   ");  fflush(stdout);
   for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.cmd[i]  );  printf("   ");  fflush(stdout);
+  //printf("%5.2f ", ctrl.bank    *(180.0/PI) );  printf("   ");  fflush(stdout);
+  //printf("%5.2f ", ctrl.climb   *(180.0/PI) );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", ctrl.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_ctrl);
 

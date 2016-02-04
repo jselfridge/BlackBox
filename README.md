@@ -22,8 +22,8 @@ a ground control station (GCS).
 <li><b> v0.1.2 - Airplane controller </b></li>
 <ul>
   <li> Indicate vehicle type in terminal </li>
-  <li> Abstract PID control to any system </li>
-  <li> Add function to map controls to particular system </li>
+  <li> Added PD controller structure for airplane system </li>
+  <li> Unique disarming values for specific systems </li>
 </ul>
 </ul>
 

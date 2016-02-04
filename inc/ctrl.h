@@ -13,30 +13,42 @@
 #define SYSTEM    "plane"
 
 
-// Define motor channel index (enumerate??)
-#define MOT_FR  0
-#define MOT_BL  1
-#define MOT_FL  2
-#define MOT_BR  3
+// Define 'quad' disarm values
+#define QUAD_OFF0  -1.0
+#define QUAD_OFF1  -1.0
+#define QUAD_OFF2  -1.0
+#define QUAD_OFF3  -1.0
+#define QUAD_OFF4   0.0
+#define QUAD_OFF5   0.0
+#define QUAD_OFF6   0.0
+#define QUAD_OFF7   0.0
+#define QUAD_OFF8   0.0
+#define QUAD_OFF9   0.0
 
 
-// Define range values
-// Maximum reference commands
-// R: rad  P: rad  Y: rad/s  T:%thrust
-#define R_RANGE   0.50
-#define P_RANGE   0.50
-#define Y_RANGE   1.50
-#define T_RANGE   1.00
+// Define 'quad' motor channel index (enumerate??)
+#define QUAD_FR  0
+#define QUAD_BL  1
+#define QUAD_FL  2
+#define QUAD_BR  3
 
 
-// Define throttle gains
+// Define 'quad' range values
+// R: rad    P: rad    Y: rad/s    T: ?thrust?
+#define QUAD_R_RANGE   0.50
+#define QUAD_P_RANGE   0.50
+#define QUAD_Y_RANGE   1.50
+#define QUAD_T_RANGE   1.00
+
+
+// Define 'quad' throttle gains
 // MIN: 0.00    MAX: 0.30    TILT: 1.00
-#define TMIN   0.00
-#define TMAX   0.00
-#define TILT   0.00
+#define QUAD_TMIN   0.00
+#define QUAD_TMAX   0.00
+#define QUAD_TILT   0.00
 
 
-// Quad PID Gains
+// Define 'quad' PID Gains
 // P: 0.30    I: 0.15    D: 0.06
 #define QUAD_PX    0.00
 #define QUAD_PY    0.00
@@ -47,6 +59,34 @@
 #define QUAD_DX    0.00
 #define QUAD_DY    0.00
 #define QUAD_DZ    0.00
+
+
+// Define 'plane' disarm values
+#define PLANE_OFF0   0.0
+#define PLANE_OFF1   0.0
+#define PLANE_OFF2   0.0
+#define PLANE_OFF3  -1.0
+#define PLANE_OFF4   0.0
+#define PLANE_OFF5   0.0
+#define PLANE_OFF6   0.0
+#define PLANE_OFF7   0.0
+#define PLANE_OFF8   0.0
+#define PLANE_OFF9   0.0
+
+
+// Define 'plane' range values
+// R: rad/s    P: rad/s    Y: rad/s    T: ?thrust?
+#define PLANE_R_RANGE   1.50
+#define PLANE_P_RANGE   1.50
+#define PLANE_Y_RANGE   1.50
+#define PLANE_T_RANGE   0.00
+
+
+// Define 'plane' throttle gains
+// MIN: 0.00    MAX: 0.30    TILT: 1.00
+#define PLANE_TMIN   0.00
+#define PLANE_TMAX   0.00
+#define PLANE_TILT   0.00
 
 
 // Plane PD Gains
@@ -70,7 +110,10 @@ typedef struct ctrl_struct {
   double  ierr  [3];
   double  derr  [3];
   double  cmd   [4];
+  double  bank;
+  double  climb;
   double  heading;
+  double  off   [10];
 } ctrl_struct;
 ctrl_struct ctrl;
 
@@ -82,6 +125,8 @@ void    ctl_exec    ( void );
 void    ctl_quad    ( void );
 void    ctl_plane   ( void );
 void    ctl_debug   ( void );
+void    ctl_disarm  ( void );
+
 
 #endif
 

@@ -95,6 +95,8 @@ void flg_check ( void )  {
       armed = true;
       pthread_mutex_lock(&mutex_ctrl);
       pthread_mutex_lock(&mutex_eul);
+      ctrl.bank    = ahr.eul[0];
+      ctrl.climb   = ahr.eul[1];
       ctrl.heading = ahr.eul[2];
       pthread_mutex_unlock(&mutex_eul);
       pthread_mutex_unlock(&mutex_ctrl);

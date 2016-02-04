@@ -8,19 +8,6 @@
 #include <main.h>
 
 
-// Define disarm values (move to flags code?)
-#define SIO_OFF0  1000
-#define SIO_OFF1  1000
-#define SIO_OFF2  1000
-#define SIO_OFF3  1000
-#define SIO_OFF4  1000
-#define SIO_OFF5  1000
-#define SIO_OFF6  1000
-#define SIO_OFF7  1000
-#define SIO_OFF8  1000
-#define SIO_OFF9  1000
-
-
 // Input signal variables
 #define IN_CH       10
 #define IN_OFFSET   2049
@@ -76,10 +63,8 @@ signal_struct input;
 signal_struct output;
 
 
-
 // Global variables (remove as quickly as possible)
 uint* memoryPtr;
-ushort off [10]; // Move to flags code?
 
 
 // System input/output functions
@@ -90,7 +75,6 @@ void    sio_setreg  ( ushort ch, ushort reg  );
 void    sio_setpwm  ( ushort ch, ushort pwm  );
 void    sio_setnorm ( ushort ch, double norm );
 double  sio_norm    ( ushort reg, char dir   );
-void    sio_disarm  ( void );
 
 
 #endif
