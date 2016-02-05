@@ -34,9 +34,9 @@ void ahr_init ( void )  {
   FILE* f;
   char buff [32];  memset( buff, 0, sizeof(buff) );
   char path [32];  memset( path, 0, sizeof(path) );
-  sprintf( path, "../Param/bias/eul" );
+  sprintf( path, "../Param/board/eul/bias" );
   f = fopen( path, "r" );
-  if(!f)  printf( "Error (ahr_init): File '../Param/bias/eul' not found. \n" );
+  if(!f)  printf( "Error (ahr_init): File for 'eul bias' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
     ahr.orient[i] = atoi(buff) / 1000.0;
