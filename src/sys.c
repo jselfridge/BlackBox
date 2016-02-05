@@ -68,9 +68,9 @@ void sys_debug ( void )  {
 
   // Select data for display
   //sys_imu();
-  //sys_ahr();
-  sys_sio();
-  sys_ctrl();
+  sys_ahr();
+  //sys_sio();
+  //sys_ctrl();
 
   // Complete debugging display 
   printf("  "); fflush(stdout);

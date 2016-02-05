@@ -105,9 +105,9 @@ void imu_getcal (  )  {
   gyr.bias[2] = -39;
 
   // Set acceleration bias
-  sprintf( path, "cal/acc/bias" );
+  sprintf( path, "../Param/acc/bias" );
   f = fopen( path, "r" );
-  if(!f)  printf( "Error (imu_getcal): File 'acc/bias' not found. \n" );
+  if(!f)  printf( "Error (imu_getcal): File '../Param/acc/bias' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
     acc.bias[i] = atoi(buff);
@@ -115,9 +115,9 @@ void imu_getcal (  )  {
   fclose(f);
 
   // Set acceleration range
-  sprintf( path, "cal/acc/range" );
+  sprintf( path, "../Param/acc/range" );
   f = fopen( path, "r" );
-  if(!f)  printf( "Error (imu_getcal): File 'acc/range' not found. \n" );
+  if(!f)  printf( "Error (imu_getcal): File '../Param/acc/range' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
     acc.range[i] = atoi(buff);
@@ -125,9 +125,9 @@ void imu_getcal (  )  {
   fclose(f);
 
   // Set magnetometer bias
-  sprintf( path, "cal/mag/bias" );
+  sprintf( path, "../Param/mag/bias" );
   f = fopen( path, "r" );
-  if(!f)  printf( "Error (imu_getcal): File 'mag/bias' not found. \n" );
+  if(!f)  printf( "Error (imu_getcal): File '../Param/mag/bias' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
     mag.bias[i] = atoi(buff);
@@ -135,24 +135,35 @@ void imu_getcal (  )  {
   fclose(f);
 
   // Set magnetometer range
-  sprintf( path, "cal/mag/range" );
+  sprintf( path, "../Param/mag/range" );
   f = fopen( path, "r" );
-  if(!f)  printf( "Error (imu_getcal): File 'mag/range' not found. \n" );
+  if(!f)  printf( "Error (imu_getcal): File '../Param/mag/range' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
     mag.range[i] = atoi(buff);
   }
   fclose(f);
 
+  // Set gyro bias
+  sprintf( path, "../Param/bias/gyr" );
+  f = fopen( path, "r" );
+  if(!f)  printf( "Error (imu_getcal): File '../Param/bias/gyr' not found. \n" );
+  for ( i=0; i<3; i++ ) {
+    fgets( buff, 32, f );
+    gyr.bias[i] = atoi(buff);
+  }
+  fclose(f);
+
   // Display calibration values
   if(DEBUG) {
-    printf("    abias  arange    mbias  mrange \n");
+    printf("    abias  arange    mbias  mrange    gbias \n");
     for ( i=0; i<3; i++ ) {
       printf("     ");
-      printf( "%04d  ",    acc.bias[i]  );
-      printf( "%06d     ", acc.range[i] );
-      printf( "%04d   ",   mag.bias[i]  );
-      printf( "%04d  \n",  mag.range[i] );
+      printf( "%04d  ",     acc.bias[i]  );
+      printf( "%06d     ",  acc.range[i] );
+      printf( "%04d   ",    mag.bias[i]  );
+      printf( "%04d      ", mag.range[i] );
+      printf( "%04d  \n",   gyr.bias[i]  );
     } 
   }
 

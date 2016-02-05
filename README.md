@@ -18,12 +18,13 @@ a ground control station (GCS).
 <li><b> v0.1.5 - Send state info to GCS </b></li>
 <li><b> v0.1.4 - Send heartbeat to GCS </b></li>
 <li><b> v0.1.3 - Configure serial UARTs </b></li>
-<li><b> v0.1.1 - Compiler revisions </b></li>
-<li><b> v0.1.2 - Airplane controller </b></li>
+<li><b> v0.1.2 - Compiler revisions </b></li>
+<li><b> v0.1.1 - Airplane controller </b></li>
 <ul>
   <li> Indicate vehicle type in terminal </li>
   <li> Added PD controller structure for airplane system </li>
   <li> Unique disarming values for specific systems </li>
+  <li> Moved calibration files so they can be board specific </li>
 </ul>
 </ul>
 

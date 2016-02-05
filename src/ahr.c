@@ -20,7 +20,7 @@ void ahr_init ( void )  {
     ahr.dquat [i+1] = 0.0;
     ahr.eul   [i]   = 0.0;
     ahr.deul  [i]   = 0.0;
-    ahr.bias  [i]   = 0.0;
+    ahr.bias  [i]   = 0.0;  // Get initial gyro bias from parameter files
   }
 
   // Populate remaining values
@@ -30,6 +30,25 @@ void ahr_init ( void )  {
   ahr.fz       = 0.866;
   ahr.dt       = 1.0 / HZ_AHR;
 
+  // Set Euler angle bias
+  FILE* f;
+  char buff [32];  memset( buff, 0, sizeof(buff) );
+  char path [32];  memset( path, 0, sizeof(path) );
+  sprintf( path, "../Param/bias/eul" );
+  f = fopen( path, "r" );
+  if(!f)  printf( "Error (ahr_init): File '../Param/bias/eul' not found. \n" );
+  for ( i=0; i<3; i++ ) {
+    fgets( buff, 32, f );
+    ahr.orient[i] = atoi(buff) / 1000.0;
+  }
+  fclose(f);
+
+  // Display Euler attitude offset
+  if (DEBUG)  {
+    printf("  Euler offset:" );
+    for ( i=0; i<3; i++ )  printf(" %6.3f", ahr.orient[i] );
+    printf("\n");
+  }
   return;
 }
 
@@ -209,9 +228,9 @@ void ahr_fusion ( void )  {
 
   // Calculate euler angles
   double e[3];
-  e[X] = atan2 ( ( 2.0 * ( qwx + qyz ) ), ( 1.0 - 2.0 * ( qxx + qyy ) ) ) - R_BIAS;
-  e[Y] = asin  (   2.0 * ( qwy - qxz ) )                                  - P_BIAS;
-  e[Z] = atan2 ( ( 2.0 * ( qwz + qxy ) ), ( 1.0 - 2.0 * ( qyy + qzz ) ) ) - Y_BIAS;
+  e[X] = atan2 ( ( 2.0 * ( qwx + qyz ) ), ( 1.0 - 2.0 * ( qxx + qyy ) ) ) - ahr.orient[X];
+  e[Y] = asin  (   2.0 * ( qwy - qxz ) )                                  - ahr.orient[Y];
+  e[Z] = atan2 ( ( 2.0 * ( qwz + qxy ) ), ( 1.0 - 2.0 * ( qyy + qzz ) ) ) - ahr.orient[Z];
 
   // Update AHR values
   ahr.fx = fx;  ahr.fz = fz;
