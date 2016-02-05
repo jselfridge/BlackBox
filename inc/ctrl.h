@@ -38,13 +38,13 @@
 #define QUAD_R_RANGE   0.50
 #define QUAD_P_RANGE   0.50
 #define QUAD_Y_RANGE   1.50
-#define QUAD_T_RANGE   1.00
+#define QUAD_T_RANGE   0.70
 
 
 // Define 'quad' throttle gains (vehicle specific values)
 // MIN: 0.00    MAX: 0.30    TILT: 1.00
 #define QUAD_TMIN   0.00
-#define QUAD_TMAX   0.00
+#define QUAD_TMAX   0.30
 #define QUAD_TILT   0.00
 
 
