@@ -61,6 +61,8 @@
 #define QUAD_DZ    0.00
 
 
+
+
 // Define 'plane' disarm values (same for any plane)
 #define PLANE_OFF0   0.0
 #define PLANE_OFF1   0.0
@@ -79,14 +81,12 @@
 #define PLANE_R_RANGE   1.50
 #define PLANE_P_RANGE   1.50
 #define PLANE_Y_RANGE   1.50
-#define PLANE_T_RANGE   0.00
+#define PLANE_T_RANGE   0.80
 
 
 // Define 'plane' throttle gains
-// MIN: 0.00    MAX: 0.30    TILT: 1.00
 #define PLANE_TMIN   0.00
 #define PLANE_TMAX   0.00
-#define PLANE_TILT   0.00
 
 
 // Plane PD Gains

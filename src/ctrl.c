@@ -220,7 +220,9 @@ void ctl_plane ( void )  {
   // Local variables
   ushort ch;
   ushort x=0, y=1, z=2, t=3;
-  double eul[3], ang[3], in[4], ref[4], cmd[4], out[4], bank, climb, heading, dial;
+  double eul[3], ang[3];
+  double in[4], ref[4], cmd[4], out[4];
+  double bank, climb, heading, dial;
   static double perr[3] = { 0.0, 0.0, 0.0 };
   static double derr[3] = { 0.0, 0.0, 0.0 };
 
@@ -235,7 +237,7 @@ void ctl_plane ( void )  {
   dial = input.norm[CH_D];
   pthread_mutex_unlock(&mutex_input);
 
-  // Obtain vehicle heading
+  // Obtain desired vehicle state
   pthread_mutex_lock(&mutex_ctrl);
   bank    = ctrl.bank;
   climb   = ctrl.climb;
@@ -287,8 +289,8 @@ void ctl_plane ( void )  {
   else                     cmd[t] = ( 1.25 * ( in[CH_T] + 0.6 ) * PLANE_T_RANGE ) + thresh; 
 
   // Assign signal outputs
-  if ( in[CH_T] > -0.9 )  {  for ( ch=0; ch<4; ch++ )  out[ch] = cmd[ch];  }
-  else                    {  for ( ch=0; ch<3; ch++ )  out[ch] = 0.0;  out[t] = -1.0;  }
+  if ( in[CH_T] > -0.9 )  {  for ( ch=0; ch<4; ch++ )  out[ch] = cmd[ch];  out[CH_Y] = -out[CH_Y];  }
+  else                    {  for ( ch=0; ch<3; ch++ )  out[ch] = 0.0;      out[t] = -1.0;  }
 
   // Push control data
   pthread_mutex_lock(&mutex_ctrl);

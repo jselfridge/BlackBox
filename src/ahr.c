@@ -20,26 +20,26 @@ void ahr_init ( void )  {
     ahr.dquat [i+1] = 0.0;
     ahr.eul   [i]   = 0.0;
     ahr.deul  [i]   = 0.0;
-    ahr.bias  [i]   = 0.0;  // Get initial gyro bias from parameter files
+    ahr.bias  [i]   = 0.0;
   }
 
   // Populate remaining values
   ahr.quat[0]  = 1.0;
   ahr.dquat[0] = 0.0;
-  ahr.fx       = 0.500;
-  ahr.fz       = 0.866;
+  ahr.fx       = 1.0;
+  ahr.fz       = -0.006;
   ahr.dt       = 1.0 / HZ_AHR;
 
   // Set Euler angle bias
   FILE* f;
   char buff [32];  memset( buff, 0, sizeof(buff) );
   char path [32];  memset( path, 0, sizeof(path) );
-  sprintf( path, "../Param/board/eul/bias" );
+  sprintf( path, "../Param/board/bias/eul" );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (ahr_init): File for 'eul bias' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
-    ahr.orient[i] = atoi(buff) / 1000.0;
+    ahr.orient[i] = atoi(buff) / 10000.0;
   }
   fclose(f);
 
