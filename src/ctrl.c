@@ -289,8 +289,18 @@ void ctl_plane ( void )  {
   else                     cmd[t] = ( 1.25 * ( in[CH_T] + 0.6 ) * PLANE_T_RANGE ) + thresh; 
 
   // Assign signal outputs
-  if ( in[CH_T] > -0.9 )  {  for ( ch=0; ch<4; ch++ )  out[ch] = cmd[ch];  out[CH_Y] = -out[CH_Y];  }
-  else                    {  for ( ch=0; ch<3; ch++ )  out[ch] = 0.0;      out[t] = -1.0;  }
+  if ( in[CH_T] > -0.9 )  {  
+    out[0] = cmd[x];
+    out[1] = cmd[y];
+    out[3] = cmd[z];
+    out[4] = cmd[t];
+  }
+  else  {
+    out[0] = 0.0;
+    out[1] = 0.0;
+    out[3] = 0.0;
+    out[4] = -1.0;
+  }
 
   // Push control data
   pthread_mutex_lock(&mutex_ctrl);
