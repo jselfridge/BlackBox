@@ -36,7 +36,7 @@ ahr_data_struct ahr;
 // IMU functions
 void  ahr_init    ( void );
 void  ahr_exit    ( void );
-void  ahr_run     ( void );
+void  ahr_update  ( void );
 void  ahr_fusion  ( void );
 void  ahr_kalman  ( void );
 

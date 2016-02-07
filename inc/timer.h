@@ -10,11 +10,11 @@
 
 // Define timer priorities
 #define PRIO_IMU    96
-#define PRIO_AHR    92
-#define PRIO_SIO    88
-#define PRIO_FLAG   84
-#define PRIO_CTRL   84
-#define PRIO_DEBUG  80
+#define PRIO_AHR    94
+#define PRIO_SIO    92
+#define PRIO_CTRL   90
+#define PRIO_FLAG   88
+#define PRIO_DEBUG  86
 
 
 // Define timer frequencies

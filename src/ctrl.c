@@ -94,10 +94,10 @@ void ctl_exit ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ctl_exec
-//  Executes the top level logic for each control loop.
+//  ctl_update
+//  Executes the top level logic to update each control loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ctl_exec ( void )  {
+void ctl_update ( void )  {
   if (armed)  {
     if ( !strcmp( SYSTEM, "debug" ) )  ctl_debug();
     if ( !strcmp( SYSTEM, "quad"  ) )  ctl_quad();

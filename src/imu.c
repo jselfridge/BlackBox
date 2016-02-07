@@ -211,10 +211,10 @@ void imu_setic (  )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_data
-//  Obtain new IMU sensor data.
+//  imu_update
+//  Update system with new IMU sensor data.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void imu_data (  )  {
+void imu_update ( void )  {
 
   // Local variables
   ushort i, j, k;

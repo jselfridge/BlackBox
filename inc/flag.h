@@ -31,9 +31,9 @@ flag_struct flag;
 
 
 // Program execution flag functions
-void  flg_init  ( void );
-void  flg_exit  ( void );
-void  flg_check ( void );
+void  flg_init   ( void );
+void  flg_exit   ( void );
+void  flg_update ( void );
 
 
 #endif

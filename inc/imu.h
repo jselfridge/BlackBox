@@ -59,7 +59,7 @@ void  imu_exit    ( void );
 void  imu_param   ( void );
 void  imu_getcal  ( void );
 void  imu_setic   ( void );
-void  imu_data    ( void );
+void  imu_update  ( void );
 
 
 #endif

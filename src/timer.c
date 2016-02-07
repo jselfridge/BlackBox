@@ -304,7 +304,7 @@ void *fcn_imu (  )  {
   tmr_create(&tmr_imu);
   while (running) {
     tmr_start(&tmr_imu);
-    imu_data();
+    imu_update();
     tmr_finish(&tmr_imu);
     if (datalog.enabled)  log_record(LOG_IMU);
     tmr_pause(&tmr_imu);
@@ -322,7 +322,7 @@ void *fcn_ahr (  )  {
   tmr_create(&tmr_ahr);
   while (running) {
     tmr_start(&tmr_ahr);
-    ahr_run();
+    ahr_update();
     tmr_finish(&tmr_ahr);
     if (datalog.enabled)  log_record(LOG_AHR);
     tmr_pause(&tmr_ahr);
@@ -358,7 +358,7 @@ void *fcn_ctrl (  )  {
   tmr_create(&tmr_ctrl);
   while (running) {
     tmr_start(&tmr_ctrl);
-    ctl_exec();
+    ctl_update();
     tmr_finish(&tmr_ctrl);
     if (datalog.enabled)  log_record(LOG_CTL);
     tmr_pause(&tmr_ctrl);
@@ -376,7 +376,7 @@ void *fcn_flag (  )  {
   tmr_create(&tmr_flag);
   while (running) {
     tmr_start(&tmr_flag);
-    flg_check();
+    flg_update();
     tmr_finish(&tmr_flag);
     tmr_pause(&tmr_flag);
   }
@@ -393,7 +393,7 @@ void *fcn_debug (  )  {
   tmr_create(&tmr_debug);
   while (running) {
     tmr_start(&tmr_debug);
-    sys_debug();
+    sys_update();
     tmr_finish(&tmr_debug);
     tmr_pause(&tmr_debug);
   }

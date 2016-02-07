@@ -49,10 +49,10 @@ void sys_init ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_debug
+//  sys_update
 //  Prints system debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_debug ( void )  {
+void sys_update ( void )  {
 
   // Start debugging display
   printf("\r");  fflush(stdout);
@@ -68,8 +68,8 @@ void sys_debug ( void )  {
 
   // Select data for display
   //sys_imu();
-  sys_ahr();
-  //sys_sio();
+  //sys_ahr();
+  sys_sio();
   //sys_ctrl();
 
   // Complete debugging display 
@@ -151,14 +151,14 @@ void sys_sio ( void )  {
   pthread_mutex_lock(&mutex_input);
   //for ( i=0; i<4; i++ )  printf("%5d ",   input.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%4d ",   input.pwm[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<4; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<6; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_input);
 
   // Output signals
   pthread_mutex_lock(&mutex_output);
   //for ( i=0; i<4; i++ )  printf("%5d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%4d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<4; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<6; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_output);
 
   return;
@@ -203,10 +203,10 @@ void sys_exit (  )  {
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   usleep(100000);
   tmr_exit();
-  log_exit();
-  ahr_exit();
-  imu_exit();
-  ctl_exit();
+  //log_exit();
+  //ahr_exit();
+  //imu_exit();
+  //ctl_exit();
   flg_exit();
   sio_exit();
 

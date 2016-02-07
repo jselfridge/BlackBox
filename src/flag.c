@@ -58,13 +58,14 @@ void flg_exit ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  flg_check
-//  Check the current status of the flags.
+//  flg_update
+//  Updates the current status of the program execution flags.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void flg_check ( void )  {
+void flg_update ( void )  {
 
-  // Channel index
+  // Local variables
   ushort ch;
+  bool energized = false;
 
   // Adjust state and counters
   pthread_mutex_lock(&mutex_input);

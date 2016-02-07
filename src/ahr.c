@@ -65,10 +65,10 @@ void ahr_exit ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ahr_run
-//  Run appropriate functions for the AHR execution loop.
+//  ahr_update
+//  Run appropriate functions to update the AHR values.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ahr_run ( void )  {
+void ahr_update ( void )  {
 
   ahr_fusion();
   //ahr_kalman();  // Future work

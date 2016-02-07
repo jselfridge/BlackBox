@@ -13,9 +13,9 @@
 #define SYS_STACK       ( 100 * 1024 * 1024 )
 
 
-// Function declarations  { Add void? }
+// Function declarations
 void sys_init   ( void );
-void sys_debug  ( void );
+void sys_update ( void );
 void sys_imu    ( void );
 void sys_ahr    ( void );
 void sys_sio    ( void );

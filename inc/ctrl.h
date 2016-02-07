@@ -121,7 +121,7 @@ ctrl_struct ctrl;
 // CTRL functions
 void    ctl_init    ( void );
 void    ctl_exit    ( void );
-void    ctl_exec    ( void );
+void    ctl_update  ( void );
 void    ctl_quad    ( void );
 void    ctl_plane   ( void );
 void    ctl_debug   ( void );
