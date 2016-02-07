@@ -67,9 +67,9 @@ void sys_update ( void )  {
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
-  //sys_imu();
+  sys_imu();
   //sys_ahr();
-  sys_sio();
+  //sys_sio();
   //sys_ctrl();
 
   // Complete debugging display 
@@ -88,12 +88,12 @@ void sys_imu ( void )  {
   // Loop counter
   ushort i;
 
-  /*// Raw data
+  // Raw data
   pthread_mutex_lock(&mutex_raw);
   for ( i=0; i<3; i++ )  printf("%6d ",   gyr.raw[i] );  printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%6d ",   acc.raw[i] );  printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%4d ",   mag.raw[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_raw); */
+  pthread_mutex_unlock(&mutex_raw);
 
   /*// Averaged data
   pthread_mutex_lock(&mutex_avg);
@@ -104,7 +104,7 @@ void sys_imu ( void )  {
 
   // Calibrated data
   pthread_mutex_lock(&mutex_cal);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", gyr.cal[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", gyr.cal[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", acc.cal[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", mag.cal[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_cal);
@@ -203,9 +203,9 @@ void sys_exit (  )  {
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   usleep(100000);
   tmr_exit();
-  //log_exit();
+  log_exit();
   //ahr_exit();
-  //imu_exit();
+  imu_exit();
   //ctl_exit();
   flg_exit();
   sio_exit();

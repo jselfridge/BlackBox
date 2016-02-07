@@ -99,7 +99,7 @@ void imu_getcal (  )  {
   char path [32];  memset( path, 0, sizeof(path) );
 
   // Set acceleration bias
-  sprintf( path, "../Param/board/acc/bias" );
+  sprintf( path, "../Param/board/bias/acc" );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'acc bias' not found. \n" );
   for ( i=0; i<3; i++ ) {
@@ -109,7 +109,7 @@ void imu_getcal (  )  {
   fclose(f);
 
   // Set acceleration range
-  sprintf( path, "../Param/board/acc/range" );
+  sprintf( path, "../Param/board/range/acc" );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'acc range' not found. \n" );
   for ( i=0; i<3; i++ ) {
@@ -119,7 +119,7 @@ void imu_getcal (  )  {
   fclose(f);
 
   // Set magnetometer bias
-  sprintf( path, "../Param/board/mag/bias" );
+  sprintf( path, "../Param/board/bias/mag" );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'mag bias' not found. \n" );
   for ( i=0; i<3; i++ ) {
@@ -129,7 +129,7 @@ void imu_getcal (  )  {
   fclose(f);
 
   // Set magnetometer range
-  sprintf( path, "../Param/board/mag/range" );
+  sprintf( path, "../Param/board/range/mag" );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'mag range' not found. \n" );
   for ( i=0; i<3; i++ ) {
@@ -139,7 +139,7 @@ void imu_getcal (  )  {
   fclose(f);
 
   // Set gyro bias
-  sprintf( path, "../Param/board/gyr/bias" );
+  sprintf( path, "../Param/board/bias/gyr" );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'gyr bias' not found. \n" );
   for ( i=0; i<3; i++ ) {
@@ -153,11 +153,11 @@ void imu_getcal (  )  {
     printf("    abias  arange    mbias  mrange    gbias \n");
     for ( i=0; i<3; i++ ) {
       printf("     ");
-      printf( "%04d  ",     acc.bias[i]  );
-      printf( "%06d     ",  acc.range[i] );
-      printf( "%04d   ",    mag.bias[i]  );
-      printf( "%04d      ", mag.range[i] );
-      printf( "%04d  \n",   gyr.bias[i]  );
+      printf( "%4d    ",   acc.bias[i]  );
+      printf( "%4d     ",  acc.range[i] );
+      printf( "%4d    ",   mag.bias[i]  );
+      printf( "%4d     ",  mag.range[i] );
+      printf( "%4d  \n",   gyr.bias[i]  );
     } 
   }
 
