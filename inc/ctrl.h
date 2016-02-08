@@ -67,9 +67,9 @@
 #define PLANE_OFF0   0.0
 #define PLANE_OFF1   0.0
 #define PLANE_OFF2   0.0
-#define PLANE_OFF3  -1.0
+#define PLANE_OFF3   0.0
 #define PLANE_OFF4   0.0
-#define PLANE_OFF5   0.0
+#define PLANE_OFF5  -1.0
 #define PLANE_OFF6   0.0
 #define PLANE_OFF7   0.0
 #define PLANE_OFF8   0.0
@@ -86,7 +86,7 @@
 
 // Define 'plane' throttle gains
 #define PLANE_TMIN   0.00
-#define PLANE_TMAX   0.00
+#define PLANE_TMAX   0.30
 
 
 // Plane PD Gains

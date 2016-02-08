@@ -219,6 +219,48 @@ void ctl_plane ( void )  {
 
   // Local variables
   ushort ch;
+  ushort x=0, y=1, z=2;
+  double in[4], out[4];
+  double dial, thr;
+
+  // Obtain inputs
+  pthread_mutex_lock(&mutex_input);
+  for ( ch=0; ch<4; ch++ )  in[ch] = input.norm[ch];
+  dial = input.norm[CH_D];
+  pthread_mutex_unlock(&mutex_input);
+
+  // Determine throttle adjustment
+  double thresh = ( 0.5 * ( dial + 1.0 ) * ( PLANE_TMAX - PLANE_TMIN ) ) + PLANE_TMIN - PLANE_T_RANGE;
+  if ( in[CH_T] <= -0.6 )  thr = ( 2.50 * ( in[CH_T] + 1.0 ) * ( thresh + 1.0 ) ) - 1.0;
+  else                     thr = ( 1.25 * ( in[CH_T] + 0.6 ) * PLANE_T_RANGE ) + thresh; 
+
+  // Assign signal outputs
+  if ( in[CH_T] > -0.9 )  {  
+    out[0] =  in[x];
+    out[1] =  in[y];
+    out[2] = -in[z];
+    out[3] =  thr;
+  }
+  else  {
+    out[0] =  0.0;
+    out[1] =  0.0;
+    out[2] =  0.0;
+    out[3] = -1.0;
+  }
+
+  // Push system outputs
+  sio_setnorm( 0, out[0] );
+  sio_setnorm( 1, out[1] );
+  sio_setnorm( 4, out[2] );
+  sio_setnorm( 5, out[3] );
+
+  return;
+}
+
+
+  /*
+  // Local variables
+  ushort ch;
   ushort x=0, y=1, z=2, t=3;
   double eul[3], ang[3];
   double in[4], ref[4], cmd[4], out[4];
@@ -319,8 +361,9 @@ void ctl_plane ( void )  {
   for ( ch=0; ch<4; ch++ )  sio_setnorm( ch, out[ch] );
 
   return;
+  */
 
-}
+
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
