@@ -16,9 +16,9 @@
 // Function declarations
 void sys_init   ( void );
 void sys_update ( void );
+void sys_sio    ( void );
 void sys_imu    ( void );
 void sys_ahr    ( void );
-void sys_sio    ( void );
 void sys_ctrl   ( void );
 void sys_exit   (  );
 

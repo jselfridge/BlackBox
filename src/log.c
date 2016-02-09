@@ -15,18 +15,18 @@ void log_init ( void )  {
 
   // Establish datalog limits
   if(DEBUG)  printf("  Establish datalog limits \n");
-  log_gyr.limit    = MAX_LOG_DUR * HZ_IMU_FAST;
-  log_acc.limit    = MAX_LOG_DUR * HZ_IMU_FAST;
-  log_mag.limit    = MAX_LOG_DUR * HZ_IMU_SLOW;
-  log_ahr.limit    = MAX_LOG_DUR * HZ_AHR;
+  //log_gyr.limit    = MAX_LOG_DUR * HZ_IMU_FAST;
+  //log_acc.limit    = MAX_LOG_DUR * HZ_IMU_FAST;
+  //log_mag.limit    = MAX_LOG_DUR * HZ_IMU_SLOW;
+  //log_ahr.limit    = MAX_LOG_DUR * HZ_AHR;
   log_input.limit  = MAX_LOG_DUR * HZ_SIO;
   log_output.limit = MAX_LOG_DUR * HZ_SIO;
-  log_ctrl.limit   = MAX_LOG_DUR * HZ_CTRL;
+  //log_ctrl.limit   = MAX_LOG_DUR * HZ_CTRL;
 
   // Allocate memory for storage arrays
   if(DEBUG)  printf("  Allocate memory:  ");
 
-  // Gyroscope storage
+  /*// Gyroscope storage
   if(DEBUG)  printf("gyr ");
   log_gyr.time =  malloc( sizeof(float) * log_gyr.limit     );
   log_gyr.dur  =  malloc( sizeof(ulong) * log_gyr.limit     );
@@ -61,7 +61,7 @@ void log_init ( void )  {
   log_ahr.bias  =  malloc( sizeof(float) * log_ahr.limit * 3 );
   log_ahr.fx    =  malloc( sizeof(float) * log_ahr.limit     );
   log_ahr.fz    =  malloc( sizeof(float) * log_ahr.limit     );
-
+  */
   // Input signal storage
   if(DEBUG)  printf("input ");
   log_input.time =  malloc( sizeof(float)  * log_input.limit      );
@@ -76,7 +76,7 @@ void log_init ( void )  {
   log_output.pwm  =  malloc( sizeof(ushort) * log_output.limit * 10 );
   log_output.norm =  malloc( sizeof(float)  * log_output.limit * 10 );
 
-  // Controller parameter storage
+  /*// Controller parameter storage
   if(DEBUG)  printf("ctrl ");
   log_ctrl.time =  malloc( sizeof(float) * log_ctrl.limit     );
   log_ctrl.dur  =  malloc( sizeof(ulong) * log_ctrl.limit     );
@@ -84,7 +84,7 @@ void log_init ( void )  {
   log_ctrl.ierr =  malloc( sizeof(float) * log_ctrl.limit * 3 );
   log_ctrl.derr =  malloc( sizeof(float) * log_ctrl.limit * 3 );
   log_ctrl.cmd  =  malloc( sizeof(float) * log_ctrl.limit * 4 );
-
+  */
   // Complete datalog initialization 
   if(DEBUG)  printf("\n");
 
@@ -99,13 +99,13 @@ void log_init ( void )  {
 void log_open ( void )  {
 
   // Clear counters for new session
-  log_gyr.count    = 0;
-  log_acc.count    = 0;
-  log_mag.count    = 0;
-  log_ahr.count    = 0;
+  //log_gyr.count    = 0;
+  //log_acc.count    = 0;
+  //log_mag.count    = 0;
+  //log_ahr.count    = 0;
   log_input.count  = 0;
   log_output.count = 0;
-  log_ctrl.count   = 0;
+  //log_ctrl.count   = 0;
 
   // Allocate dir/path/file memory
   datalog.dir  = malloc(16);
@@ -130,9 +130,6 @@ void log_open ( void )  {
   datalog.offset = timeval.tv_sec;
   datalog.setup = true;
 
-  // Switch datalog setup flag
-  datalog.setup = true;
-
   return;
 }
 
@@ -150,7 +147,8 @@ void log_close ( void )  {
 
   // Local variables
   char *file = malloc(64);
-  FILE *fnote, *fgyr, *facc, *fmag, *fahr, *fin, *fout, *fctl;
+  FILE *fnote, *fin, *fout;
+  //FILE *fnote, *fgyr, *facc, *fmag, *fahr, *fin, *fout, *fctl;
   ushort i;
   ulong row;
 
@@ -164,7 +162,7 @@ void log_close ( void )  {
   if( fnote == NULL )  printf( "Error (log_XX): Cannot open 'notes' file. \n" );
   fprintf( fnote, " Assign some system parameteres like gains, or telemetry waypoint updates... " );
 
-  // Create gyroscope datalog file
+  /*// Create gyroscope datalog file
   sprintf( file, "%sgyr.txt", datalog.path );
   fgyr = fopen( file, "w" );
   if( fgyr == NULL )  printf( "Error (log_XX): Cannot open 'gyr' file. \n" );
@@ -243,36 +241,32 @@ void log_close ( void )  {
     fprintf( fahr, "%07.4f  ", log_ahr.fz[ row +i ] );
     fprintf( fahr, "   " );
   }
-
+  */
   // Create input datalog file
   sprintf( file, "%sinput.txt", datalog.path );
   fin = fopen( file, "w" );
   if( fin == NULL )  printf( "Error (log_XX): Cannot open 'input' file. \n" );
-  fprintf( fin, "       Itime         I0       I1       I2       I3       I4");
+  fprintf( fin,  "       Itime         I1       I2       I3       I4       I5       I6       I7       I8       I9       I0" );
 
   // Loop through input data
   for ( row = 0; row < log_input.count; row++ ) {
     fprintf( fin, "\n %011.6f    ", log_input.time[row] );
-    //for ( i=0; i<4; i++ )  fprintf( fin, "%05d  ",  log_input.reg  [ row*10 +i ] );   fprintf( fin, "   " );
-    //for ( i=0; i<4; i++ )  fprintf( fin, "%04d  ",  log_input.pwm  [ row*10 +i ] );   fprintf( fin, "   " );
-    for ( i=0; i<4; i++ )  fprintf( fin, "%7.4f  ", log_input.norm [ row*10 +i ] );   fprintf( fin, "   " );
+    for ( i=0; i<10; i++ )  fprintf( fin, "%7.4f  ", log_input.norm [ row*10 +i ] );   fprintf( fin, "   " );
   }
 
   // Create output datalog file
   sprintf( file, "%soutput.txt", datalog.path );
   fout = fopen( file, "w" );
   if( fout == NULL )  printf( "Error (log_XX): Cannot open 'input' file. \n" );
-  fprintf( fout, "       Otime         O0       O1       O2       O3       O4");
+  fprintf( fout, "       Otime         O1       O2       O3       O4       O5       O6       O7       O8       O9       O0" );
 
   // Loop through output data
   for ( row = 0; row < log_output.count; row++ ) {
     fprintf( fout, "\n %011.6f    ", log_output.time[row] );
-    //for ( i=0; i<4; i++ )  fprintf( fout, "%05d  ",  log_output.reg  [ row*10 +i ] );   fprintf( fout, "   " );
-    //for ( i=0; i<4; i++ )  fprintf( fout, "%04d  ",  log_output.pwm  [ row*10 +i ] );   fprintf( fout, "   " );
-    for ( i=0; i<4; i++ )  fprintf( fout, "%7.4f  ", log_output.norm [ row*10 +i ] );   fprintf( fout, "   " );
+    for ( i=0; i<10; i++ )  fprintf( fout, "%7.4f  ", log_output.norm [ row*10 +i ] );   fprintf( fout, "   " );
   }
 
-  // Create controller datalog file
+  /*// Create controller datalog file
   sprintf( file, "%sctrl.txt", datalog.path );
   fctl = fopen( file, "w" );
   if( fctl == NULL )  printf( "Error (log_XX): Cannot open 'ctrl' file. \n" );
@@ -291,16 +285,16 @@ void log_close ( void )  {
     for ( i=0; i<3; i++ )  fprintf( fctl, "%07.4f  ",  log_ctrl.derr[ row*3 +i ] );   fprintf( fctl, "   " );
     for ( i=0; i<4; i++ )  fprintf( fctl, "%07.4f  ",  log_ctrl.cmd [ row*4 +i ] );   fprintf( fctl, "   " );
   }
-
+  */
   // Close files
   fclose(fnote);
-  fclose(fgyr);
-  fclose(facc);
-  fclose(fmag);
-  fclose(fahr);
+  //fclose(fgyr);
+  //fclose(facc);
+  //fclose(fmag);
+  //fclose(fahr);
   fclose(fin);
   fclose(fout);
-  fclose(fctl);
+  //fclose(fctl);
 
   // Switch datalog setup flag
   datalog.setup = false;
@@ -317,7 +311,7 @@ void log_close ( void )  {
 void log_exit ( void )  {
   if(DEBUG)  printf("Close logs:  ");
 
-  // Free gyroscope memory
+  /*// Free gyroscope memory
   if(DEBUG)  printf("gyr ");
   free(log_gyr.time);
   free(log_gyr.dur);
@@ -352,7 +346,7 @@ void log_exit ( void )  {
   free(log_ahr.bias);
   free(log_ahr.fx);
   free(log_ahr.fz);
-
+  */
   // Free input memory
   if(DEBUG)  printf("input ");
   free(log_input.time);
@@ -367,7 +361,7 @@ void log_exit ( void )  {
   free(log_output.pwm);
   free(log_output.norm);
 
-  // Free controller memory
+  /*// Free controller memory
   if(DEBUG)  printf("ctrl ");
   free(log_ctrl.time);
   free(log_ctrl.dur);
@@ -375,7 +369,7 @@ void log_exit ( void )  {
   free(log_ctrl.ierr);
   free(log_ctrl.derr);
   free(log_ctrl.cmd);
-
+  */
   if(DEBUG)  printf("\n");
   return;
 }
@@ -399,7 +393,7 @@ void log_record ( enum log_index index )  {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record IMU data
   case LOG_IMU :
-
+    /*
     timestamp = (float) ( tmr_imu.start_sec + ( tmr_imu.start_usec / 1000000.0f ) ) - datalog.offset;
     
     // Gyroscope data
@@ -434,14 +428,14 @@ void log_record ( enum log_index index )  {
       for ( i=0; i<3; i++ )  log_mag.cal[ row*3 +i ] = mag.cal[i];
       log_mag.count++;
     }
-
+    */
     return;
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record AHR data
   case LOG_AHR :
-
+    /*
     timestamp = (float) ( tmr_ahr.start_sec + ( tmr_ahr.start_usec / 1000000.0f ) ) - datalog.offset;
 
     if ( log_ahr.count < log_ahr.limit ) {
@@ -457,7 +451,7 @@ void log_record ( enum log_index index )  {
                              log_ahr.fz    [ row   +i ] = ahr.fz;
       log_ahr.count++;
     }
-
+    */
     return;
 
 
@@ -471,9 +465,7 @@ void log_record ( enum log_index index )  {
     if ( log_input.count < log_input.limit ) {
       row = log_input.count;
       log_input.time[row] = timestamp;
-      //for ( i=0; i<4; i++ )  log_input.reg  [ row*10 +i ] = input.reg[i];
-      for ( i=0; i<4; i++ )  log_input.pwm  [ row*10 +i ] = input.pwm[i];
-      //for ( i=0; i<4; i++ )  log_input.norm [ row*10 +i ] = input.norm[i];
+      for ( i=0; i<10; i++ )  log_input.norm [ row*10 +i ] = input.norm[i];
       log_input.count++;
     }
 
@@ -481,9 +473,7 @@ void log_record ( enum log_index index )  {
     if ( log_output.count < log_output.limit ) {
       row = log_output.count;
       log_output.time[row] = timestamp;
-      //for ( i=0; i<4; i++ )  log_output.reg  [ row*10 +i ] = output.reg[i];
-      for ( i=0; i<4; i++ )  log_output.pwm  [ row*10 +i ] = output.pwm[i];
-      //for ( i=0; i<4; i++ )  log_output.norm [ row*10 +i ] = output.norm[i];
+      for ( i=0; i<10; i++ )  log_output.norm [ row*10 +i ] = output.norm[i];
       log_output.count++;
     }
 
@@ -493,7 +483,7 @@ void log_record ( enum log_index index )  {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record CTRL data
   case LOG_CTL :
-
+    /*
     timestamp = (float) ( tmr_ctrl.start_sec + ( tmr_ctrl.start_usec / 1000000.0f ) ) - datalog.offset;
 
     if ( log_ctrl.count < log_ctrl.limit ) {
@@ -506,7 +496,7 @@ void log_record ( enum log_index index )  {
       for ( i=0; i<4; i++ )  log_ctrl.cmd [ row*4 +i ] = ctrl.cmd[i];
       log_ctrl.count++;
     }
-
+    */
     return;
 
 

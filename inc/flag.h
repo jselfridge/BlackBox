@@ -9,23 +9,17 @@
 
 
 // Define stick hold durations
-#define FLG_HOLD0  3.0
-#define FLG_HOLD1  3.0
-#define FLG_HOLD2  3.0
-#define FLG_HOLD3  0.0
-#define FLG_HOLD4  0.0
-#define FLG_HOLD5  0.0
-#define FLG_HOLD6  0.0
-#define FLG_HOLD7  0.0
-#define FLG_HOLD8  0.0
-#define FLG_HOLD9  0.0
+#define FLG_HOLD_R  3.0
+#define FLG_HOLD_P  3.0
+#define FLG_HOLD_Y  3.0
+#define FLG_HOLD_T  0.0
 
 
 // Program execution flag structure
 typedef struct {
-  ushort upper[10];
-  ushort lower[10];
-  ushort limit[10];
+  ushort upper[4];
+  ushort lower[4];
+  ushort limit[4];
 } flag_struct;
 flag_struct flag;
 

@@ -67,13 +67,40 @@ void sys_update ( void )  {
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
+  sys_sio();
   //sys_imu();
   //sys_ahr();
-  //sys_sio();
   //sys_ctrl();
 
   // Complete debugging display 
   printf("  "); fflush(stdout);
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  sys_sio
+//  Prints system input/output values to the terminal.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void sys_sio ( void )  {
+
+  // Loop counter
+  ushort i;
+
+  // Input signals
+  pthread_mutex_lock(&mutex_input);
+  //for ( i=0; i<10; i++ )  printf("%5d ",   input.reg[i]  );  printf("   ");  fflush(stdout);
+  for ( i=0; i<10; i++ )  printf("%4d ",   input.pwm[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<10; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&mutex_input);
+
+  // Output signals
+  pthread_mutex_lock(&mutex_output);
+  //for ( i=0; i<10; i++ )  printf("%5d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<10; i++ )  printf("%4d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<10; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&mutex_output);
 
   return;
 }
@@ -139,33 +166,6 @@ void sys_ahr ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_sio
-//  Prints system input/output values to the terminal.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_sio ( void )  {
-
-  // Loop counter
-  ushort i;
-
-  // Input signals
-  pthread_mutex_lock(&mutex_input);
-  for ( i=0; i<4; i++ )  printf("%5d ",   input.reg[i]  );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<4; i++ )  printf("%4d ",   input.pwm[i]  );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<10; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_input);
-
-  // Output signals
-  pthread_mutex_lock(&mutex_output);
-  //for ( i=0; i<4; i++ )  printf("%5d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<4; i++ )  printf("%4d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<4; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_output);
-
-  return;
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_ctrl
 //  Prints controller values to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -204,9 +204,9 @@ void sys_exit (  )  {
   usleep(100000);
   tmr_exit();
   log_exit();
-  ahr_exit();
-  imu_exit();
-  ctl_exit();
+  //ctl_exit();
+  //ahr_exit();
+  //imu_exit();
   flg_exit();
   sio_exit();
 

@@ -15,33 +15,27 @@ void flg_init ( void )  {
 
   // Set boolean values
   if(DEBUG)  printf("  Set run time flags \n");
-  datalog.enabled = false;
-  datalog.setup = false;
-  datalog.saving = false;
-  running = true;
-  armed = false;
+  datalog.enabled  = false;
+  datalog.setup    = false;
+  datalog.saving   = false;
+  running          = true;
+  armed            = false;
 
   // Zero out counters
   if(DEBUG)  printf("  Zero out counters \n");
   ushort ch;
-  for ( ch=0; ch<IN_CH; ch++ )  {
+  for ( ch=0; ch<4; ch++ )  {
     flag.upper[ch] = 0;
     flag.lower[ch] = 0;
   }
 
   // Set proper timing limits
   if(DEBUG)  printf("  Set timing limits \n");
-  flag.limit[0] = FLG_HOLD0 * HZ_FLAG;
-  flag.limit[1] = FLG_HOLD1 * HZ_FLAG;
-  flag.limit[2] = FLG_HOLD2 * HZ_FLAG;
-  flag.limit[3] = FLG_HOLD3 * HZ_FLAG;
-  flag.limit[4] = FLG_HOLD4 * HZ_FLAG;
-  flag.limit[5] = FLG_HOLD5 * HZ_FLAG;
-  flag.limit[6] = FLG_HOLD6 * HZ_FLAG;
-  flag.limit[7] = FLG_HOLD7 * HZ_FLAG;
-  flag.limit[8] = FLG_HOLD8 * HZ_FLAG;
-  flag.limit[9] = FLG_HOLD9 * HZ_FLAG;
-  
+  flag.limit[CH_R] = FLG_HOLD_R * HZ_FLAG;
+  flag.limit[CH_P] = FLG_HOLD_P * HZ_FLAG;
+  flag.limit[CH_Y] = FLG_HOLD_Y * HZ_FLAG;
+  flag.limit[CH_T] = FLG_HOLD_T * HZ_FLAG;
+
   return;
 }
 
@@ -75,7 +69,7 @@ void flg_update ( void )  {
     ( input.norm[ch] < -0.95 ) ? ( flag.lower[ch]++ ) : ( flag.lower[ch] = 0 );
   }
   pthread_mutex_unlock(&mutex_input);
-  
+
   // Data log: roll stick only, no yaw command
   if ( !energized && !flag.lower[CH_Y] && !flag.upper[CH_Y] )  {
     if ( flag.lower[CH_R] >= flag.limit[CH_R] ) {
@@ -93,14 +87,14 @@ void flg_update ( void )  {
   // Motor arming: yaw stick only, no roll command
   if ( !energized && !flag.lower[CH_R] && !flag.upper[CH_R] )  {
     if ( flag.upper[CH_Y] >= flag.limit[CH_Y] ) {
+      //pthread_mutex_lock(&mutex_ctrl);
+      //pthread_mutex_lock(&mutex_eul);
+      //ctrl.bank    = ahr.eul[0];
+      //ctrl.climb   = ahr.eul[1];
+      //ctrl.heading = ahr.eul[2];
+      //pthread_mutex_unlock(&mutex_eul);
+      //pthread_mutex_unlock(&mutex_ctrl);
       armed = true;
-      pthread_mutex_lock(&mutex_ctrl);
-      pthread_mutex_lock(&mutex_eul);
-      ctrl.bank    = ahr.eul[0];
-      ctrl.climb   = ahr.eul[1];
-      ctrl.heading = ahr.eul[2];
-      pthread_mutex_unlock(&mutex_eul);
-      pthread_mutex_unlock(&mutex_ctrl);
       led_on(LED_MOT);
     }
     if ( flag.lower[CH_Y]  >= flag.limit[CH_Y] ) {
