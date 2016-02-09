@@ -31,14 +31,14 @@ void tmr_init ( void )  {
   //pthread_mutex_init( &mutex_eul,    NULL );
   pthread_mutex_init( &mutex_input,  NULL );
   pthread_mutex_init( &mutex_output, NULL );
-  //pthread_mutex_init( &mutex_ctrl,   NULL );
+  pthread_mutex_init( &mutex_ctrl,   NULL );
 
   // Create primary timing threads
   tmr_thread( &tmr_sio,  &attr, fcn_sio  );  usleep(100000);
   tmr_thread( &tmr_flag, &attr, fcn_flag );  usleep(100000);
   //tmr_thread( &tmr_imu,  &attr, fcn_imu  );  usleep(100000);
   //tmr_thread( &tmr_ahr,  &attr, fcn_ahr  );  usleep(100000);
-  //tmr_thread( &tmr_ctrl, &attr, fcn_ctrl );  usleep(100000);
+  tmr_thread( &tmr_ctrl, &attr, fcn_ctrl );  usleep(100000);
 
   // Possibly create debugging thread
   if(DEBUG) {
@@ -77,11 +77,11 @@ void tmr_setup ( void )  {
   tmr_flag.prio   =  PRIO_FLAG;
   tmr_flag.per    =  1000000 / HZ_FLAG;
 
-  /*// Control timer
+  // Control timer
   tmr_ctrl.name   =  "ctrl";
   tmr_ctrl.prio   =  PRIO_CTRL;
   tmr_ctrl.per    =  1000000 / HZ_CTRL;
-  */
+
   // Debugging timer
   tmr_debug.name  =  "debug";
   tmr_debug.prio  =  PRIO_DEBUG;
@@ -160,13 +160,13 @@ void tmr_exit ( void )  {
   //pthread_mutex_destroy(&mutex_eul);
   pthread_mutex_destroy(&mutex_input);
   pthread_mutex_destroy(&mutex_output);
-  //pthread_mutex_destroy(&mutex_ctrl);
+  pthread_mutex_destroy(&mutex_ctrl);
 
-  /*// Exit control thread
+  // Exit control thread
   if( pthread_join ( tmr_ctrl.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ctrl' thread. \n" );
   if(DEBUG)  printf( "ctrl " );
-
+  /*
   // Exit AHR thread
   if( pthread_join ( tmr_ahr.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ahr' thread. \n" );

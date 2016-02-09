@@ -19,6 +19,7 @@ void ctl_init ( void )  {
   // Set timing values (make 'const' during initialization)
   ctrl.dt = 1.0 / HZ_CTRL;
 
+  /*
   // Set 'quad' parameters
   if ( !strcmp( SYSTEM, "quad" ) )  {
 
@@ -46,6 +47,7 @@ void ctl_init ( void )  {
     ctrl.dgain[x] = QUAD_DX;  ctrl.dgain[y] = QUAD_DY;  ctrl.dgain[z] = QUAD_DZ;
 
   }
+  */
 
   // Set 'plane' parameters
   if ( !strcmp( SYSTEM, "plane" ) )  {
@@ -99,8 +101,7 @@ void ctl_exit ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void ctl_update ( void )  {
   if (armed)  {
-    if ( !strcmp( SYSTEM, "debug" ) )  ctl_debug();
-    if ( !strcmp( SYSTEM, "quad"  ) )  ctl_quad();
+    //if ( !strcmp( SYSTEM, "quad"  ) )  ctl_quad();
     if ( !strcmp( SYSTEM, "plane" ) )  ctl_plane();
   }
   else        ctl_disarm();
@@ -112,6 +113,7 @@ void ctl_update ( void )  {
 //  ctl_quad
 //  Apply control to quadrotor system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/*
 void ctl_quad ( void )  {
 
   // Local variables
@@ -209,7 +211,7 @@ void ctl_quad ( void )  {
 
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctl_plane
@@ -219,7 +221,7 @@ void ctl_plane ( void )  {
 
   // Local variables
   ushort ch;
-  ushort x=0, y=1, z=2;
+  ushort x=0, y=1, z=2, t=3;
   double in[4], out[4];
   double dial, thr;
 
@@ -236,23 +238,23 @@ void ctl_plane ( void )  {
 
   // Assign signal outputs
   if ( in[CH_T] > -0.9 )  {  
-    out[0] =  in[x];
-    out[1] =  in[y];
-    out[2] = -in[z];
-    out[3] =  thr;
+    out[x] =  in[x];
+    out[y] =  in[y];
+    out[z] = -in[z];
+    out[t] =  thr;
   }
   else  {
-    out[0] =  0.0;
-    out[1] =  0.0;
-    out[2] =  0.0;
-    out[3] = -1.0;
+    out[x] =  0.0;
+    out[y] =  0.0;
+    out[z] =  0.0;
+    out[t] = -1.0;
   }
 
   // Push system outputs
-  sio_setnorm( 0, out[0] );
-  sio_setnorm( 1, out[1] );
-  sio_setnorm( 4, out[2] );
-  sio_setnorm( 5, out[3] );
+  sio_setnorm( 0, out[x] );
+  sio_setnorm( 1, out[y] );
+  sio_setnorm( 4, out[z] );
+  sio_setnorm( 5, out[t] );
 
   return;
 }
@@ -363,18 +365,6 @@ void ctl_plane ( void )  {
   return;
   */
 
-
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ctl_debug
-//  Debugging control law with direct input to output mapping.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ctl_debug ( void )  {
-  ushort ch;
-  for ( ch=0; ch<10; ch++ )  sio_setpwm( ch, input.pwm[ch] );
-  return;
-}
 
 
 

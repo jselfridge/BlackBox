@@ -22,7 +22,7 @@ int main ( void )  {
   flg_init();
   //imu_init();
   //ahr_init();
-  //ctl_init();
+  ctl_init();
   log_init();
   tmr_init();
 

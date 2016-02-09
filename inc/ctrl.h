@@ -12,7 +12,7 @@
 #define IRESET    0.25
 #define SYSTEM    "plane"
 
-
+/*
 // Define 'quad' disarm values (same for any quad)
 #define QUAD_OFF0  -1.0
 #define QUAD_OFF1  -1.0
@@ -60,7 +60,7 @@
 #define QUAD_DY    0.00
 #define QUAD_DZ    0.00
 
-
+*/
 
 
 // Define 'plane' disarm values (same for any plane)
@@ -78,15 +78,15 @@
 
 // Define 'plane' range values
 // R: rad/s    P: rad/s    Y: rad/s    T: ?thrust?
-#define PLANE_R_RANGE   1.50
-#define PLANE_P_RANGE   1.50
-#define PLANE_Y_RANGE   1.50
-#define PLANE_T_RANGE   0.80
+#define PLANE_R_RANGE   1.00
+#define PLANE_P_RANGE   1.00
+#define PLANE_Y_RANGE   1.00
+#define PLANE_T_RANGE   1.00
 
 
 // Define 'plane' throttle gains
 #define PLANE_TMIN   0.00
-#define PLANE_TMAX   0.30
+#define PLANE_TMAX   0.00
 
 
 // Plane PD Gains
@@ -122,9 +122,8 @@ ctrl_struct ctrl;
 void    ctl_init    ( void );
 void    ctl_exit    ( void );
 void    ctl_update  ( void );
-void    ctl_quad    ( void );
+//void    ctl_quad    ( void );
 void    ctl_plane   ( void );
-void    ctl_debug   ( void );
 void    ctl_disarm  ( void );
 
 
