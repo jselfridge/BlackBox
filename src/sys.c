@@ -68,7 +68,7 @@ void sys_update ( void )  {
 
   // Select data for display
   sys_sio();
-  //sys_imu();
+  sys_imu();
   //sys_ahr();
   //sys_ctrl();
 
@@ -117,12 +117,12 @@ void sys_imu ( void )  {
   // Loop counter
   ushort i;
 
-  /*// Raw data
+  // Raw data
   pthread_mutex_lock(&mutex_raw);
   for ( i=0; i<3; i++ )  printf("%6d ",   gyr.raw[i] );  printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%6d ",   acc.raw[i] );  printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%4d ",   mag.raw[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_raw); */
+  pthread_mutex_unlock(&mutex_raw);
 
   /*// Averaged data
   pthread_mutex_lock(&mutex_avg);
@@ -131,12 +131,12 @@ void sys_imu ( void )  {
   for ( i=0; i<3; i++ )  printf("%7.2f ", mag.avg[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_avg); */
 
-  // Calibrated data
+  /*// Calibrated data
   pthread_mutex_lock(&mutex_cal);
   for ( i=0; i<3; i++ )  printf("%6.3f ", gyr.cal[i] );  printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%6.3f ", acc.cal[i] );  printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%6.3f ", mag.cal[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_cal); 
+  pthread_mutex_unlock(&mutex_cal); */
 
   return;
 }
@@ -203,12 +203,11 @@ void sys_exit (  )  {
 
   // Exit subsystems
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
-  usleep(100000);
   tmr_exit();
   log_exit();
   ctl_exit();
   //ahr_exit();
-  //imu_exit();
+  imu_exit();
   flg_exit();
   sio_exit();
 

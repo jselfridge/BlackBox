@@ -15,9 +15,9 @@ void log_init ( void )  {
 
   // Establish datalog limits
   if(DEBUG)  printf("  Establish datalog limits \n");
-  //log_gyr.limit    = MAX_LOG_DUR * HZ_IMU_FAST;
-  //log_acc.limit    = MAX_LOG_DUR * HZ_IMU_FAST;
-  //log_mag.limit    = MAX_LOG_DUR * HZ_IMU_SLOW;
+  log_gyr.limit    = MAX_LOG_DUR * HZ_IMU_FAST;
+  log_acc.limit    = MAX_LOG_DUR * HZ_IMU_FAST;
+  log_mag.limit    = MAX_LOG_DUR * HZ_IMU_SLOW;
   //log_ahr.limit    = MAX_LOG_DUR * HZ_AHR;
   log_input.limit  = MAX_LOG_DUR * HZ_SIO;
   log_output.limit = MAX_LOG_DUR * HZ_SIO;
@@ -26,7 +26,7 @@ void log_init ( void )  {
   // Allocate memory for storage arrays
   if(DEBUG)  printf("  Allocate memory:  ");
 
-  /*// Gyroscope storage
+  // Gyroscope storage
   if(DEBUG)  printf("gyr ");
   log_gyr.time =  malloc( sizeof(float) * log_gyr.limit     );
   log_gyr.dur  =  malloc( sizeof(ulong) * log_gyr.limit     );
@@ -50,7 +50,7 @@ void log_init ( void )  {
   log_mag.avg  =  malloc( sizeof(float) * log_mag.limit * 3 );
   log_mag.cal  =  malloc( sizeof(float) * log_mag.limit * 3 );
 
-  // Attitude/Heading reference storage
+  /*// Attitude/Heading reference storage
   if(DEBUG)  printf("ahr ");
   log_ahr.time  =  malloc( sizeof(float) * log_ahr.limit     );
   log_ahr.dur   =  malloc( sizeof(ulong) * log_ahr.limit     );
@@ -99,9 +99,9 @@ void log_init ( void )  {
 void log_open ( void )  {
 
   // Clear counters for new session
-  //log_gyr.count    = 0;
-  //log_acc.count    = 0;
-  //log_mag.count    = 0;
+  log_gyr.count    = 0;
+  log_acc.count    = 0;
+  log_mag.count    = 0;
   //log_ahr.count    = 0;
   log_input.count  = 0;
   log_output.count = 0;
@@ -147,8 +147,8 @@ void log_close ( void )  {
 
   // Local variables
   char *file = malloc(64);
-  FILE *fnote, *fin, *fout;
-  //FILE *fnote, *fgyr, *facc, *fmag, *fahr, *fin, *fout, *fctl;
+  FILE *fnote, *fgyr, *facc, *fmag, *fin, *fout;
+  //FILE *fahr, *fctl;
   ushort i;
   ulong row;
 
@@ -162,7 +162,7 @@ void log_close ( void )  {
   if( fnote == NULL )  printf( "Error (log_XX): Cannot open 'notes' file. \n" );
   fprintf( fnote, " Assign some system parameteres like gains, or telemetry waypoint updates... " );
 
-  /*// Create gyroscope datalog file
+  // Create gyroscope datalog file
   sprintf( file, "%sgyr.txt", datalog.path );
   fgyr = fopen( file, "w" );
   if( fgyr == NULL )  printf( "Error (log_XX): Cannot open 'gyr' file. \n" );
@@ -216,7 +216,7 @@ void log_close ( void )  {
     for ( i=0; i<3; i++ )  fprintf( fmag, "%07.4f  ", log_mag.cal[ row*3 +i ] );   fprintf( fmag, "   " );
   }
 
-  // Create attitude/heading reference datalog file
+  /*// Create attitude/heading reference datalog file
   sprintf( file, "%sahr.txt", datalog.path );
   fahr = fopen( file, "w" );
   if( fahr == NULL )  printf( "Error (log_XX): Cannot open 'ahr' file. \n" );
@@ -288,9 +288,9 @@ void log_close ( void )  {
   */
   // Close files
   fclose(fnote);
-  //fclose(fgyr);
-  //fclose(facc);
-  //fclose(fmag);
+  fclose(fgyr);
+  fclose(facc);
+  fclose(fmag);
   //fclose(fahr);
   fclose(fin);
   fclose(fout);
@@ -311,7 +311,7 @@ void log_close ( void )  {
 void log_exit ( void )  {
   if(DEBUG)  printf("Close logs:  ");
 
-  /*// Free gyroscope memory
+  // Free gyroscope memory
   if(DEBUG)  printf("gyr ");
   free(log_gyr.time);
   free(log_gyr.dur);
@@ -335,7 +335,7 @@ void log_exit ( void )  {
   free(log_mag.avg);
   free(log_mag.cal);
 
-  // Free attitude/heading memory
+  /*// Free attitude/heading memory
   if(DEBUG)  printf("ahr ");
   free(log_ahr.time);
   free(log_ahr.dur);
@@ -393,7 +393,7 @@ void log_record ( enum log_index index )  {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record IMU data
   case LOG_IMU :
-    /*
+
     timestamp = (float) ( tmr_imu.start_sec + ( tmr_imu.start_usec / 1000000.0f ) ) - datalog.offset;
     
     // Gyroscope data
@@ -428,7 +428,7 @@ void log_record ( enum log_index index )  {
       for ( i=0; i<3; i++ )  log_mag.cal[ row*3 +i ] = mag.cal[i];
       log_mag.count++;
     }
-    */
+
     return;
 
 
