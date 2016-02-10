@@ -9,7 +9,7 @@
 
 
 // Define misc items
-#define IRESET    0.25
+//#define IRESET    0.25
 #define SYSTEM    "plane"
 
 /*
@@ -76,11 +76,16 @@
 #define PLANE_OFF9   0.0
 
 
+// Define 'plane' channel index
+#define PLANE_ELEV  4
+#define PLANE_THRL  5
+
+
 // Define 'plane' range values
 // R: rad/s    P: rad/s    Y: rad/s    T: ?thrust?
-#define PLANE_R_RANGE   1.00
+//#define PLANE_R_RANGE   1.00
+//#define PLANE_Y_RANGE   1.00
 #define PLANE_P_RANGE   1.00
-#define PLANE_Y_RANGE   1.00
 #define PLANE_T_RANGE   1.00
 
 
@@ -91,12 +96,12 @@
 
 // Plane PD Gains
 // P: ????    I: ????    D: ????
-#define PLANE_PX    0.00
-#define PLANE_PY    0.00
-#define PLANE_PZ    0.00
-#define PLANE_DX    0.00
-#define PLANE_DY    0.00
-#define PLANE_DZ    0.00
+//#define PLANE_PX    0.00
+//#define PLANE_PY    0.00
+//#define PLANE_PZ    0.00
+//#define PLANE_DX    0.00
+//#define PLANE_DY    0.00
+//#define PLANE_DZ    0.00
 
 
 // CTRL structure

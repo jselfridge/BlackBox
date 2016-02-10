@@ -14,7 +14,7 @@ void ctl_init ( void )  {
   if (DEBUG)  printf("Initializing controller \n");
 
   // Array index
-  ushort x=0, y=1, z=2;
+  //ushort x=0, y=1, z=2;
 
   // Set timing values (make 'const' during initialization)
   ctrl.dt = 1.0 / HZ_CTRL;
@@ -65,15 +65,15 @@ void ctl_init ( void )  {
     ctrl.off[9] = PLANE_OFF9;
 
     // Reference ranges
-    ctrl.scale[CH_R] = PLANE_R_RANGE;
-    ctrl.scale[CH_P] = PLANE_P_RANGE;
-    ctrl.scale[CH_Y] = PLANE_Y_RANGE;
-    ctrl.scale[CH_T] = PLANE_T_RANGE;
+    //ctrl.scale[CH_R] = PLANE_R_RANGE;
+    //ctrl.scale[CH_Y] = PLANE_Y_RANGE;
+    //ctrl.scale[CH_P] = PLANE_P_RANGE;
+    //ctrl.scale[CH_T] = PLANE_T_RANGE;
 
     // Gain values
-    ctrl.pgain[x] = PLANE_PX;  ctrl.pgain[y] = PLANE_PY;  ctrl.pgain[z] = PLANE_PZ;
-    ctrl.dgain[x] = PLANE_DX;  ctrl.dgain[y] = PLANE_DY;  ctrl.dgain[z] = PLANE_DZ;
-    ctrl.igain[x] = 0.0;       ctrl.igain[y] = 0.0;       ctrl.igain[z] = 0.0;
+    //ctrl.pgain[x] = PLANE_PX;  ctrl.pgain[y] = PLANE_PY;  ctrl.pgain[z] = PLANE_PZ;
+    //ctrl.dgain[x] = PLANE_DX;  ctrl.dgain[y] = PLANE_DY;  ctrl.dgain[z] = PLANE_DZ;
+    //ctrl.igain[x] = 0.0;       ctrl.igain[y] = 0.0;       ctrl.igain[z] = 0.0;
 
   }
 
@@ -220,41 +220,31 @@ void ctl_quad ( void )  {
 void ctl_plane ( void )  {
 
   // Local variables
-  ushort ch;
-  ushort x=0, y=1, z=2, t=3;
-  double in[4], out[4];
-  double dial, thr;
+  //ushort x=0, y=1, z=2, t=3;
+  //double in[4], out[4];
+  double thrl, elev, dial, prop, thresh;
 
   // Obtain inputs
   pthread_mutex_lock(&mutex_input);
-  for ( ch=0; ch<4; ch++ )  in[ch] = input.norm[ch];
+  thrl = input.norm[CH_T];
+  elev = input.norm[CH_P];
   dial = input.norm[CH_D];
   pthread_mutex_unlock(&mutex_input);
 
   // Determine throttle adjustment
-  double thresh = ( 0.5 * ( dial + 1.0 ) * ( PLANE_TMAX - PLANE_TMIN ) ) + PLANE_TMIN - PLANE_T_RANGE;
-  if ( in[CH_T] <= -0.6 )  thr = ( 2.50 * ( in[CH_T] + 1.0 ) * ( thresh + 1.0 ) ) - 1.0;
-  else                     thr = ( 1.25 * ( in[CH_T] + 0.6 ) * PLANE_T_RANGE ) + thresh; 
+  thresh = ( 0.5 * ( dial + 1.0 ) * ( PLANE_TMAX - PLANE_TMIN ) ) + PLANE_TMIN - PLANE_T_RANGE;
+  if ( thrl <= -0.6 )  prop = ( 2.50 * ( thrl + 1.0 ) * ( thresh + 1.0 ) ) - 1.0;
+  else                 prop = ( 1.25 * ( thrl + 0.6 ) * PLANE_T_RANGE ) + thresh;
 
   // Assign signal outputs
-  if ( in[CH_T] > -0.9 )  {  
-    out[x] =  in[x];
-    out[y] =  in[y];
-    out[z] = -in[z];
-    out[t] =  thr;
+  if ( thrl > -0.9 )  {
+    sio_setnorm( PLANE_ELEV, elev );
+    sio_setnorm( PLANE_THRL, prop );
   }
   else  {
-    out[x] =  0.0;
-    out[y] =  0.0;
-    out[z] =  0.0;
-    out[t] = -1.0;
+    sio_setnorm( PLANE_ELEV,  0.0 );
+    sio_setnorm( PLANE_THRL, -1.0 );
   }
-
-  // Push system outputs
-  sio_setnorm( 0, out[x] );
-  sio_setnorm( 1, out[y] );
-  sio_setnorm( 4, out[z] );
-  sio_setnorm( 5, out[t] );
 
   return;
 }
