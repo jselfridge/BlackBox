@@ -7,7 +7,7 @@
 #define _SIO_H_
 #include <main.h>
 
-/*
+
 // Input signal variables
 #define IN_CH       10
 #define IN_OFFSET   2049
@@ -25,7 +25,7 @@
 #define OUT_MIN     ( 1000 * OUT_PWM2REG )
 #define OUT_MAX     ( 2000 * OUT_PWM2REG )
 
-/*
+
 // Channel enumerations
 enum ch_index {
   CH1 = 0,
@@ -54,27 +54,27 @@ enum radio_index {
 
 
 // Signal structure
-typedef struct signal_struct {
+typedef struct sio_struct {
   ushort reg  [10];
   ushort pwm  [10];
   double norm [10];
-} signal_struct;
-signal_struct input;
-signal_struct output;
+} sio_struct;
+sio_struct input;
+sio_struct output;
 
 
 // Global variables (remove as quickly as possible)
 uint* memoryPtr;
-*/
+
 
 // System input/output functions
 void    sio_init    ( void );
 void    sio_exit    ( void );
-//void    sio_update  ( void );
-//void    sio_setreg  ( ushort ch, ushort reg  );
-//void    sio_setpwm  ( ushort ch, ushort pwm  );
-//void    sio_setnorm ( ushort ch, double norm );
-//double  sio_norm    ( ushort reg, char dir   );
+void    sio_update  ( void );
+void    sio_setreg  ( ushort ch, ushort reg  );
+void    sio_setpwm  ( ushort ch, ushort pwm  );
+void    sio_setnorm ( ushort ch, double norm );
+double  sio_norm    ( ushort reg, char dir   );
 
 
 #endif

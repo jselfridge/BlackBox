@@ -24,18 +24,18 @@ void tmr_init ( void )  {
   if(DEBUG)  printf("  Create threads and mutexes:  ");
 
   // Create mutex conditions
+  pthread_mutex_init( &mutex_input,  NULL );
+  pthread_mutex_init( &mutex_output, NULL );
   //pthread_mutex_init( &mutex_raw,    NULL );
   //pthread_mutex_init( &mutex_avg,    NULL );
   //pthread_mutex_init( &mutex_cal,    NULL );
   //pthread_mutex_init( &mutex_imu,    NULL );
   //pthread_mutex_init( &mutex_quat,   NULL );
   //pthread_mutex_init( &mutex_eul,    NULL );
-  //pthread_mutex_init( &mutex_input,  NULL );
-  //pthread_mutex_init( &mutex_output, NULL );
   //pthread_mutex_init( &mutex_ctrl,   NULL );
 
   // Create primary timing threads
-  //tmr_thread( &tmr_sio,  &attr, fcn_sio  );  usleep(100000);
+  tmr_thread( &tmr_sio,  &attr, fcn_sio  );  usleep(100000);
   //tmr_thread( &tmr_flag, &attr, fcn_flag );  usleep(100000);
   //tmr_thread( &tmr_imu,  &attr, fcn_imu  );  usleep(100000);
   //tmr_thread( &tmr_ahr,  &attr, fcn_ahr  );  usleep(100000);
@@ -58,6 +58,11 @@ void tmr_init ( void )  {
 void tmr_setup ( void )  {
   if(DEBUG)  printf("  Assign thread structure elements \n");
 
+  // System I/O timer
+  tmr_sio.name    =  "sio";
+  tmr_sio.prio    =  PRIO_SIO;
+  tmr_sio.per     =  1000000 / HZ_SIO;
+
   /*// IMU timer
   tmr_imu.name    =  "imu";
   tmr_imu.prio    =  PRIO_IMU;
@@ -67,11 +72,6 @@ void tmr_setup ( void )  {
   tmr_ahr.name    =  "ahr";
   tmr_ahr.prio    =  PRIO_AHR;
   tmr_ahr.per     =  1000000 / HZ_AHR;
-  */
-  /*// System I/O timer
-  tmr_sio.name    =  "sio";
-  tmr_sio.prio    =  PRIO_SIO;
-  tmr_sio.per     =  1000000 / HZ_SIO;
   */
   /*// Flags timer
   tmr_flag.name   =  "flag";
@@ -154,14 +154,14 @@ void tmr_exit ( void )  {
   printf("Close timing threads:  ");
 
   // Destroy mutex locks
+  pthread_mutex_destroy(&mutex_input);
+  pthread_mutex_destroy(&mutex_output);
   //pthread_mutex_destroy(&mutex_raw);
   //pthread_mutex_destroy(&mutex_avg);
   //pthread_mutex_destroy(&mutex_cal);
   //pthread_mutex_destroy(&mutex_imu);
   //pthread_mutex_destroy(&mutex_quat);
   //pthread_mutex_destroy(&mutex_eul);
-  //pthread_mutex_destroy(&mutex_input);
-  //pthread_mutex_destroy(&mutex_output);
   //pthread_mutex_destroy(&mutex_ctrl);
 
   /*// Exit control thread
@@ -184,11 +184,11 @@ void tmr_exit ( void )  {
     printf( "Error (tmr_exit): Failed to exit 'flag' thread. \n" );
   if(DEBUG)  printf( "flag " );
   */
-  /*// Exit system input/output thread
+  // Exit system input/output thread
   if( pthread_join ( tmr_sio.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'sio' thread. \n" );
   if(DEBUG)  printf( "sio " );
-  */
+
   // Exit debugging thread
   if(DEBUG) {
   if( pthread_join ( tmr_debug.id, NULL ) )
@@ -299,6 +299,24 @@ void tmr_finish ( timer_struct *tmr )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  fcn_sio
+//  Function handler for the system input/output timing thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void *fcn_sio (  )  {
+  tmr_create(&tmr_sio);
+  while (running) {
+    tmr_start(&tmr_sio);
+    sio_update();
+    tmr_finish(&tmr_sio);
+    if (datalog.enabled)  log_record(LOG_SIO);
+    tmr_pause(&tmr_sio);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  fcn_imu
 //  Function handler for the IMU timing thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -328,24 +346,6 @@ void tmr_finish ( timer_struct *tmr )  {
     tmr_finish(&tmr_ahr);
     if (datalog.enabled)  log_record(LOG_AHR);
     tmr_pause(&tmr_ahr);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
-*/
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_sio
-//  Function handler for the system input/output timing thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void *fcn_sio (  )  {
-  tmr_create(&tmr_sio);
-  while (running) {
-    tmr_start(&tmr_sio);
-    sio_update();
-    tmr_finish(&tmr_sio);
-    if (datalog.enabled)  log_record(LOG_SIO);
-    tmr_pause(&tmr_sio);
   }
   pthread_exit(NULL);
   return NULL;

@@ -52,7 +52,7 @@ void sio_init ( void )  {
   return;
 }
 
-/*
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sio_exit
 //  Exits the system input/output PRU subcomponents.
@@ -84,6 +84,9 @@ void sio_update ( void )  {
     input.norm[ch] = sio_norm( input.reg[ch], 'i' );
   }
   pthread_mutex_unlock(&mutex_input);
+
+  //---  DEBUGGING  ---//
+  for ( ch=0; ch<10; ch++ )  sio_setnorm( ch, input.norm[ch] );
 
   // Assign output signal register values
   pthread_mutex_lock(&mutex_output);
@@ -200,5 +203,5 @@ double sio_norm ( ushort reg, char dir )  {
   return norm;
 }
 
-*/
+
 
