@@ -27,19 +27,19 @@ void tmr_init ( void )  {
   //pthread_mutex_init( &mutex_raw,    NULL );
   //pthread_mutex_init( &mutex_avg,    NULL );
   //pthread_mutex_init( &mutex_cal,    NULL );
-  pthread_mutex_init( &mutex_imu,    NULL );
+  //pthread_mutex_init( &mutex_imu,    NULL );
   //pthread_mutex_init( &mutex_quat,   NULL );
   //pthread_mutex_init( &mutex_eul,    NULL );
   pthread_mutex_init( &mutex_input,  NULL );
-  pthread_mutex_init( &mutex_output, NULL );
-  pthread_mutex_init( &mutex_ctrl,   NULL );
+  //pthread_mutex_init( &mutex_output, NULL );
+  //pthread_mutex_init( &mutex_ctrl,   NULL );
 
   // Create primary timing threads
   tmr_thread( &tmr_sio,  &attr, fcn_sio  );  usleep(100000);
-  tmr_thread( &tmr_flag, &attr, fcn_flag );  usleep(100000);
+  //tmr_thread( &tmr_flag, &attr, fcn_flag );  usleep(100000);
   //tmr_thread( &tmr_imu,  &attr, fcn_imu  );  usleep(100000);
   //tmr_thread( &tmr_ahr,  &attr, fcn_ahr  );  usleep(100000);
-  tmr_thread( &tmr_ctrl, &attr, fcn_ctrl );  usleep(100000);
+  //tmr_thread( &tmr_ctrl, &attr, fcn_ctrl );  usleep(100000);
 
   // Possibly create debugging thread
   if(DEBUG) {
@@ -73,16 +73,16 @@ void tmr_setup ( void )  {
   tmr_sio.prio    =  PRIO_SIO;
   tmr_sio.per     =  1000000 / HZ_SIO;
 
-  // Flags timer
+  /*// Flags timer
   tmr_flag.name   =  "flag";
   tmr_flag.prio   =  PRIO_FLAG;
   tmr_flag.per    =  1000000 / HZ_FLAG;
-
-  // Control timer
+  */
+  /*// Control timer
   tmr_ctrl.name   =  "ctrl";
   tmr_ctrl.prio   =  PRIO_CTRL;
   tmr_ctrl.per    =  1000000 / HZ_CTRL;
-
+  */
   // Debugging timer
   tmr_debug.name  =  "debug";
   tmr_debug.prio  =  PRIO_DEBUG;
@@ -157,19 +157,19 @@ void tmr_exit ( void )  {
   //pthread_mutex_destroy(&mutex_raw);
   //pthread_mutex_destroy(&mutex_avg);
   //pthread_mutex_destroy(&mutex_cal);
-  pthread_mutex_destroy(&mutex_imu);
+  //pthread_mutex_destroy(&mutex_imu);
   //pthread_mutex_destroy(&mutex_quat);
   //pthread_mutex_destroy(&mutex_eul);
   pthread_mutex_destroy(&mutex_input);
-  pthread_mutex_destroy(&mutex_output);
-  pthread_mutex_destroy(&mutex_ctrl);
+  //pthread_mutex_destroy(&mutex_output);
+  //pthread_mutex_destroy(&mutex_ctrl);
 
-  // Exit control thread
+  /*// Exit control thread
   if( pthread_join ( tmr_ctrl.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ctrl' thread. \n" );
   if(DEBUG)  printf( "ctrl " );
-  /*
-  // Exit AHR thread
+  */
+  /*// Exit AHR thread
   if( pthread_join ( tmr_ahr.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ahr' thread. \n" );
   if(DEBUG)  printf( "ahr " );
@@ -179,10 +179,11 @@ void tmr_exit ( void )  {
     printf( "Error (tmr_exit): Failed to exit 'imu' thread. \n" );
   if(DEBUG)  printf( "imu " );
   */
-  // Exit program execution flags thread
+  /*// Exit program execution flags thread
   if( pthread_join ( tmr_flag.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'flag' thread. \n" );
   if(DEBUG)  printf( "flag " );
+  */
 
   // Exit system input/output thread
   if( pthread_join ( tmr_sio.id, NULL ) )
@@ -302,7 +303,7 @@ void tmr_finish ( timer_struct *tmr )  {
 //  fcn_imu
 //  Function handler for the IMU timing thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void *fcn_imu (  )  {
+/*void *fcn_imu (  )  {
   tmr_create(&tmr_imu);
   while (running) {
     tmr_start(&tmr_imu);
@@ -314,13 +315,13 @@ void *fcn_imu (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  fcn_ahr
 //  Function handler for the AHR timing thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void *fcn_ahr (  )  {
+/*void *fcn_ahr (  )  {
   tmr_create(&tmr_ahr);
   while (running) {
     tmr_start(&tmr_ahr);
@@ -332,7 +333,7 @@ void *fcn_ahr (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  fcn_sio
@@ -356,7 +357,7 @@ void *fcn_sio (  )  {
 //  fcn_flag
 //  Function handler for the program execution flag timing thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void *fcn_flag (  )  {
+/*void *fcn_flag (  )  {
   tmr_create(&tmr_flag);
   while (running) {
     tmr_start(&tmr_flag);
@@ -367,13 +368,13 @@ void *fcn_flag (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  fcn_ctrl
 //  Function handler for the control law timing thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void *fcn_ctrl (  )  {
+/*void *fcn_ctrl (  )  {
   tmr_create(&tmr_ctrl);
   while (running) {
     tmr_start(&tmr_ctrl);
@@ -385,7 +386,7 @@ void *fcn_ctrl (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  fcn_debug

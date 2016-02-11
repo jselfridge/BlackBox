@@ -9,19 +9,19 @@
 
 
 // Define statements
-#define MAX_LOG_DUR  (20*60)
+#define MAX_LOG_DUR  (1*60)
 
 
 // Log enumerations
 enum log_index {
-  LOG_IMU  = 0,
-  LOG_AHR  = 1,
-  LOG_SIO  = 2,
-  LOG_CTL  = 3
+  LOG_SIO  = 0 //,
+  //LOG_IMU  = 1,
+  //LOG_AHR  = 2,
+  //LOG_CTL  = 3
 } log_index;
 
 
-// Log IMU structure
+/*// Log IMU structure
 typedef struct log_imu_struct {
   ulong count;
   ulong limit;
@@ -34,9 +34,9 @@ typedef struct log_imu_struct {
 log_imu_struct log_gyr;
 log_imu_struct log_acc;
 log_imu_struct log_mag;
+*/
 
-
-// Log AHR structure
+/*// Log AHR structure
 typedef struct log_ahr_struct {
   ulong count;
   ulong limit;
@@ -51,7 +51,7 @@ typedef struct log_ahr_struct {
   float *fz;
 } log_ahr_struct;
 log_ahr_struct log_ahr;
-
+*/
 
 // Log system input/output structure
 typedef struct log_sio_struct {
@@ -66,7 +66,7 @@ log_sio_struct log_input;
 log_sio_struct log_output;
 
 
-// Log controller structure
+/*// Log controller structure
 typedef struct log_ctrl_struct {
   ulong  count;
   ulong  limit;
@@ -78,7 +78,7 @@ typedef struct log_ctrl_struct {
   float  *cmd;
 } log_ctrl_struct;
 log_ctrl_struct log_ctrl;
-
+*/
 
 // Log structure
 typedef struct datalog_struct {

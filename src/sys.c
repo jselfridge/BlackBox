@@ -68,7 +68,7 @@ void sys_update ( void )  {
 
   // Select data for display
   sys_sio();
-  sys_imu();
+  //sys_imu();
   //sys_ahr();
   //sys_ctrl();
 
@@ -205,10 +205,10 @@ void sys_exit (  )  {
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   tmr_exit();
   log_exit();
-  ctl_exit();
+  //ctl_exit();
   //ahr_exit();
   //imu_exit();
-  flg_exit();
+  //flg_exit();
   sio_exit();
 
   // Shut everything down

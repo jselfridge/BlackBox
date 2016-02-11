@@ -7,12 +7,12 @@
 #define _CTRL_H_
 #include <main.h>
 
-
+/*
 // Define misc items
 //#define IRESET    0.25
 #define SYSTEM    "plane"
 
-/*
+/-*
 // Define 'quad' disarm values (same for any quad)
 #define QUAD_OFF0  -1.0
 #define QUAD_OFF1  -1.0
@@ -60,7 +60,7 @@
 #define QUAD_DY    0.00
 #define QUAD_DZ    0.00
 
-*/
+*-/
 
 
 // Define 'plane' disarm values (same for any plane)
@@ -130,7 +130,7 @@ void    ctl_update  ( void );
 //void    ctl_quad    ( void );
 void    ctl_plane   ( void );
 void    ctl_disarm  ( void );
-
+*/
 
 #endif
 

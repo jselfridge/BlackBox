@@ -5,7 +5,7 @@
 //============================================================
 #include "ctrl.h"
 
-
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctl_init
 //  Initializes the control structure.
@@ -19,7 +19,7 @@ void ctl_init ( void )  {
   // Set timing values (make 'const' during initialization)
   ctrl.dt = 1.0 / HZ_CTRL;
 
-  /*
+  /-*
   // Set 'quad' parameters
   if ( !strcmp( SYSTEM, "quad" ) )  {
 
@@ -47,7 +47,7 @@ void ctl_init ( void )  {
     ctrl.dgain[x] = QUAD_DX;  ctrl.dgain[y] = QUAD_DY;  ctrl.dgain[z] = QUAD_DZ;
 
   }
-  */
+  *-/
 
   // Set 'plane' parameters
   if ( !strcmp( SYSTEM, "plane" ) )  {
@@ -113,7 +113,7 @@ void ctl_update ( void )  {
 //  ctl_quad
 //  Apply control to quadrotor system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*
+/-*
 void ctl_quad ( void )  {
 
   // Local variables
@@ -211,7 +211,7 @@ void ctl_quad ( void )  {
 
   return;
 }
-*/
+*-/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ctl_plane
@@ -250,7 +250,7 @@ void ctl_plane ( void )  {
 }
 
 
-  /*
+  /-*
   // Local variables
   ushort ch;
   ushort x=0, y=1, z=2, t=3;
@@ -353,7 +353,7 @@ void ctl_plane ( void )  {
   for ( ch=0; ch<4; ch++ )  sio_setnorm( ch, out[ch] );
 
   return;
-  */
+  *-/
 
 
 
@@ -367,4 +367,6 @@ void ctl_disarm ( void )  {
   for ( ch=0; ch<OUT_CH; ch++ )  sio_setnorm( ch, ctrl.off[ch] );
   return;
 }
+
+*/
 

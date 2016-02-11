@@ -1,3 +1,0 @@
-flag.c:13:6:flg_init	16	static
-flag.c:47:6:flg_exit	0	static
-flag.c:58:6:flg_update	16	static

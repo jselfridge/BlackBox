@@ -5,7 +5,7 @@
 //============================================================
 #include "flag.h"
 
-
+/*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  flg_init
 //  Initializes the program execution flag structure.
@@ -113,5 +113,5 @@ void flg_update ( void )  {
   return;
 }
 
-
+*/
 

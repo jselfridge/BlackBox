@@ -7,7 +7,7 @@
 #define _IMU_H_
 #include <main.h>
 
-
+/*
 // Define statements
 
 #define GYR_HIST   1
@@ -61,6 +61,7 @@ void  imu_getcal  ( void );
 void  imu_setic   ( void );
 void  imu_update  ( void );
 
+*/
 
 #endif
 
