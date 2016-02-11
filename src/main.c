@@ -18,12 +18,12 @@ int main ( void )  {
 
   // Initialize subsystems
   sys_init();
-  sio_init();
+  //sio_init();
   //flg_init();
   //imu_init();
   //ahr_init();
   //ctl_init();
-  log_init();
+  //log_init();
   tmr_init();
 
   // Wait for exit condition

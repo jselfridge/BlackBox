@@ -54,7 +54,6 @@
 // Global variables (remove as quickly as possible)
 bool running;
 bool armed;
-//bool energized;
 struct sigaction sys_signal;
 
 

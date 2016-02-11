@@ -7,7 +7,7 @@
 #define _SIO_H_
 #include <main.h>
 
-
+/*
 // Input signal variables
 #define IN_CH       10
 #define IN_OFFSET   2049
@@ -75,7 +75,7 @@ void    sio_setreg  ( ushort ch, ushort reg  );
 void    sio_setpwm  ( ushort ch, ushort pwm  );
 void    sio_setnorm ( ushort ch, double norm );
 double  sio_norm    ( ushort reg, char dir   );
-
+*/
 
 #endif
 

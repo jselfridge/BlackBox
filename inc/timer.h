@@ -11,7 +11,7 @@
 // Define timer priorities
 //#define PRIO_IMU    96
 //#define PRIO_AHR    94
-#define PRIO_SIO    92
+//#define PRIO_SIO    92
 //#define PRIO_CTRL   90
 //#define PRIO_FLAG   88
 #define PRIO_DEBUG  86
@@ -21,7 +21,7 @@
 //#define HZ_IMU_FAST   500
 //#define HZ_IMU_SLOW    50
 //#define HZ_AHR         50
-#define HZ_SIO         50
+//#define HZ_SIO         50
 //#define HZ_CTRL        50
 #define HZ_DEBUG       10
 //#define HZ_FLAG        10
@@ -45,7 +45,7 @@ typedef struct timer_struct {
 // Timer declarations
 //timer_struct tmr_imu;
 //timer_struct tmr_ahr;
-timer_struct tmr_sio;
+//timer_struct tmr_sio;
 //timer_struct tmr_flag;
 //timer_struct tmr_ctrl;
 timer_struct tmr_debug;
@@ -58,7 +58,7 @@ timer_struct tmr_debug;
 //pthread_mutex_t mutex_imu;
 //pthread_mutex_t mutex_quat;
 //pthread_mutex_t mutex_eul;
-pthread_mutex_t mutex_input;
+//pthread_mutex_t mutex_input;
 //pthread_mutex_t mutex_output;
 //pthread_mutex_t mutex_ctrl;
 
@@ -78,7 +78,7 @@ void  tmr_finish    ( timer_struct *tmr );
 // Function handlers
 //void *fcn_imu    (  );
 //void *fcn_ahr    (  );
-void *fcn_sio    (  );
+//void *fcn_sio    (  );
 //void *fcn_flag   (  );
 //void *fcn_ctrl   (  );
 void *fcn_debug  (  );

@@ -370,17 +370,17 @@ void log_exit ( void )  {
 void log_record ( enum log_index index )  {
 
   // Local variables
-  ushort i;
-  ulong  row;
-  float  timestamp;
+  //ushort i;
+  //ulong  row;
+  //float  timestamp;
 
   // Jump to appropriate log 
-  switch(index) {
+  //switch(index) {
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record system input/output data
-  case LOG_SIO :
+  //case LOG_SIO :
     /*
     pthread_mutex_lock(&mutex_input);
     pthread_mutex_lock(&mutex_output);
@@ -405,12 +405,12 @@ void log_record ( enum log_index index )  {
     pthread_mutex_unlock(&mutex_input);
     pthread_mutex_unlock(&mutex_output);
     */
-    return;
+    //return;
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record IMU data
-  case LOG_IMU :
+  //case LOG_IMU :
     /*
     pthread_mutex_lock(&mutex_imu);
     timestamp = (float) ( tmr_imu.start_sec + ( tmr_imu.start_usec / 1000000.0f ) ) - datalog.offset;
@@ -450,12 +450,12 @@ void log_record ( enum log_index index )  {
 
     pthread_mutex_unlock(&mutex_imu);
     */
-    return;
+    //return;
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record AHR data
-  case LOG_AHR :
+  //case LOG_AHR :
     /*
     pthread_mutex_lock(&mutex_ahr);
     timestamp = (float) ( tmr_ahr.start_sec + ( tmr_ahr.start_usec / 1000000.0f ) ) - datalog.offset;
@@ -475,12 +475,12 @@ void log_record ( enum log_index index )  {
     }
 
     pthread_mutex_unlock(&mutex_ahr);    */
-    return;
+    //return;
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record CTRL data
-  case LOG_CTL :
+  //case LOG_CTL :
     /*
     timestamp = (float) ( tmr_ctrl.start_sec + ( tmr_ctrl.start_usec / 1000000.0f ) ) - datalog.offset;
 
@@ -495,13 +495,13 @@ void log_record ( enum log_index index )  {
       log_ctrl.count++;
     }
     */
-    return;
+    //return;
 
 
-  default :
-    return;
+  //default :
+    //return;
   
-  }
+  //}
 }
 
 

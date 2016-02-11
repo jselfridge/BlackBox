@@ -58,16 +58,16 @@ void sys_update ( void )  {
   printf("\r");  fflush(stdout);
 
   // Datalog status
-  if (datalog.enabled)  printf(" Log %s: ", datalog.dir );
-  else                  printf(" - - - -  ");
-  fflush(stdout);
+  //if (datalog.enabled)  printf(" Log %s: ", datalog.dir );
+  //else                  printf(" - - - -  ");
+  //fflush(stdout);
 
   // Time values
-  float timestamp = (float) ( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f ) - datalog.offset );
+  float timestamp = (float) ( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f )  );  // - datalog.offset );
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
-  sys_sio();
+  //sys_sio();
   //sys_imu();
   //sys_ahr();
   //sys_ctrl();
@@ -86,23 +86,23 @@ void sys_update ( void )  {
 void sys_sio ( void )  {
 
   // Loop counter
-  ushort i;
+  //ushort i;
 
   // Input signals
-  pthread_mutex_lock(&mutex_input);
+  //pthread_mutex_lock(&mutex_input);
   //for ( i=0; i<4; i++ )  printf("%5d ",   input.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%4d ",   input.pwm[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<4; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_input);
+  //for ( i=0; i<4; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
+  //pthread_mutex_unlock(&mutex_input);
 
   // Output signals
-  pthread_mutex_lock(&mutex_output);
+  //pthread_mutex_lock(&mutex_output);
   //for ( i=0; i<6; i++ )  printf("%5d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<6; i++ )  printf("%4d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<6; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
-  printf("%5.2f ", output.norm[4] );  printf("   ");  fflush(stdout);
-  printf("%5.2f ", output.norm[5] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_output);
+  //printf("%5.2f ", output.norm[4] );  printf("   ");  fflush(stdout);
+  //printf("%5.2f ", output.norm[5] );  printf("   ");  fflush(stdout);
+  //pthread_mutex_unlock(&mutex_output);
 
   return;
 }
@@ -115,15 +115,15 @@ void sys_sio ( void )  {
 void sys_imu ( void )  {
 
   // Loop counter
-  ushort i;
+  //ushort i;
 
   // Lock IMU data
-  pthread_mutex_lock(&mutex_imu);
+  //pthread_mutex_lock(&mutex_imu);
 
   // Raw data
-  for ( i=0; i<3; i++ )  printf("%6d ",   gyr.raw[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6d ",   acc.raw[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%4d ",   mag.raw[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6d ",   gyr.raw[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6d ",   acc.raw[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%4d ",   mag.raw[i] );  printf("   ");  fflush(stdout);
 
   // Averaged data
   //for ( i=0; i<3; i++ )  printf("%9.2f ", gyr.avg[i] );  printf("   ");  fflush(stdout);
@@ -136,7 +136,7 @@ void sys_imu ( void )  {
   //for ( i=0; i<3; i++ )  printf("%6.3f ", mag.cal[i] );  printf("   ");  fflush(stdout);
 
   // Unlock IMU data
-  pthread_mutex_unlock(&mutex_imu);
+  //pthread_mutex_unlock(&mutex_imu);
 
   return;
 }
@@ -149,7 +149,7 @@ void sys_imu ( void )  {
 void sys_ahr ( void )  {
 
   // Loop counter
-  ushort i;
+  //ushort i;
 
   /*// Quaternion data
   pthread_mutex_lock(&mutex_quat);
@@ -158,10 +158,10 @@ void sys_ahr ( void )  {
   pthread_mutex_unlock(&mutex_quat);*/
 
   // Euler data
-  pthread_mutex_lock(&mutex_eul);
-  for ( i=0; i<3; i++ )  printf("%7.2f ", ahr.eul[i]  * (180.0/PI) );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%7.2f ", ahr.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_eul); 
+  //pthread_mutex_lock(&mutex_eul);
+  //for ( i=0; i<3; i++ )  printf("%7.2f ", ahr.eul[i]  * (180.0/PI) );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%7.2f ", ahr.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
+  //pthread_mutex_unlock(&mutex_eul); 
 
   return;
 }
@@ -177,15 +177,15 @@ void sys_ctrl ( void )  {
   //ushort i;
 
   // Control signals
-  pthread_mutex_lock(&mutex_ctrl);
+  //pthread_mutex_lock(&mutex_ctrl);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.perr[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.ierr[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.derr[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.cmd[i]  );  printf("   ");  fflush(stdout);
-  printf("%5.2f ", ctrl.bank    *(180.0/PI) );  printf("   ");  fflush(stdout);
-  printf("%5.2f ", ctrl.climb   *(180.0/PI) );  printf("   ");  fflush(stdout);
-  printf("%5.2f ", ctrl.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_ctrl);
+  //printf("%5.2f ", ctrl.bank    *(180.0/PI) );  printf("   ");  fflush(stdout);
+  //printf("%5.2f ", ctrl.climb   *(180.0/PI) );  printf("   ");  fflush(stdout);
+  //printf("%5.2f ", ctrl.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
+  //pthread_mutex_unlock(&mutex_ctrl);
 
   return;
 }
@@ -199,17 +199,17 @@ void sys_exit (  )  {
 
   // Change exit status
   running = false;
-  usleep(200000);
+  //usleep(200000);
 
   // Exit subsystems
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   tmr_exit();
-  log_exit();
+  //log_exit();
   //ctl_exit();
   //ahr_exit();
   //imu_exit();
   //flg_exit();
-  sio_exit();
+  //sio_exit();
 
   // Shut everything down
   if(DEBUG)  printf("Program complete \n");
