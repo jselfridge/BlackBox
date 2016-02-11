@@ -15,9 +15,9 @@ void log_init ( void )  {
 
   // Establish datalog limits
   if(DEBUG)  printf("  Establish datalog limits \n");
-  log_gyr.limit    = MAX_LOG_DUR * HZ_IMU_FAST;
-  log_acc.limit    = MAX_LOG_DUR * HZ_IMU_FAST;
-  log_mag.limit    = MAX_LOG_DUR * HZ_IMU_SLOW;
+  //log_gyr.limit    = MAX_LOG_DUR * HZ_IMU_FAST;
+  //log_acc.limit    = MAX_LOG_DUR * HZ_IMU_FAST;
+  //log_mag.limit    = MAX_LOG_DUR * HZ_IMU_SLOW;
   //log_ahr.limit    = MAX_LOG_DUR * HZ_AHR;
   log_input.limit  = MAX_LOG_DUR * HZ_SIO;
   log_output.limit = MAX_LOG_DUR * HZ_SIO;
@@ -26,30 +26,30 @@ void log_init ( void )  {
   // Allocate memory for storage arrays
   if(DEBUG)  printf("  Allocate memory:  ");
 
-  // Gyroscope storage
+  /*// Gyroscope storage
   if(DEBUG)  printf("gyr ");
   log_gyr.time =  malloc( sizeof(float) * log_gyr.limit     );
   log_gyr.dur  =  malloc( sizeof(ulong) * log_gyr.limit     );
   log_gyr.raw  =  malloc( sizeof(short) * log_gyr.limit * 3 );
   log_gyr.avg  =  malloc( sizeof(float) * log_gyr.limit * 3 );
   log_gyr.cal  =  malloc( sizeof(float) * log_gyr.limit * 3 );
-
-  // Accelerometer storage
+  */
+  /*// Accelerometer storage
   if(DEBUG)  printf("acc ");
   log_acc.time =  malloc( sizeof(float) * log_acc.limit     );
   log_acc.dur  =  malloc( sizeof(ulong) * log_acc.limit     );
   log_acc.raw  =  malloc( sizeof(short) * log_acc.limit * 3 );
   log_acc.avg  =  malloc( sizeof(float) * log_acc.limit * 3 );
   log_acc.cal  =  malloc( sizeof(float) * log_acc.limit * 3 );
-
-  // Magnetometer storage
+  */
+  /*// Magnetometer storage
   if(DEBUG)  printf("mag ");
   log_mag.time =  malloc( sizeof(float) * log_mag.limit     );
   log_mag.dur  =  malloc( sizeof(ulong) * log_mag.limit     );
   log_mag.raw  =  malloc( sizeof(short) * log_mag.limit * 3 );
   log_mag.avg  =  malloc( sizeof(float) * log_mag.limit * 3 );
   log_mag.cal  =  malloc( sizeof(float) * log_mag.limit * 3 );
-
+  */
   /*// Attitude/Heading reference storage
   if(DEBUG)  printf("ahr ");
   log_ahr.time  =  malloc( sizeof(float) * log_ahr.limit     );
@@ -99,9 +99,9 @@ void log_init ( void )  {
 void log_open ( void )  {
 
   // Clear counters for new session
-  log_gyr.count    = 0;
-  log_acc.count    = 0;
-  log_mag.count    = 0;
+  //log_gyr.count    = 0;
+  //log_acc.count    = 0;
+  //log_mag.count    = 0;
   //log_ahr.count    = 0;
   log_input.count  = 0;
   log_output.count = 0;
@@ -147,8 +147,8 @@ void log_close ( void )  {
 
   // Local variables
   char *file = malloc(64);
-  FILE *fnote, *fgyr, *facc, *fmag, *fin, *fout;
-  //FILE *fahr, *fctl;
+  FILE *fnote, *fin, *fout;
+  //FILE *fahr, *fgyr, *facc, *fmag, *fctl;
   ushort i;
   ulong row;
 
@@ -162,7 +162,7 @@ void log_close ( void )  {
   if( fnote == NULL )  printf( "Error (log_XX): Cannot open 'notes' file. \n" );
   fprintf( fnote, " Assign some system parameteres like gains, or telemetry waypoint updates... " );
 
-  // Create gyroscope datalog file
+  /*// Create gyroscope datalog file
   sprintf( file, "%sgyr.txt", datalog.path );
   fgyr = fopen( file, "w" );
   if( fgyr == NULL )  printf( "Error (log_XX): Cannot open 'gyr' file. \n" );
@@ -179,8 +179,8 @@ void log_close ( void )  {
     for ( i=0; i<3; i++ )  fprintf( fgyr, "%09.2f  ", log_gyr.avg[ row*3 +i ] );   fprintf( fgyr, "   " );
     for ( i=0; i<3; i++ )  fprintf( fgyr, "%07.4f  ", log_gyr.cal[ row*3 +i ] );   fprintf( fgyr, "   " );
   }
-
-  // Create accelerometer datalog file
+  */
+  /*// Create accelerometer datalog file
   sprintf( file, "%sacc.txt", datalog.path );
   facc = fopen( file, "w" );
   if( facc == NULL )  printf( "Error (log_XX): Cannot open 'acc' file. \n" );
@@ -197,8 +197,8 @@ void log_close ( void )  {
     for ( i=0; i<3; i++ )  fprintf( facc, "%09.2f  ", log_acc.avg[ row*3 +i ] );   fprintf( facc, "   " );
     for ( i=0; i<3; i++ )  fprintf( facc, "%07.4f  ", log_acc.cal[ row*3 +i ] );   fprintf( facc, "   " );
   }
-
-  // Create magnetometer datalog file
+  */
+  /*// Create magnetometer datalog file
   sprintf( file, "%smag.txt", datalog.path );
   fmag = fopen( file, "w" );
   if( fmag == NULL )  printf( "Error (log_XX): Cannot open 'mag' file. \n" );
@@ -215,7 +215,7 @@ void log_close ( void )  {
     for ( i=0; i<3; i++ )  fprintf( fmag, "%09.2f  ", log_mag.avg[ row*3 +i ] );   fprintf( fmag, "   " );
     for ( i=0; i<3; i++ )  fprintf( fmag, "%07.4f  ", log_mag.cal[ row*3 +i ] );   fprintf( fmag, "   " );
   }
-
+  */
   /*// Create attitude/heading reference datalog file
   sprintf( file, "%sahr.txt", datalog.path );
   fahr = fopen( file, "w" );
@@ -288,9 +288,9 @@ void log_close ( void )  {
   */
   // Close files
   fclose(fnote);
-  fclose(fgyr);
-  fclose(facc);
-  fclose(fmag);
+  //fclose(fgyr);
+  //fclose(facc);
+  //fclose(fmag);
   //fclose(fahr);
   fclose(fin);
   fclose(fout);
@@ -311,30 +311,30 @@ void log_close ( void )  {
 void log_exit ( void )  {
   if(DEBUG)  printf("Close logs:  ");
 
-  // Free gyroscope memory
+  /*// Free gyroscope memory
   if(DEBUG)  printf("gyr ");
   free(log_gyr.time);
   free(log_gyr.dur);
   free(log_gyr.raw);
   free(log_gyr.avg);
   free(log_gyr.cal);
-
-  // Free accelerometer memory
+  */
+  /*// Free accelerometer memory
   if(DEBUG)  printf("acc ");
   free(log_acc.time);
   free(log_acc.dur);
   free(log_acc.raw);
   free(log_acc.avg);
   free(log_acc.cal);
-
-  // Free magnetometer memory
+  */
+  /*// Free magnetometer memory
   if(DEBUG)  printf("mag ");
   free(log_mag.time);
   free(log_mag.dur);
   free(log_mag.raw);
   free(log_mag.avg);
   free(log_mag.cal);
-
+  */
   /*// Free attitude/heading memory
   if(DEBUG)  printf("ahr ");
   free(log_ahr.time);
@@ -393,7 +393,7 @@ void log_record ( enum log_index index )  {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record IMU data
   case LOG_IMU :
-
+    /*
     pthread_mutex_lock(&mutex_imu);
     timestamp = (float) ( tmr_imu.start_sec + ( tmr_imu.start_usec / 1000000.0f ) ) - datalog.offset;
     
@@ -431,6 +431,7 @@ void log_record ( enum log_index index )  {
     }
 
     pthread_mutex_unlock(&mutex_imu);
+    */
     return;
 
 

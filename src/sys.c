@@ -207,7 +207,7 @@ void sys_exit (  )  {
   log_exit();
   ctl_exit();
   //ahr_exit();
-  imu_exit();
+  //imu_exit();
   flg_exit();
   sio_exit();
 

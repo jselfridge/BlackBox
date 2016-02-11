@@ -37,7 +37,7 @@ void tmr_init ( void )  {
   // Create primary timing threads
   tmr_thread( &tmr_sio,  &attr, fcn_sio  );  usleep(100000);
   tmr_thread( &tmr_flag, &attr, fcn_flag );  usleep(100000);
-  tmr_thread( &tmr_imu,  &attr, fcn_imu  );  usleep(100000);
+  //tmr_thread( &tmr_imu,  &attr, fcn_imu  );  usleep(100000);
   //tmr_thread( &tmr_ahr,  &attr, fcn_ahr  );  usleep(100000);
   tmr_thread( &tmr_ctrl, &attr, fcn_ctrl );  usleep(100000);
 
@@ -58,11 +58,11 @@ void tmr_init ( void )  {
 void tmr_setup ( void )  {
   if(DEBUG)  printf("  Assign thread structure elements \n");
 
-  // IMU timer
+  /*// IMU timer
   tmr_imu.name    =  "imu";
   tmr_imu.prio    =  PRIO_IMU;
   tmr_imu.per     =  1000000 / HZ_IMU_FAST;
-
+  */
   /*// AHRS timer
   tmr_ahr.name    =  "ahr";
   tmr_ahr.prio    =  PRIO_AHR;
@@ -174,11 +174,11 @@ void tmr_exit ( void )  {
     printf( "Error (tmr_exit): Failed to exit 'ahr' thread. \n" );
   if(DEBUG)  printf( "ahr " );
   */
-  // Exit IMU thread
+  /*// Exit IMU thread
   if( pthread_join ( tmr_imu.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'imu' thread. \n" );
   if(DEBUG)  printf( "imu " );
-
+  */
   // Exit program execution flags thread
   if( pthread_join ( tmr_flag.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'flag' thread. \n" );
