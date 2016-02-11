@@ -25,7 +25,7 @@
 #define OUT_MIN     ( 1000 * OUT_PWM2REG )
 #define OUT_MAX     ( 2000 * OUT_PWM2REG )
 
-
+/*
 // Channel enumerations
 enum ch_index {
   CH1 = 0,
@@ -65,17 +65,17 @@ signal_struct output;
 
 // Global variables (remove as quickly as possible)
 uint* memoryPtr;
-
+*/
 
 // System input/output functions
 void    sio_init    ( void );
 void    sio_exit    ( void );
-void    sio_update  ( void );
-void    sio_setreg  ( ushort ch, ushort reg  );
-void    sio_setpwm  ( ushort ch, ushort pwm  );
-void    sio_setnorm ( ushort ch, double norm );
-double  sio_norm    ( ushort reg, char dir   );
-*/
+//void    sio_update  ( void );
+//void    sio_setreg  ( ushort ch, ushort reg  );
+//void    sio_setpwm  ( ushort ch, ushort pwm  );
+//void    sio_setnorm ( ushort ch, double norm );
+//double  sio_norm    ( ushort reg, char dir   );
+
 
 #endif
 

@@ -209,7 +209,7 @@ void sys_exit (  )  {
   //ahr_exit();
   //imu_exit();
   //flg_exit();
-  //sio_exit();
+  sio_exit();
 
   // Shut everything down
   if(DEBUG)  printf("Program complete \n");

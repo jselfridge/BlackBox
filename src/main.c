@@ -18,7 +18,7 @@ int main ( void )  {
 
   // Initialize subsystems
   sys_init();
-  //sio_init();
+  sio_init();
   //flg_init();
   //imu_init();
   //ahr_init();
