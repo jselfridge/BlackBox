@@ -101,13 +101,13 @@ void ahr_fusion ( void )  {
 
   // Get values from IMU data structure
   double g[3], a[3], m[3];
-  pthread_mutex_lock(&mutex_cal);
+  pthread_mutex_lock(&mutex_imu);
   for ( i=0; i<3; i++ )  {
     g[i] =  gyr.cal[i];
     a[i] = -acc.cal[i];
     m[i] =  mag.cal[i];
   }
-  pthread_mutex_unlock(&mutex_cal);
+  pthread_mutex_unlock(&mutex_imu);
 
   // Normalize magnetometer
   norm = 0.0;

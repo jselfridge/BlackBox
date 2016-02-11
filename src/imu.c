@@ -251,15 +251,6 @@ void imu_update ( void )  {
       printf( "Error (imu_data): 'mpu_get_compass_reg' failed. \n" );
   } 
 
-  // Store 'raw' values to data structure
-  pthread_mutex_lock(&mutex_raw);
-  for ( i=0; i<3; i++ )  {
-    gyr.raw[i] = Graw[i];
-    acc.raw[i] = Araw[i];
-    mag.raw[i] = Mraw[i];
-  }
-  pthread_mutex_unlock(&mutex_raw);
-
   // Gyroscope low pass filter
   k = GYR_HIST;
   for ( i=0; i<3; i++ ) {
@@ -289,16 +280,8 @@ void imu_update ( void )  {
       m = (float) (Mhist[i][0]);
       for ( j=1; j<k; j++ )  m = m + mag.gain * (float) ( Mhist[i][j] - m );
       Mavg[i] = m;
-    }}
-
-  // Store 'avg' values to data structure
-  pthread_mutex_lock(&mutex_avg);
-  for ( i=0; i<3; i++ )  {
-    gyr.avg[i] = Gavg[i];
-    acc.avg[i] = Aavg[i];
-    mag.avg[i] = Mavg[i];
+    }
   }
-  pthread_mutex_unlock(&mutex_avg);
 
   // Shift and orient gyroscope readings
   Gcal[x] =   ( Gavg[y] - gyr.bias[y] ) * GYR_SCALE;
@@ -317,14 +300,24 @@ void imu_update ( void )  {
     Mcal[z] = ( Mavg[z] - mag.bias[z] ) / (double) (mag.range[z]);
   }
 
-  // Store 'cal' values to data structure
-  pthread_mutex_lock(&mutex_cal);
+  // Push IMU values to data structure
+  pthread_mutex_lock(&mutex_imu);
+  for ( i=0; i<3; i++ )  {
+    gyr.raw[i] = Graw[i];
+    acc.raw[i] = Araw[i];
+    mag.raw[i] = Mraw[i];
+  }
+  for ( i=0; i<3; i++ )  {
+    gyr.avg[i] = Gavg[i];
+    acc.avg[i] = Aavg[i];
+    mag.avg[i] = Mavg[i];
+  }
   for ( i=0; i<3; i++ )  {
     gyr.cal[i] = Gcal[i];
     acc.cal[i] = Acal[i];
     mag.cal[i] = Mcal[i];
   }
-  pthread_mutex_unlock(&mutex_cal);
+  pthread_mutex_unlock(&mutex_imu);
 
   return;
 }

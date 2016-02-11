@@ -2,4 +2,4 @@ log.c:13:6:log_init	40	static
 log.c:99:6:log_open	32	static
 log.c:141:6:log_close	64	static
 log.c:311:6:log_exit	24	static
-log.c:382:6:log_record	56	static
+log.c:382:6:log_record	64	static

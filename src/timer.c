@@ -24,9 +24,10 @@ void tmr_init ( void )  {
   if(DEBUG)  printf("  Create threads and mutexes:  ");
 
   // Create mutex conditions
-  pthread_mutex_init( &mutex_raw,    NULL );
-  pthread_mutex_init( &mutex_avg,    NULL );
-  pthread_mutex_init( &mutex_cal,    NULL );
+  //pthread_mutex_init( &mutex_raw,    NULL );
+  //pthread_mutex_init( &mutex_avg,    NULL );
+  //pthread_mutex_init( &mutex_cal,    NULL );
+  pthread_mutex_init( &mutex_imu,    NULL );
   //pthread_mutex_init( &mutex_quat,   NULL );
   //pthread_mutex_init( &mutex_eul,    NULL );
   pthread_mutex_init( &mutex_input,  NULL );
@@ -153,9 +154,10 @@ void tmr_exit ( void )  {
   printf("Close timing threads:  ");
 
   // Destroy mutex locks
-  pthread_mutex_destroy(&mutex_raw);
-  pthread_mutex_destroy(&mutex_avg);
-  pthread_mutex_destroy(&mutex_cal);
+  //pthread_mutex_destroy(&mutex_raw);
+  //pthread_mutex_destroy(&mutex_avg);
+  //pthread_mutex_destroy(&mutex_cal);
+  pthread_mutex_destroy(&mutex_imu);
   //pthread_mutex_destroy(&mutex_quat);
   //pthread_mutex_destroy(&mutex_eul);
   pthread_mutex_destroy(&mutex_input);

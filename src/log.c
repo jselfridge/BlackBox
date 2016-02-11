@@ -142,7 +142,7 @@ void log_close ( void )  {
 
   // Inidcate the download is in progress
   datalog.saving = true;
-  led_blink( LED_LOG, 500, 500 );
+  led_blink( LED_LOG, 200, 200 );
   usleep(200000);
 
   // Local variables
@@ -394,6 +394,7 @@ void log_record ( enum log_index index )  {
   // Record IMU data
   case LOG_IMU :
 
+    pthread_mutex_lock(&mutex_imu);
     timestamp = (float) ( tmr_imu.start_sec + ( tmr_imu.start_usec / 1000000.0f ) ) - datalog.offset;
     
     // Gyroscope data
@@ -429,6 +430,7 @@ void log_record ( enum log_index index )  {
       log_mag.count++;
     }
 
+    pthread_mutex_unlock(&mutex_imu);
     return;
 
 
@@ -436,6 +438,7 @@ void log_record ( enum log_index index )  {
   // Record AHR data
   case LOG_AHR :
     /*
+    pthread_mutex_lock(&mutex_ahr);
     timestamp = (float) ( tmr_ahr.start_sec + ( tmr_ahr.start_usec / 1000000.0f ) ) - datalog.offset;
 
     if ( log_ahr.count < log_ahr.limit ) {
@@ -451,7 +454,8 @@ void log_record ( enum log_index index )  {
                              log_ahr.fz    [ row   +i ] = ahr.fz;
       log_ahr.count++;
     }
-    */
+
+    pthread_mutex_unlock(&mutex_ahr);    */
     return;
 
 
@@ -459,6 +463,8 @@ void log_record ( enum log_index index )  {
   // Record system input/output data
   case LOG_SIO :
 
+    pthread_mutex_lock(&mutex_input);
+    pthread_mutex_lock(&mutex_output);
     timestamp = (float) ( tmr_sio.start_sec + ( tmr_sio.start_usec / 1000000.0f ) ) - datalog.offset;
 
     // Input data
@@ -477,6 +483,8 @@ void log_record ( enum log_index index )  {
       log_output.count++;
     }
 
+    pthread_mutex_unlock(&mutex_input);
+    pthread_mutex_unlock(&mutex_output);
     return;
 
 
