@@ -8,7 +8,7 @@
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  log_init
-//  Initalizes the datalog structure attributes.
+//  Runs on start up to initalize the datalog attributes.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void log_init ( void )  {
   if(DEBUG)  printf("Initializing log parameters \n");
@@ -23,8 +23,24 @@ void log_init ( void )  {
   log_output.limit = MAX_LOG_DUR * HZ_SIO;
   //log_ctrl.limit   = MAX_LOG_DUR * HZ_CTRL;
 
-  // Allocate memory for storage arrays
-  if(DEBUG)  printf("  Allocate memory:  ");
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  log_open
+//  Prepares the system for the next datalog sequence.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void log_open ( void )  {
+
+  // Clear counters for new session
+  //log_gyr.count    = 0;
+  //log_acc.count    = 0;
+  //log_mag.count    = 0;
+  //log_ahr.count    = 0;
+  log_input.count  = 0;
+  log_output.count = 0;
+  //log_ctrl.count   = 0;
 
   /*// Gyroscope storage
   if(DEBUG)  printf("gyr ");
@@ -85,27 +101,6 @@ void log_init ( void )  {
   log_ctrl.derr =  malloc( sizeof(float) * log_ctrl.limit * 3 );
   log_ctrl.cmd  =  malloc( sizeof(float) * log_ctrl.limit * 4 );
   */
-  // Complete datalog initialization 
-  if(DEBUG)  printf("\n");
-
-  return;
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  log_open
-//  Prepares the system for the next datalog sequence.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void log_open ( void )  {
-
-  // Clear counters for new session
-  //log_gyr.count    = 0;
-  //log_acc.count    = 0;
-  //log_mag.count    = 0;
-  //log_ahr.count    = 0;
-  log_input.count  = 0;
-  log_output.count = 0;
-  //log_ctrl.count   = 0;
 
   // Allocate dir/path/file memory
   datalog.dir  = malloc(16);
@@ -180,6 +175,13 @@ void log_close ( void )  {
     for ( i=0; i<3; i++ )  fprintf( fgyr, "%07.4f  ", log_gyr.cal[ row*3 +i ] );   fprintf( fgyr, "   " );
   }
   */
+  /*// Free gyroscope memory
+  free(log_gyr.time);
+  free(log_gyr.dur);
+  free(log_gyr.raw);
+  free(log_gyr.avg);
+  free(log_gyr.cal);
+  */
   /*// Create accelerometer datalog file
   sprintf( file, "%sacc.txt", datalog.path );
   facc = fopen( file, "w" );
@@ -198,6 +200,13 @@ void log_close ( void )  {
     for ( i=0; i<3; i++ )  fprintf( facc, "%07.4f  ", log_acc.cal[ row*3 +i ] );   fprintf( facc, "   " );
   }
   */
+  /*// Free accelerometer memory
+  free(log_acc.time);
+  free(log_acc.dur);
+  free(log_acc.raw);
+  free(log_acc.avg);
+  free(log_acc.cal);
+  */
   /*// Create magnetometer datalog file
   sprintf( file, "%smag.txt", datalog.path );
   fmag = fopen( file, "w" );
@@ -215,6 +224,13 @@ void log_close ( void )  {
     for ( i=0; i<3; i++ )  fprintf( fmag, "%09.2f  ", log_mag.avg[ row*3 +i ] );   fprintf( fmag, "   " );
     for ( i=0; i<3; i++ )  fprintf( fmag, "%07.4f  ", log_mag.cal[ row*3 +i ] );   fprintf( fmag, "   " );
   }
+  */
+  /*// Free magnetometer memory
+  free(log_mag.time);
+  free(log_mag.dur);
+  free(log_mag.raw);
+  free(log_mag.avg);
+  free(log_mag.cal);
   */
   /*// Create attitude/heading reference datalog file
   sprintf( file, "%sahr.txt", datalog.path );
@@ -242,6 +258,17 @@ void log_close ( void )  {
     fprintf( fahr, "   " );
   }
   */
+  /*// Free attitude/heading memory
+  free(log_ahr.time);
+  free(log_ahr.dur);
+  free(log_ahr.quat);
+  free(log_ahr.dquat);
+  free(log_ahr.eul);
+  free(log_ahr.deul);
+  free(log_ahr.bias);
+  free(log_ahr.fx);
+  free(log_ahr.fz);
+  */
   // Create input datalog file
   sprintf( file, "%sinput.txt", datalog.path );
   fin = fopen( file, "w" );
@@ -254,6 +281,12 @@ void log_close ( void )  {
     for ( i=0; i<10; i++ )  fprintf( fin, "%7.4f  ", log_input.norm [ row*10 +i ] );   fprintf( fin, "   " );
   }
 
+  // Free input memory
+  free(log_input.time);
+  free(log_input.reg);
+  free(log_input.pwm);
+  free(log_input.norm);
+
   // Create output datalog file
   sprintf( file, "%soutput.txt", datalog.path );
   fout = fopen( file, "w" );
@@ -265,6 +298,12 @@ void log_close ( void )  {
     fprintf( fout, "\n %011.6f    ", log_output.time[row] );
     for ( i=0; i<10; i++ )  fprintf( fout, "%7.4f  ", log_output.norm [ row*10 +i ] );   fprintf( fout, "   " );
   }
+
+  // Free output memory
+  free(log_output.time);
+  free(log_output.reg);
+  free(log_output.pwm);
+  free(log_output.norm);
 
   /*// Create controller datalog file
   sprintf( file, "%sctrl.txt", datalog.path );
@@ -286,6 +325,15 @@ void log_close ( void )  {
     for ( i=0; i<4; i++ )  fprintf( fctl, "%07.4f  ",  log_ctrl.cmd [ row*4 +i ] );   fprintf( fctl, "   " );
   }
   */
+  /*// Free controller memory
+  free(log_ctrl.time);
+  free(log_ctrl.dur);
+  free(log_ctrl.perr);
+  free(log_ctrl.ierr);
+  free(log_ctrl.derr);
+  free(log_ctrl.cmd);
+  */
+
   // Close files
   fclose(fnote);
   //fclose(fgyr);
@@ -309,68 +357,8 @@ void log_close ( void )  {
 //  Closes the data log files.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void log_exit ( void )  {
-  if(DEBUG)  printf("Close logs:  ");
-
-  /*// Free gyroscope memory
-  if(DEBUG)  printf("gyr ");
-  free(log_gyr.time);
-  free(log_gyr.dur);
-  free(log_gyr.raw);
-  free(log_gyr.avg);
-  free(log_gyr.cal);
-  */
-  /*// Free accelerometer memory
-  if(DEBUG)  printf("acc ");
-  free(log_acc.time);
-  free(log_acc.dur);
-  free(log_acc.raw);
-  free(log_acc.avg);
-  free(log_acc.cal);
-  */
-  /*// Free magnetometer memory
-  if(DEBUG)  printf("mag ");
-  free(log_mag.time);
-  free(log_mag.dur);
-  free(log_mag.raw);
-  free(log_mag.avg);
-  free(log_mag.cal);
-  */
-  /*// Free attitude/heading memory
-  if(DEBUG)  printf("ahr ");
-  free(log_ahr.time);
-  free(log_ahr.dur);
-  free(log_ahr.quat);
-  free(log_ahr.dquat);
-  free(log_ahr.eul);
-  free(log_ahr.deul);
-  free(log_ahr.bias);
-  free(log_ahr.fx);
-  free(log_ahr.fz);
-  */
-  // Free input memory
-  if(DEBUG)  printf("input ");
-  free(log_input.time);
-  free(log_input.reg);
-  free(log_input.pwm);
-  free(log_input.norm);
-
-  // Free output memory
-  if(DEBUG)  printf("output ");
-  free(log_output.time);
-  free(log_output.reg);
-  free(log_output.pwm);
-  free(log_output.norm);
-
-  /*// Free controller memory
-  if(DEBUG)  printf("ctrl ");
-  free(log_ctrl.time);
-  free(log_ctrl.dur);
-  free(log_ctrl.perr);
-  free(log_ctrl.ierr);
-  free(log_ctrl.derr);
-  free(log_ctrl.cmd);
-  */
-  if(DEBUG)  printf("\n");
+  if(DEBUG)  printf("Close logs \n ");
+  // Add code as needed...
   return;
 }
 
