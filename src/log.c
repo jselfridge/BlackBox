@@ -14,13 +14,13 @@ void log_init ( void )  {
   if(DEBUG)  printf("Initializing log parameters \n");
 
   // Establish datalog limits
-  //if(DEBUG)  printf("  Establish datalog limits \n");
+  if(DEBUG)  printf("  Establish datalog limits \n");
+  log_input.limit  = MAX_LOG_DUR * HZ_SIO;
+  log_output.limit = MAX_LOG_DUR * HZ_SIO;
   //log_gyr.limit    = MAX_LOG_DUR * HZ_IMU_FAST;
   //log_acc.limit    = MAX_LOG_DUR * HZ_IMU_FAST;
   //log_mag.limit    = MAX_LOG_DUR * HZ_IMU_SLOW;
   //log_ahr.limit    = MAX_LOG_DUR * HZ_AHR;
-  //log_input.limit  = MAX_LOG_DUR * HZ_SIO;
-  //log_output.limit = MAX_LOG_DUR * HZ_SIO;
   //log_ctrl.limit   = MAX_LOG_DUR * HZ_CTRL;
 
   return;
@@ -34,13 +34,28 @@ void log_init ( void )  {
 void log_open ( void )  {
 
   // Clear counters for new session
+  log_input.count  = 0;
+  log_output.count = 0;
   //log_gyr.count    = 0;
   //log_acc.count    = 0;
   //log_mag.count    = 0;
   //log_ahr.count    = 0;
-  //log_input.count  = 0;
-  //log_output.count = 0;
   //log_ctrl.count   = 0;
+
+  // Input signal storage
+  if(DEBUG)  printf("input ");
+  log_input.time =  malloc( sizeof(float)  * log_input.limit      );
+  log_input.reg  =  malloc( sizeof(ushort) * log_input.limit * 10 );
+  log_input.pwm  =  malloc( sizeof(ushort) * log_input.limit * 10 );
+  log_input.norm =  malloc( sizeof(float)  * log_input.limit * 10 );
+
+  // Output signal storage
+  if(DEBUG)  printf("output ");
+  log_output.time =  malloc( sizeof(float)  * log_output.limit      );
+  log_output.reg  =  malloc( sizeof(ushort) * log_output.limit * 10 );
+  log_output.pwm  =  malloc( sizeof(ushort) * log_output.limit * 10 );
+  log_output.norm =  malloc( sizeof(float)  * log_output.limit * 10 );
+
 
   /*// Gyroscope storage
   if(DEBUG)  printf("gyr ");
@@ -78,20 +93,6 @@ void log_open ( void )  {
   log_ahr.fx    =  malloc( sizeof(float) * log_ahr.limit     );
   log_ahr.fz    =  malloc( sizeof(float) * log_ahr.limit     );
   */
-  /*// Input signal storage
-  if(DEBUG)  printf("input ");
-  log_input.time =  malloc( sizeof(float)  * log_input.limit      );
-  log_input.reg  =  malloc( sizeof(ushort) * log_input.limit * 10 );
-  log_input.pwm  =  malloc( sizeof(ushort) * log_input.limit * 10 );
-  log_input.norm =  malloc( sizeof(float)  * log_input.limit * 10 );
-  */
-  /*// Output signal storage
-  if(DEBUG)  printf("output ");
-  log_output.time =  malloc( sizeof(float)  * log_output.limit      );
-  log_output.reg  =  malloc( sizeof(ushort) * log_output.limit * 10 );
-  log_output.pwm  =  malloc( sizeof(ushort) * log_output.limit * 10 );
-  log_output.norm =  malloc( sizeof(float)  * log_output.limit * 10 );
-  */
   /*// Controller parameter storage
   if(DEBUG)  printf("ctrl ");
   log_ctrl.time =  malloc( sizeof(float) * log_ctrl.limit     );
@@ -102,12 +103,12 @@ void log_open ( void )  {
   log_ctrl.cmd  =  malloc( sizeof(float) * log_ctrl.limit * 4 );
   */
 
-  /*// Allocate dir/path/file memory
+  // Allocate dir/path/file memory
   datalog.dir  = malloc(16);
   datalog.path = malloc(32);
   char *file   = malloc(64);
-  */
-  /*// Find next available log directory
+
+  // Find next available log directory
   ushort i = 0;
   while (true) {
     i++;
@@ -118,13 +119,13 @@ void log_open ( void )  {
     sprintf( file, "../Log/%s/notes.txt", datalog.dir );
     if ( access( file , F_OK ) == -1 )  break;
   }
-  */
-  /*// Determine start second
+
+  // Determine start second
   struct timespec timeval;
   clock_gettime( CLOCK_MONOTONIC, &timeval );
   datalog.offset = timeval.tv_sec;
   datalog.setup = true;
-  */
+
   return;
 }
 
@@ -135,19 +136,20 @@ void log_open ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void log_close ( void )  {
 
-  /*// Inidcate the download is in progress
+  // Inidcate the download is in progress
   datalog.saving = true;
   led_blink( LED_LOG, 200, 200 );
-  usleep(200000);
-  */
+  usleep(500000);
+
   // Local variables
-  //char *file = malloc(64);
-  //FILE *fnote, *fin, *fout;
+  char *file = malloc(64);
+  FILE *fnote;
+  //, *fin, *fout;
   //FILE *fahr, *fgyr, *facc, *fmag, *fctl;
   //ushort i;
   //ulong row;
 
-  /*// Create new directory
+  // Create new directory
   sprintf( datalog.path, "../Log/%s/", datalog.dir );
   mkdir( datalog.path, 222 );
 
@@ -156,7 +158,9 @@ void log_close ( void )  {
   fnote = fopen( file, "w" );
   if( fnote == NULL )  printf( "Error (log_XX): Cannot open 'notes' file. \n" );
   fprintf( fnote, " Assign some system parameteres like gains, or telemetry waypoint updates... " );
-  */
+
+
+
   /*// Create gyroscope datalog file
   sprintf( file, "%sgyr.txt", datalog.path );
   fgyr = fopen( file, "w" );
@@ -335,7 +339,7 @@ void log_close ( void )  {
   */
 
   // Close files
-  //fclose(fnote);
+  fclose(fnote);
   //fclose(fgyr);
   //fclose(facc);
   //fclose(fmag);
@@ -345,8 +349,9 @@ void log_close ( void )  {
   //fclose(fctl);
 
   // Switch datalog setup flag
-  //datalog.setup = false;
-  //datalog.saving = false;
+  datalog.setup = false;
+  datalog.saving = false;
+  led_off( LED_LOG );
 
   return;
 }
@@ -357,7 +362,7 @@ void log_close ( void )  {
 //  Closes the data log files.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void log_exit ( void )  {
-  if(DEBUG)  printf("Close logs \n ");
+  if(DEBUG)  printf("Close logs \n");
   // Add code as needed...
   return;
 }

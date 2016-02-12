@@ -23,7 +23,11 @@ int main ( void )  {
   //imu_init();
   //ahr_init();
   //ctl_init();
-  //log_init();
+  log_init();
+
+  datalog.enabled = true;
+  log_open();  //---  DEBUGGING  --//
+
   tmr_init();
 
   // Wait for exit condition

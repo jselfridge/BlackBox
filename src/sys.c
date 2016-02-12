@@ -58,12 +58,12 @@ void sys_update ( void )  {
   printf("\r");  fflush(stdout);
 
   // Datalog status
-  //if (datalog.enabled)  printf(" Log %s: ", datalog.dir );
-  //else                  printf(" - - - -  ");
-  //fflush(stdout);
+  if (datalog.enabled)  printf(" Log %s: ", datalog.dir );
+  else                  printf(" - - - -  ");
+  fflush(stdout);
 
   // Time values
-  float timestamp = (float) ( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f )  );  // - datalog.offset );
+  float timestamp = (float) ( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f ) - datalog.offset );
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
@@ -204,7 +204,10 @@ void sys_exit (  )  {
   // Exit subsystems
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   tmr_exit();
-  //log_exit();
+
+  log_close();  //---  DEBUGGING  ---//
+
+  log_exit();
   //ctl_exit();
   //ahr_exit();
   //imu_exit();

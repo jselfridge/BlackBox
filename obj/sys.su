@@ -1,7 +1,7 @@
 sys.c:198:6:sys_exit	8	static
 sys.c:13:6:sys_init	184	dynamic,bounded
 sys.c:86:6:sys_sio	32	static
-sys.c:55:6:sys_update	8	static
+sys.c:55:6:sys_update	16	static
 sys.c:115:6:sys_imu	0	static
 sys.c:149:6:sys_ahr	0	static
 sys.c:174:6:sys_ctrl	0	static
