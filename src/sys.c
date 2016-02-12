@@ -204,6 +204,9 @@ void sys_exit (  )  {
   // Exit subsystems
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   tmr_exit();
+
+  //log_close();
+
   log_exit();
   //ctl_exit();
   //ahr_exit();
@@ -215,6 +218,7 @@ void sys_exit (  )  {
   if(DEBUG)  printf("Program complete \n");
   if( sigaction( SIGINT, &sys_signal, NULL ) == -1 )
     printf( "Error (sys_exit): Function 'sigaction' failed. \n" );
+  //system("shutdown -h now");
   kill( 0, SIGINT );
 
   return;
