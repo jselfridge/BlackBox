@@ -43,14 +43,12 @@ void log_open ( void )  {
   //log_ctrl.count   = 0;
 
   // Input signal storage
-  if(DEBUG)  printf("input ");
   log_input.time =  malloc( sizeof(float)  * log_input.limit      );
   log_input.reg  =  malloc( sizeof(ushort) * log_input.limit * 10 );
   log_input.pwm  =  malloc( sizeof(ushort) * log_input.limit * 10 );
   log_input.norm =  malloc( sizeof(float)  * log_input.limit * 10 );
 
   // Output signal storage
-  if(DEBUG)  printf("output ");
   log_output.time =  malloc( sizeof(float)  * log_output.limit      );
   log_output.reg  =  malloc( sizeof(ushort) * log_output.limit * 10 );
   log_output.pwm  =  malloc( sizeof(ushort) * log_output.limit * 10 );
@@ -58,7 +56,6 @@ void log_open ( void )  {
 
 
   /*// Gyroscope storage
-  if(DEBUG)  printf("gyr ");
   log_gyr.time =  malloc( sizeof(float) * log_gyr.limit     );
   log_gyr.dur  =  malloc( sizeof(ulong) * log_gyr.limit     );
   log_gyr.raw  =  malloc( sizeof(short) * log_gyr.limit * 3 );
@@ -66,7 +63,6 @@ void log_open ( void )  {
   log_gyr.cal  =  malloc( sizeof(float) * log_gyr.limit * 3 );
   */
   /*// Accelerometer storage
-  if(DEBUG)  printf("acc ");
   log_acc.time =  malloc( sizeof(float) * log_acc.limit     );
   log_acc.dur  =  malloc( sizeof(ulong) * log_acc.limit     );
   log_acc.raw  =  malloc( sizeof(short) * log_acc.limit * 3 );
@@ -74,7 +70,6 @@ void log_open ( void )  {
   log_acc.cal  =  malloc( sizeof(float) * log_acc.limit * 3 );
   */
   /*// Magnetometer storage
-  if(DEBUG)  printf("mag ");
   log_mag.time =  malloc( sizeof(float) * log_mag.limit     );
   log_mag.dur  =  malloc( sizeof(ulong) * log_mag.limit     );
   log_mag.raw  =  malloc( sizeof(short) * log_mag.limit * 3 );
@@ -82,7 +77,6 @@ void log_open ( void )  {
   log_mag.cal  =  malloc( sizeof(float) * log_mag.limit * 3 );
   */
   /*// Attitude/Heading reference storage
-  if(DEBUG)  printf("ahr ");
   log_ahr.time  =  malloc( sizeof(float) * log_ahr.limit     );
   log_ahr.dur   =  malloc( sizeof(ulong) * log_ahr.limit     );
   log_ahr.quat  =  malloc( sizeof(float) * log_ahr.limit * 4 );
@@ -94,7 +88,6 @@ void log_open ( void )  {
   log_ahr.fz    =  malloc( sizeof(float) * log_ahr.limit     );
   */
   /*// Controller parameter storage
-  if(DEBUG)  printf("ctrl ");
   log_ctrl.time =  malloc( sizeof(float) * log_ctrl.limit     );
   log_ctrl.dur  =  malloc( sizeof(ulong) * log_ctrl.limit     );
   log_ctrl.perr =  malloc( sizeof(float) * log_ctrl.limit * 3 );
@@ -139,15 +132,14 @@ void log_close ( void )  {
   // Inidcate the download is in progress
   datalog.saving = true;
   led_blink( LED_LOG, 200, 200 );
-  usleep(500000);
+  usleep(200000);
 
   // Local variables
   char *file = malloc(64);
-  FILE *fnote;
-  //, *fin, *fout;
+  FILE *fnote, *fin, *fout;
   //FILE *fahr, *fgyr, *facc, *fmag, *fctl;
-  //ushort i;
-  //ulong row;
+  ushort i;
+  ulong row;
 
   // Create new directory
   sprintf( datalog.path, "../Log/%s/", datalog.dir );
@@ -156,15 +148,49 @@ void log_close ( void )  {
   // Create notes datalog file
   sprintf( file, "%snotes.txt", datalog.path );
   fnote = fopen( file, "w" );
-  if( fnote == NULL )  printf( "Error (log_XX): Cannot open 'notes' file. \n" );
+  if( fnote == NULL )  printf( "Error (log_close): Cannot generate 'notes' file. \n" );
   fprintf( fnote, " Assign some system parameteres like gains, or telemetry waypoint updates... " );
 
+  // Create input datalog file
+  sprintf( file, "%sinput.txt", datalog.path );
+  fin = fopen( file, "w" );
+  if( fin == NULL )  printf( "Error (log_close): Cannot generate 'input' file. \n" );
+  fprintf( fin,  "       Itime         I1       I2       I3       I4       I5       I6       I7       I8       I9       I0" );
 
+  // Loop through input data
+  for ( row = 0; row < log_input.count; row++ ) {
+    fprintf( fin, "\n %011.6f    ", log_input.time[row] );
+    for ( i=0; i<10; i++ )  fprintf( fin, "%7.4f  ", log_input.norm [ row*10 +i ] );   fprintf( fin, "   " );
+  }
+
+  // Free input memory
+  free(log_input.time);
+  free(log_input.reg);
+  free(log_input.pwm);
+  free(log_input.norm);
+
+  // Create output datalog file
+  sprintf( file, "%soutput.txt", datalog.path );
+  fout = fopen( file, "w" );
+  if( fout == NULL )  printf( "Error (log_close): Cannot generate 'output' file. \n" );
+  fprintf( fout, "       Otime         O1       O2       O3       O4       O5       O6       O7       O8       O9       O0" );
+
+  // Loop through output data
+  for ( row = 0; row < log_output.count; row++ ) {
+    fprintf( fout, "\n %011.6f    ", log_output.time[row] );
+    for ( i=0; i<10; i++ )  fprintf( fout, "%7.4f  ", log_output.norm [ row*10 +i ] );   fprintf( fout, "   " );
+  }
+
+  // Free output memory
+  free(log_output.time);
+  free(log_output.reg);
+  free(log_output.pwm);
+  free(log_output.norm);
 
   /*// Create gyroscope datalog file
   sprintf( file, "%sgyr.txt", datalog.path );
   fgyr = fopen( file, "w" );
-  if( fgyr == NULL )  printf( "Error (log_XX): Cannot open 'gyr' file. \n" );
+  if( fgyr == NULL )  printf( "Error (log_close): Cannot generate 'gyr' file. \n" );
   fprintf( fgyr,
     "       Gtime    Gdur   \
     Grx     Gry     Grz       \
@@ -189,7 +215,7 @@ void log_close ( void )  {
   /*// Create accelerometer datalog file
   sprintf( file, "%sacc.txt", datalog.path );
   facc = fopen( file, "w" );
-  if( facc == NULL )  printf( "Error (log_XX): Cannot open 'acc' file. \n" );
+  if( facc == NULL )  printf( "Error (log_close): Cannot generate 'acc' file. \n" );
   fprintf( facc, 
     "       Atime    Adur   \
     Arx     Ary     Arz       \
@@ -214,7 +240,7 @@ void log_close ( void )  {
   /*// Create magnetometer datalog file
   sprintf( file, "%smag.txt", datalog.path );
   fmag = fopen( file, "w" );
-  if( fmag == NULL )  printf( "Error (log_XX): Cannot open 'mag' file. \n" );
+  if( fmag == NULL )  printf( "Error (log_close): Cannot generate 'mag' file. \n" );
   fprintf( fmag,
     "       Mtime    Mdur   \
     Mrx     Mry     Mrz       \
@@ -239,7 +265,7 @@ void log_close ( void )  {
   /*// Create attitude/heading reference datalog file
   sprintf( file, "%sahr.txt", datalog.path );
   fahr = fopen( file, "w" );
-  if( fahr == NULL )  printf( "Error (log_XX): Cannot open 'ahr' file. \n" );
+  if( fahr == NULL )  printf( "Error (log_close): Cannot generate 'ahr' file. \n" );
   fprintf( fahr,
     "       Rtime    Rdur     \
     Qw       Qx       Qy       Qz     \
@@ -273,46 +299,10 @@ void log_close ( void )  {
   free(log_ahr.fx);
   free(log_ahr.fz);
   */
-  /*// Create input datalog file
-  sprintf( file, "%sinput.txt", datalog.path );
-  fin = fopen( file, "w" );
-  if( fin == NULL )  printf( "Error (log_XX): Cannot open 'input' file. \n" );
-  fprintf( fin,  "       Itime         I1       I2       I3       I4       I5       I6       I7       I8       I9       I0" );
-
-  // Loop through input data
-  for ( row = 0; row < log_input.count; row++ ) {
-    fprintf( fin, "\n %011.6f    ", log_input.time[row] );
-    for ( i=0; i<10; i++ )  fprintf( fin, "%7.4f  ", log_input.norm [ row*10 +i ] );   fprintf( fin, "   " );
-  }
-
-  // Free input memory
-  free(log_input.time);
-  free(log_input.reg);
-  free(log_input.pwm);
-  free(log_input.norm);
-  */
-  /*// Create output datalog file
-  sprintf( file, "%soutput.txt", datalog.path );
-  fout = fopen( file, "w" );
-  if( fout == NULL )  printf( "Error (log_XX): Cannot open 'input' file. \n" );
-  fprintf( fout, "       Otime         O1       O2       O3       O4       O5       O6       O7       O8       O9       O0" );
-
-  // Loop through output data
-  for ( row = 0; row < log_output.count; row++ ) {
-    fprintf( fout, "\n %011.6f    ", log_output.time[row] );
-    for ( i=0; i<10; i++ )  fprintf( fout, "%7.4f  ", log_output.norm [ row*10 +i ] );   fprintf( fout, "   " );
-  }
-
-  // Free output memory
-  free(log_output.time);
-  free(log_output.reg);
-  free(log_output.pwm);
-  free(log_output.norm);
-  */
   /*// Create controller datalog file
   sprintf( file, "%sctrl.txt", datalog.path );
   fctl = fopen( file, "w" );
-  if( fctl == NULL )  printf( "Error (log_XX): Cannot open 'ctrl' file. \n" );
+  if( fctl == NULL )  printf( "Error (log_close): Cannot generate 'ctrl' file. \n" );
   fprintf( fctl,
     "       Ctime    Cdur    \
     EPX      EPY      EPZ     \
@@ -340,12 +330,12 @@ void log_close ( void )  {
 
   // Close files
   fclose(fnote);
+  fclose(fin);
+  fclose(fout);
   //fclose(fgyr);
   //fclose(facc);
   //fclose(fmag);
   //fclose(fahr);
-  //fclose(fin);
-  //fclose(fout);
   //fclose(fctl);
 
   // Switch datalog setup flag
@@ -375,42 +365,41 @@ void log_exit ( void )  {
 void log_record ( enum log_index index )  {
 
   // Local variables
-  //ushort i;
-  //ulong  row;
-  //float  timestamp;
+  ushort i;
+  ulong  row;
+  float  timestamp;
 
   // Jump to appropriate log 
-  //switch(index) {
+  switch(index) {
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record system input/output data
-  //case LOG_SIO :
-    /*
-    pthread_mutex_lock(&mutex_input);
-    pthread_mutex_lock(&mutex_output);
+  case LOG_SIO :
+
     timestamp = (float) ( tmr_sio.start_sec + ( tmr_sio.start_usec / 1000000.0f ) ) - datalog.offset;
 
     // Input data
+    pthread_mutex_lock(&mutex_input);
     if ( log_input.count < log_input.limit ) {
       row = log_input.count;
       log_input.time[row] = timestamp;
       for ( i=0; i<10; i++ )  log_input.norm [ row*10 +i ] = input.norm[i];
       log_input.count++;
     }
+    pthread_mutex_unlock(&mutex_input);
 
     // Output data
+    pthread_mutex_lock(&mutex_output);
     if ( log_output.count < log_output.limit ) {
       row = log_output.count;
       log_output.time[row] = timestamp;
       for ( i=0; i<10; i++ )  log_output.norm [ row*10 +i ] = output.norm[i];
       log_output.count++;
     }
-
-    pthread_mutex_unlock(&mutex_input);
     pthread_mutex_unlock(&mutex_output);
-    */
-    //return;
+
+    return;
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -503,10 +492,10 @@ void log_record ( enum log_index index )  {
     //return;
 
 
-  //default :
-    //return;
+  default :
+    return;
   
-  //}
+  }
 }
 
 

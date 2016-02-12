@@ -204,14 +204,11 @@ void sys_exit (  )  {
   // Exit subsystems
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   tmr_exit();
-
-  log_close();  //---  DEBUGGING  ---//
-
   log_exit();
   //ctl_exit();
   //ahr_exit();
   //imu_exit();
-  //flg_exit();
+  flg_exit();
   sio_exit();
 
   // Shut everything down

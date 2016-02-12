@@ -29,14 +29,13 @@ void tmr_init ( void )  {
   //pthread_mutex_init( &mutex_raw,    NULL );
   //pthread_mutex_init( &mutex_avg,    NULL );
   //pthread_mutex_init( &mutex_cal,    NULL );
-  //pthread_mutex_init( &mutex_imu,    NULL );
   //pthread_mutex_init( &mutex_quat,   NULL );
   //pthread_mutex_init( &mutex_eul,    NULL );
   //pthread_mutex_init( &mutex_ctrl,   NULL );
 
   // Create primary timing threads
   tmr_thread( &tmr_sio,  &attr, fcn_sio  );  usleep(100000);
-  //tmr_thread( &tmr_flag, &attr, fcn_flag );  usleep(100000);
+  tmr_thread( &tmr_flag, &attr, fcn_flag );  usleep(100000);
   //tmr_thread( &tmr_imu,  &attr, fcn_imu  );  usleep(100000);
   //tmr_thread( &tmr_ahr,  &attr, fcn_ahr  );  usleep(100000);
   //tmr_thread( &tmr_ctrl, &attr, fcn_ctrl );  usleep(100000);
@@ -63,6 +62,11 @@ void tmr_setup ( void )  {
   tmr_sio.prio    =  PRIO_SIO;
   tmr_sio.per     =  1000000 / HZ_SIO;
 
+  // Flags timer
+  tmr_flag.name   =  "flag";
+  tmr_flag.prio   =  PRIO_FLAG;
+  tmr_flag.per    =  1000000 / HZ_FLAG;
+
   /*// IMU timer
   tmr_imu.name    =  "imu";
   tmr_imu.prio    =  PRIO_IMU;
@@ -72,11 +76,6 @@ void tmr_setup ( void )  {
   tmr_ahr.name    =  "ahr";
   tmr_ahr.prio    =  PRIO_AHR;
   tmr_ahr.per     =  1000000 / HZ_AHR;
-  */
-  /*// Flags timer
-  tmr_flag.name   =  "flag";
-  tmr_flag.prio   =  PRIO_FLAG;
-  tmr_flag.per    =  1000000 / HZ_FLAG;
   */
   /*// Control timer
   tmr_ctrl.name   =  "ctrl";
@@ -159,7 +158,6 @@ void tmr_exit ( void )  {
   //pthread_mutex_destroy(&mutex_raw);
   //pthread_mutex_destroy(&mutex_avg);
   //pthread_mutex_destroy(&mutex_cal);
-  //pthread_mutex_destroy(&mutex_imu);
   //pthread_mutex_destroy(&mutex_quat);
   //pthread_mutex_destroy(&mutex_eul);
   //pthread_mutex_destroy(&mutex_ctrl);
@@ -179,11 +177,11 @@ void tmr_exit ( void )  {
     printf( "Error (tmr_exit): Failed to exit 'imu' thread. \n" );
   if(DEBUG)  printf( "imu " );
   */
-  /*// Exit program execution flags thread
+  // Exit program execution flags thread
   if( pthread_join ( tmr_flag.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'flag' thread. \n" );
   if(DEBUG)  printf( "flag " );
-  */
+
   // Exit system input/output thread
   if( pthread_join ( tmr_sio.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'sio' thread. \n" );
@@ -317,6 +315,23 @@ void *fcn_sio (  )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  fcn_flag
+//  Function handler for the program execution flag timing thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void *fcn_flag (  )  {
+  tmr_create(&tmr_flag);
+  while (running) {
+    tmr_start(&tmr_flag);
+    flg_update();
+    tmr_finish(&tmr_flag);
+    tmr_pause(&tmr_flag);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  fcn_imu
 //  Function handler for the IMU timing thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -346,23 +361,6 @@ void *fcn_sio (  )  {
     tmr_finish(&tmr_ahr);
     if (datalog.enabled)  log_record(LOG_AHR);
     tmr_pause(&tmr_ahr);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
-*/
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_flag
-//  Function handler for the program execution flag timing thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void *fcn_flag (  )  {
-  tmr_create(&tmr_flag);
-  while (running) {
-    tmr_start(&tmr_flag);
-    flg_update();
-    tmr_finish(&tmr_flag);
-    tmr_pause(&tmr_flag);
   }
   pthread_exit(NULL);
   return NULL;

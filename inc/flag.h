@@ -7,7 +7,7 @@
 #define _FLAG_H_
 #include <main.h>
 
-/*
+
 // Define stick hold durations
 #define FLG_HOLD_R  3.0
 #define FLG_HOLD_P  3.0
@@ -28,7 +28,7 @@ flag_struct flag;
 void  flg_init   ( void );
 void  flg_exit   ( void );
 void  flg_update ( void );
-*/
+
 
 #endif
 
