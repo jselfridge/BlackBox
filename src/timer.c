@@ -38,7 +38,7 @@ void tmr_init ( void )  {
   tmr_thread( &tmr_flag, &attr, fcn_flag );  usleep(100000);
   tmr_thread( &tmr_imu,  &attr, fcn_imu  );  usleep(100000);
   //tmr_thread( &tmr_ahr,  &attr, fcn_ahr  );  usleep(100000);
-  //tmr_thread( &tmr_ctrl, &attr, fcn_ctrl );  usleep(100000);
+  tmr_thread( &tmr_ctrl, &attr, fcn_ctrl );  usleep(100000);
 
   // Possibly create debugging thread
   if(DEBUG) {
@@ -77,11 +77,11 @@ void tmr_setup ( void )  {
   tmr_ahr.prio    =  PRIO_AHR;
   tmr_ahr.per     =  1000000 / HZ_AHR;
   */
-  /*// Control timer
+  // Control timer
   tmr_ctrl.name   =  "ctrl";
   tmr_ctrl.prio   =  PRIO_CTRL;
   tmr_ctrl.per    =  1000000 / HZ_CTRL;
-  */
+
   // Debugging timer
   tmr_debug.name  =  "debug";
   tmr_debug.prio  =  PRIO_DEBUG;
@@ -162,11 +162,11 @@ void tmr_exit ( void )  {
   //pthread_mutex_destroy(&mutex_eul);
   //pthread_mutex_destroy(&mutex_ctrl);
 
-  /*// Exit control thread
+  // Exit control thread
   if( pthread_join ( tmr_ctrl.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ctrl' thread. \n" );
   if(DEBUG)  printf( "ctrl " );
-  */
+
   /*// Exit AHR thread
   if( pthread_join ( tmr_ahr.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ahr' thread. \n" );
@@ -371,19 +371,19 @@ void *fcn_imu (  )  {
 //  fcn_ctrl
 //  Function handler for the control law timing thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void *fcn_ctrl (  )  {
+void *fcn_ctrl (  )  {
   tmr_create(&tmr_ctrl);
   while (running) {
     tmr_start(&tmr_ctrl);
     ctl_update();
     tmr_finish(&tmr_ctrl);
-    if (datalog.enabled)  log_record(LOG_CTL);
+    //if (datalog.enabled)  log_record(LOG_CTL);
     tmr_pause(&tmr_ctrl);
   }
   pthread_exit(NULL);
   return NULL;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  fcn_debug

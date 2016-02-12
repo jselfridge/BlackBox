@@ -99,9 +99,10 @@ void sys_sio ( void )  {
   pthread_mutex_lock(&mutex_output);
   //for ( i=0; i<4; i++ )  printf("%5d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%4d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<4; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
-  //printf("%5.2f ", output.norm[4] );  printf("   ");  fflush(stdout);
-  //printf("%5.2f ", output.norm[5] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
+  printf("%5.2f ", output.norm[0] );  printf("   ");  fflush(stdout);
+  printf("%5.2f ", output.norm[1] );  printf("   ");  fflush(stdout);
+  printf("%5.2f ", output.norm[4] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_output);
 
   return;
@@ -208,7 +209,7 @@ void sys_exit (  )  {
   //log_close();
 
   log_exit();
-  //ctl_exit();
+  ctl_exit();
   //ahr_exit();
   imu_exit();
   flg_exit();
