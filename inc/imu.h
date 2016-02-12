@@ -7,7 +7,7 @@
 #define _IMU_H_
 #include <main.h>
 
-/*
+
 // Define statements
 
 #define GYR_HIST   1
@@ -18,8 +18,8 @@
 #define ACC_LPF    0.0
 #define MAG_LPF    0.0
 
-#define GYR_FSR   500
-#define ACC_FSR   4
+#define GYR_FSR    500
+#define ACC_FSR    4
 #define GYR_SCALE  ( 500.0 / 32768.0 ) * ( PI / 180.0 )
 
 #define PI  M_PI
@@ -61,7 +61,6 @@ void  imu_getcal  ( void );
 void  imu_setic   ( void );
 void  imu_update  ( void );
 
-*/
 
 #endif
 

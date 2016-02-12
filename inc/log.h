@@ -14,14 +14,27 @@
 
 // Log enumerations
 enum log_index {
-  LOG_SIO  = 0 //,
-  //LOG_IMU  = 1,
+  LOG_SIO  = 0,
+  LOG_IMU  = 1 //,
   //LOG_AHR  = 2,
   //LOG_CTL  = 3
 } log_index;
 
 
-/*// Log IMU structure
+// Log system input/output structure
+typedef struct log_sio_struct {
+  ulong  count;
+  ulong  limit;
+  float  *time;
+  ushort *reg;
+  ushort *pwm;
+  float  *norm;
+} log_sio_struct;
+log_sio_struct log_input;
+log_sio_struct log_output;
+
+
+// Log IMU structure
 typedef struct log_imu_struct {
   ulong count;
   ulong limit;
@@ -34,7 +47,7 @@ typedef struct log_imu_struct {
 log_imu_struct log_gyr;
 log_imu_struct log_acc;
 log_imu_struct log_mag;
-*/
+
 
 /*// Log AHR structure
 typedef struct log_ahr_struct {
@@ -52,19 +65,6 @@ typedef struct log_ahr_struct {
 } log_ahr_struct;
 log_ahr_struct log_ahr;
 */
-
-// Log system input/output structure
-typedef struct log_sio_struct {
-  ulong  count;
-  ulong  limit;
-  float  *time;
-  ushort *reg;
-  ushort *pwm;
-  float  *norm;
-} log_sio_struct;
-log_sio_struct log_input;
-log_sio_struct log_output;
-
 
 /*// Log controller structure
 typedef struct log_ctrl_struct {

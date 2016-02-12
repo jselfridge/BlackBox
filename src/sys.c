@@ -68,7 +68,7 @@ void sys_update ( void )  {
 
   // Select data for display
   sys_sio();
-  //sys_imu();
+  sys_imu();
   //sys_ahr();
   //sys_ctrl();
 
@@ -115,28 +115,28 @@ void sys_sio ( void )  {
 void sys_imu ( void )  {
 
   // Loop counter
-  //ushort i;
+  ushort i;
 
-  // Lock IMU data
-  //pthread_mutex_lock(&mutex_imu);
-
-  // Raw data
-  //for ( i=0; i<3; i++ )  printf("%6d ",   gyr.raw[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6d ",   acc.raw[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%4d ",   mag.raw[i] );  printf("   ");  fflush(stdout);
-
-  // Averaged data
+  // Gyroscope data
+  pthread_mutex_lock(&mutex_gyr);
+  for ( i=0; i<3; i++ )  printf("%6d ",   gyr.raw[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%9.2f ", gyr.avg[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%9.2f ", acc.avg[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%7.2f ", mag.avg[i] );  printf("   ");  fflush(stdout);
-
-  // Calibrated data
   //for ( i=0; i<3; i++ )  printf("%6.3f ", gyr.cal[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", acc.cal[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", mag.cal[i] );  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&mutex_gyr);
 
-  // Unlock IMU data
-  //pthread_mutex_unlock(&mutex_imu);
+  // Accelerometer data
+  pthread_mutex_lock(&mutex_acc);
+  for ( i=0; i<3; i++ )  printf("%6d ",   acc.raw[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%9.2f ", acc.avg[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", acc.cal[i] );  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&mutex_acc);
+
+  // Magnetometer data
+  pthread_mutex_lock(&mutex_mag);
+  for ( i=0; i<3; i++ )  printf("%4d ",   mag.raw[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%7.2f ", mag.avg[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", mag.cal[i] );  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&mutex_mag);
 
   return;
 }
@@ -207,7 +207,7 @@ void sys_exit (  )  {
   log_exit();
   //ctl_exit();
   //ahr_exit();
-  //imu_exit();
+  imu_exit();
   flg_exit();
   sio_exit();
 
