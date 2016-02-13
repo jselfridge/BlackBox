@@ -85,9 +85,6 @@ void sio_update ( void )  {
   }
   pthread_mutex_unlock(&mutex_input);
 
-  //---  DEBUGGING  ---//
-  for ( ch=0; ch<10; ch++ )  sio_setnorm( ch, input.norm[ch] );
-
   // Assign output signal register values
   pthread_mutex_lock(&mutex_output);
   for ( ch=0; ch<OUT_CH; ch++ )  memoryPtr[ OUT_OFFSET + ch ] = output.reg[ch];
