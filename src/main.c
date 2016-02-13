@@ -24,10 +24,6 @@ int main ( void )  {
   //ahr_init();
   ctl_init();
   log_init();
-
-  //datalog.enabled = true;
-  //log_open();
-
   tmr_init();
 
   // Wait for exit condition
