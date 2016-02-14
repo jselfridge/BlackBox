@@ -83,9 +83,9 @@
 
 // Define 'plane' range values
 // R: rad/s    P: rad/s    Y: rad/s    T: ?thrust?
-#define PLANE_R_RANGE   1.00
-#define PLANE_P_RANGE   1.00
-#define PLANE_Y_RANGE   1.00
+//#define PLANE_R_RANGE   1.00
+//#define PLANE_P_RANGE   1.00
+//#define PLANE_Y_RANGE   1.00
 #define PLANE_T_RANGE   1.00
 
 

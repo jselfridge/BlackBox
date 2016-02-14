@@ -92,7 +92,7 @@ void sys_sio ( void )  {
   pthread_mutex_lock(&mutex_input);
   //for ( i=0; i<4; i++ )  printf("%5d ",   input.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%4d ",   input.pwm[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<4; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<6; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_input);
 
   // Output signals
@@ -120,21 +120,21 @@ void sys_imu ( void )  {
 
   // Gyroscope data
   pthread_mutex_lock(&mutex_gyr);
-  for ( i=0; i<3; i++ )  printf("%6d ",   gyr.raw[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6d ",   gyr.raw[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%9.2f ", gyr.avg[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", gyr.cal[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", gyr.cal[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_gyr);
 
   // Accelerometer data
   pthread_mutex_lock(&mutex_acc);
-  for ( i=0; i<3; i++ )  printf("%6d ",   acc.raw[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6d ",   acc.raw[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%9.2f ", acc.avg[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", acc.cal[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", acc.cal[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_acc);
 
   // Magnetometer data
   pthread_mutex_lock(&mutex_mag);
-  for ( i=0; i<3; i++ )  printf("%4d ",   mag.raw[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%4d ",   mag.raw[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%7.2f ", mag.avg[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", mag.cal[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_mag);
@@ -219,7 +219,7 @@ void sys_exit (  )  {
   if(DEBUG)  printf("Program complete \n");
   if( sigaction( SIGINT, &sys_signal, NULL ) == -1 )
     printf( "Error (sys_exit): Function 'sigaction' failed. \n" );
-  //system("shutdown -h now");
+  if(!DEBUG)  system("shutdown -h now");
   kill( 0, SIGINT );
 
   return;

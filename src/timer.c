@@ -339,7 +339,7 @@ void *fcn_imu (  )  {
   tmr_create(&tmr_imu);
   while (running) {
     tmr_start(&tmr_imu);
-    imu_update();
+    if (!datalog.saving)  imu_update();
     tmr_finish(&tmr_imu);
     if (datalog.enabled)  log_record(LOG_IMU);
     tmr_pause(&tmr_imu);

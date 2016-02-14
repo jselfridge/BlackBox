@@ -74,13 +74,11 @@ void flg_update ( void )  {
   if ( !energized && !flag.lower[CH_Y] && !flag.upper[CH_Y] )  {
     if ( flag.lower[CH_R] >= flag.limit[CH_R] ) {
       if (!datalog.setup)  log_open();
-      //usleep(200000);
       datalog.enabled = true;
       led_on(LED_LOG);
     }
     if ( flag.upper[CH_R] >= flag.limit[CH_R] ) {
       datalog.enabled = false;
-      //usleep(200000);
       if (datalog.setup)  log_close();
       led_off(LED_LOG);
     }

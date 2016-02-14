@@ -52,7 +52,7 @@ void ctl_init ( void )  {
   // Set 'plane' parameters
   if ( !strcmp( SYSTEM, "plane" ) )  {
 
-    // Asign disarming array values
+    // Asign disarming array values (make 'const' in header file? adjustable via GCS?) 
     ctrl.off[0] = PLANE_OFF0;
     ctrl.off[1] = PLANE_OFF1;
     ctrl.off[2] = PLANE_OFF2;
@@ -220,8 +220,6 @@ void ctl_quad ( void )  {
 void ctl_plane ( void )  {
 
   // Local variables
-  //ushort x=0, y=1, z=2, t=3;
-  //double in[4], out[4];
   double elev, rudd, thrl, dial, prop, thresh;
 
   // Obtain inputs
