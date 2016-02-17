@@ -40,6 +40,8 @@
 #include <sys.h>
 #include <timer.h>
 
+#include <mpu.h>
+//#include <dmp.h>
 
 // PRU includes
 #include <prussdrv.h>
