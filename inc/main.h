@@ -47,9 +47,9 @@
 
 
 // MPU includes
-#include <inv_mpu.h>
-#include <inv_mpu_dmp_motion_driver.h>
-#include <inv_glue.h>
+//#include <inv_mpu.h>
+//#include <inv_mpu_dmp_motion_driver.h>
+//#include <inv_glue.h>
 
 
 // Global variables (remove as quickly as possible)

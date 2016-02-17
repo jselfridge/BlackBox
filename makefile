@@ -28,10 +28,10 @@ BIN   := $(foreach b, $(PNAME), bin/$(b).bin )
 all : $(EXEC)
 
 $(EXEC) : $(OBJ) $(BIN)
-	$(CC) -o $@ $(OBJ) $(LIB) $(MPU)  # -L$(LDIR)
+	$(CC) -o $@ $(OBJ) $(LIB)  # -L$(LDIR) $(MPU)
 
 obj/%.o : src/%.c inc/%.h
-	$(CC) $(CFLAGS) -Iinc -Impu -o $@ $<  # -I$(IDIR)
+	$(CC) $(CFLAGS) -Iinc  -o $@ $<  # -I$(IDIR) -Impu
 
 bin/%.bin : pru/%.p
 	pasm -b $<

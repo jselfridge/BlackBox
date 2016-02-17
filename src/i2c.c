@@ -15,24 +15,14 @@
 #include "inv_glue.h"
 */
 
-//#define MAX_WRITE_LEN 511
 
-// default is the RPi
-//int i2c_bus = 1;
-//int i2c_fd;
-//int current_slave;
-//unsigned char txBuff[MAX_WRITE_LEN + 1];
-
-
-//void __no_operation(void) { }
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  i2c_open
 //  Opens an I2C bus.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*
-int i2c_open (  )  {
+int i2c_open ( uint i2c_bus, uint *i2c_fd )  {
 
   char buff[32];
 
@@ -44,11 +34,11 @@ int i2c_open (  )  {
     //printf("\t\t\ti2c_open() : %s\n", buff);
     //#endif
 
-    i2c_fd = open(buff, O_RDWR);
+    *i2c_fd = open( buff, O_RDWR );
 
-    if ( i2c_fd < 0 ) {
-      perror("open(i2c_bus)");
-      i2c_fd = 0;
+    if ( *i2c_fd < 0 ) {
+      //perror("open(i2c_bus)");
+      *i2c_fd = 0;
       return -1;
     }
 
@@ -56,21 +46,20 @@ int i2c_open (  )  {
 
   return 0;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  i2c_close
 //  Closes an I2C bus.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*
-void i2c_close (  )  {
-  if (i2c_fd) {
-    close(i2c_fd);
-    i2c_fd = 0;
-    current_slave = 0;
+void i2c_close ( uint *i2c_fd )  {
+  if ( *i2c_fd ) {
+    close( *i2c_fd );
+    *i2c_fd = 0;
+    //current_slave = 0;
   }
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  i2c_select_slave
@@ -100,34 +89,22 @@ int i2c_select_slave( unsigned char slave_addr )  {
 }
 */
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  i2c_set_bus
-//  Assigns the bus id.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*
-void i2c_set_bus ( int bus )  {
-  if (i2c_fd)
-    i2c_close();
-
-  i2c_bus = bus;
-}
-*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  i2c_write
 //  Write data to the I2C bus.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*
-int i2c_write ( unsigned char slave_addr, unsigned char reg_addr,
-       unsigned char length, unsigned char const *data )  {
+int i2c_write ( uint i2c_fd, unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char const *data )  {
 
   int result, i;
+  unsigned char buf[ I2C_MAX_BUF + 1 ];
 
-  if (length > MAX_WRITE_LEN) {
-    printf("Max write length exceeded in linux_i2c_write()\n");
+  if ( length > I2C_MAX_BUF )  {
+    printf( "Error (i2c_write): Maximum write length exceeded. \n" );
     return -1;
   }
 
+  /*
   #ifdef I2C_DEBUG
   printf("\tlinux_i2c_write(%02X, %02X, %u, [", slave_addr, reg_addr, length);
   if (length == 0) {
@@ -140,51 +117,51 @@ int i2c_write ( unsigned char slave_addr, unsigned char reg_addr,
     printf(" ] )\n");
   }
   #endif
+  */
 
-  if (i2c_select_slave(slave_addr))
-    return -1;
+  //if (i2c_select_slave(slave_addr))  return -1;
 
-  if (length == 0) {
-    result = write(i2c_fd, &reg_addr, 1);
 
-    if (result < 0) {
-      perror("write:1");
+  if ( length == 0 )  {
+    result = write( i2c_fd, &reg_addr, 1 );
+
+    if ( result < 0 ) {
+      //perror("write:1");
       return result;
     }
-    else if (result != 1) {
-      printf("Write fail:1 Tried 1 Wrote 0\n");
+    else if ( result != 1 )  {
+      printf( "Error (i2c_write): Write fail:1 Tried 1 Wrote 0\n");
       return -1;
     }
   }
+
   else {
-    txBuff[0] = reg_addr;
+    buf[0] = reg_addr;
 
-    for (i = 0; i < length; i++)
-      txBuff[i+1] = data[i];
+    for ( i=0; i<length; i++ )  buf[i+1] = data[i];
 
-    result = write(i2c_fd, txBuff, length + 1);
+    result = write( i2c_fd, buf, length+1 );
 
-    if (result < 0) {
-      perror("write:2");
+    if ( result < 0 ) {
+      //perror("write:2");
       return result;
     }
-    else if (result < (int)length) {
-      printf("Write fail:2 Tried %u Wrote %d\n", length, result); 
+    else if ( result < (int)length ) {
+      //printf("Write fail:2 Tried %u Wrote %d\n", length, result); 
       return -1;
     }
   }
 
   return 0;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  i2c_read
 //  Reads data from the I2C bus.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*
-int i2c_read( unsigned char slave_addr, unsigned char reg_addr,
-       unsigned char length, unsigned char *data )  {
+
+int i2c_read ( uint i2c_fd, unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char *data )  {
 
   int tries, result, total;
 
@@ -193,31 +170,21 @@ int i2c_read( unsigned char slave_addr, unsigned char reg_addr,
   //printf("\tlinux_i2c_read(%02X, %02X, %u, ...)\n", slave_addr, reg_addr, length);
   //#endif
 
-  if (linux_i2c_write(slave_addr, reg_addr, 0, NULL))
-    return -1;
+  //if (linux_i2c_write(slave_addr, reg_addr, 0, NULL))  return -1;
 
   total = 0;
   tries = 0;
 
-  while (total < length && tries < 5) {
-    result = read(i2c_fd, data + total, length - total);
-
-    if (result < 0) {
-      perror("read");
-      break;
-    }
-
+  while ( total < length && tries < 5 )  {
+    result = read( i2c_fd, data + total, length - total );
+    if ( result < 0 )  {  /*perror("read");*/  break;  }
     total += result;
-
-    if (total == length)
-      break;
-
-    tries++;		
-    linux_delay_ms(10);
+    if ( total == length )  break;
+    tries++;
+    usleep(10000);  //  linux_delay_ms(10);
   }
 
-  if (total < length)
-    return -1;
+  if (total < length)  return -1;
 
   //#ifdef I2C_DEBUG
   //printf("\tLeaving linux_i2c_read(), read %d bytes: ", total);
@@ -228,7 +195,7 @@ int i2c_read( unsigned char slave_addr, unsigned char reg_addr,
 
   return 0;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  i2c_delay
