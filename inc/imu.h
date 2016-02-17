@@ -34,9 +34,9 @@ typedef struct imu_data_struct {
   float avg   [3];
   float cal   [3];
 } imu_data_struct;
-imu_data_struct gyr;
-imu_data_struct acc;
-imu_data_struct mag;
+imu_data_struct gyr1;
+imu_data_struct acc1;
+imu_data_struct mag1;
 
 
 // IMU structure
@@ -50,7 +50,8 @@ typedef struct imu_struct {
   imu_data_struct* acc;
   imu_data_struct* mag;
 } imu_struct;
-imu_struct imu;
+imu_struct imu1;
+//imu_struct imu2;
 
 
 // IMU functions

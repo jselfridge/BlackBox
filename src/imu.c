@@ -17,11 +17,11 @@ void imu_init (  )  {
   led_blink( LED_IMU, 200, 200 );
 
   // IMU struct values
-  imu.id   = 1;
-  imu.addr = 0x68;
-  imu.gyr  = &gyr;
-  imu.acc  = &acc;
-  imu.mag  = &mag;
+  imu1.id   = 1;
+  imu1.addr = 0x68;
+  imu1.gyr  = &gyr1;
+  imu1.acc  = &acc1;
+  imu1.mag  = &mag1;
 
   // Init functions
   imu_param();
@@ -54,7 +54,7 @@ void imu_exit ( void )  {
 void imu_param (  )  {
 
   if(DEBUG) {  printf("  Assign IMU parameters ");  fflush(stdout);  }
-  linux_set_i2c_bus(imu.id);
+  linux_set_i2c_bus(imu1.id);
 
   if(DEBUG) {  printf(".");  fflush(stdout);  }
   if( mpu_init_master(NULL) )
@@ -99,65 +99,65 @@ void imu_getcal (  )  {
   char path [32];  memset( path, 0, sizeof(path) );
 
   // Set acceleration bias
-  sprintf( path, "../Param/board/bias/acc" );
+  sprintf( path, "../Param/board/bias/acc1" );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'acc bias' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
-    acc.bias[i] = atoi(buff);
+    acc1.bias[i] = atoi(buff);
   }
   fclose(f);
 
   // Set acceleration range
-  sprintf( path, "../Param/board/range/acc" );
+  sprintf( path, "../Param/board/range/acc1" );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'acc range' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
-    acc.range[i] = atoi(buff);
+    acc1.range[i] = atoi(buff);
   }
   fclose(f);
 
   // Set magnetometer bias
-  sprintf( path, "../Param/board/bias/mag" );
+  sprintf( path, "../Param/board/bias/mag1" );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'mag bias' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
-    mag.bias[i] = atoi(buff);
+    mag1.bias[i] = atoi(buff);
   }
   fclose(f);
 
   // Set magnetometer range
-  sprintf( path, "../Param/board/range/mag" );
+  sprintf( path, "../Param/board/range/mag1" );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'mag range' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
-    mag.range[i] = atoi(buff);
+    mag1.range[i] = atoi(buff);
   }
   fclose(f);
 
   // Set gyro bias
-  sprintf( path, "../Param/board/bias/gyr" );
+  sprintf( path, "../Param/board/bias/gyr1" );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'gyr bias' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
-    gyr.bias[i] = atoi(buff);
+    gyr1.bias[i] = atoi(buff);
   }
   fclose(f);
 
   // Display calibration values
   if(DEBUG) {
-    printf("    abias  arange    mbias  mrange    gbias \n");
+    printf("   abias1 arange1   mbias1 mrange1   gbias1 \n");
     for ( i=0; i<3; i++ ) {
       printf("     ");
-      printf( "%4d    ",   acc.bias[i]  );
-      printf( "%4d     ",  acc.range[i] );
-      printf( "%4d    ",   mag.bias[i]  );
-      printf( "%4d     ",  mag.range[i] );
-      printf( "%4d  \n",   gyr.bias[i]  );
+      printf( "%4d    ",   acc1.bias[i]  );
+      printf( "%4d     ",  acc1.range[i] );
+      printf( "%4d    ",   mag1.bias[i]  );
+      printf( "%4d     ",  mag1.range[i] );
+      printf( "%4d  \n",   gyr1.bias[i]  );
     } 
   }
 
@@ -175,9 +175,9 @@ void imu_setic (  )  {
   // Assign loop counter values
   if ( HZ_IMU_FAST % HZ_IMU_SLOW != 0 )
     printf( "  *** WARNING ***  Slow loop must divide evenly into fast loop. \n" );
-  imu.loops  = HZ_IMU_FAST / HZ_IMU_SLOW;
-  imu.count  = 0;
-  imu.getmag = false;
+  imu1.loops  = HZ_IMU_FAST / HZ_IMU_SLOW;
+  imu1.count  = 0;
+  imu1.getmag = false;
 
   // Calculate time steps
   double gyr_dt, acc_dt, mag_dt;
@@ -192,18 +192,18 @@ void imu_setic (  )  {
   if ( MAG_LPF != 0.0 )  mag_tc = 1.0 / ( 2.0 * PI * MAG_LPF );  else  mag_tc = 0.0;
 
   // Calculate filter gain values
-  gyr.gain = gyr_dt / ( gyr_tc + gyr_dt );
-  acc.gain = acc_dt / ( acc_tc + acc_dt );
-  mag.gain = mag_dt / ( mag_tc + mag_dt );
+  gyr1.gain = gyr_dt / ( gyr_tc + gyr_dt );
+  acc1.gain = acc_dt / ( acc_tc + acc_dt );
+  mag1.gain = mag_dt / ( mag_tc + mag_dt );
 
   // Display settings
   if (DEBUG) {
     printf("    |  GYR  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
-	   HZ_IMU_FAST, gyr_dt, GYR_LPF, gyr_tc, gyr.gain );
+	   HZ_IMU_FAST, gyr_dt, GYR_LPF, gyr_tc, gyr1.gain );
     printf("    |  ACC  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
-	   HZ_IMU_FAST, acc_dt, ACC_LPF, acc_tc, acc.gain );
+	   HZ_IMU_FAST, acc_dt, ACC_LPF, acc_tc, acc1.gain );
     printf("    |  MAG  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
-	   HZ_IMU_SLOW, mag_dt, MAG_LPF, mag_tc, mag.gain );
+	   HZ_IMU_SLOW, mag_dt, MAG_LPF, mag_tc, mag1.gain );
   }
 
   return;
@@ -234,19 +234,19 @@ void imu_update ( void )  {
   static short Mhist[3][MAG_HIST];
 
   // Increment counter
-  imu.getmag = false;
-  if ( imu.count == 0 ) {
-    imu.getmag = true;
-    imu.count = imu.loops;
+  imu1.getmag = false;
+  if ( imu1.count == 0 ) {
+    imu1.getmag = true;
+    imu1.count = imu1.loops;
   }
-  imu.count--;
+  imu1.count--;
 
   // Sample IMU
   if( mpu_get_gyro_reg( Graw, NULL ) )
     printf( "Error (imu_data): 'mpu_get_gyro_reg' failed. \n" );
   if( mpu_get_accel_reg( Araw, NULL ) )
     printf( "Error (imu_data): 'mpu_get_accel_reg' failed. \n" );
-  if(imu.getmag){
+  if(imu1.getmag){
   if( mpu_get_compass_reg( Mraw, NULL ) )
     printf( "Error (imu_data): 'mpu_get_compass_reg' failed. \n" );
   } 
@@ -257,7 +257,7 @@ void imu_update ( void )  {
     for ( j=1; j<k; j++ )  Ghist[i][j-1] = Ghist[i][j];
     Ghist[i][k-1] = Graw[i];
     g = (float) (Ghist[i][0]);
-    for ( j=1; j<k; j++ )  g = g + gyr.gain * (float) ( Ghist[i][j] - g );
+    for ( j=1; j<k; j++ )  g = g + gyr1.gain * (float) ( Ghist[i][j] - g );
     Gavg[i] = g;
   }
 
@@ -267,63 +267,63 @@ void imu_update ( void )  {
     for ( j=1; j<k; j++ )  Ahist[i][j-1] = Ahist[i][j];
     Ahist[i][k-1] = Araw[i];
     a = (float) (Ahist[i][0]);
-    for ( j=1; j<k; j++ )  a = a + acc.gain * (float) ( Ahist[i][j] - a );
+    for ( j=1; j<k; j++ )  a = a + acc1.gain * (float) ( Ahist[i][j] - a );
     Aavg[i] = a;
   }
 
   // Magnetometer low pass filter
-  if(imu.getmag) {
+  if(imu1.getmag) {
   k = MAG_HIST;
   for ( i=0; i<3; i++ ) {
     for ( j=1; j<k; j++ )  Mhist[i][j-1] = Mhist[i][j];
     Mhist[i][k-1] = Mraw[i];
     m = (float) (Mhist[i][0]);
-    for ( j=1; j<k; j++ )  m = m + mag.gain * (float) ( Mhist[i][j] - m );
+    for ( j=1; j<k; j++ )  m = m + mag1.gain * (float) ( Mhist[i][j] - m );
     Mavg[i] = m;
   }}
 
   // Shift and orient gyroscope readings
-  Gcal[x] =   ( Gavg[y] - gyr.bias[y] ) * GYR_SCALE;
-  Gcal[y] =   ( Gavg[x] - gyr.bias[x] ) * GYR_SCALE;
-  Gcal[z] = - ( Gavg[z] - gyr.bias[z] ) * GYR_SCALE;
+  Gcal[x] =   ( Gavg[y] - gyr1.bias[y] ) * GYR_SCALE;
+  Gcal[y] =   ( Gavg[x] - gyr1.bias[x] ) * GYR_SCALE;
+  Gcal[z] = - ( Gavg[z] - gyr1.bias[z] ) * GYR_SCALE;
 
   // Shift and orient accelerometer readings
-  Acal[x] =   ( Aavg[y] - acc.bias[y] ) / (double) (acc.range[y]);
-  Acal[y] =   ( Aavg[x] - acc.bias[x] ) / (double) (acc.range[x]);
-  Acal[z] = - ( Aavg[z] - acc.bias[z] ) / (double) (acc.range[z]);
+  Acal[x] =   ( Aavg[y] - acc1.bias[y] ) / (double) (acc1.range[y]);
+  Acal[y] =   ( Aavg[x] - acc1.bias[x] ) / (double) (acc1.range[x]);
+  Acal[z] = - ( Aavg[z] - acc1.bias[z] ) / (double) (acc1.range[z]);
 
   // Shift and orient magnetometer readings
-  if(imu.getmag) {
-  Mcal[x] = ( Mavg[x] - mag.bias[x] ) / (double) (mag.range[x]);
-  Mcal[y] = ( Mavg[y] - mag.bias[y] ) / (double) (mag.range[y]);
-  Mcal[z] = ( Mavg[z] - mag.bias[z] ) / (double) (mag.range[z]);
+  if(imu1.getmag) {
+  Mcal[x] = ( Mavg[x] - mag1.bias[x] ) / (double) (mag1.range[x]);
+  Mcal[y] = ( Mavg[y] - mag1.bias[y] ) / (double) (mag1.range[y]);
+  Mcal[z] = ( Mavg[z] - mag1.bias[z] ) / (double) (mag1.range[z]);
   }
 
   // Push gyroscope values to data structure
   pthread_mutex_lock(&mutex_gyr);
   for ( i=0; i<3; i++ )  {
-    gyr.raw[i] = Graw[i];
-    gyr.avg[i] = Gavg[i];
-    gyr.cal[i] = Gcal[i];
+    gyr1.raw[i] = Graw[i];
+    gyr1.avg[i] = Gavg[i];
+    gyr1.cal[i] = Gcal[i];
   }
   pthread_mutex_unlock(&mutex_gyr);
 
   // Push accerometer values to data structure
   pthread_mutex_lock(&mutex_acc);
   for ( i=0; i<3; i++ )  {
-    acc.raw[i] = Araw[i];
-    acc.avg[i] = Aavg[i];
-    acc.cal[i] = Acal[i];
+    acc1.raw[i] = Araw[i];
+    acc1.avg[i] = Aavg[i];
+    acc1.cal[i] = Acal[i];
   }
   pthread_mutex_unlock(&mutex_acc);
 
   // Push magnetometer values to data structure
-  if(imu.getmag) {
+  if(imu1.getmag) {
   pthread_mutex_lock(&mutex_mag);
   for ( i=0; i<3; i++ )  {
-    mag.raw[i] = Mraw[i];
-    mag.avg[i] = Mavg[i];
-    mag.cal[i] = Mcal[i];
+    mag1.raw[i] = Mraw[i];
+    mag1.avg[i] = Mavg[i];
+    mag1.cal[i] = Mcal[i];
   }
   pthread_mutex_unlock(&mutex_mag);
   }

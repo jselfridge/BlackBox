@@ -1,4 +1,4 @@
-ctrl.c:13:6:ctl_init	8	static
+ctrl.c:13:6:ctl_init	16	static
 ctrl.c:91:6:ctl_exit	0	static
 ctrl.c:220:6:ctl_plane	40	static
 ctrl.c:102:6:ctl_update	8	static

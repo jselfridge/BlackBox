@@ -9,7 +9,7 @@
 
 
 // Define statements
-#define DEBUG           false
+#define DEBUG           true
 #define SYS_STACK       ( 100 * 1024 * 1024 )
 
 

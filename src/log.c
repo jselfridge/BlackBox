@@ -412,9 +412,9 @@ void log_record ( enum log_index index )  {
       row = log_gyr.count;
       log_gyr.time[row] = timestamp;
       log_gyr.dur[row]  = tmr_imu.dur;
-      for ( i=0; i<3; i++ )  log_gyr.raw[ row*3 +i ] = gyr.raw[i];
-      for ( i=0; i<3; i++ )  log_gyr.avg[ row*3 +i ] = gyr.avg[i];
-      for ( i=0; i<3; i++ )  log_gyr.cal[ row*3 +i ] = gyr.cal[i];
+      for ( i=0; i<3; i++ )  log_gyr.raw[ row*3 +i ] = gyr1.raw[i];
+      for ( i=0; i<3; i++ )  log_gyr.avg[ row*3 +i ] = gyr1.avg[i];
+      for ( i=0; i<3; i++ )  log_gyr.cal[ row*3 +i ] = gyr1.cal[i];
       log_gyr.count++;
     }
     pthread_mutex_unlock(&mutex_gyr);
@@ -425,22 +425,22 @@ void log_record ( enum log_index index )  {
       row = log_acc.count;
       log_acc.time[row] = timestamp;
       log_acc.dur[row]  = tmr_imu.dur;
-      for ( i=0; i<3; i++ )  log_acc.raw[ row*3 +i ] = acc.raw[i];
-      for ( i=0; i<3; i++ )  log_acc.avg[ row*3 +i ] = acc.avg[i];
-      for ( i=0; i<3; i++ )  log_acc.cal[ row*3 +i ] = acc.cal[i];
+      for ( i=0; i<3; i++ )  log_acc.raw[ row*3 +i ] = acc1.raw[i];
+      for ( i=0; i<3; i++ )  log_acc.avg[ row*3 +i ] = acc1.avg[i];
+      for ( i=0; i<3; i++ )  log_acc.cal[ row*3 +i ] = acc1.cal[i];
       log_acc.count++;
     }
     pthread_mutex_unlock(&mutex_acc);
 
     // Magnetometer data
     pthread_mutex_lock(&mutex_mag);
-    if( imu.getmag && ( log_mag.count < log_mag.limit) ) {
+    if( imu1.getmag && ( log_mag.count < log_mag.limit) ) {
       row = log_mag.count;
       log_mag.time[row] = timestamp;
       log_mag.dur[row]  = tmr_imu.dur;
-      for ( i=0; i<3; i++ )  log_mag.raw[ row*3 +i ] = mag.raw[i];
-      for ( i=0; i<3; i++ )  log_mag.avg[ row*3 +i ] = mag.avg[i];
-      for ( i=0; i<3; i++ )  log_mag.cal[ row*3 +i ] = mag.cal[i];
+      for ( i=0; i<3; i++ )  log_mag.raw[ row*3 +i ] = mag1.raw[i];
+      for ( i=0; i<3; i++ )  log_mag.avg[ row*3 +i ] = mag1.avg[i];
+      for ( i=0; i<3; i++ )  log_mag.cal[ row*3 +i ] = mag1.cal[i];
       log_mag.count++;
     }
     pthread_mutex_unlock(&mutex_mag);

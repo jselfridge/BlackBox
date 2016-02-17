@@ -22,8 +22,12 @@ int main ( void )  {
   flg_init();
   imu_init();
   //ahr_init();
-  ctl_init();
-  log_init();
+  //ctl_init();
+  //log_init();
+
+  //log_open();  //--  DEBUGGING  --//
+  //datalog.enabled = true;
+
   tmr_init();
 
   // Wait for exit condition
