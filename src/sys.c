@@ -68,7 +68,7 @@ void sys_update ( void )  {
 
   // Select data for display
   //sys_sio();
-  sys_imu();
+  //sys_imu();
   //sys_ahr();
   //sys_ctrl();
 
@@ -114,7 +114,7 @@ void sys_sio ( void )  {
 //  Prints IMU debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_imu ( void )  {
-
+  /*
   // Loop counter
   ushort i;
 
@@ -138,7 +138,7 @@ void sys_imu ( void )  {
   //for ( i=0; i<3; i++ )  printf("%7.2f ", mag1.avg[i] );  printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%6.3f ", mag1.cal[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_mag);
-
+  */
   return;
 }
 
@@ -212,7 +212,7 @@ void sys_exit (  )  {
   //log_exit();
   //ctl_exit();
   //ahr_exit();
-  imu_exit();
+  //imu_exit();
   flg_exit();
   sio_exit();
 

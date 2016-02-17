@@ -402,6 +402,7 @@ void log_record ( enum log_index index )  {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record IMU data
+  /*
   case LOG_IMU :
 
     timestamp = (float) ( tmr_imu.start_sec + ( tmr_imu.start_usec / 1000000.0f ) ) - datalog.offset;
@@ -446,7 +447,7 @@ void log_record ( enum log_index index )  {
     pthread_mutex_unlock(&mutex_mag);
 
     return;
-
+  */
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record AHR data
