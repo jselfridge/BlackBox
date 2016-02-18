@@ -14,17 +14,24 @@ tube-and-wing aircraft, enables the serial telemetry and incorporates
 a ground control station (GCS).
 
 <ul>
-<li><b> v0.1.6 - Receive parameter updates from GCS </b></li>
-<li><b> v0.1.5 - Send state info to GCS </b></li>
-<li><b> v0.1.4 - Send heartbeat to GCS </b></li>
-<li><b> v0.1.3 - Configure serial UARTs </b></li>
-<li><b> v0.1.2 - Compiler revisions </b></li>
-<li><b> v0.1.1 - Airplane controller </b></li>
+<li><b> v0.1.X - Receive parameter updates from GCS </b></li>
+<li><b> v0.1.X - Send state info to GCS </b></li>
+<li><b> v0.1.X - Send heartbeat to GCS </b></li>
+<li><b> v0.1.X - Configure serial UARTs </b></li>
+<li><b> v0.1.X - Compiler revisions </b></li>
+<li><b> v0.1.X - Airplane controller </b></li>
 <ul>
   <li> Indicate vehicle type in terminal </li>
   <li> Added PD controller structure for airplane system </li>
   <li> Unique disarming values for specific systems </li>
   <li> Moved calibration files so they can be board specific </li>
+</ul
+<li><b> v0.1.X - Second IMU </b></li>
+<ul>
+  <li> </li>
+  <li> </li>
+  <li> </li>
+  <li> </li>
 </ul>
 </ul>
 
