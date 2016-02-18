@@ -21,7 +21,8 @@ PRU   := $(shell cd pru; ls -F | grep ".p" )
 PNAME := $(patsubst %.p, %, $(PRU) )
 BIN   := $(foreach b, $(PNAME), bin/$(b).bin )
 
-MPU    = mpu/inv_mpu.o
+DEFS = -DEMPL_TARGET_LINUX -DMPU9150 -DAK8975_SECONDARY
+#MPU    = mpu/inv_mpu.o
          #mpu/inv_glue.o \
          #mpu/inv_mpu_dmp_motion_driver.o
 
@@ -31,7 +32,7 @@ $(EXEC) : $(OBJ) $(BIN)
 	$(CC) -o $@ $(OBJ) $(LIB)  $(MPU)  # -L$(LDIR)
 
 obj/%.o : src/%.c inc/%.h
-	$(CC) $(CFLAGS) -Iinc -Impu -o $@ $<  # -I$(IDIR)
+	$(CC) $(CFLAGS) $(DEFS) -Iinc -Impu -o $@ $<  # -I$(IDIR)
 
 bin/%.bin : pru/%.p
 	pasm -b $<

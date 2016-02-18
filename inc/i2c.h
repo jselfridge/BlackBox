@@ -4,15 +4,13 @@
 
 
 #include "main.h"
-#include "inv_mpu.h"
+
+// #include "inv_mpu.h"  // Needed for 'static inline int reg_int-cb'.
 
 #define MIN_I2C_BUS 0
 #define MAX_I2C_BUS 7
 
-static inline int reg_int_cb(struct int_param_s *int_param)
-{
-	return 0;
-}
+// static inline int reg_int_cb( struct int_param_s *int_param )  {  return 0;  }  // Seems to run fine w/o this...
 
 #define i2c_write	linux_i2c_write
 #define i2c_read	linux_i2c_read

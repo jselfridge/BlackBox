@@ -22,7 +22,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "inv_mpu.h"
+
+#include "inv_mpu.h"  // ????????????
 
 /* The following functions must be defined for this platform:
  * i2c_write(unsigned char slave_addr, unsigned char reg_addr,
@@ -36,6 +37,7 @@
  * fabsf(float x)
  * min(int a, int b)
  */
+
 #if defined MOTION_DRIVER_TARGET_MSP430
 #include "msp430.h"
 #include "msp430_i2c.h"
@@ -56,6 +58,7 @@ static inline int reg_int_cb(struct int_param_s *int_param)
 /* fabs is for doubles. fabsf is for floats. */
 #define fabs        fabsf
 #define min(a,b) ((a<b)?a:b)
+
 #elif defined EMPL_TARGET_MSP430
 #include "msp430.h"
 #include "msp430_i2c.h"
@@ -77,6 +80,7 @@ static inline int reg_int_cb(struct int_param_s *int_param)
 /* fabs is for doubles. fabsf is for floats. */
 #define fabs        fabsf
 #define min(a,b) ((a<b)?a:b)
+
 #elif defined EMPL_TARGET_UC3L0
 /* Instead of using the standard TWI driver from the ASF library, we're using
  * a TWI driver that follows the slave address + register address convention.
@@ -101,10 +105,19 @@ static inline int reg_int_cb(struct int_param_s *int_param)
 /* UC3 is a 32-bit processor, so abs and labs are equivalent. */
 #define labs        abs
 #define fabs(x)     (((x)>0)?(x):-(x))
+
 #elif defined EMPL_TARGET_LINUX
-#include "inv_glue.h"
+
+static inline int reg_int_cb( struct int_param_s *int_param )  {  return 0;  }
+
+//-- ORIG --//
+//#include "inv_glue.h"
+//-- JMS --//
+#include "i2c.h"
+//---------//
+
 #else
-#error  Gyro driver is missing the system layer implementations.
+#error  Gyro driver is missing the system layer implementations.  This is a warning!!!
 #endif
 
 #if !defined MPU6050 && !defined MPU9150 && !defined MPU6500 && !defined MPU9250

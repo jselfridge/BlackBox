@@ -27,6 +27,13 @@
 #include <time.h>
 #include <unistd.h>
 
+// Might be needed... not certain...
+//#include <sys/time.h>       // Needed for 'gettimeofday'
+//#include <errno.h>          // Wasn't needed to compile
+//#include <stdint.h>         // Wasn't needed to compile
+//#include <sys/ioctl.h>      // Needed for 'ioctl'
+//#include <linux/i2c-dev.h>  // Needed for 'I2C_SLAVE'  
+
 
 // Custom includes
 #include <ahr.h>
