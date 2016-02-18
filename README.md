@@ -25,6 +25,13 @@ a ground control station (GCS).
   <li> Added PD controller structure for airplane system </li>
   <li> Unique disarming values for specific systems </li>
   <li> Moved calibration files so they can be board specific </li>
+</ul
+<li><b> v0.1.X - Second IMU </b></li>
+<ul>
+  <li> </li>
+  <li> </li>
+  <li> </li>
+  <li> </li>
 </ul>
 <li><b> v0.1.X - Dual IMUs </b></li>
 <ul>
