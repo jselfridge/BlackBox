@@ -28,7 +28,7 @@ a ground control station (GCS).
 </ul
 <li><b> v0.1.X - Second IMU </b></li>
 <ul>
-  <li> (WIP) Revise MPU code structure. </li>
+  <li> Revise MPU code directory structure. </li>
   <li> (WIP) Comment out and eliminate non-essential functions. </li>
   <li> (WIP) Implement custom I2C code framework. </li>
   <li> (WIP) Add second IMU sensor. </li>

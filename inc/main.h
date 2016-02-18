@@ -48,7 +48,7 @@
 #include <timer.h>
 
 #include <i2c.h>
-//#include <mpu.h>
+#include <mpu.h>
 //#include <dmp.h>
 
 // PRU includes
@@ -58,7 +58,7 @@
 
 // MPU includes
 //#include <inv_glue.h>
-#include <inv_mpu.h>
+//#include <inv_mpu.h>
 //#include <inv_mpu_dmp_motion_driver.h>
 
 
