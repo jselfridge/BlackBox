@@ -41,7 +41,7 @@ int i2c_open (  )  {
     //printf("\t\t\ti2c_open() : %s\n", buff);
     //#endif
 
-    i2c_fd = open(buff, O_RDWR);
+    i2c_fd = open( buff, O_RDWR );
     if ( i2c_fd < 0 ) {
       perror("open(i2c_bus)");
       i2c_fd = 0;
@@ -82,7 +82,7 @@ int i2c_select_slave ( unsigned char slave_addr )  {
   //printf("\t\ti2c_select_slave(%02X)\n", slave_addr);
   //#endif
 
-  if (ioctl(i2c_fd, I2C_SLAVE, slave_addr) < 0) {
+  if ( ioctl( i2c_fd, I2C_SLAVE, slave_addr ) < 0 )  {
     perror("ioctl(I2C_SLAVE)");
     return -1;
   }
@@ -111,7 +111,7 @@ int linux_i2c_write ( unsigned char slave_addr, unsigned char reg_addr, unsigned
 
   int result, i;
 
-  if (length > MAX_WRITE_LEN) {
+  if ( length > MAX_WRITE_LEN )  {
     printf("Max write length exceeded in linux_i2c_write()\n");
     return -1;
   }
@@ -128,17 +128,17 @@ int linux_i2c_write ( unsigned char slave_addr, unsigned char reg_addr, unsigned
   //}
   //#endif
 
-  if (i2c_select_slave(slave_addr))
+  if ( i2c_select_slave(slave_addr) )
     return -1;
 
-  if (length == 0) {
-    result = write(i2c_fd, &reg_addr, 1);
+  if ( length == 0 )  {
+    result = write( i2c_fd, &reg_addr, 1 );
 
-    if (result < 0) {
+    if ( result < 0 )  {
       perror("write:1");
       return result;
     }
-    else if (result != 1) {
+    else if ( result != 1 )  {
       printf("Write fail:1 Tried 1 Wrote 0\n");
       return -1;
     }
@@ -146,16 +146,16 @@ int linux_i2c_write ( unsigned char slave_addr, unsigned char reg_addr, unsigned
   else {
     txBuff[0] = reg_addr;
 
-    for (i = 0; i < length; i++)
+    for ( i=0; i<length; i++ )
       txBuff[i+1] = data[i];
 
-    result = write(i2c_fd, txBuff, length + 1);
+    result = write( i2c_fd, txBuff, length+1 );
 
-    if (result < 0) {
+    if ( result < 0 )  {
       perror("write:2");
       return result;
     }
-    else if (result < (int)length) {
+    else if ( result < (int)length )  {
       printf("Write fail:2 Tried %u Wrote %d\n", length, result); 
       return -1;
     }
