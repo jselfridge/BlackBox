@@ -2,9 +2,8 @@
 #ifndef INV_GLUE_H
 #define INV_GLUE_H
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
+
+#include "main.h"
 #include "inv_mpu.h"
 
 #define MIN_I2C_BUS 0

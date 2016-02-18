@@ -1,20 +1,14 @@
 
-#include <time.h>
-#include <sys/time.h>
-#include <errno.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdint.h>
-#include <sys/ioctl.h>
-#include <sys/types.h>
-#include <fcntl.h>
-#include <linux/i2c-dev.h>
+#include <sys/time.h>       // Needed for 'gettimeofday'
+#include <errno.h>          // Wasn't needed to compile
+#include <stdint.h>         // Wasn't needed to compile
+#include <sys/ioctl.h>      // Needed for 'ioctl'
+#include <linux/i2c-dev.h>  // Needed for 'I2C_SLAVE'
 
-//-- ORIG --//
-//#include "inv_glue.h"
-//-- JMS --//
 #include "i2c.h"
-//---------//
+
+
+
 
 #define MAX_WRITE_LEN 511
 
