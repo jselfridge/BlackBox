@@ -15,7 +15,6 @@
 
 #define mpu_write   i2c_write
 #define mpu_read    i2c_read
-//#define mpu_get_ms  linux_get_ms
 #define log_i       printf
 #define log_e       printf
 #define min(a, b)   ((a < b) ? a : b)
@@ -23,9 +22,9 @@
 
 
 void linux_set_i2c_bus ( int bus );
-int  i2c_write   ( unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char const *data );
-int  i2c_read    ( unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char *data ); 
-//int  linux_get_ms      ( unsigned long *count );
+int  i2c_write   ( uint fd, unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char const *data );
+int  i2c_read    ( uint fd, unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char *data ); 
+
 
 #endif
 
