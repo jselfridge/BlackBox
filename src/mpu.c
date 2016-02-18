@@ -743,7 +743,7 @@ int mpu_read_reg(unsigned char reg, unsigned char *data)
  *  @return     0 if successful.
  */
 
-/*
+
 int mpu_init_master(struct int_param_s *int_param)
 {
     unsigned char data[6], rev;
@@ -859,7 +859,7 @@ int mpu_init_master(struct int_param_s *int_param)
     mpu_set_sensors(0);
     return 0;
 }
-*/
+
 
 
 /*

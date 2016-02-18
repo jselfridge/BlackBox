@@ -33,7 +33,7 @@
 #include <flag.h>
 #include <gpio.h>
 #include <i2c.h>
-//#include <imu.h>
+#include <imu.h>
 #include <led.h>
 #include <log.h>
 #include <sio.h>
