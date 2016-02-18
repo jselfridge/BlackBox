@@ -17,7 +17,7 @@ void imu_init (  )  {
   led_blink( LED_IMU, 200, 200 );
 
   // IMU struct values
-  imu.id   = 1;
+  imu.id   = 2;
   imu.addr = 0x68;
   imu.gyr  = &gyr;
   imu.acc  = &acc;
@@ -99,9 +99,9 @@ void imu_getcal (  )  {
   char path [32];  memset( path, 0, sizeof(path) );
 
   // Set acceleration bias
-  sprintf( path, "../Param/board/bias/acc" );
+  sprintf( path, "../Param/board/bias/acc1" );
   f = fopen( path, "r" );
-  if(!f)  printf( "Error (imu_getcal): File for 'acc bias' not found. \n" );
+  if(!f)  printf( "Error (imu_getcal): File for 'acc1 bias' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
     acc.bias[i] = atoi(buff);
@@ -109,9 +109,9 @@ void imu_getcal (  )  {
   fclose(f);
 
   // Set acceleration range
-  sprintf( path, "../Param/board/range/acc" );
+  sprintf( path, "../Param/board/range/acc1" );
   f = fopen( path, "r" );
-  if(!f)  printf( "Error (imu_getcal): File for 'acc range' not found. \n" );
+  if(!f)  printf( "Error (imu_getcal): File for 'acc1 range' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
     acc.range[i] = atoi(buff);
@@ -119,9 +119,9 @@ void imu_getcal (  )  {
   fclose(f);
 
   // Set magnetometer bias
-  sprintf( path, "../Param/board/bias/mag" );
+  sprintf( path, "../Param/board/bias/mag1" );
   f = fopen( path, "r" );
-  if(!f)  printf( "Error (imu_getcal): File for 'mag bias' not found. \n" );
+  if(!f)  printf( "Error (imu_getcal): File for 'mag1 bias' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
     mag.bias[i] = atoi(buff);
@@ -129,9 +129,9 @@ void imu_getcal (  )  {
   fclose(f);
 
   // Set magnetometer range
-  sprintf( path, "../Param/board/range/mag" );
+  sprintf( path, "../Param/board/range/mag1" );
   f = fopen( path, "r" );
-  if(!f)  printf( "Error (imu_getcal): File for 'mag range' not found. \n" );
+  if(!f)  printf( "Error (imu_getcal): File for 'mag1 range' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
     mag.range[i] = atoi(buff);
@@ -139,9 +139,9 @@ void imu_getcal (  )  {
   fclose(f);
 
   // Set gyro bias
-  sprintf( path, "../Param/board/bias/gyr" );
+  sprintf( path, "../Param/board/bias/gyr1" );
   f = fopen( path, "r" );
-  if(!f)  printf( "Error (imu_getcal): File for 'gyr bias' not found. \n" );
+  if(!f)  printf( "Error (imu_getcal): File for 'gyr1 bias' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
     gyr.bias[i] = atoi(buff);
@@ -150,7 +150,7 @@ void imu_getcal (  )  {
 
   // Display calibration values
   if(DEBUG) {
-    printf("    abias  arange    mbias  mrange    gbias \n");
+    printf("   a1bias a1range   m1bias m1range   g1bias \n");
     for ( i=0; i<3; i++ ) {
       printf("     ");
       printf( "%4d    ",   acc.bias[i]  );
