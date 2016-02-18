@@ -34,7 +34,7 @@
 #define MPU_INT_STATUS_DMP_5            (0x2000)
 
 
-// Declare parameter struc
+// Declare parameter struct
 struct int_param_s {
 #if defined EMPL_TARGET_MSP430 || defined MOTION_DRIVER_TARGET_MSP430
     void (*cb)(void);
@@ -56,25 +56,20 @@ struct int_param_s {
 int mpu_init_master      ( struct int_param_s *int_param );
 
 int mpu_get_gyro_fsr     ( unsigned short *fsr );
-int mpu_set_gyro_fsr     ( unsigned short fsr );
+int mpu_set_gyro_fsr     ( unsigned short fsr  );
 
 int mpu_get_accel_fsr    ( unsigned char *fsr );
-int mpu_set_accel_fsr    ( unsigned char fsr );
+int mpu_set_accel_fsr    ( unsigned char fsr  );
 
-int mpu_get_sample_rate  ( unsigned short *rate);
-int mpu_set_sample_rate  ( unsigned short rate);
+int mpu_get_sample_rate  ( unsigned short *rate );
+int mpu_set_sample_rate  ( unsigned short rate  );
 
 int mpu_get_compass_sample_rate  ( unsigned short *rate );
-int mpu_set_compass_sample_rate  ( unsigned short rate );    // FIGURE OUT THE PLACEMENT ISSUE...
+int mpu_set_compass_sample_rate  ( unsigned short rate  );
 
 int mpu_get_gyro_reg     ( short *data, unsigned long *timestamp );
 int mpu_get_accel_reg    ( short *data, unsigned long *timestamp );
-
-
-
-
-//--------------------------------------------
-// Under investigation...
+int mpu_get_compass_reg  ( short *data, unsigned long *timestamp );
 
 int mpu_init_slave(void);
 int mpu_set_bypass(unsigned char bypass_on);
@@ -101,8 +96,6 @@ int mpu_get_power_state(unsigned char *power_on);
 int mpu_set_sensors(unsigned char sensors);
 
 int mpu_set_accel_bias(const long *accel_bias);
-
-int mpu_get_compass_reg(short *data, unsigned long *timestamp);
 int mpu_get_temperature(long *data, unsigned long *timestamp);
 
 int mpu_get_int_status(short *status);
@@ -118,6 +111,8 @@ int mpu_reg_dump(void);
 int mpu_read_reg(unsigned char reg, unsigned char *data);
 int mpu_register_tap_cb(void (*func)(unsigned char, unsigned char));
 
+int mpu_run_self_test(long *gyro, long *accel);
+int mpu_lp_motion_interrupt(unsigned short thresh, unsigned char time, unsigned char lpa_freq);
 
 
 /*
@@ -141,8 +136,6 @@ int mpu_register_tap_cb(void (*func)(unsigned char, unsigned char));
  */
 
 // Disabled MPU functions
-//int mpu_run_self_test(long *gyro, long *accel);
-//int mpu_lp_motion_interrupt(unsigned short thresh, unsigned char time, unsigned char lpa_freq);
 
 
 #endif
