@@ -28,19 +28,11 @@ a ground control station (GCS).
 </ul
 <li><b> v0.1.X - Second IMU </b></li>
 <ul>
-  <li> </li>
-  <li> </li>
-  <li> </li>
-  <li> </li>
+  <li> (WIP) Revise MPU code structure. </li>
+  <li> (WIP) Comment out and eliminate non-essential functions. </li>
+  <li> (WIP) Implement custom I2C code framework. </li>
+  <li> (WIP) Add second IMU sensor. </li>
 </ul>
-<li><b> v0.1.X - Dual IMUs </b></li>
-<ul>
-  <li> Rename 'imu' to 'imu1' to make room for second IMU.  </li>
-  <li> (WIP) Create I2C header/source code to handle multiple I2C buses. </li>
-  <li> (WIP) Implement new I2C code on single IMU device. </li>
-  <li> (WIP) Add second IMU device. </li>
-</ul>
-
 </ul>
 
 

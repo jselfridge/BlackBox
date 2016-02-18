@@ -19,10 +19,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "inv_mpu.h"
-#include "inv_mpu_dmp_motion_driver.h"
-#include "dmpKey.h"
-#include "dmpmap.h"
+
+//-- ORIG --//
+//#include "inv_mpu.h"
+//#include "inv_mpu_dmp_motion_driver.h"
+//#include "dmpKey.h"
+//#include "dmpmap.h"
+//-- JMS --//
+#include "../inc/inv_mpu.h"
+#include "../inc/inv_mpu_dmp_motion_driver.h"
+#include "../mpu/dmpKey.h"
+#include "../mpu/dmpmap.h"
+//----------//
 
 /* The following functions must be defined for this platform:
  * i2c_write(unsigned char slave_addr, unsigned char reg_addr,

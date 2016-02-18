@@ -1,13 +1,10 @@
-
-
 /*
  $License:
     Copyright (C) 2011-2012 InvenSense Corporation, All Rights Reserved.
     See included License.txt for License information.
  $
  */
-
-/*
+/**
  *  @addtogroup  DRIVERS Sensor Driver Layer
  *  @brief       Hardware drivers to communicate with sensors via I2C.
  *
@@ -17,7 +14,6 @@
  *      @details    All functions are preceded by the dmp_ prefix to
  *                  differentiate among MPL and general driver function calls.
  */
-
 #ifndef _INV_MPU_DMP_MOTION_DRIVER_H_
 #define _INV_MPU_DMP_MOTION_DRIVER_H_
 
@@ -53,7 +49,7 @@
 
 #define INV_WXYZ_QUAT       (0x100)
 
-// Set up functions.
+/* Set up functions. */
 int dmp_load_motion_driver_firmware(void);
 int dmp_set_fifo_rate(unsigned short rate);
 int dmp_get_fifo_rate(unsigned short *rate);
@@ -64,7 +60,7 @@ int dmp_set_orientation(unsigned short orient);
 int dmp_set_gyro_bias(long *bias);
 int dmp_set_accel_bias(long *bias);
 
-// Tap functions.
+/* Tap functions. */
 int dmp_register_tap_cb(void (*func)(unsigned char, unsigned char));
 int dmp_set_tap_thresh(unsigned char axis, unsigned short thresh);
 int dmp_set_tap_axes(unsigned char axis);
@@ -75,29 +71,27 @@ int dmp_set_shake_reject_thresh(long sf, unsigned short thresh);
 int dmp_set_shake_reject_time(unsigned short time);
 int dmp_set_shake_reject_timeout(unsigned short time);
 
-// Android orientation functions.
+/* Android orientation functions. */
 int dmp_register_android_orient_cb(void (*func)(unsigned char));
 
-// LP quaternion functions.
+/* LP quaternion functions. */
 int dmp_enable_lp_quat(unsigned char enable);
 int dmp_enable_6x_lp_quat(unsigned char enable);
 
-// Pedometer functions.
+/* Pedometer functions. */
 int dmp_get_pedometer_step_count(unsigned long *count);
 int dmp_set_pedometer_step_count(unsigned long count);
 int dmp_get_pedometer_walk_time(unsigned long *time);
 int dmp_set_pedometer_walk_time(unsigned long time);
 
-// DMP gyro calibration functions.
+/* DMP gyro calibration functions. */
 int dmp_enable_gyro_cal(unsigned char enable);
 
-// Read function. This function should be called whenever the MPU interrupt is
-// detected.
-//
-//int dmp_read_fifo(short *gyro, short *accel, long *quat,
-//    unsigned long *timestamp, short *sensors, unsigned char *more);
+/* Read function. This function should be called whenever the MPU interrupt is
+ * detected.
+ */
+int dmp_read_fifo(short *gyro, short *accel, long *quat,
+    unsigned long *timestamp, short *sensors, unsigned char *more);
 
-#endif
-
-
+#endif  /* #ifndef _INV_MPU_DMP_MOTION_DRIVER_H_ */
 

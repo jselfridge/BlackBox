@@ -28,7 +28,7 @@ MPU    = mpu/inv_glue.o \
 all : $(EXEC)
 
 $(EXEC) : $(OBJ) $(BIN)
-	$(CC) -o $@ $(OBJ) $(LIB) $(MPU) # -L$(LDIR)
+	$(CC) -o $@ $(OBJ) $(LIB)  $(MPU)  # -L$(LDIR)
 
 obj/%.o : src/%.c inc/%.h
 	$(CC) $(CFLAGS) -Iinc -Impu -o $@ $<  # -I$(IDIR)
