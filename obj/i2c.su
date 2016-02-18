@@ -1,4 +1,0 @@
-i2c.c:25:5:i2c_open	40	static
-i2c.c:55:6:i2c_close	16	static
-i2c.c:97:5:i2c_write	552	dynamic,bounded
-i2c.c:164:5:i2c_read	24	static

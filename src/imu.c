@@ -17,7 +17,7 @@ void imu_init (  )  {
   led_blink( LED_IMU, 200, 200 );
 
   // IMU struct values
-  imu1.id   = 2;
+  imu1.id   = 1;
   imu1.addr = 0x68;
   imu1.gyr  = &gyr1;
   imu1.acc  = &acc1;
