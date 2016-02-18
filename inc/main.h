@@ -39,7 +39,7 @@
 #include <sys.h>
 #include <timer.h>
 
-//#include <i2c.h>
+#include <i2c.h>
 //#include <mpu.h>
 //#include <dmp.h>
 
@@ -49,9 +49,9 @@
 
 
 // MPU includes
+//#include <inv_glue.h>
 #include <inv_mpu.h>
 //#include <inv_mpu_dmp_motion_driver.h>
-#include <inv_glue.h>
 
 
 // Global variables (remove as quickly as possible)

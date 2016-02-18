@@ -9,7 +9,12 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <linux/i2c-dev.h>
-#include "inv_glue.h"
+
+//-- ORIG --//
+//#include "inv_glue.h"
+//-- JMS --//
+#include "i2c.h"
+//---------//
 
 #define MAX_WRITE_LEN 511
 

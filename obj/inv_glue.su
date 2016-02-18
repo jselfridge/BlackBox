@@ -1,9 +1,0 @@
-inv_glue.c:24:6:__no_operation	0	static
-inv_glue.c:26:5:i2c_open	48	static
-inv_glue.c:49:6:i2c_close	16	static
-inv_glue.c:58:5:i2c_select_slave	56	static
-inv_glue.c:80:6:linux_set_i2c_bus	16	static
-inv_glue.c:88:5:linux_i2c_write	72	static
-inv_glue.c:148:5:linux_i2c_read	72	static
-inv_glue.c:197:5:linux_delay_ms	24	static
-inv_glue.c:207:5:linux_get_ms	24	static
