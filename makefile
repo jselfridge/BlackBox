@@ -21,7 +21,8 @@ PRU   := $(shell cd pru; ls -F | grep ".p" )
 PNAME := $(patsubst %.p, %, $(PRU) )
 BIN   := $(foreach b, $(PNAME), bin/$(b).bin )
 
-DEFS = -DEMPL_TARGET_LINUX -DMPU9150 -DAK8975_SECONDARY
+DEFS = -DMPU9150 -DAK8975_SECONDARY #-DEMPL_TARGET_LINUX 
+
 
 all : $(EXEC)
 
