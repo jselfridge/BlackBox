@@ -21,9 +21,9 @@ PRU   := $(shell cd pru; ls -F | grep ".p" )
 PNAME := $(patsubst %.p, %, $(PRU) )
 BIN   := $(foreach b, $(PNAME), bin/$(b).bin )
 
-MPU    = mpu/inv_glue.o \
-         mpu/inv_mpu.o  \
-         mpu/inv_mpu_dmp_motion_driver.o
+MPU    = mpu/inv_mpu.o
+         #mpu/inv_glue.o \
+         #mpu/inv_mpu_dmp_motion_driver.o
 
 all : $(EXEC)
 
