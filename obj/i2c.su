@@ -1,8 +1,6 @@
-i2c.c:33:5:i2c_open	48	static
-i2c.c:60:6:i2c_close	16	static
-i2c.c:73:5:i2c_select_slave	56	static
-i2c.c:99:6:linux_set_i2c_bus	16	static
-i2c.c:110:5:linux_i2c_write	72	static
-i2c.c:172:5:linux_i2c_read	72	static
-i2c.c:222:5:linux_delay_ms	24	static
-i2c.c:234:5:linux_get_ms	24	static
+i2c.c:26:5:i2c_open	48	static
+i2c.c:53:6:i2c_close	16	static
+i2c.c:66:5:i2c_select_slave	56	static
+i2c.c:92:6:linux_set_i2c_bus	16	static
+i2c.c:103:5:i2c_write	72	static
+i2c.c:165:5:i2c_read	72	static

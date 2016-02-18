@@ -10,6 +10,7 @@
 // Standard includes
 #include <fcntl.h>
 #include <limits.h>
+#include <linux/i2c-dev.h>
 #include <malloc.h>
 #include <math.h>
 #include <pthread.h>
@@ -20,6 +21,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/timerfd.h>
@@ -30,7 +32,7 @@
 
 
 // Might be needed... not certain...
-//#include <sys/time.h>       // Needed for 'gettimeofday'
+#include <sys/time.h>       // Needed for 'gettimeofday'
 //#include <errno.h>          // Wasn't needed to compile
 //#include <stdint.h>         // Wasn't needed to compile
 //#include <sys/ioctl.h>      // Needed for 'ioctl'

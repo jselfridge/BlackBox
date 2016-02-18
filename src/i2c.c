@@ -7,13 +7,6 @@
 
 
 
-#include <sys/time.h>       // Needed for 'gettimeofday'
-#include <errno.h>          // Wasn't needed to compile
-#include <stdint.h>         // Wasn't needed to compile
-#include <sys/ioctl.h>      // Needed for 'ioctl'
-#include <linux/i2c-dev.h>  // Needed for 'I2C_SLAVE'
-
-
 
 #define MAX_WRITE_LEN 511
 
@@ -107,7 +100,7 @@ void linux_set_i2c_bus ( int bus )  {
 //  i2c_xxxx
 //  
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
-int linux_i2c_write ( unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char const *data )  {
+int i2c_write ( unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char const *data )  {
 
   int result, i;
 
@@ -169,7 +162,7 @@ int linux_i2c_write ( unsigned char slave_addr, unsigned char reg_addr, unsigned
 //  i2c_xxxx
 //  
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
-int linux_i2c_read ( unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char *data )  {
+int i2c_read ( unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char *data )  {
 
   int tries, result, total;
 
@@ -178,7 +171,7 @@ int linux_i2c_read ( unsigned char slave_addr, unsigned char reg_addr, unsigned 
   //printf("\tlinux_i2c_read(%02X, %02X, %u, ...)\n", slave_addr, reg_addr, length);
   //#endif
 
-  if (linux_i2c_write(slave_addr, reg_addr, 0, NULL))
+  if (i2c_write(slave_addr, reg_addr, 0, NULL))
     return -1;
 
   total = 0;
@@ -198,7 +191,7 @@ int linux_i2c_read ( unsigned char slave_addr, unsigned char reg_addr, unsigned 
       break;
 
     tries++;		
-    linux_delay_ms(10);
+    usleep(10000);
   }
 
   if (total < length)
@@ -219,18 +212,7 @@ int linux_i2c_read ( unsigned char slave_addr, unsigned char reg_addr, unsigned 
 //  i2c_xxxx
 //  
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
-int linux_delay_ms ( unsigned long num_ms )  {
-  struct timespec ts;
-  ts.tv_sec = num_ms / 1000;
-  ts.tv_nsec = (num_ms % 1000) * 1000000;
-  return nanosleep(&ts, NULL);
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  i2c_xxxx
-//  
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/*
 int linux_get_ms ( unsigned long *count )  {
   struct timeval t;
   if (!count)
@@ -242,6 +224,6 @@ int linux_get_ms ( unsigned long *count )  {
   *count = (t.tv_sec * 1000) + (t.tv_usec / 1000);	
   return 0;
 }
-
+*/
 
 
