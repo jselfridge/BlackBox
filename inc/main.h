@@ -48,7 +48,7 @@
 #include <imu.h>
 #include <led.h>
 #include <log.h>
-#include <mpu.h>
+#include <inv_mpu.h>  // #include <mpu.h>
 #include <sio.h>
 #include <sys.h>
 #include <timer.h>
