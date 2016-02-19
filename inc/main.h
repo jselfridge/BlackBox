@@ -24,19 +24,12 @@
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <sys/timerfd.h>
 #include <sys/types.h>
 #include <termios.h>
 #include <time.h>
 #include <unistd.h>
-
-
-// Might be needed... not certain...
-#include <sys/time.h>       // Needed for 'gettimeofday'
-//#include <errno.h>          // Wasn't needed to compile
-//#include <stdint.h>         // Wasn't needed to compile
-//#include <sys/ioctl.h>      // Needed for 'ioctl'
-//#include <linux/i2c-dev.h>  // Needed for 'I2C_SLAVE'  
 
 
 // Custom includes
@@ -48,7 +41,7 @@
 #include <imu.h>
 #include <led.h>
 #include <log.h>
-#include <inv_mpu.h>  // #include <mpu.h>
+#include <mpu.h>
 #include <sio.h>
 #include <sys.h>
 #include <timer.h>
@@ -59,15 +52,30 @@
 #include <pruss_intc_mapping.h>
 
 
+// I2C to MPU function wrapper
+#define i2c_write     i2c_tx
+#define i2c_read      i2c_rx
+#define get_ms        i2c_ct
+#define log_i         printf
+#define log_e         printf
+#define delay_ms(t)   usleep(t*1000)
+#define min(a,b)      ( (a < b) ? a : b )
+
+
+// MPU function revisions
+
+
+
 // Global variables (remove as quickly as possible)
 bool running;
 bool armed;
 struct sigaction sys_signal;
 
+
+//-- DEBUGGING --//
 uint i2c_bus;
 uint i2c_fd;
 uint i2c_addr;
-
 uint fd;
 uint addr;
 

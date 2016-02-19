@@ -104,7 +104,7 @@ void linux_set_i2c_bus ( int bus )  {
 //  i2c_xxxx
 //  
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
-int i2c_write ( uint fd, unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char const *data )  {
+int i2c_tx ( unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char const *data )  {
 
   int result, i;
 
@@ -129,7 +129,7 @@ int i2c_write ( uint fd, unsigned char slave_addr, unsigned char reg_addr, unsig
     return -1;
 
   if ( length == 0 )  {
-    result = write( fd, &reg_addr, 1 );  // result = write( i2c_fd, &reg_addr, 1 );
+    result = write( i2c_fd, &reg_addr, 1 );  // result = write( i2c_fd, &reg_addr, 1 );
 
     if ( result < 0 )  {
       perror("write:1");
@@ -146,7 +146,7 @@ int i2c_write ( uint fd, unsigned char slave_addr, unsigned char reg_addr, unsig
     for ( i=0; i<length; i++ )
       txBuff[i+1] = data[i];
 
-    result = write( fd, txBuff, length+1 );  // result = write( i2c_fd, txBuff, length+1 );
+    result = write( i2c_fd, txBuff, length+1 );  // result = write( i2c_fd, txBuff, length+1 );
 
     if ( result < 0 )  {
       perror("write:2");
@@ -166,7 +166,7 @@ int i2c_write ( uint fd, unsigned char slave_addr, unsigned char reg_addr, unsig
 //  i2c_xxxx
 //  
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
-int i2c_read ( uint fd, unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char *data )  {
+int i2c_rx ( unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char *data )  {
 
   int tries, result, total;
 
@@ -175,14 +175,14 @@ int i2c_read ( uint fd, unsigned char slave_addr, unsigned char reg_addr, unsign
   //printf("\tlinux_i2c_read(%02X, %02X, %u, ...)\n", slave_addr, reg_addr, length);
   //#endif
 
-  if ( i2c_write( fd, slave_addr, reg_addr, 0, NULL ) )  // if ( i2c_write( slave_addr, reg_addr, 0, NULL ) )
+  if ( i2c_write( slave_addr, reg_addr, 0, NULL ) )  // if ( i2c_write( slave_addr, reg_addr, 0, NULL ) )
     return -1;
 
   total = 0;
   tries = 0;
 
   while (total < length && tries < 5) {
-    result = read( fd, data + total, length - total);  // result = read(i2c_fd, data + total, length - total);
+    result = read( i2c_fd, data + total, length - total);  // result = read(i2c_fd, data + total, length - total);
 
     if (result < 0) {
       perror("read");
@@ -212,4 +212,18 @@ int i2c_read ( uint fd, unsigned char slave_addr, unsigned char reg_addr, unsign
 }
 
 
-
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  i2c_xxxx
+//  
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+int i2c_ct ( unsigned long *count )  {
+  struct timeval t;
+  if (!count)
+    return -1;
+  if (gettimeofday(&t, NULL) < 0) {
+    perror("gettimeofday");
+    return -1;
+  }
+  *count = (t.tv_sec * 1000) + (t.tv_usec / 1000);
+  return 0;
+}

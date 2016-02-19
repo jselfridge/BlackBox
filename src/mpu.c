@@ -21,12 +21,8 @@
  *                  MPU9150 (or MPU6050 w/ AK8975 on the auxiliary bus)
  *                  MPU9250 (or MPU6500 w/ AK8963 on the auxiliary bus)
  */
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include "inv_mpu.h"
+
+#include "mpu.h"
 
 
 
@@ -123,7 +119,7 @@ static inline int reg_int_cb(struct int_param_s *int_param)
 #endif
 */
 
-
+static inline int reg_int_cb ( struct int_param_s *int_param )  { return 0; }
 
 #if !defined MPU6050 && !defined MPU9150 && !defined MPU6500 && !defined MPU9250
 #error  Which gyro are you using? Define MPUxxxx in your compiler options.
@@ -2746,8 +2742,8 @@ int mpu_run_self_test(long *gyro, long *accel)
     int ii;
 #endif
     int result;
-    unsigned char accel_fsr, fifo_sensors, sensors_on;
-    unsigned short gyro_fsr, sample_rate, lpf;
+    unsigned char accel_fsr=2, fifo_sensors, sensors_on;
+    unsigned short gyro_fsr, sample_rate=50, lpf;
     unsigned char dmp_was_on;
 
     if (st.chip_cfg.dmp_on) {

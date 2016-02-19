@@ -56,27 +56,27 @@ void imu_param (  )  {
   if(DEBUG) {  printf("  Assign IMU parameters ");  fflush(stdout);  }
   linux_set_i2c_bus(imu1.id);
 
-  if(DEBUG) {  printf(".\n");  fflush(stdout);  }
-  if( mpu_init_master(NULL) )
-    printf( "Error (imu_param): 'mpu_init_master' failed. \n" );
+  if(DEBUG) {  printf(".");  fflush(stdout);  }
+  if( mpu_init(NULL) )
+    printf( "Error (imu_param): 'mpu_init' failed. \n" );
 
-  if(DEBUG) {  printf(".\n");  fflush(stdout);  }
+  if(DEBUG) {  printf(".");  fflush(stdout);  }
   if( mpu_set_sensors( INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS ) )
     printf( "Error (imu_param): 'mpu_set_sensors' failed. \n" );
 
-  if(DEBUG) {  printf(".\n");  fflush(stdout);  }
+  if(DEBUG) {  printf(".");  fflush(stdout);  }
   if( mpu_set_sample_rate(HZ_IMU_FAST) )
     printf( "Error (imu_param): 'mpu_set_sample_rate' failed. \n" );
 
-  if(DEBUG) {  printf(".\n");  fflush(stdout);  }
+  if(DEBUG) {  printf(".");  fflush(stdout);  }
   if( mpu_set_compass_sample_rate(HZ_IMU_SLOW) )
     printf( "Error (imu_param): 'mpu_set_compass_sample_rate' failed. \n" );
 
-  if(DEBUG) {  printf(".\n");  fflush(stdout);  }
+  if(DEBUG) {  printf(".");  fflush(stdout);  }
   if( mpu_set_gyro_fsr(GYR_FSR) )
     printf( "Error (imu_param): 'mpu_set_gyro_fsr' failed. \n" );
 
-  if(DEBUG) {  printf(".\n");  fflush(stdout);  }
+  if(DEBUG) {  printf(".");  fflush(stdout);  }
   if( mpu_set_accel_fsr(ACC_FSR) )
     printf( "Error (imu_param): 'mpu_set_accel_fsr' failed. \n" );
 

@@ -22,8 +22,10 @@
  *                  MPU9250 (or MPU6500 w/ AK8963 on the auxiliary bus)
  */
 
-#ifndef _INV_MPU_H_
-#define _INV_MPU_H_
+#ifndef _MPU_H_
+#define _MPU_H_
+#include <main.h>
+
 
 #define INV_X_GYRO      (0x40)
 #define INV_Y_GYRO      (0x20)
@@ -42,6 +44,8 @@ struct int_param_s {
     unsigned long pin;
     void (*cb)(volatile void*);
     void *arg;
+#else
+    unsigned int pin;
 #endif
 };
 
