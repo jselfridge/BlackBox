@@ -9,10 +9,19 @@
 
 
 #define MAX_WRITE_LEN 511
-//int i2c_bus = 1;
-//int i2c_fd;
-int current_slave;
-//unsigned char txBuff[MAX_WRITE_LEN + 1];
+
+
+//  Eliminate this along with the globals...
+void linux_set_i2c_bus ( int bus )  {
+  if (i2c_fd)
+    i2c_close();
+  i2c_bus = bus;
+  i2c_addr = 0x68;
+}
+
+
+
+
 
 
 
@@ -26,6 +35,8 @@ int i2c_open ( void )  {
 
   // i2c_bus is a global variable which can be directly passed into the function...
   // i2c_fd  is a global variable which needs to be passed in as a pointer... 
+
+  printf( "Running I2C_open! \n" );
 
   // Local variables
   char buf[32];
@@ -62,41 +73,24 @@ void i2c_close ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  i2c_xxxx
-//  Don't think I need this...
+//  i2c_slave
+//  Determines the current I2C slave address.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+int i2c_slave ( unsigned char slave_addr )  {
 
-int i2c_select_slave ( unsigned char slave_addr )  {
+  // Eliminate the global variable 'current_slave'...
 
-  if ( current_slave == slave_addr )
-    return 0;
+  if ( current_slave == slave_addr )  return 0;
 
-  if ( i2c_open() )
-    return -1;
-
-  //#ifdef I2C_DEBUG
-  //printf("\t\ti2c_select_slave(%02X)\n", slave_addr);
-  //#endif
+  if ( i2c_open() )  return -1;
 
   if ( ioctl( i2c_fd, I2C_SLAVE, slave_addr ) < 0 )  {
-    perror("ioctl(I2C_SLAVE)");
+    printf( "Error (i2c_slave): Returned negative value from 'ioctl' command. \n" );
     return -1;
   }
 
   current_slave = slave_addr;
   return 0;
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  i2c_xxxx
-//  Eliminate this along with the globals...
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
-void linux_set_i2c_bus ( int bus )  {
-  if (i2c_fd)
-    i2c_close();
-  i2c_bus = bus;
-  i2c_addr = 0x68;
 }
 
 
@@ -117,7 +111,7 @@ int i2c_tx ( unsigned char slave_addr, unsigned char reg_addr, unsigned char len
     return -1;
   }
 
-  if ( i2c_select_slave(slave_addr) )  return -1;
+  if ( i2c_slave(slave_addr) )  return -1;
 
   if ( length == 0 )  {
     result = write( i2c_fd, &reg_addr, 1 );
