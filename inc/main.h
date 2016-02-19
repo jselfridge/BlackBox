@@ -68,6 +68,8 @@ uint i2c_bus;
 uint i2c_fd;
 uint i2c_addr;
 
+uint fd;
+uint addr;
 
 
 #endif

@@ -94,6 +94,7 @@ void linux_set_i2c_bus ( int bus )  {
     i2c_close();
   i2c_bus = bus;
   i2c_addr = 0x68;
+  addr = 0x68;
 }
 
 
