@@ -1,5 +1,11 @@
 
-
+//============================================================
+//  mpu.h
+//  Justin M Selfridge
+//============================================================
+#ifndef _MPU_H_
+#define _MPU_H_
+#include <main.h>
 
 
 /*
@@ -22,10 +28,6 @@
  *                  MPU9250 (or MPU6500 w/ AK8963 on the auxiliary bus)
  */
 
-#ifndef _MPU_H_
-#define _MPU_H_
-#include <main.h>
-
 
 #define INV_X_GYRO      (0x40)
 #define INV_Y_GYRO      (0x20)
@@ -33,6 +35,7 @@
 #define INV_XYZ_GYRO    (INV_X_GYRO | INV_Y_GYRO | INV_Z_GYRO)
 #define INV_XYZ_ACCEL   (0x08)
 #define INV_XYZ_COMPASS (0x01)
+
 
 struct int_param_s {
 #if defined EMPL_TARGET_MSP430 || defined MOTION_DRIVER_TARGET_MSP430
@@ -49,6 +52,7 @@ struct int_param_s {
 #endif
 };
 
+
 #define MPU_INT_STATUS_DATA_READY       (0x0001)
 #define MPU_INT_STATUS_DMP              (0x0002)
 #define MPU_INT_STATUS_PLL_READY        (0x0004)
@@ -64,12 +68,13 @@ struct int_param_s {
 #define MPU_INT_STATUS_DMP_4            (0x1000)
 #define MPU_INT_STATUS_DMP_5            (0x2000)
 
-/* Set up APIs */
+
+// Set up APIs
 int mpu_init(struct int_param_s *int_param);
 int mpu_init_slave(void);
 int mpu_set_bypass(unsigned char bypass_on);
 
-/* Configuration APIs */
+// Configuration APIs
 int mpu_lp_accel_mode(unsigned short rate);
 int mpu_lp_motion_interrupt(unsigned short thresh, unsigned char time,
     unsigned short lpa_freq);
@@ -110,7 +115,7 @@ int mpu_set_accel_bias_6500_reg(const long *accel_bias);
 int mpu_read_6050_accel_bias(long *accel_bias);
 int mpu_set_accel_bias_6050_reg(const long *accel_bias);
 
-/* Data getter/setter APIs */
+// Data getter/setter APIs
 int mpu_get_gyro_reg(short *data, unsigned long *timestamp);
 int mpu_get_accel_reg(short *data, unsigned long *timestamp);
 int mpu_get_compass_reg(short *data, unsigned long *timestamp);
@@ -136,5 +141,7 @@ int mpu_run_self_test(long *gyro, long *accel);
 int mpu_run_6500_self_test(long *gyro, long *accel, unsigned char debug);
 int mpu_register_tap_cb(void (*func)(unsigned char, unsigned char));
 
-#endif  /* #ifndef _INV_MPU_H_ */
+#endif
+
+
 
