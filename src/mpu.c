@@ -996,6 +996,7 @@ int mpu_read_reg(unsigned char reg, unsigned char *data)
  */
 int mpu_init_master(struct int_param_s *int_param)
 {
+  /*
     unsigned char data[6], rev;
 
     // Reset device
@@ -1009,7 +1010,7 @@ int mpu_init_master(struct int_param_s *int_param)
     if ( mpu_write( fd, addr, st.reg->pwr_mgmt_1, 1, data ) )
         return -1;
 
-#if defined MPU6050
+//#if defined MPU6050
     // Check product revision
     if ( mpu_read( fd, addr, st.reg->accel_offs, 6, data ) )
         return -1;
@@ -1023,7 +1024,7 @@ int mpu_init_master(struct int_param_s *int_param)
         else if (rev == 2)
             st.chip_cfg.accel_half = 0;
         else {
-            log_e("Unsupported software product rev %d.\n", rev);
+	    //log_e("Unsupported software product rev %d.\n", rev);  //-- JMS --//
             return -1;
         }
     } else {
@@ -1031,23 +1032,29 @@ int mpu_init_master(struct int_param_s *int_param)
             return -1;
         rev = data[0] & 0x0F;
         if (!rev) {
-            log_e("Product ID read as 0 indicates device is either "
-                "incompatible or an MPU3050.\n");
+	      //-- JMS --//
+	      //log_e("Product ID read as 0 indicates device is either "
+              //  "incompatible or an MPU3050.\n");
             return -1;
         } else if (rev == 4) {
-            log_i("Half sensitivity part found.\n");
+	    //-- JMS --//
+            //log_i("Half sensitivity part found.\n");
             st.chip_cfg.accel_half = 1;
         } else
             st.chip_cfg.accel_half = 0;
     }
-#elif defined MPU6500
+  */
+
+//#elif defined MPU6500
+/*
 #define MPU6500_MEM_REV_ADDR    (0x17)
     if ( mpu_read_mem( MPU6500_MEM_REV_ADDR, 1, &rev ) )
         return -1;
     if (rev == 0x1)
         st.chip_cfg.accel_half = 0;
     else {
-        log_e("Unsupported software product rev %d.\n", rev);
+        //-- JMS --//
+        //log_e("Unsupported software product rev %d.\n", rev);
         return -1;
     }
 
@@ -1056,8 +1063,10 @@ int mpu_init_master(struct int_param_s *int_param)
     data[0] = BIT_FIFO_SIZE_1024 | 0x8;
     if ( mpu_write( fd, addr, st.reg->accel_cfg2, 1, data ) )
         return -1;
-#endif
+*/
+//#endif
 
+/*
     // Set to invalid values to ensure no I2C writes are skipped
     st.chip_cfg.sensors = 0xFF;
     st.chip_cfg.gyro_fsr = 0xFF;
@@ -1106,6 +1115,7 @@ int mpu_init_master(struct int_param_s *int_param)
 #endif
 
     mpu_set_sensors(0);
+*/
     return 0;
 }
 
