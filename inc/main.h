@@ -55,7 +55,7 @@
 // I2C to MPU function wrapper
 #define i2c_write     i2c_tx
 #define i2c_read      i2c_rx
-#define get_ms        i2c_ct
+#define get_ms        i2c_get_ms
 #define log_i         printf
 #define log_e         printf
 #define delay_ms(t)   usleep(t*1000)
@@ -73,10 +73,10 @@ struct sigaction sys_signal;
 
 
 //-- DEBUGGING --//
-uint i2c_bus;
-uint i2c_fd;
-uint i2c_addr;
-int current_slave;
+//uint i2c_bus;
+//uint i2c_fd;
+//uint i2c_addr;
+//unsigned char current_slave;
 
 
 #endif

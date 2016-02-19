@@ -17,11 +17,14 @@ void imu_init (  )  {
   led_blink( LED_IMU, 200, 200 );
 
   // IMU struct values
-  imu1.id   = 1;
+  imu1.bus  = 1;
   imu1.addr = 0x68;
   imu1.gyr  = &gyr1;
   imu1.acc  = &acc1;
   imu1.mag  = &mag1;
+
+  // Open the I2C bus
+  i2c_init( &(imu1.fd), imu1.bus, imu1.addr );
 
   // Init functions
   imu_param();
@@ -42,6 +45,7 @@ void imu_init (  )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_exit ( void )  {
   if(DEBUG)  printf("Close IMU \n");
+  i2c_exit( &(imu1.fd) );
   led_off(LED_IMU);
   return;
 }
@@ -54,7 +58,7 @@ void imu_exit ( void )  {
 void imu_param (  )  {
 
   if(DEBUG) {  printf("  Assign IMU parameters ");  fflush(stdout);  }
-  linux_set_i2c_bus(imu1.id);
+  //linux_set_i2c_bus(imu1.bus);
 
   if(DEBUG) {  printf(".");  fflush(stdout);  }
   if( mpu_init(NULL) )

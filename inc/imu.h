@@ -41,7 +41,8 @@ imu_data_struct mag1;
 
 // IMU structure
 typedef struct imu_struct {
-  ushort id;
+  int    fd;
+  ushort bus;
   ushort addr;
   ushort loops;
   ushort count;

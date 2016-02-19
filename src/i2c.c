@@ -12,12 +12,15 @@
 
 
 //  Eliminate this along with the globals...
-void linux_set_i2c_bus ( int bus )  {
+//void linux_set_i2c_bus ( int bus )  {
+  /*
   if (i2c_fd)
     i2c_close();
   i2c_bus = bus;
   i2c_addr = 0x68;
-}
+  */
+  //return;
+//}
 
 
 
@@ -28,30 +31,24 @@ void linux_set_i2c_bus ( int bus )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  i2c_open
+//  i2c_init
 //  Assigns a file descriptor after opening an I2C bus. 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
-int i2c_open ( void )  {
+int i2c_init ( int *fd, ushort bus, ushort addr )  {
 
-  // i2c_bus is a global variable which can be directly passed into the function...
-  // i2c_fd  is a global variable which needs to be passed in as a pointer... 
-
-  printf( "Running I2C_open! \n" );
-
-  // Local variables
   char buf[32];
+  sprintf( buf, "/dev/i2c-%d", bus );
+  *fd = open( buf, O_RDWR );
 
-  if (!i2c_fd) {
+  if ( *fd < 0 ) {
+    printf( "Error (i2c_init): Returned a negative I2C file descriptor. \n" );
+    *fd = 0;
+    return -1;
+  }
 
-    sprintf( buf, "/dev/i2c-%d", i2c_bus );
-    i2c_fd = open( buf, O_RDWR );
-
-    if ( i2c_fd < 0 ) {
-      printf( "Error (i2c_open): Returned a negative I2C file descriptor. \n" );
-      i2c_fd = 0;
-      return -1;
-    }
-
+  if ( ioctl( *fd, I2C_SLAVE, addr ) < 0 )  {
+    printf( "Error (i2c_init): Returned negative value from 'ioctl' command. \n" );
+    return -1;
   }
 
   return 0;
@@ -59,16 +56,13 @@ int i2c_open ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  i2c_close
-//  Closes an I2C channel.
+//  i2c_exit
+//  Closes file descriptor and exits I2C channel.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
-void i2c_close ( void )  {
-  // i2c_fd and current_slave are globals that need to be eliminated...
-  if (i2c_fd) {
-    close(i2c_fd);
-    i2c_fd = 0;
-    current_slave = 0;
-  }
+void i2c_exit ( int *fd )  {
+  close(*fd);
+  *fd=0;
+  return;
 }
 
 
@@ -76,8 +70,9 @@ void i2c_close ( void )  {
 //  i2c_slave
 //  Determines the current I2C slave address.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
-int i2c_slave ( unsigned char slave_addr )  {
 
+int i2c_slave ( unsigned char slave_addr )  {
+  /*
   // Eliminate the global variable 'current_slave'...
 
   if ( current_slave == slave_addr )  return 0;
@@ -90,6 +85,7 @@ int i2c_slave ( unsigned char slave_addr )  {
   }
 
   current_slave = slave_addr;
+  */
   return 0;
 }
 
@@ -100,52 +96,44 @@ int i2c_slave ( unsigned char slave_addr )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
 int i2c_tx ( unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char const *data )  {
 
-  // Add a function parameter to specify the i2c_fd, which is currently global...
-  // Eliminated global reg_addr...
-
-  int result, i;
+  // Local variables
+  int  result, i;
   char buf [ MAX_WRITE_LEN+1 ];
 
+  // Check size of data
   if ( length > MAX_WRITE_LEN )  {
     printf( "Error (i2c_tx): Exceeded maximum write length. \n" );
     return -1;
   }
 
-  if ( i2c_slave(slave_addr) )  return -1;
+  //if ( i2c_slave(slave_addr) )  return -1;
 
+  // No data to send
   if ( length == 0 )  {
-    result = write( i2c_fd, &reg_addr, 1 );
-
+    result = write( imu1.fd, &reg_addr, 1 );    //-- CHANGE imu1.fd --//
     if ( result < 0 )  {
       printf( "Error (i2c_tx): Returned negative value with 'write' command. \n" );
       return result;
     }
-
     else if ( result != 1 )  {
       printf( "Error (i2c_tx): Did not transmit the byte. \n" );
       return -1;
     }
-
   }
 
+  // Send data
   else {
-
     buf[0] = reg_addr;
-
     for ( i=0; i<length; i++ )  buf[i+1] = data[i];
-
-    result = write( i2c_fd, buf, length+1 );
-
+    result = write( imu1.fd, buf, length+1 );    //-- CHANGE imu1.fd --//
     if ( result < 0 )  {
       printf( "Error (i2c_tx): Returned negative value with 'write' command. \n" );
       return result;
     }
-
-    else if ( result < (int)length )  {
+    else if ( result < (int) length )  {
       printf( "Error (i2c_tx): Only transmitted %d out of %u bytes. \n", result, length );
       return -1;
     }
-
   }
 
   return 0;
@@ -158,31 +146,21 @@ int i2c_tx ( unsigned char slave_addr, unsigned char reg_addr, unsigned char len
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
 int i2c_rx ( unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char *data )  {
 
-  // Add function parameter to specify the i2c_fd, currently a global variable...
-
-  int tries=0, result, total=0;
+  int result;
+  int tries=0, total=0;
 
   if ( i2c_write( slave_addr, reg_addr, 0, NULL ) )  return -1;
 
-  //total = 0;
-  //tries = 0;
-
   while ( total < length && tries < 5 )  {
-
-    result = read( i2c_fd, data + total, length - total );
-
+    result = read( imu1.fd, data + total, length - total );    //-- CHANGE imu1.fd --//
     if (result < 0) {
       printf( "Error (i2c_rx): Returned a negative value from 'read' command. \n" );
       break;
     }
-
     total += result;
-
     if ( total == length )  break;
-
     tries++;		
     usleep(10000);
-
   }
 
   if ( total < length )  return -1;
@@ -192,17 +170,18 @@ int i2c_rx ( unsigned char slave_addr, unsigned char reg_addr, unsigned char len
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  i2c_ct
-//  Implements a counter for proper I2C timing.
+//  i2c_get_ms
+//  Determines the number of milliseconds since epoch.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
-int i2c_ct ( unsigned long *count )  {
+int i2c_get_ms ( unsigned long *ms )  {
   struct timeval t;
-  if (!count)  return -1;
+  if (!ms)  return -1;
   if ( gettimeofday( &t, NULL ) < 0 )  {
-    printf( "Error (i2c_ct): Returned a negative value from 'gettimeofday' command. \n" );
+    printf( "Error (i2c_get_ms): Returned a negative value from 'gettimeofday' command. \n" );
     return -1;
   }
-  *count = ( t.tv_sec * 1000 ) + ( t.tv_usec / 1000 );
+  *ms = ( t.tv_sec * 1000 ) + ( t.tv_usec / 1000 );
+  printf( "ms: %ld \n", *ms );
   return 0;
 }
 
