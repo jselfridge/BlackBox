@@ -10,7 +10,7 @@
 
 #define MAX_WRITE_LEN 511
 
-int i2c_bus = 1;
+//int i2c_bus = 1;
 //int i2c_fd;
 int current_slave;
 unsigned char txBuff[MAX_WRITE_LEN + 1];
@@ -93,6 +93,7 @@ void linux_set_i2c_bus ( int bus )  {
   if (i2c_fd)
     i2c_close();
   i2c_bus = bus;
+  i2c_addr = 0x68;
 }
 
 

@@ -39,9 +39,6 @@
 //#include <linux/i2c-dev.h>  // Needed for 'I2C_SLAVE'  
 
 
-uint i2c_fd;
-//uint i2c_addr = 0x68;
-
 // Custom includes
 #include <ahr.h>
 #include <ctrl.h>
@@ -66,6 +63,11 @@ uint i2c_fd;
 bool running;
 bool armed;
 struct sigaction sys_signal;
+
+uint i2c_bus;
+uint i2c_fd;
+uint i2c_addr;
+
 
 
 #endif

@@ -1001,7 +1001,7 @@ int mpu_init_master(struct int_param_s *int_param)
     // Reset device
     data[0] = BIT_RESET;
     if ( mpu_write( i2c_fd, st.hw->addr, st.reg->pwr_mgmt_1, 1, data ) )
-        return -1;
+       return -1;
     usleep(100000);  //delay_ms(100);
 
     // Wake up chip
