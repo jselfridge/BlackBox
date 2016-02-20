@@ -1,7 +1,7 @@
-i2c.c:97:5:0	544	dynamic,bounded
-i2c.c:37:5:i2c_init	48	static
-i2c.c:62:6:i2c_exit	16	static
-i2c.c:74:5:i2c_slave	0	static
-i2c.c:97:5:i2c_tx	552	dynamic,bounded
-i2c.c:147:5:i2c_rx	24	static
-i2c.c:176:5:i2c_get_ms	24	static
+i2c.c:68:5:0	552	dynamic,bounded
+i2c.c:13:5:i2c_init	48	static
+i2c.c:38:6:i2c_exit	16	static
+i2c.c:49:5:i2c_slave	16	static
+i2c.c:68:5:i2c_tx	568	dynamic,bounded
+i2c.c:118:5:i2c_rx	24	static
+i2c.c:147:5:i2c_get_ms	24	static

@@ -53,8 +53,8 @@
 
 
 // I2C to MPU function wrapper
-#define i2c_write     i2c_tx
-#define i2c_read      i2c_rx
+#define i2c_write(a,b,c,d)     i2c_tx( &(imu1.fd), a,b,c,d )
+#define i2c_read(a,b,c,d)      i2c_rx( &(imu1.fd), a,b,c,d )
 #define get_ms        i2c_get_ms
 #define log_i         printf
 #define log_e         printf
@@ -69,6 +69,7 @@
 // Global variables (remove as quickly as possible)
 bool running;
 bool armed;
+unsigned char slave;
 struct sigaction sys_signal;
 
 
@@ -76,7 +77,7 @@ struct sigaction sys_signal;
 //uint i2c_bus;
 //uint i2c_fd;
 //uint i2c_addr;
-//unsigned char current_slave;
+
 
 
 #endif

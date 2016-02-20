@@ -6,35 +6,11 @@
 #include "i2c.h"
 
 
-
-
-#define MAX_WRITE_LEN 511
-
-
-//  Eliminate this along with the globals...
-//void linux_set_i2c_bus ( int bus )  {
-  /*
-  if (i2c_fd)
-    i2c_close();
-  i2c_bus = bus;
-  i2c_addr = 0x68;
-  */
-  //return;
-//}
-
-
-
-
-
-
-
-
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  i2c_init
 //  Assigns a file descriptor after opening an I2C bus. 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
-int i2c_init ( int *fd, ushort bus, ushort addr )  {
+int i2c_init ( int *fd, ushort bus, ushort slave_addr )  {
 
   char buf[32];
   sprintf( buf, "/dev/i2c-%d", bus );
@@ -46,7 +22,7 @@ int i2c_init ( int *fd, ushort bus, ushort addr )  {
     return -1;
   }
 
-  if ( ioctl( *fd, I2C_SLAVE, addr ) < 0 )  {
+  if ( ioctl( *fd, I2C_SLAVE, slave_addr ) < 0 )  {
     printf( "Error (i2c_init): Returned negative value from 'ioctl' command. \n" );
     return -1;
   }
@@ -68,24 +44,19 @@ void i2c_exit ( int *fd )  {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  i2c_slave
-//  Determines the current I2C slave address.
+//  Configures 'ioctl' when the slave address is changed.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+int i2c_slave ( int *fd, unsigned char slave_addr )  {
 
-int i2c_slave ( unsigned char slave_addr )  {
-  /*
-  // Eliminate the global variable 'current_slave'...
+  if ( slave == slave_addr )  return 0;
 
-  if ( current_slave == slave_addr )  return 0;
-
-  if ( i2c_open() )  return -1;
-
-  if ( ioctl( i2c_fd, I2C_SLAVE, slave_addr ) < 0 )  {
+  if ( ioctl( *fd, I2C_SLAVE, slave_addr ) < 0 )  {
     printf( "Error (i2c_slave): Returned negative value from 'ioctl' command. \n" );
     return -1;
   }
 
-  current_slave = slave_addr;
-  */
+  slave = slave_addr;
+
   return 0;
 }
 
@@ -94,23 +65,23 @@ int i2c_slave ( unsigned char slave_addr )  {
 //  i2c_tx
 //  Transmit data to the I2C bus.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
-int i2c_tx ( unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char const *data )  {
+int i2c_tx ( int *fd, unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char const *data )  {
 
   // Local variables
   int  result, i;
-  char buf [ MAX_WRITE_LEN+1 ];
+  char buf [I2C_MAX_WRITE];
 
   // Check size of data
-  if ( length > MAX_WRITE_LEN )  {
+  if ( length > I2C_MAX_WRITE-1 )  {
     printf( "Error (i2c_tx): Exceeded maximum write length. \n" );
     return -1;
   }
 
-  //if ( i2c_slave(slave_addr) )  return -1;
+  if ( i2c_slave( fd, slave_addr ) )  return -1;
 
   // No data to send
   if ( length == 0 )  {
-    result = write( imu1.fd, &reg_addr, 1 );    //-- CHANGE imu1.fd --//
+    result = write( *fd, &reg_addr, 1 );    //-- CHANGE imu1.fd --//
     if ( result < 0 )  {
       printf( "Error (i2c_tx): Returned negative value with 'write' command. \n" );
       return result;
@@ -125,7 +96,7 @@ int i2c_tx ( unsigned char slave_addr, unsigned char reg_addr, unsigned char len
   else {
     buf[0] = reg_addr;
     for ( i=0; i<length; i++ )  buf[i+1] = data[i];
-    result = write( imu1.fd, buf, length+1 );    //-- CHANGE imu1.fd --//
+    result = write( *fd, buf, length+1 );    //-- CHANGE imu1.fd --//
     if ( result < 0 )  {
       printf( "Error (i2c_tx): Returned negative value with 'write' command. \n" );
       return result;
@@ -144,15 +115,15 @@ int i2c_tx ( unsigned char slave_addr, unsigned char reg_addr, unsigned char len
 //  i2c_rx
 //  Receive data from the I2C.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
-int i2c_rx ( unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char *data )  {
+int i2c_rx ( int *fd, unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char *data )  {
 
   int result;
   int tries=0, total=0;
 
-  if ( i2c_write( slave_addr, reg_addr, 0, NULL ) )  return -1;
+  if ( i2c_tx( fd, slave_addr, reg_addr, 0, NULL ) )  return -1;
 
   while ( total < length && tries < 5 )  {
-    result = read( imu1.fd, data + total, length - total );    //-- CHANGE imu1.fd --//
+    result = read( *fd, data + total, length - total );    //-- CHANGE imu1.fd --//
     if (result < 0) {
       printf( "Error (i2c_rx): Returned a negative value from 'read' command. \n" );
       break;
