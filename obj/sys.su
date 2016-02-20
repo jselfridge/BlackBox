@@ -1,7 +1,8 @@
-sys.c:199:6:sys_exit	8	static
+sys.c:234:6:sys_exit	8	static
 sys.c:13:6:sys_init	184	dynamic,bounded
-sys.c:86:6:sys_sio	32	static
-sys.c:116:6:sys_imu1	48	static
+sys.c:87:6:sys_sio	32	static
+sys.c:117:6:sys_imuA	48	static
+sys.c:151:6:sys_imuB	48	static
 sys.c:55:6:sys_update	16	static
-sys.c:150:6:sys_ahr	0	static
-sys.c:175:6:sys_ctrl	0	static
+sys.c:185:6:sys_ahr	0	static
+sys.c:210:6:sys_ctrl	0	static

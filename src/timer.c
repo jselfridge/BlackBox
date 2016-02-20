@@ -26,12 +26,9 @@ void tmr_init ( void )  {
   // Create mutex conditions
   pthread_mutex_init( &mutex_input,  NULL );
   pthread_mutex_init( &mutex_output, NULL );
-  pthread_mutex_init( &mutex_gyrA,   NULL );
-  pthread_mutex_init( &mutex_accA,   NULL );
-  pthread_mutex_init( &mutex_magA,   NULL );
-  pthread_mutex_init( &mutex_gyrB,   NULL );
-  pthread_mutex_init( &mutex_accB,   NULL );
-  pthread_mutex_init( &mutex_magB,   NULL );
+  pthread_mutex_init( &mutex_gyr,    NULL );
+  pthread_mutex_init( &mutex_acc,    NULL );
+  pthread_mutex_init( &mutex_mag,    NULL );
   //pthread_mutex_init( &mutex_quat,   NULL );
   //pthread_mutex_init( &mutex_eul,    NULL );
   //pthread_mutex_init( &mutex_ctrl,   NULL );
@@ -164,12 +161,9 @@ void tmr_exit ( void )  {
   // Destroy mutex locks
   pthread_mutex_destroy(&mutex_input);
   pthread_mutex_destroy(&mutex_output);
-  pthread_mutex_destroy(&mutex_gyrA);
-  pthread_mutex_destroy(&mutex_accA);
-  pthread_mutex_destroy(&mutex_magA);
-  pthread_mutex_destroy(&mutex_gyrB);
-  pthread_mutex_destroy(&mutex_accB);
-  pthread_mutex_destroy(&mutex_magB);
+  pthread_mutex_destroy(&mutex_gyr);
+  pthread_mutex_destroy(&mutex_acc);
+  pthread_mutex_destroy(&mutex_mag);
   //pthread_mutex_destroy(&mutex_quat);
   //pthread_mutex_destroy(&mutex_eul);
   //pthread_mutex_destroy(&mutex_ctrl);
@@ -356,9 +350,9 @@ void *fcn_imuA (  )  {
   tmr_create(&tmr_imuA);
   while (running) {
     tmr_start(&tmr_imuA);
-    if (!datalog.saving)  imu_update();
+    if (!datalog.saving)  imu_update(&imuA);
     tmr_finish(&tmr_imuA);
-    //if (datalog.enabled)  log_record(LOG_IMUA);
+    if (datalog.enabled)  log_record(LOG_IMUA);
     tmr_pause(&tmr_imuA);
   }
   pthread_exit(NULL);
@@ -374,9 +368,9 @@ void *fcn_imuB (  )  {
   tmr_create(&tmr_imuB);
   while (running) {
     tmr_start(&tmr_imuB);
-    //if (!datalog.saving)  imu_update();
+    if (!datalog.saving)  imu_update(&imuB);
     tmr_finish(&tmr_imuB);
-    //if (datalog.enabled)  log_record(LOG_IMUB);
+    if (datalog.enabled)  log_record(LOG_IMUB);
     tmr_pause(&tmr_imuB);
   }
   pthread_exit(NULL);

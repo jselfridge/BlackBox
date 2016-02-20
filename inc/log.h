@@ -15,9 +15,10 @@
 // Log enumerations
 enum log_index {
   LOG_SIO  = 0,
-  LOG_IMU  = 1 //,
-  //LOG_AHR  = 2,
-  //LOG_CTL  = 3
+  LOG_IMUA = 1,
+  LOG_IMUB = 2 
+  //LOG_AHR  = 3
+  //LOG_CTL  = 4
 } log_index;
 
 
@@ -44,9 +45,12 @@ typedef struct log_imu_struct {
   float *avg;
   float *cal;
 } log_imu_struct;
-log_imu_struct log_gyr;
-log_imu_struct log_acc;
-log_imu_struct log_mag;
+log_imu_struct log_gyrA;
+log_imu_struct log_accA;
+log_imu_struct log_magA;
+log_imu_struct log_gyrB;
+log_imu_struct log_accB;
+log_imu_struct log_magB;
 
 
 /*// Log AHR structure

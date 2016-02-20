@@ -23,10 +23,12 @@ int main ( void )  {
   imu_init();
   //ahr_init();
   //ctl_init();
-  //log_init();
+  log_init();
 
-  //log_open();  //--  DEBUGGING  --//
-  //datalog.enabled = true;
+  //--  DEBUGGING  --//
+  log_open();
+  datalog.enabled = true;
+  //-----------------//
 
   tmr_init();
 

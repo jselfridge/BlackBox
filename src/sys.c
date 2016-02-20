@@ -68,7 +68,8 @@ void sys_update ( void )  {
 
   // Select data for display
   //sys_sio();
-  sys_imu1();
+  sys_imuA();
+  sys_imuB();
   //sys_ahr();
   //sys_ctrl();
 
@@ -110,34 +111,68 @@ void sys_sio ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_imu1
-//  Prints IMU1 debugging messages to the terminal.
+//  sys_imuA
+//  Prints IMUA debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_imu1 ( void )  {
+void sys_imuA ( void )  {
 
   // Loop counter
   ushort i;
 
   // Gyroscope data
-  pthread_mutex_lock(&mutex_gyrA);
+  pthread_mutex_lock(&mutex_gyr);
   //for ( i=0; i<3; i++ )  printf("%6d ",   gyrA.raw[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%9.2f ", gyrA.avg[i] );  printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.cal[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_gyrA);
+  pthread_mutex_unlock(&mutex_gyr);
 
   // Accelerometer data
-  pthread_mutex_lock(&mutex_accA);
+  pthread_mutex_lock(&mutex_acc);
   //for ( i=0; i<3; i++ )  printf("%6d ",   accA.raw[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%9.2f ", accA.avg[i] );  printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%6.3f ", accA.cal[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_accA);
+  pthread_mutex_unlock(&mutex_acc);
 
   // Magnetometer data
-  pthread_mutex_lock(&mutex_magA);
+  pthread_mutex_lock(&mutex_mag);
   //for ( i=0; i<3; i++ )  printf("%4d ",   magA.raw[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%7.2f ", magA.avg[i] );  printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%6.3f ", magA.cal[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_magA);
+  pthread_mutex_unlock(&mutex_mag);
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  sys_imuB
+//  Prints IMUB debugging messages to the terminal.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void sys_imuB ( void )  {
+
+  // Loop counter
+  ushort i;
+
+  // Gyroscope data
+  pthread_mutex_lock(&mutex_gyr);
+  //for ( i=0; i<3; i++ )  printf("%6d ",   gyrB.raw[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%9.2f ", gyrB.avg[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.cal[i] );  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&mutex_gyr);
+
+  // Accelerometer data
+  pthread_mutex_lock(&mutex_acc);
+  //for ( i=0; i<3; i++ )  printf("%6d ",   accB.raw[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%9.2f ", accB.avg[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", accB.cal[i] );  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&mutex_acc);
+
+  // Magnetometer data
+  pthread_mutex_lock(&mutex_mag);
+  //for ( i=0; i<3; i++ )  printf("%4d ",   magB.raw[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%7.2f ", magB.avg[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", magB.cal[i] );  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&mutex_mag);
 
   return;
 }
@@ -206,10 +241,12 @@ void sys_exit (  )  {
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   tmr_exit();
 
-  //datalog.enabled = false;
-  //log_close();  //--  DEBUGGING  --//
+  //--  DEBUGGING  --//
+  datalog.enabled = false;
+  log_close();
+  //-----------------//
 
-  //log_exit();
+  log_exit();
   //ctl_exit();
   //ahr_exit();
   imu_exit();

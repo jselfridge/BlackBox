@@ -65,7 +65,7 @@ void  imu_exit    ( void );
 void  imu_param   ( imu_struct *imu );
 void  imu_getcal  ( imu_struct *imu );
 void  imu_setic   ( imu_struct *imu );
-void  imu_update  ( void );
+void  imu_update  ( imu_struct *imu );
 
 
 #endif

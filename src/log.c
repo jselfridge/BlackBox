@@ -17,9 +17,12 @@ void log_init ( void )  {
   if(DEBUG)  printf("  Establish datalog limits \n");
   log_input.limit  = MAX_LOG_DUR * HZ_SIO;
   log_output.limit = MAX_LOG_DUR * HZ_SIO;
-  log_gyr.limit    = MAX_LOG_DUR * HZ_IMU_FAST;
-  log_acc.limit    = MAX_LOG_DUR * HZ_IMU_FAST;
-  log_mag.limit    = MAX_LOG_DUR * HZ_IMU_SLOW;
+  log_gyrA.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
+  log_accA.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
+  log_magA.limit   = MAX_LOG_DUR * HZ_IMU_SLOW;
+  log_gyrB.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
+  log_accB.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
+  log_magB.limit   = MAX_LOG_DUR * HZ_IMU_SLOW;
   //log_ahr.limit    = MAX_LOG_DUR * HZ_AHR;
   //log_ctrl.limit   = MAX_LOG_DUR * HZ_CTRL;
 
@@ -36,9 +39,12 @@ void log_open ( void )  {
   // Clear counters for new session
   log_input.count  = 0;
   log_output.count = 0;
-  log_gyr.count    = 0;
-  log_acc.count    = 0;
-  log_mag.count    = 0;
+  log_gyrA.count    = 0;
+  log_accA.count    = 0;
+  log_magA.count    = 0;
+  log_gyrB.count    = 0;
+  log_accB.count    = 0;
+  log_magB.count    = 0;
   //log_ahr.count    = 0;
   //log_ctrl.count   = 0;
 
@@ -54,26 +60,47 @@ void log_open ( void )  {
   log_output.pwm  =  malloc( sizeof(ushort) * log_output.limit * 10 );
   log_output.norm =  malloc( sizeof(float)  * log_output.limit * 10 );
 
-  // Gyroscope storage
-  log_gyr.time =  malloc( sizeof(float) * log_gyr.limit     );
-  log_gyr.dur  =  malloc( sizeof(ulong) * log_gyr.limit     );
-  log_gyr.raw  =  malloc( sizeof(short) * log_gyr.limit * 3 );
-  log_gyr.avg  =  malloc( sizeof(float) * log_gyr.limit * 3 );
-  log_gyr.cal  =  malloc( sizeof(float) * log_gyr.limit * 3 );
+  // Gyroscope A storage
+  log_gyrA.time =  malloc( sizeof(float) * log_gyrA.limit     );
+  log_gyrA.dur  =  malloc( sizeof(ulong) * log_gyrA.limit     );
+  log_gyrA.raw  =  malloc( sizeof(short) * log_gyrA.limit * 3 );
+  log_gyrA.avg  =  malloc( sizeof(float) * log_gyrA.limit * 3 );
+  log_gyrA.cal  =  malloc( sizeof(float) * log_gyrA.limit * 3 );
 
-  // Accelerometer storage
-  log_acc.time =  malloc( sizeof(float) * log_acc.limit     );
-  log_acc.dur  =  malloc( sizeof(ulong) * log_acc.limit     );
-  log_acc.raw  =  malloc( sizeof(short) * log_acc.limit * 3 );
-  log_acc.avg  =  malloc( sizeof(float) * log_acc.limit * 3 );
-  log_acc.cal  =  malloc( sizeof(float) * log_acc.limit * 3 );
+  // Accelerometer A storage
+  log_accA.time =  malloc( sizeof(float) * log_accA.limit     );
+  log_accA.dur  =  malloc( sizeof(ulong) * log_accA.limit     );
+  log_accA.raw  =  malloc( sizeof(short) * log_accA.limit * 3 );
+  log_accA.avg  =  malloc( sizeof(float) * log_accA.limit * 3 );
+  log_accA.cal  =  malloc( sizeof(float) * log_accA.limit * 3 );
 
-  // Magnetometer storage
-  log_mag.time =  malloc( sizeof(float) * log_mag.limit     );
-  log_mag.dur  =  malloc( sizeof(ulong) * log_mag.limit     );
-  log_mag.raw  =  malloc( sizeof(short) * log_mag.limit * 3 );
-  log_mag.avg  =  malloc( sizeof(float) * log_mag.limit * 3 );
-  log_mag.cal  =  malloc( sizeof(float) * log_mag.limit * 3 );
+  // Magnetometer A storage
+  log_magA.time =  malloc( sizeof(float) * log_magA.limit     );
+  log_magA.dur  =  malloc( sizeof(ulong) * log_magA.limit     );
+  log_magA.raw  =  malloc( sizeof(short) * log_magA.limit * 3 );
+  log_magA.avg  =  malloc( sizeof(float) * log_magA.limit * 3 );
+  log_magA.cal  =  malloc( sizeof(float) * log_magA.limit * 3 );
+
+  // Gyroscope B storage
+  log_gyrB.time =  malloc( sizeof(float) * log_gyrB.limit     );
+  log_gyrB.dur  =  malloc( sizeof(ulong) * log_gyrB.limit     );
+  log_gyrB.raw  =  malloc( sizeof(short) * log_gyrB.limit * 3 );
+  log_gyrB.avg  =  malloc( sizeof(float) * log_gyrB.limit * 3 );
+  log_gyrB.cal  =  malloc( sizeof(float) * log_gyrB.limit * 3 );
+
+  // Accelerometer B storage
+  log_accB.time =  malloc( sizeof(float) * log_accB.limit     );
+  log_accB.dur  =  malloc( sizeof(ulong) * log_accB.limit     );
+  log_accB.raw  =  malloc( sizeof(short) * log_accB.limit * 3 );
+  log_accB.avg  =  malloc( sizeof(float) * log_accB.limit * 3 );
+  log_accB.cal  =  malloc( sizeof(float) * log_accB.limit * 3 );
+
+  // Magnetometer B storage
+  log_magB.time =  malloc( sizeof(float) * log_magB.limit     );
+  log_magB.dur  =  malloc( sizeof(ulong) * log_magB.limit     );
+  log_magB.raw  =  malloc( sizeof(short) * log_magB.limit * 3 );
+  log_magB.avg  =  malloc( sizeof(float) * log_magB.limit * 3 );
+  log_magB.cal  =  malloc( sizeof(float) * log_magB.limit * 3 );
 
   /*// Attitude/Heading reference storage
   log_ahr.time  =  malloc( sizeof(float) * log_ahr.limit     );
@@ -135,7 +162,7 @@ void log_close ( void )  {
 
   // Local variables
   char *file = malloc(64);
-  FILE *fnote, *fin, *fout, *fgyr, *facc, *fmag;  // *fahr, *fctl;
+  FILE *fnote, *fin, *fout, *fgyrA, *faccA, *fmagA, *fgyrB, *faccB, *fmagB;  // *fahr, *fctl;
   ushort i;
   ulong row;
 
@@ -185,80 +212,155 @@ void log_close ( void )  {
   free(log_output.pwm);
   free(log_output.norm);
 
-  // Create gyroscope datalog file
-  sprintf( file, "%sgyr.txt", datalog.path );
-  fgyr = fopen( file, "w" );
-  if( fgyr == NULL )  printf( "Error (log_close): Cannot generate 'gyr' file. \n" );
-  fprintf( fgyr,
+  // Create gyroscope A datalog file
+  sprintf( file, "%sgyrA.txt", datalog.path );
+  fgyrA = fopen( file, "w" );
+  if( fgyrA == NULL )  printf( "Error (log_close): Cannot generate 'gyrA' file. \n" );
+  fprintf( fgyrA,
     "       Gtime    Gdur   \
     Grx     Gry     Grz       \
     Gax        Gay        Gaz     \
     Gcx      Gcy      Gcz");
 
   // Loop through gyroscope data
-  for ( row = 0; row < log_gyr.count; row++ ) {
-    fprintf( fgyr, "\n %011.6f  %06ld    ", log_gyr.time[row], log_gyr.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( fgyr, "%06d  ",   log_gyr.raw[ row*3 +i ] );   fprintf( fgyr, "   " );
-    for ( i=0; i<3; i++ )  fprintf( fgyr, "%09.2f  ", log_gyr.avg[ row*3 +i ] );   fprintf( fgyr, "   " );
-    for ( i=0; i<3; i++ )  fprintf( fgyr, "%07.4f  ", log_gyr.cal[ row*3 +i ] );   fprintf( fgyr, "   " );
+  for ( row = 0; row < log_gyrA.count; row++ ) {
+    fprintf( fgyrA, "\n %011.6f  %06ld    ", log_gyrA.time[row], log_gyrA.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( fgyrA, "%06d  ",   log_gyrA.raw[ row*3 +i ] );   fprintf( fgyrA, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fgyrA, "%09.2f  ", log_gyrA.avg[ row*3 +i ] );   fprintf( fgyrA, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fgyrA, "%07.4f  ", log_gyrA.cal[ row*3 +i ] );   fprintf( fgyrA, "   " );
   }
 
   // Free gyroscope memory
-  free(log_gyr.time);
-  free(log_gyr.dur);
-  free(log_gyr.raw);
-  free(log_gyr.avg);
-  free(log_gyr.cal);
+  free(log_gyrA.time);
+  free(log_gyrA.dur);
+  free(log_gyrA.raw);
+  free(log_gyrA.avg);
+  free(log_gyrA.cal);
 
-  // Create accelerometer datalog file
-  sprintf( file, "%sacc.txt", datalog.path );
-  facc = fopen( file, "w" );
-  if( facc == NULL )  printf( "Error (log_close): Cannot generate 'acc' file. \n" );
-  fprintf( facc, 
+  // Create accelerometer A datalog file
+  sprintf( file, "%saccA.txt", datalog.path );
+  faccA = fopen( file, "w" );
+  if( faccA == NULL )  printf( "Error (log_close): Cannot generate 'accA' file. \n" );
+  fprintf( faccA, 
     "       Atime    Adur   \
     Arx     Ary     Arz       \
     Aax        Aay        Aaz     \
     Acx      Acy      Acz");
 
   // Loop through accelerometer data
-  for ( row = 0; row < log_acc.count; row++ ) {
-    fprintf( facc, "\n %011.6f  %06ld    ", log_acc.time[row], log_acc.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( facc, "%06d  ",   log_acc.raw[ row*3 +i ] );   fprintf( facc, "   " );
-    for ( i=0; i<3; i++ )  fprintf( facc, "%09.2f  ", log_acc.avg[ row*3 +i ] );   fprintf( facc, "   " );
-    for ( i=0; i<3; i++ )  fprintf( facc, "%07.4f  ", log_acc.cal[ row*3 +i ] );   fprintf( facc, "   " );
+  for ( row = 0; row < log_accA.count; row++ ) {
+    fprintf( faccA, "\n %011.6f  %06ld    ", log_accA.time[row], log_accA.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( faccA, "%06d  ",   log_accA.raw[ row*3 +i ] );   fprintf( faccA, "   " );
+    for ( i=0; i<3; i++ )  fprintf( faccA, "%09.2f  ", log_accA.avg[ row*3 +i ] );   fprintf( faccA, "   " );
+    for ( i=0; i<3; i++ )  fprintf( faccA, "%07.4f  ", log_accA.cal[ row*3 +i ] );   fprintf( faccA, "   " );
   }
 
   // Free accelerometer memory
-  free(log_acc.time);
-  free(log_acc.dur);
-  free(log_acc.raw);
-  free(log_acc.avg);
-  free(log_acc.cal);
+  free(log_accA.time);
+  free(log_accA.dur);
+  free(log_accA.raw);
+  free(log_accA.avg);
+  free(log_accA.cal);
 
-  // Create magnetometer datalog file
-  sprintf( file, "%smag.txt", datalog.path );
-  fmag = fopen( file, "w" );
-  if( fmag == NULL )  printf( "Error (log_close): Cannot generate 'mag' file. \n" );
-  fprintf( fmag,
+  // Create magnetometer A datalog file
+  sprintf( file, "%smagA.txt", datalog.path );
+  fmagA = fopen( file, "w" );
+  if( fmagA == NULL )  printf( "Error (log_close): Cannot generate 'magA' file. \n" );
+  fprintf( fmagA,
     "       Mtime    Mdur   \
     Mrx     Mry     Mrz       \
     Max        May        Maz     \
     Mcx      Mcy      Mcz");
 
   // Loop through magnetometer data
-  for ( row = 0; row < log_mag.count; row++ ) {
-    fprintf( fmag, "\n %011.6f  %06ld    ", log_mag.time[row], log_mag.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( fmag, "%06d  ",   log_mag.raw[ row*3 +i ] );   fprintf( fmag, "   " );
-    for ( i=0; i<3; i++ )  fprintf( fmag, "%09.2f  ", log_mag.avg[ row*3 +i ] );   fprintf( fmag, "   " );
-    for ( i=0; i<3; i++ )  fprintf( fmag, "%07.4f  ", log_mag.cal[ row*3 +i ] );   fprintf( fmag, "   " );
+  for ( row = 0; row < log_magA.count; row++ ) {
+    fprintf( fmagA, "\n %011.6f  %06ld    ", log_magA.time[row], log_magA.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( fmagA, "%06d  ",   log_magA.raw[ row*3 +i ] );   fprintf( fmagA, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fmagA, "%09.2f  ", log_magA.avg[ row*3 +i ] );   fprintf( fmagA, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fmagA, "%07.4f  ", log_magA.cal[ row*3 +i ] );   fprintf( fmagA, "   " );
   }
 
   // Free magnetometer memory
-  free(log_mag.time);
-  free(log_mag.dur);
-  free(log_mag.raw);
-  free(log_mag.avg);
-  free(log_mag.cal);
+  free(log_magA.time);
+  free(log_magA.dur);
+  free(log_magA.raw);
+  free(log_magA.avg);
+  free(log_magA.cal);
+
+  // Create gyroscope B datalog file
+  sprintf( file, "%sgyrB.txt", datalog.path );
+  fgyrB = fopen( file, "w" );
+  if( fgyrB == NULL )  printf( "Error (log_close): Cannot generate 'gyrB' file. \n" );
+  fprintf( fgyrB,
+    "       Gtime    Gdur   \
+    Grx     Gry     Grz       \
+    Gax        Gay        Gaz     \
+    Gcx      Gcy      Gcz");
+
+  // Loop through gyroscope data
+  for ( row = 0; row < log_gyrB.count; row++ ) {
+    fprintf( fgyrB, "\n %011.6f  %06ld    ", log_gyrB.time[row], log_gyrB.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( fgyrB, "%06d  ",   log_gyrB.raw[ row*3 +i ] );   fprintf( fgyrB, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fgyrB, "%09.2f  ", log_gyrB.avg[ row*3 +i ] );   fprintf( fgyrB, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fgyrB, "%07.4f  ", log_gyrB.cal[ row*3 +i ] );   fprintf( fgyrB, "   " );
+  }
+
+  // Free gyroscope memory
+  free(log_gyrB.time);
+  free(log_gyrB.dur);
+  free(log_gyrB.raw);
+  free(log_gyrB.avg);
+  free(log_gyrB.cal);
+
+  // Create accelerometer B datalog file
+  sprintf( file, "%saccB.txt", datalog.path );
+  faccB = fopen( file, "w" );
+  if( faccB == NULL )  printf( "Error (log_close): Cannot generate 'accB' file. \n" );
+  fprintf( faccB, 
+    "       Atime    Adur   \
+    Arx     Ary     Arz       \
+    Aax        Aay        Aaz     \
+    Acx      Acy      Acz");
+
+  // Loop through accelerometer data
+  for ( row = 0; row < log_accB.count; row++ ) {
+    fprintf( faccB, "\n %011.6f  %06ld    ", log_accB.time[row], log_accB.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( faccB, "%06d  ",   log_accB.raw[ row*3 +i ] );   fprintf( faccB, "   " );
+    for ( i=0; i<3; i++ )  fprintf( faccB, "%09.2f  ", log_accB.avg[ row*3 +i ] );   fprintf( faccB, "   " );
+    for ( i=0; i<3; i++ )  fprintf( faccB, "%07.4f  ", log_accB.cal[ row*3 +i ] );   fprintf( faccB, "   " );
+  }
+
+  // Free accelerometer memory
+  free(log_accB.time);
+  free(log_accB.dur);
+  free(log_accB.raw);
+  free(log_accB.avg);
+  free(log_accB.cal);
+
+  // Create magnetometer B datalog file
+  sprintf( file, "%smagB.txt", datalog.path );
+  fmagB = fopen( file, "w" );
+  if( fmagB == NULL )  printf( "Error (log_close): Cannot generate 'magB' file. \n" );
+  fprintf( fmagB,
+    "       Mtime    Mdur   \
+    Mrx     Mry     Mrz       \
+    Max        May        Maz     \
+    Mcx      Mcy      Mcz");
+
+  // Loop through magnetometer data
+  for ( row = 0; row < log_magB.count; row++ ) {
+    fprintf( fmagB, "\n %011.6f  %06ld    ", log_magB.time[row], log_magB.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( fmagB, "%06d  ",   log_magB.raw[ row*3 +i ] );   fprintf( fmagB, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fmagB, "%09.2f  ", log_magB.avg[ row*3 +i ] );   fprintf( fmagB, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fmagB, "%07.4f  ", log_magB.cal[ row*3 +i ] );   fprintf( fmagB, "   " );
+  }
+
+  // Free magnetometer memory
+  free(log_magB.time);
+  free(log_magB.dur);
+  free(log_magB.raw);
+  free(log_magB.avg);
+  free(log_magB.cal);
 
   /*// Create attitude/heading reference datalog file
   sprintf( file, "%sahr.txt", datalog.path );
@@ -330,9 +432,12 @@ void log_close ( void )  {
   fclose(fnote);
   fclose(fin);
   fclose(fout);
-  fclose(fgyr);
-  fclose(facc);
-  fclose(fmag);
+  fclose(fgyrA);
+  fclose(faccA);
+  fclose(fmagA);
+  fclose(fgyrB);
+  fclose(faccB);
+  fclose(fmagB);
   //fclose(fahr);
   //fclose(fctl);
 
@@ -401,53 +506,102 @@ void log_record ( enum log_index index )  {
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Record IMU data
-  /*
-  case LOG_IMU :
+  // Record IMUA data
 
-    timestamp = (float) ( tmr_imu.start_sec + ( tmr_imu.start_usec / 1000000.0f ) ) - datalog.offset;
+  case LOG_IMUA :
+
+    timestamp = (float) ( tmr_imuA.start_sec + ( tmr_imuA.start_usec / 1000000.0f ) ) - datalog.offset;
     
-    // Gyroscope data
+    // Gyroscope A data
     pthread_mutex_lock(&mutex_gyr);
-    if ( log_gyr.count < log_gyr.limit ) {
-      row = log_gyr.count;
-      log_gyr.time[row] = timestamp;
-      log_gyr.dur[row]  = tmr_imu.dur;
-      for ( i=0; i<3; i++ )  log_gyr.raw[ row*3 +i ] = gyr1.raw[i];
-      for ( i=0; i<3; i++ )  log_gyr.avg[ row*3 +i ] = gyr1.avg[i];
-      for ( i=0; i<3; i++ )  log_gyr.cal[ row*3 +i ] = gyr1.cal[i];
-      log_gyr.count++;
+    if ( log_gyrA.count < log_gyrA.limit ) {
+      row = log_gyrA.count;
+      log_gyrA.time[row] = timestamp;
+      log_gyrA.dur[row]  = tmr_imuA.dur;
+      for ( i=0; i<3; i++ )  log_gyrA.raw[ row*3 +i ] = gyrA.raw[i];
+      for ( i=0; i<3; i++ )  log_gyrA.avg[ row*3 +i ] = gyrA.avg[i];
+      for ( i=0; i<3; i++ )  log_gyrA.cal[ row*3 +i ] = gyrA.cal[i];
+      log_gyrA.count++;
     }
     pthread_mutex_unlock(&mutex_gyr);
 
-    // Accelerometer data
+    // Accelerometer A data
     pthread_mutex_lock(&mutex_acc);
-    if ( log_acc.count < log_acc.limit ) {
-      row = log_acc.count;
-      log_acc.time[row] = timestamp;
-      log_acc.dur[row]  = tmr_imu.dur;
-      for ( i=0; i<3; i++ )  log_acc.raw[ row*3 +i ] = acc1.raw[i];
-      for ( i=0; i<3; i++ )  log_acc.avg[ row*3 +i ] = acc1.avg[i];
-      for ( i=0; i<3; i++ )  log_acc.cal[ row*3 +i ] = acc1.cal[i];
-      log_acc.count++;
+    if ( log_accA.count < log_accA.limit ) {
+      row = log_accA.count;
+      log_accA.time[row] = timestamp;
+      log_accA.dur[row]  = tmr_imuA.dur;
+      for ( i=0; i<3; i++ )  log_accA.raw[ row*3 +i ] = accA.raw[i];
+      for ( i=0; i<3; i++ )  log_accA.avg[ row*3 +i ] = accA.avg[i];
+      for ( i=0; i<3; i++ )  log_accA.cal[ row*3 +i ] = accA.cal[i];
+      log_accA.count++;
     }
     pthread_mutex_unlock(&mutex_acc);
 
-    // Magnetometer data
+    // Magnetometer A data
     pthread_mutex_lock(&mutex_mag);
-    if( imu1.getmag && ( log_mag.count < log_mag.limit) ) {
-      row = log_mag.count;
-      log_mag.time[row] = timestamp;
-      log_mag.dur[row]  = tmr_imu.dur;
-      for ( i=0; i<3; i++ )  log_mag.raw[ row*3 +i ] = mag1.raw[i];
-      for ( i=0; i<3; i++ )  log_mag.avg[ row*3 +i ] = mag1.avg[i];
-      for ( i=0; i<3; i++ )  log_mag.cal[ row*3 +i ] = mag1.cal[i];
-      log_mag.count++;
+    if( imuA.getmag && ( log_magA.count < log_magA.limit) ) {
+      row = log_magA.count;
+      log_magA.time[row] = timestamp;
+      log_magA.dur[row]  = tmr_imuA.dur;
+      for ( i=0; i<3; i++ )  log_magA.raw[ row*3 +i ] = magA.raw[i];
+      for ( i=0; i<3; i++ )  log_magA.avg[ row*3 +i ] = magA.avg[i];
+      for ( i=0; i<3; i++ )  log_magA.cal[ row*3 +i ] = magA.cal[i];
+      log_magA.count++;
     }
     pthread_mutex_unlock(&mutex_mag);
 
     return;
-  */
+
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Record IMUB data
+
+  case LOG_IMUB :
+
+    timestamp = (float) ( tmr_imuB.start_sec + ( tmr_imuB.start_usec / 1000000.0f ) ) - datalog.offset;
+    
+    // Gyroscope B data
+    pthread_mutex_lock(&mutex_gyr);
+    if ( log_gyrB.count < log_gyrB.limit ) {
+      row = log_gyrB.count;
+      log_gyrB.time[row] = timestamp;
+      log_gyrB.dur[row]  = tmr_imuB.dur;
+      for ( i=0; i<3; i++ )  log_gyrB.raw[ row*3 +i ] = gyrB.raw[i];
+      for ( i=0; i<3; i++ )  log_gyrB.avg[ row*3 +i ] = gyrB.avg[i];
+      for ( i=0; i<3; i++ )  log_gyrB.cal[ row*3 +i ] = gyrB.cal[i];
+      log_gyrB.count++;
+    }
+    pthread_mutex_unlock(&mutex_gyr);
+
+    // Accelerometer B data
+    pthread_mutex_lock(&mutex_acc);
+    if ( log_accB.count < log_accB.limit ) {
+      row = log_accB.count;
+      log_accB.time[row] = timestamp;
+      log_accB.dur[row]  = tmr_imuB.dur;
+      for ( i=0; i<3; i++ )  log_accB.raw[ row*3 +i ] = accB.raw[i];
+      for ( i=0; i<3; i++ )  log_accB.avg[ row*3 +i ] = accB.avg[i];
+      for ( i=0; i<3; i++ )  log_accB.cal[ row*3 +i ] = accB.cal[i];
+      log_accB.count++;
+    }
+    pthread_mutex_unlock(&mutex_acc);
+
+    // Magnetometer B data
+    pthread_mutex_lock(&mutex_mag);
+    if( imuB.getmag && ( log_magB.count < log_magB.limit) ) {
+      row = log_magB.count;
+      log_magB.time[row] = timestamp;
+      log_magB.dur[row]  = tmr_imuB.dur;
+      for ( i=0; i<3; i++ )  log_magB.raw[ row*3 +i ] = magB.raw[i];
+      for ( i=0; i<3; i++ )  log_magB.avg[ row*3 +i ] = magB.avg[i];
+      for ( i=0; i<3; i++ )  log_magB.cal[ row*3 +i ] = magB.cal[i];
+      log_magB.count++;
+    }
+    pthread_mutex_unlock(&mutex_mag);
+
+    return;
+
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record AHR data
