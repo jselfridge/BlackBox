@@ -45,6 +45,7 @@ imu_data_struct magB;
 // IMU structure
 typedef struct imu_struct {
   int    fd;
+  char   id;
   ushort bus;
   ushort addr;
   ushort loops;
@@ -61,9 +62,9 @@ imu_struct imuB;
 // IMU functions
 void  imu_init    ( void );
 void  imu_exit    ( void );
-void  imu_param   ( void );
-void  imu_getcal  ( void );
-void  imu_setic   ( void );
+void  imu_param   ( imu_struct *imu );
+void  imu_getcal  ( imu_struct *imu );
+void  imu_setic   ( imu_struct *imu );
 void  imu_update  ( void );
 
 
