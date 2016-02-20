@@ -3,4 +3,4 @@ imu.c:58:6:imu_param	16	static
 imu.c:96:6:imu_getcal	88	static
 imu.c:176:6:imu_setic	64	static
 imu.c:13:6:imu_init	16	static
-imu.c:221:6:imu_update	312	static
+imu.c:221:6:imu_update	320	static
