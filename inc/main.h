@@ -52,9 +52,7 @@
 #include <pruss_intc_mapping.h>
 
 
-// I2C to MPU function wrapper
-//#define i2c_write      i2c_tx
-//#define i2c_read       i2c_rx
+// MPU function wrapper
 #define get_ms         i2c_get_ms
 #define log_i          printf
 #define log_e          printf

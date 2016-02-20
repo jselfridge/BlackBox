@@ -45,7 +45,8 @@ typedef struct timer_struct {
 // Timer declarations
 timer_struct tmr_sio;
 timer_struct tmr_flag;
-timer_struct tmr_imu;
+timer_struct tmr_imuA;
+timer_struct tmr_imuB;
 timer_struct tmr_ctrl;
 timer_struct tmr_debug;
 //timer_struct tmr_ahr;
@@ -54,9 +55,12 @@ timer_struct tmr_debug;
 // Mutex declarations
 pthread_mutex_t mutex_input;
 pthread_mutex_t mutex_output;
-pthread_mutex_t mutex_gyr;
-pthread_mutex_t mutex_acc;
-pthread_mutex_t mutex_mag;
+pthread_mutex_t mutex_gyrA;
+pthread_mutex_t mutex_accA;
+pthread_mutex_t mutex_magA;
+pthread_mutex_t mutex_gyrB;
+pthread_mutex_t mutex_accB;
+pthread_mutex_t mutex_magB;
 //pthread_mutex_t mutex_quat;
 //pthread_mutex_t mutex_eul;
 //pthread_mutex_t mutex_ctrl;
@@ -77,7 +81,8 @@ void  tmr_finish    ( timer_struct *tmr );
 // Function handlers
 void *fcn_sio    (  );
 void *fcn_flag   (  );
-void *fcn_imu    (  );
+void *fcn_imuA   (  );
+void *fcn_imuB   (  );
 //void *fcn_ahr    (  );
 void *fcn_ctrl   (  );
 void *fcn_debug  (  );
