@@ -319,32 +319,38 @@ void imu_update ( imu_struct *imu )  {
   }
 
   // Push gyroscope values to data structure
-  pthread_mutex_lock(&mutex_gyr);
+  if ( imu->bus == 1 )  pthread_mutex_lock(&mutex_gyrA);
+  if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_gyrB);
   for ( i=0; i<3; i++ )  {
     imu->gyr->raw[i] = Graw[i];
     imu->gyr->avg[i] = Gavg[i];
     imu->gyr->cal[i] = Gcal[i];
   }
-  pthread_mutex_unlock(&mutex_gyr);
+  if ( imu->bus == 1 )  pthread_mutex_unlock(&mutex_gyrA);
+  if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_gyrB);
 
   // Push accerometer values to data structure
-  pthread_mutex_lock(&mutex_acc);
+  if ( imu->bus == 1 )  pthread_mutex_lock(&mutex_accA);
+  if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_accB);
   for ( i=0; i<3; i++ )  {
     imu->acc->raw[i] = Araw[i];
     imu->acc->avg[i] = Aavg[i];
     imu->acc->cal[i] = Acal[i];
   }
-  pthread_mutex_unlock(&mutex_acc);
+  if ( imu->bus == 1 )  pthread_mutex_unlock(&mutex_accA);
+  if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_accB);
 
   // Push magnetometer values to data structure
   if(imu->getmag) {
-  pthread_mutex_lock(&mutex_mag);
+  if ( imu->bus == 1 )  pthread_mutex_lock(&mutex_magA);
+  if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_magB);
   for ( i=0; i<3; i++ )  {
     imu->mag->raw[i] = Mraw[i];
     imu->mag->avg[i] = Mavg[i];
     imu->mag->cal[i] = Mcal[i];
   }
-  pthread_mutex_unlock(&mutex_mag);
+  if ( imu->bus == 1 )  pthread_mutex_unlock(&mutex_magA);
+  if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_magB);
   }
 
   return;

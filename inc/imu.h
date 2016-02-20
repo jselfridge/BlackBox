@@ -33,6 +33,7 @@ typedef struct imu_data_struct {
   short raw   [3];
   float avg   [3];
   float cal   [3];
+  pthread_mutex_t lock;
 } imu_data_struct;
 imu_data_struct gyrA;
 imu_data_struct accA;

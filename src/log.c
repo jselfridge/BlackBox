@@ -513,7 +513,7 @@ void log_record ( enum log_index index )  {
     timestamp = (float) ( tmr_imuA.start_sec + ( tmr_imuA.start_usec / 1000000.0f ) ) - datalog.offset;
     
     // Gyroscope A data
-    pthread_mutex_lock(&mutex_gyr);
+    pthread_mutex_lock(&mutex_gyrA);
     if ( log_gyrA.count < log_gyrA.limit ) {
       row = log_gyrA.count;
       log_gyrA.time[row] = timestamp;
@@ -523,10 +523,10 @@ void log_record ( enum log_index index )  {
       for ( i=0; i<3; i++ )  log_gyrA.cal[ row*3 +i ] = gyrA.cal[i];
       log_gyrA.count++;
     }
-    pthread_mutex_unlock(&mutex_gyr);
+    pthread_mutex_unlock(&mutex_gyrA);
 
     // Accelerometer A data
-    pthread_mutex_lock(&mutex_acc);
+    pthread_mutex_lock(&mutex_accA);
     if ( log_accA.count < log_accA.limit ) {
       row = log_accA.count;
       log_accA.time[row] = timestamp;
@@ -536,10 +536,10 @@ void log_record ( enum log_index index )  {
       for ( i=0; i<3; i++ )  log_accA.cal[ row*3 +i ] = accA.cal[i];
       log_accA.count++;
     }
-    pthread_mutex_unlock(&mutex_acc);
+    pthread_mutex_unlock(&mutex_accA);
 
     // Magnetometer A data
-    pthread_mutex_lock(&mutex_mag);
+    pthread_mutex_lock(&mutex_magA);
     if( imuA.getmag && ( log_magA.count < log_magA.limit) ) {
       row = log_magA.count;
       log_magA.time[row] = timestamp;
@@ -549,7 +549,7 @@ void log_record ( enum log_index index )  {
       for ( i=0; i<3; i++ )  log_magA.cal[ row*3 +i ] = magA.cal[i];
       log_magA.count++;
     }
-    pthread_mutex_unlock(&mutex_mag);
+    pthread_mutex_unlock(&mutex_magA);
 
     return;
 
@@ -562,7 +562,7 @@ void log_record ( enum log_index index )  {
     timestamp = (float) ( tmr_imuB.start_sec + ( tmr_imuB.start_usec / 1000000.0f ) ) - datalog.offset;
     
     // Gyroscope B data
-    pthread_mutex_lock(&mutex_gyr);
+    pthread_mutex_lock(&mutex_gyrB);
     if ( log_gyrB.count < log_gyrB.limit ) {
       row = log_gyrB.count;
       log_gyrB.time[row] = timestamp;
@@ -572,10 +572,10 @@ void log_record ( enum log_index index )  {
       for ( i=0; i<3; i++ )  log_gyrB.cal[ row*3 +i ] = gyrB.cal[i];
       log_gyrB.count++;
     }
-    pthread_mutex_unlock(&mutex_gyr);
+    pthread_mutex_unlock(&mutex_gyrB);
 
     // Accelerometer B data
-    pthread_mutex_lock(&mutex_acc);
+    pthread_mutex_lock(&mutex_accB);
     if ( log_accB.count < log_accB.limit ) {
       row = log_accB.count;
       log_accB.time[row] = timestamp;
@@ -585,10 +585,10 @@ void log_record ( enum log_index index )  {
       for ( i=0; i<3; i++ )  log_accB.cal[ row*3 +i ] = accB.cal[i];
       log_accB.count++;
     }
-    pthread_mutex_unlock(&mutex_acc);
+    pthread_mutex_unlock(&mutex_accB);
 
     // Magnetometer B data
-    pthread_mutex_lock(&mutex_mag);
+    pthread_mutex_lock(&mutex_magB);
     if( imuB.getmag && ( log_magB.count < log_magB.limit) ) {
       row = log_magB.count;
       log_magB.time[row] = timestamp;
@@ -598,7 +598,7 @@ void log_record ( enum log_index index )  {
       for ( i=0; i<3; i++ )  log_magB.cal[ row*3 +i ] = magB.cal[i];
       log_magB.count++;
     }
-    pthread_mutex_unlock(&mutex_mag);
+    pthread_mutex_unlock(&mutex_magB);
 
     return;
 

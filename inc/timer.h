@@ -55,9 +55,12 @@ timer_struct tmr_debug;
 // Mutex declarations
 pthread_mutex_t mutex_input;
 pthread_mutex_t mutex_output;
-pthread_mutex_t mutex_gyr;
-pthread_mutex_t mutex_acc;
-pthread_mutex_t mutex_mag;
+pthread_mutex_t mutex_gyrA;
+pthread_mutex_t mutex_accA;
+pthread_mutex_t mutex_magA;
+pthread_mutex_t mutex_gyrB;
+pthread_mutex_t mutex_accB;
+pthread_mutex_t mutex_magB;
 //pthread_mutex_t mutex_quat;
 //pthread_mutex_t mutex_eul;
 //pthread_mutex_t mutex_ctrl;
