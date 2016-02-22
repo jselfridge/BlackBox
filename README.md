@@ -28,10 +28,11 @@ a ground control station (GCS).
 </ul
 <li><b> v0.1.X - Second IMU </b></li>
 <ul>
-  <li> Revise MPU code directory structure. </li>
-  <li> (WIP) Comment out and eliminate non-essential functions. </li>
-  <li> (WIP) Implement custom I2C code framework. </li>
-  <li> (WIP) Add second IMU sensor. </li>
+  <li> Revised MPU code directory structure. </li>
+  <li> Revised MPU function calls to accept second I2C channel. </li>
+  <li> Implemented custom I2C code framework. </li>
+  <li> Added second IMU sensor. </li>
+  <li> (WIP) Modify dDTO for 400kHz I2C channel. </li>
 </ul>
 </ul>
 

@@ -246,9 +246,12 @@
         target = <&i2c1>;
         __overlay__ {
             status = "okay";
-            clock-frequency = <0x61a80>;
             pinctrl-names = "default";
             pinctrl-0 = <&i2c1_pins>;
+            //clock-frequency = <0x61a80>;
+            clock-frequency = <400000>;
+            #address-cells = <1>;
+            #size-cells = <0>;
         };
     };
 
@@ -258,9 +261,12 @@
         target = <&i2c2>;
         __overlay__ {
             status = "okay";
-            clock-frequency = <0x61a80>;
             pinctrl-names = "default";
             pinctrl-0 = <&i2c2_pins>;
+            //clock-frequency = <0x61a80>;
+            clock-frequency = <400000>;
+            #address-cells = <1>;
+            #size-cells = <0>;
         };
     };
 
