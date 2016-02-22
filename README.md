@@ -148,6 +148,7 @@ The following list outlines some proposed upcoming change.
   <li> Replace hard coded gyr bias with saved parameters from a file </li>
   <li> Calculate and apply rotation transformation for accelerometer mounting errors </li>
   <li> Abstract the controller to be applied to various vehicles with same structure </li>
+  <li> Make LPF a stand alone function </li>
 </ul>
 <li><b> Maybe next board </b></li>
 <ul>

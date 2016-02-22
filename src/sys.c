@@ -116,6 +116,9 @@ void sys_sio ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_imuA ( void )  {
 
+  // Check that IMUA is in use
+  if (USE_IMUA) {
+
   // Loop counter
   ushort i;
 
@@ -140,6 +143,8 @@ void sys_imuA ( void )  {
   for ( i=0; i<3; i++ )  printf("%6.3f ", magA.cal[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_magA);
 
+  }
+
   return;
 }
 
@@ -149,6 +154,9 @@ void sys_imuA ( void )  {
 //  Prints IMUB debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void sys_imuB ( void )  {
+
+  // Check that IMUB is in use
+  if (USE_IMUB) {
 
   // Loop counter
   ushort i;
@@ -173,6 +181,8 @@ void sys_imuB ( void )  {
   //for ( i=0; i<3; i++ )  printf("%7.2f ", magB.avg[i] );  printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%6.3f ", magB.cal[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_magB);
+
+  }
 
   return;
 }

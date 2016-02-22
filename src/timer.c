@@ -42,8 +42,8 @@ void tmr_init ( void )  {
   // Create primary timing threads
   tmr_thread( &tmr_sio,  &attr, fcn_sio  );  usleep(100000);
   tmr_thread( &tmr_flag, &attr, fcn_flag );  usleep(100000);
-  tmr_thread( &tmr_imuA, &attr, fcn_imuA );  usleep(100000);
-  tmr_thread( &tmr_imuB, &attr, fcn_imuB );  usleep(100000);
+  if(USE_IMUA)  { tmr_thread( &tmr_imuA, &attr, fcn_imuA );  usleep(100000);  }
+  if(USE_IMUB)  { tmr_thread( &tmr_imuB, &attr, fcn_imuB );  usleep(100000);  }
   //tmr_thread( &tmr_ahr,  &attr, fcn_ahr  );  usleep(100000);
   tmr_thread( &tmr_ctrl, &attr, fcn_ctrl );  usleep(100000);
 
@@ -191,14 +191,16 @@ void tmr_exit ( void )  {
   if(DEBUG)  printf( "ahr " );
   */
   // Exit IMUB thread
+  if(USE_IMUB)  {
   if( pthread_join ( tmr_imuB.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'imuB' thread. \n" );
-  if(DEBUG)  printf( "imuB " );
+  if(DEBUG)  printf( "imuB " );  }
 
   // Exit IMUA thread
+  if(USE_IMUA)  {
   if( pthread_join ( tmr_imuA.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'imuA' thread. \n" );
-  if(DEBUG)  printf( "imuA " );
+  if(DEBUG)  printf( "imuA " );  }
 
   // Exit program execution flags thread
   if( pthread_join ( tmr_flag.id, NULL ) )

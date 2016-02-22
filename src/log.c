@@ -39,12 +39,12 @@ void log_open ( void )  {
   // Clear counters for new session
   log_input.count  = 0;
   log_output.count = 0;
-  log_gyrA.count    = 0;
-  log_accA.count    = 0;
-  log_magA.count    = 0;
-  log_gyrB.count    = 0;
-  log_accB.count    = 0;
-  log_magB.count    = 0;
+  log_gyrA.count   = 0;
+  log_accA.count   = 0;
+  log_magA.count   = 0;
+  log_gyrB.count   = 0;
+  log_accB.count   = 0;
+  log_magB.count   = 0;
   //log_ahr.count    = 0;
   //log_ctrl.count   = 0;
 
@@ -59,6 +59,9 @@ void log_open ( void )  {
   log_output.reg  =  malloc( sizeof(ushort) * log_output.limit * 10 );
   log_output.pwm  =  malloc( sizeof(ushort) * log_output.limit * 10 );
   log_output.norm =  malloc( sizeof(float)  * log_output.limit * 10 );
+
+  // IMU A Storage
+  if(USE_IMUA) {
 
   // Gyroscope A storage
   log_gyrA.time =  malloc( sizeof(float) * log_gyrA.limit     );
@@ -81,6 +84,11 @@ void log_open ( void )  {
   log_magA.avg  =  malloc( sizeof(float) * log_magA.limit * 3 );
   log_magA.cal  =  malloc( sizeof(float) * log_magA.limit * 3 );
 
+  }
+
+  // IMU B Storage
+  if(USE_IMUB) {
+
   // Gyroscope B storage
   log_gyrB.time =  malloc( sizeof(float) * log_gyrB.limit     );
   log_gyrB.dur  =  malloc( sizeof(ulong) * log_gyrB.limit     );
@@ -101,6 +109,8 @@ void log_open ( void )  {
   log_magB.raw  =  malloc( sizeof(short) * log_magB.limit * 3 );
   log_magB.avg  =  malloc( sizeof(float) * log_magB.limit * 3 );
   log_magB.cal  =  malloc( sizeof(float) * log_magB.limit * 3 );
+
+  }
 
   /*// Attitude/Heading reference storage
   log_ahr.time  =  malloc( sizeof(float) * log_ahr.limit     );
@@ -212,6 +222,9 @@ void log_close ( void )  {
   free(log_output.pwm);
   free(log_output.norm);
 
+  // IMU A datalogs
+  if(USE_IMUA)  {
+
   // Create gyroscope A datalog file
   sprintf( file, "%sgyrA.txt", datalog.path );
   fgyrA = fopen( file, "w" );
@@ -286,6 +299,11 @@ void log_close ( void )  {
   free(log_magA.raw);
   free(log_magA.avg);
   free(log_magA.cal);
+
+  }
+
+  // IMU B datalog
+  if (USE_IMUB)  {
 
   // Create gyroscope B datalog file
   sprintf( file, "%sgyrB.txt", datalog.path );
@@ -362,6 +380,8 @@ void log_close ( void )  {
   free(log_magB.avg);
   free(log_magB.cal);
 
+  }
+
   /*// Create attitude/heading reference datalog file
   sprintf( file, "%sahr.txt", datalog.path );
   fahr = fopen( file, "w" );
@@ -432,12 +452,19 @@ void log_close ( void )  {
   fclose(fnote);
   fclose(fin);
   fclose(fout);
-  fclose(fgyrA);
-  fclose(faccA);
-  fclose(fmagA);
-  fclose(fgyrB);
-  fclose(faccB);
-  fclose(fmagB);
+
+  if (USE_IMUA)  {
+    fclose(fgyrA);
+    fclose(faccA);
+    fclose(fmagA);
+  }
+
+  if (USE_IMUB)  {
+    fclose(fgyrB);
+    fclose(faccB);
+    fclose(fmagB);
+  }
+
   //fclose(fahr);
   //fclose(fctl);
 

@@ -10,6 +10,9 @@
 
 // Define statements
 
+#define USE_IMUA   true
+#define USE_IMUB   false
+
 #define GYR_HIST   10
 #define ACC_HIST   10
 #define MAG_HIST   10

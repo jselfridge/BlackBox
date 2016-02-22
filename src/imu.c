@@ -16,35 +16,43 @@ void imu_init (  )  {
   // Start initialization
   led_blink( LED_IMU, 200, 200 );
 
-  // IMUA struct values
-  imuA.id   = 'A';
-  imuA.bus  = 1;
-  imuA.addr = 0x68;
-  imuA.gyr  = &gyrA;
-  imuA.acc  = &accA;
-  imuA.mag  = &magA;
+  // Setup IMUA
+  if (USE_IMUA)  {
 
-  // IMUB struct values
-  imuB.id   = 'B';
-  imuB.bus  = 2;
-  imuB.addr = 0x68;
-  imuB.gyr  = &gyrB;
-  imuB.acc  = &accB;
-  imuB.mag  = &magB;
+    // Struct values
+    imuA.id   = 'A';
+    imuA.bus  = 1;
+    imuA.addr = 0x68;
+    imuA.gyr  = &gyrA;
+    imuA.acc  = &accA;
+    imuA.mag  = &magA;
 
-  // Open the I2C buses
-  i2c_init( &(imuA.fd), imuA.bus, imuA.addr );
-  i2c_init( &(imuB.fd), imuB.bus, imuB.addr );
+    // Setup functions
+    i2c_init( &(imuA.fd), imuA.bus, imuA.addr );
+    imu_param(&imuA);
+    imu_getcal(&imuA);
+    imu_setic(&imuA);
 
-  // IMUA setup functions
-  imu_param(&imuA);
-  imu_getcal(&imuA);
-  imu_setic(&imuA);
+  }
 
-  // IMUB setup functions
-  imu_param(&imuB);
-  imu_getcal(&imuB);
-  imu_setic(&imuB);
+  // Setup IMUB
+  if (USE_IMUB)  {
+
+    // Struct values
+    imuB.id   = 'B';
+    imuB.bus  = 2;
+    imuB.addr = 0x68;
+    imuB.gyr  = &gyrB;
+    imuB.acc  = &accB;
+    imuB.mag  = &magB;
+
+    // Setup functions
+    i2c_init( &(imuB.fd), imuB.bus, imuB.addr );
+    imu_param(&imuB);
+    imu_getcal(&imuB);
+    imu_setic(&imuB);
+
+  }
 
   // IMU warmup period
   usleep(500000);
@@ -60,8 +68,8 @@ void imu_init (  )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void imu_exit ( void )  {
   if(DEBUG)  printf("Close IMU \n");
-  i2c_exit( &(imuA.fd) );
-  i2c_exit( &(imuB.fd) );
+  if(USE_IMUA)  i2c_exit( &(imuA.fd) );
+  if(USE_IMUB)  i2c_exit( &(imuB.fd) );
   led_off(LED_IMU);
   return;
 }
