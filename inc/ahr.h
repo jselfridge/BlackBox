@@ -6,7 +6,7 @@
 #ifndef _AHR_H_
 #define _AHR_H_
 #include <main.h>
-/*
+
 
 // Define statements
 #define GYR_ERROR  5.0f * ( PI / 180.0 )
@@ -37,7 +37,7 @@ void  ahr_update  ( void );
 void  ahr_fusion  ( void );
 void  ahr_kalman  ( void );
 
-*/
+
 #endif
 
 

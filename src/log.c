@@ -23,7 +23,7 @@ void log_init ( void )  {
   log_gyrB.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
   log_accB.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
   log_magB.limit   = MAX_LOG_DUR * HZ_IMU_SLOW;
-  //log_ahr.limit    = MAX_LOG_DUR * HZ_AHR;
+  log_ahr.limit    = MAX_LOG_DUR * HZ_AHR;
   //log_ctrl.limit   = MAX_LOG_DUR * HZ_CTRL;
 
   return;
@@ -45,7 +45,7 @@ void log_open ( void )  {
   log_gyrB.count   = 0;
   log_accB.count   = 0;
   log_magB.count   = 0;
-  //log_ahr.count    = 0;
+  log_ahr.count    = 0;
   //log_ctrl.count   = 0;
 
   // Input signal storage
@@ -112,7 +112,7 @@ void log_open ( void )  {
 
   }
 
-  /*// Attitude/Heading reference storage
+  // Attitude/Heading reference storage
   log_ahr.time  =  malloc( sizeof(float) * log_ahr.limit     );
   log_ahr.dur   =  malloc( sizeof(ulong) * log_ahr.limit     );
   log_ahr.quat  =  malloc( sizeof(float) * log_ahr.limit * 4 );
@@ -122,7 +122,7 @@ void log_open ( void )  {
   log_ahr.bias  =  malloc( sizeof(float) * log_ahr.limit * 3 );
   log_ahr.fx    =  malloc( sizeof(float) * log_ahr.limit     );
   log_ahr.fz    =  malloc( sizeof(float) * log_ahr.limit     );
-  */
+
   /*// Controller parameter storage
   log_ctrl.time =  malloc( sizeof(float) * log_ctrl.limit     );
   log_ctrl.dur  =  malloc( sizeof(ulong) * log_ctrl.limit     );
@@ -172,7 +172,7 @@ void log_close ( void )  {
 
   // Local variables
   char *file = malloc(64);
-  FILE *fnote, *fin, *fout, *fgyrA, *faccA, *fmagA, *fgyrB, *faccB, *fmagB;  // *fahr, *fctl;
+  FILE *fnote, *fin, *fout, *fgyrA, *faccA, *fmagA, *fgyrB, *faccB, *fmagB, *fahr; // *fctl;
   ushort i;
   ulong row;
 
@@ -382,7 +382,7 @@ void log_close ( void )  {
 
   }
 
-  /*// Create attitude/heading reference datalog file
+  // Create attitude/heading reference datalog file
   sprintf( file, "%sahr.txt", datalog.path );
   fahr = fopen( file, "w" );
   if( fahr == NULL )  printf( "Error (log_close): Cannot generate 'ahr' file. \n" );
@@ -407,8 +407,8 @@ void log_close ( void )  {
     fprintf( fahr, "%07.4f  ", log_ahr.fz[ row +i ] );
     fprintf( fahr, "   " );
   }
-  */
-  /*// Free attitude/heading memory
+
+  // Free attitude/heading memory
   free(log_ahr.time);
   free(log_ahr.dur);
   free(log_ahr.quat);
@@ -418,7 +418,7 @@ void log_close ( void )  {
   free(log_ahr.bias);
   free(log_ahr.fx);
   free(log_ahr.fz);
-  */
+
   /*// Create controller datalog file
   sprintf( file, "%sctrl.txt", datalog.path );
   fctl = fopen( file, "w" );
@@ -452,20 +452,17 @@ void log_close ( void )  {
   fclose(fnote);
   fclose(fin);
   fclose(fout);
-
   if (USE_IMUA)  {
     fclose(fgyrA);
     fclose(faccA);
     fclose(fmagA);
   }
-
   if (USE_IMUB)  {
     fclose(fgyrB);
     fclose(faccB);
     fclose(fmagB);
   }
-
-  //fclose(fahr);
+  fclose(fahr);
   //fclose(fctl);
 
   // Switch datalog setup flag
@@ -534,7 +531,6 @@ void log_record ( enum log_index index )  {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record IMUA data
-
   case LOG_IMUA :
 
     timestamp = (float) ( tmr_imuA.start_sec + ( tmr_imuA.start_usec / 1000000.0f ) ) - datalog.offset;
@@ -583,7 +579,6 @@ void log_record ( enum log_index index )  {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record IMUB data
-
   case LOG_IMUB :
 
     timestamp = (float) ( tmr_imuB.start_sec + ( tmr_imuB.start_usec / 1000000.0f ) ) - datalog.offset;
@@ -632,27 +627,35 @@ void log_record ( enum log_index index )  {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record AHR data
-  //case LOG_AHR :
-    /*
-    pthread_mutex_lock(&mutex_ahr);
+  case LOG_AHR :
+
     timestamp = (float) ( tmr_ahr.start_sec + ( tmr_ahr.start_usec / 1000000.0f ) ) - datalog.offset;
 
     if ( log_ahr.count < log_ahr.limit ) {
       row = log_ahr.count;
       log_ahr.time[row] = timestamp;
       log_ahr.dur[row]  = tmr_ahr.dur;
+
+      pthread_mutex_lock(&mutex_quat);
       for ( i=0; i<4; i++ )  log_ahr.quat  [ row*4 +i ] = ahr.quat  [i];
       for ( i=0; i<4; i++ )  log_ahr.dquat [ row*4 +i ] = ahr.dquat [i];
+      pthread_mutex_unlock(&mutex_quat);
+
+      pthread_mutex_lock(&mutex_eul);
       for ( i=0; i<3; i++ )  log_ahr.eul   [ row*3 +i ] = ahr.eul   [i];
       for ( i=0; i<3; i++ )  log_ahr.deul  [ row*3 +i ] = ahr.deul  [i];
+      pthread_mutex_unlock(&mutex_eul);
+
+      pthread_mutex_lock(&mutex_ahr);
       for ( i=0; i<3; i++ )  log_ahr.bias  [ row*3 +i ] = ahr.bias  [i];
                              log_ahr.fx    [ row   +i ] = ahr.fx;
                              log_ahr.fz    [ row   +i ] = ahr.fz;
+      pthread_mutex_unlock(&mutex_ahr);
+
       log_ahr.count++;
     }
 
-    pthread_mutex_unlock(&mutex_ahr);    */
-    //return;
+    return;
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

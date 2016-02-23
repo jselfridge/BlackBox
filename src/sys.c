@@ -70,7 +70,7 @@ void sys_update ( void )  {
   //sys_sio();
   sys_imuA();
   sys_imuB();
-  //sys_ahr();
+  sys_ahr();
   //sys_ctrl();
 
   // Complete debugging display 
@@ -195,7 +195,7 @@ void sys_imuB ( void )  {
 void sys_ahr ( void )  {
 
   // Loop counter
-  //ushort i;
+  ushort i;
 
   /*// Quaternion data
   pthread_mutex_lock(&mutex_quat);
@@ -204,10 +204,10 @@ void sys_ahr ( void )  {
   pthread_mutex_unlock(&mutex_quat);*/
 
   // Euler data
-  //pthread_mutex_lock(&mutex_eul);
-  //for ( i=0; i<3; i++ )  printf("%7.2f ", ahr.eul[i]  * (180.0/PI) );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%7.2f ", ahr.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
-  //pthread_mutex_unlock(&mutex_eul); 
+  pthread_mutex_lock(&mutex_eul);
+  for ( i=0; i<3; i++ )  printf("%7.2f ", ahr.eul[i]  * (180.0/PI) );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%7.2f ", ahr.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&mutex_eul); 
 
   return;
 }
@@ -258,7 +258,7 @@ void sys_exit (  )  {
 
   log_exit();
   //ctl_exit();
-  //ahr_exit();
+  ahr_exit();
   imu_exit();
   flg_exit();
   sio_exit();

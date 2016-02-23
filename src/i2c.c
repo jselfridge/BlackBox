@@ -81,7 +81,7 @@ int i2c_write ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsign
 
   // No data to send
   if ( length == 0 )  {
-    result = write( fd, &reg_addr, 1 );    //-- CHANGE imu1.fd --//
+    result = write( fd, &reg_addr, 1 );
     if ( result < 0 )  {
       printf( "Error (i2c_tx): Returned negative value with 'write' command. \n" );
       return result;
@@ -96,7 +96,7 @@ int i2c_write ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsign
   else {
     buf[0] = reg_addr;
     for ( i=0; i<length; i++ )  buf[i+1] = data[i];
-    result = write( fd, buf, length+1 );    //-- CHANGE imu1.fd --//
+    result = write( fd, buf, length+1 );
     if ( result < 0 )  {
       printf( "Error (i2c_tx): Returned negative value with 'write' command. \n" );
       return result;
@@ -123,7 +123,7 @@ int i2c_read ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsigne
   if ( i2c_write( fd, slave_addr, reg_addr, 0, NULL ) )  return -1;
 
   while ( total < length && tries < 5 )  {
-    result = read( fd, data + total, length - total );    //-- CHANGE imu1.fd --//
+    result = read( fd, data + total, length - total );
     if (result < 0) {
       printf( "Error (i2c_rx): Returned a negative value from 'read' command. \n" );
       break;

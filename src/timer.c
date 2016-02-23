@@ -26,17 +26,15 @@ void tmr_init ( void )  {
   // Create mutex conditions
   pthread_mutex_init( &mutex_input,  NULL );
   pthread_mutex_init( &mutex_output, NULL );
-
   pthread_mutex_init( &mutex_gyrA,   NULL );
   pthread_mutex_init( &mutex_accA,   NULL );
   pthread_mutex_init( &mutex_magA,   NULL );
-
   pthread_mutex_init( &mutex_gyrB,   NULL );
   pthread_mutex_init( &mutex_accB,   NULL );
   pthread_mutex_init( &mutex_magB,   NULL );
-
-  //pthread_mutex_init( &mutex_quat,   NULL );
-  //pthread_mutex_init( &mutex_eul,    NULL );
+  pthread_mutex_init( &mutex_quat,   NULL );
+  pthread_mutex_init( &mutex_eul,    NULL );
+  pthread_mutex_init( &mutex_ahr,    NULL );
   //pthread_mutex_init( &mutex_ctrl,   NULL );
 
   // Create primary timing threads
@@ -44,7 +42,7 @@ void tmr_init ( void )  {
   tmr_thread( &tmr_flag, &attr, fcn_flag );  usleep(100000);
   if(USE_IMUA)  { tmr_thread( &tmr_imuA, &attr, fcn_imuA );  usleep(100000);  }
   if(USE_IMUB)  { tmr_thread( &tmr_imuB, &attr, fcn_imuB );  usleep(100000);  }
-  //tmr_thread( &tmr_ahr,  &attr, fcn_ahr  );  usleep(100000);
+  tmr_thread( &tmr_ahr,  &attr, fcn_ahr  );  usleep(100000);
   tmr_thread( &tmr_ctrl, &attr, fcn_ctrl );  usleep(100000);
 
   // Possibly create debugging thread
@@ -84,11 +82,11 @@ void tmr_setup ( void )  {
   tmr_imuB.prio   =  PRIO_IMU;
   tmr_imuB.per    =  1000000 / HZ_IMU_FAST;
 
-  /*// AHRS timer
+  // AHRS timer
   tmr_ahr.name    =  "ahr";
   tmr_ahr.prio    =  PRIO_AHR;
   tmr_ahr.per     =  1000000 / HZ_AHR;
-  */
+
   // Control timer
   tmr_ctrl.name   =  "ctrl";
   tmr_ctrl.prio   =  PRIO_CTRL;
@@ -167,17 +165,15 @@ void tmr_exit ( void )  {
   // Destroy mutex locks
   pthread_mutex_destroy(&mutex_input);
   pthread_mutex_destroy(&mutex_output);
-
   pthread_mutex_destroy(&mutex_gyrA);
   pthread_mutex_destroy(&mutex_accA);
   pthread_mutex_destroy(&mutex_magA);
-
   pthread_mutex_destroy(&mutex_gyrB);
   pthread_mutex_destroy(&mutex_accB);
   pthread_mutex_destroy(&mutex_magB);
-
-  //pthread_mutex_destroy(&mutex_quat);
-  //pthread_mutex_destroy(&mutex_eul);
+  pthread_mutex_destroy(&mutex_quat);
+  pthread_mutex_destroy(&mutex_eul);
+  pthread_mutex_destroy(&mutex_ahr);
   //pthread_mutex_destroy(&mutex_ctrl);
 
   // Exit control thread
@@ -185,11 +181,11 @@ void tmr_exit ( void )  {
     printf( "Error (tmr_exit): Failed to exit 'ctrl' thread. \n" );
   if(DEBUG)  printf( "ctrl " );
 
-  /*// Exit AHR thread
+  // Exit AHR thread
   if( pthread_join ( tmr_ahr.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ahr' thread. \n" );
   if(DEBUG)  printf( "ahr " );
-  */
+
   // Exit IMUB thread
   if(USE_IMUB)  {
   if( pthread_join ( tmr_imuB.id, NULL ) )
@@ -396,7 +392,7 @@ void *fcn_imuB (  )  {
 //  fcn_ahr
 //  Function handler for the AHR timing thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*void *fcn_ahr (  )  {
+void *fcn_ahr (  )  {
   tmr_create(&tmr_ahr);
   while (running) {
     tmr_start(&tmr_ahr);
@@ -408,7 +404,7 @@ void *fcn_imuB (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-*/
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  fcn_ctrl

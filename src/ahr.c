@@ -4,7 +4,7 @@
 //  Justin M Selfridge
 //============================================================
 #include "ahr.h"
-/*
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ahr_init
@@ -101,13 +101,9 @@ void ahr_fusion ( void )  {
 
   // Get values from IMU data structure
   double g[3], a[3], m[3];
-  pthread_mutex_lock(&mutex_imu);
-  for ( i=0; i<3; i++ )  {
-    g[i] =  gyr.cal[i];
-    a[i] = -acc.cal[i];
-    m[i] =  mag.cal[i];
-  }
-  pthread_mutex_unlock(&mutex_imu);
+  pthread_mutex_lock(&mutex_gyrA);  for ( i=0; i<3; i++ )  g[i] =  gyrA.cal[i];  pthread_mutex_unlock(&mutex_gyrA);
+  pthread_mutex_lock(&mutex_accA);  for ( i=0; i<3; i++ )  a[i] = -accA.cal[i];  pthread_mutex_unlock(&mutex_accA);
+  pthread_mutex_lock(&mutex_magA);  for ( i=0; i<3; i++ )  m[i] =  magA.cal[i];  pthread_mutex_unlock(&mutex_magA);
 
   // Normalize magnetometer
   norm = 0.0;
@@ -265,7 +261,7 @@ void ahr_kalman ( void )  {
   return;
 }
 
-*/
+
 
 
 /*
