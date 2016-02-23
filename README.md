@@ -25,15 +25,18 @@ a ground control station (GCS).
   <li> Added PD controller structure for airplane system </li>
   <li> Unique disarming values for specific systems </li>
   <li> Moved calibration files so they can be board specific </li>
-</ul
-<li><b> v0.1.X - Second IMU </b></li>
+</ul>
+</ul>
+
+
+v0.1.1 - Second I2C channel
+---------------------------
 <ul>
   <li> Revised MPU code directory structure. </li>
   <li> Revised MPU function calls to accept second I2C channel. </li>
   <li> Implemented custom I2C code framework. </li>
   <li> Added second IMU sensor. </li>
-  <li> (WIP) Modify dDTO for 400kHz I2C channel. </li>
-</ul>
+  <li> Added code to toggle which IMUs are operational. </li>
 </ul>
 
 
