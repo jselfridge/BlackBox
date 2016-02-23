@@ -53,27 +53,26 @@
         "P9.19",
         "P9.20",
 
+        //--  SERIAL  --//
+        "P8.37",
+        "P8.38",
+        "P9.11",
+        "P9.13",
+        "P9.21",
+        "P9.22",
+        "P9.24",
+        "P9.26",
 /*
-|        //--  SERIAL  --//
-|        "P8.37",
-|        "P8.38",
-|        "P9.11",
-|        "P9.13",
-|        "P9.21",
-|        "P9.22",
-|        "P9.24",
-|        "P9.26",
-|
 |        //--  GPIO  --//
 |	"P9.15",
 |	"P9.16",
 */
 
         //--  HARDWARE  --//
-        //"uart1",
-        //"uart2",
-        //"uart4",
-        //"uart5",
+        "uart1",
+        "uart2",
+        "uart4",
+        "uart5",
         "i2c1",
         "i2c2",
         "pru0",
@@ -135,39 +134,39 @@
                 >;
             };
 
+            //--  UART1 pins  --//
+            uart1_pins: pinmux_uart1_pins {
+                pinctrl-single,pins = <
+                    0x184  0x20      //  P9.24 | UART1_TX | MODE 0  //
+                    0x180  0x20      //  P9.26 | UART1_RX | MODE 0  //
+                >;
+            };
+
+            //--  UART2 pins  --//
+            uart2_pins: pinmux_uart2_pins {
+                pinctrl-single,pins = <
+                    0x154  0x21      //  P9.21 | UART2_TX | MODE 1  //
+                    0x150  0x21      //  P9.22 | UART2_RX | MODE 1  //
+                >;
+            };
+
+            //--  UART4 pins  --//
+            uart4_pins: pinmux_uart4_pins {
+                pinctrl-single,pins = <
+                    0x074  0x26      //  P9.13 | UART4_TX | MODE 6  //
+                    0x070  0x26      //  P9.11 | UART4_RX | MODE 6  //
+                >;
+            };
+
+            //--  UART5 pins  --//
+            uart5_pins: pinmux_uart5_pins {
+                pinctrl-single,pins = <
+                    0x0C0  0x24      //  P8.37 | UART5_TX | MODE 4  //
+                    0x0C4  0x24      //  P8.38 | UART5_RX | MODE 4  //
+                >;
+            };
+
 /*
-|            //--  UART1 pins  --//
-|            uart1_pins: pinmux_uart1_pins {
-|                pinctrl-single,pins = <
-|                    0x184  0x20      //  P9.24 | UART1_TX | MODE 0  //
-|                    0x180  0x20      //  P9.26 | UART1_RX | MODE 0  //
-|                >;
-|            };
-|
-|            //--  UART2 pins  --//
-|            uart2_pins: pinmux_uart2_pins {
-|                pinctrl-single,pins = <
-|                    0x154  0x21      //  P9.21 | UART2_TX | MODE 1  //
-|                    0x150  0x21      //  P9.22 | UART2_RX | MODE 1  //
-|                >;
-|            };
-|
-|            //--  UART4 pins  --//
-|            uart4_pins: pinmux_uart4_pins {
-|                pinctrl-single,pins = <
-|                    0x074  0x26      //  P9.13 | UART4_TX | MODE 6  //
-|                    0x070  0x26      //  P9.11 | UART4_RX | MODE 6  //
-|                >;
-|            };
-|
-|            //--  UART5 pins  --//
-|            uart5_pins: pinmux_uart5_pins {
-|                pinctrl-single,pins = <
-|                    0x0C0  0x24      //  P8.37 | UART5_TX | MODE 4  //
-|                    0x0C4  0x24      //  P8.38 | UART5_RX | MODE 4  //
-|                >;
-|            };
-|
 |            //--  GPIO pins  --//
 |            gpio_pins: pinmux_gpio_pins {
 |                pinctrl-single,pins = <
@@ -240,7 +239,6 @@
         };
     };
 
-
     //--  I2C1  --//
     fragment@11 {
         target = <&i2c1>;
@@ -254,7 +252,6 @@
             #size-cells = <0>;
         };
     };
-
 
     //--  I2C2  --//
     fragment@12 {
@@ -270,56 +267,47 @@
         };
     };
 
+    //--  UART1  --//
+    fragment@21 {
+        target = <&uart1>;
+        __overlay__ {
+            status = "okay";
+            pinctrl-names = "default";
+            pinctrl-0 = <&uart1_pins>;
+        };
+    };
+
+    //--  UART2  --//
+    fragment@22 {
+        target = <&uart2>;
+        __overlay__ {
+            status = "okay";
+            pinctrl-names = "default";
+            pinctrl-0 = <&uart2_pins>;
+        };
+    };
+
+    //--  UART4  --//
+    fragment@24 {
+        target = <&uart4>;
+        __overlay__ {
+            status = "okay";
+            pinctrl-names = "default";
+            pinctrl-0 = <&uart4_pins>;
+        };
+    };
+
+    //--  UART5  --//
+    fragment@25 {
+        target = <&uart5>;
+        __overlay__ {
+            status = "okay";
+            pinctrl-names = "default";
+            pinctrl-0 = <&uart5_pins>;
+        };
+    };
 
 /*
-|    //--  UART1  --//
-|    fragment@21 {
-|        target = <&uart1>;
-|        //target = <&uart2>;
-|        __overlay__ {
-|            status = "okay";
-|            pinctrl-names = "default";
-|            pinctrl-0 = <&uart1_pins>;
-|        };
-|    };
-|
-|
-|    //--  UART2  --//
-|    fragment@22 {
-|        target = <&uart2>;
-|        //target = <&uart3>;
-|        __overlay__ {
-|            status = "okay";
-|            pinctrl-names = "default";
-|            pinctrl-0 = <&uart2_pins>;
-|        };
-|    };
-|
-|
-|    //--  UART4  --//
-|    fragment@24 {
-|        target = <&uart4>;
-|        //target = <&uart5>;
-|        __overlay__ {
-|            status = "okay";
-|            pinctrl-names = "default";
-|            pinctrl-0 = <&uart4_pins>;
-|        };
-|    };
-|
-|
-|    //--  UART5  --//
-|    fragment@25 {
-|        target = <&uart5>;
-|        //target = <&uart6>;
-|        __overlay__ {
-|            status = "okay";
-|            pinctrl-names = "default";
-|            pinctrl-0 = <&uart5_pins>;
-|        };
-|    };
-|
-|
 |    //--  GENERAL I/O  --//
 |    fragment@2 {
 |        target = <&ocp>;
