@@ -40,17 +40,31 @@ int main ( void )  {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //  BEGIN UART DEMO
 
+  int i, j, m, n;
+  char buf_tx1[128] = "Hello there, I am a bit of serial data that I wish to be read.";
+  char buf_rx1[128];
+  char buf_tx2[128] = "Blah.";
+  char buf_rx2[128];
+
+  memset( &buf_rx1, 0, sizeof(buf_rx1) );
+  memset( &buf_rx2, 0, sizeof(buf_rx2) );
+
   // Send serial data
-  char buf_tx[64] = "Hello there!";
-  int i = write( uart1.fd, &buf_tx, 20 );
-  printf("i: %d  buf_tx: %s \n", i, buf_tx );
+  i = write( uart1.fd, &buf_tx1, 64 );
+  usleep(i*100);
+  j = read( uart1.fd, &buf_rx1, sizeof(buf_rx1) );
+  tcflush( uart1.fd, TCIOFLUSH );
 
   // Read serial data
-  char buf_rx[64];
-  memset( &buf_rx, 0, sizeof(buf_rx) );
-  int j = read( uart2.fd, &buf_rx, sizeof(buf_rx) );
+  m = write( uart2.fd, &buf_tx2, 64 );
+  usleep(m*100);
+  n = read( uart2.fd, &buf_rx2, sizeof(buf_rx2) );
   tcflush( uart2.fd, TCIOFLUSH );
-  printf("j: %d  buf_rx: %s \n", j, buf_rx );
+
+  printf("i:%d buf_tx1: %s \n", i, buf_tx1 );
+  printf("j:%d buf_rx1: %s \n", j, buf_rx1 );
+  printf("m:%d buf_tx2: %s \n", m, buf_tx2 );
+  printf("n:%d buf_rx2: %s \n", n, buf_rx2 );
 
   uart_exit();
 

@@ -15,7 +15,9 @@
 typedef struct uart_struct {
   uint   id;
   int    fd;
-  char   path[16];
+  char   path   [16];
+  char   txdata [128];
+  char   rxdata [128];
   struct termios param;
 } uart_struct;
 uart_struct uart1;
@@ -25,9 +27,10 @@ uart_struct uart5;
 
 
 // UART functions
-void  uart_init   ( void );
-void  uart_setup  ( uart_struct *uart );
-void  uart_exit   ( void );
+void  uart_init    ( void );
+void  uart_setup   ( uart_struct *uart );
+void  uart_update  ( uart_struct *uart );
+void  uart_exit    ( void );
 
 
 #endif

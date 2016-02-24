@@ -51,12 +51,12 @@ void uart_setup ( uart_struct *uart )  {
   settings.c_oflag     = 0;
   settings.c_cflag     = CS8 | CREAD | CLOCAL;
   settings.c_lflag     = 0;
-  settings.c_cc[VTIME] = 0;
-  settings.c_cc[VMIN]  = 1;
+  settings.c_cc[VTIME] = 1;
+  settings.c_cc[VMIN]  = 0;
   uart->param = settings;
 
   // Open the file descriptor
-  uart->fd = open ( uart->path, O_RDWR | O_NOCTTY );
+  uart->fd = open ( uart->path, O_RDWR | O_NOCTTY );  //| O_NONBLOCK );
   if ( uart->fd <0 )  printf( "Error (uart): Couldn't open UART%d. \n", uart->id );
 
   // Set baud rate
@@ -71,6 +71,21 @@ void uart_setup ( uart_struct *uart )  {
 }
 
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  uart_update
+//  Read and write serial data on the UART device.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void uart_update ( uart_struct *uart )  {
+  //int i = write( uart->fd, uart->txdata, 20 );
+  //printf("i:%d \n",i);
+  //printf("sizeof:%d \n",sizeof(&uart));
+  //int j = read( uart->fd, uart->rxdata, sizeof(char) );
+  //printf("j:%d \n",j);
+  //tcflush( uart->fd, TCIOFLUSH );
+  return;
+}
+
+ 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  uart_exit
 //  Close the UART file descriptors.
