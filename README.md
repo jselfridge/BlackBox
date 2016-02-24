@@ -26,6 +26,12 @@ a ground control station (GCS).
   <li> Moved calibration files so they can be board specific </li>
 </ul>
 <li><b> v0.1.X - Configure serial UARTs </b></li>
+<ul>
+  <li> Enabled four UART channels within DTO. </li>
+  <li> Added new header and source code files for UART functionality. </li>
+  <li> (WIP) Incorporate new timing threads. </li>
+  <li> (WIP) Pass different parameters/settings to different UART devices. </li>
+</ul>
 </ul>
 
 

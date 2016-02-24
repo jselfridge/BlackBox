@@ -45,6 +45,7 @@
 #include <sio.h>
 #include <sys.h>
 #include <timer.h>
+#include <uart.h>
 
 
 // PRU includes
