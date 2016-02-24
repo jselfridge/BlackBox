@@ -249,19 +249,19 @@ void sys_exit (  )  {
 
   // Exit subsystems
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
-  tmr_exit();
+  //tmr_exit();
 
   //--  DEBUGGING  --//
-  datalog.enabled = false;
-  log_close();
+  //datalog.enabled = false;
+  //log_close();
   //-----------------//
 
-  log_exit();
+  //log_exit();
   //ctl_exit();
-  ahr_exit();
-  imu_exit();
-  flg_exit();
-  sio_exit();
+  //ahr_exit();
+  //imu_exit();
+  //flg_exit();
+  //sio_exit();
 
   // Shut everything down
   if(DEBUG)  printf("Program complete \n");
