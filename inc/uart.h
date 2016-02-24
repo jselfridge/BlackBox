@@ -9,6 +9,10 @@
 
 
 // Define statements
+#define UART1_ENABLED  true
+#define UART2_ENABLED  true
+#define UART4_ENABLED  false
+#define UART5_ENABLED  false
 
 
 // UART structure

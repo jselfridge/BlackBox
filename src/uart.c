@@ -27,10 +27,10 @@ void uart_init ( void )  {
 
   // Setup each UART device
   if (DEBUG)  printf("  Configured:  " );
-  uart_setup(&uart1);
-  uart_setup(&uart2);
-  uart_setup(&uart4);
-  uart_setup(&uart5);
+  if (UART1_ENABLED)  uart_setup(&uart1);
+  if (UART2_ENABLED)  uart_setup(&uart2);
+  if (UART4_ENABLED)  uart_setup(&uart4);
+  if (UART5_ENABLED)  uart_setup(&uart5);
   if (DEBUG)  printf("\n");
 
   return;
@@ -51,7 +51,7 @@ void uart_setup ( uart_struct *uart )  {
   settings.c_oflag     = 0;
   settings.c_cflag     = CS8 | CREAD | CLOCAL;
   settings.c_lflag     = 0;
-  settings.c_cc[VTIME] = 1;
+  settings.c_cc[VTIME] = 5;
   settings.c_cc[VMIN]  = 0;
   uart->param = settings;
 
@@ -76,12 +76,10 @@ void uart_setup ( uart_struct *uart )  {
 //  Read and write serial data on the UART device.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void uart_update ( uart_struct *uart )  {
-  //int i = write( uart->fd, uart->txdata, 20 );
-  //printf("i:%d \n",i);
-  //printf("sizeof:%d \n",sizeof(&uart));
-  //int j = read( uart->fd, uart->rxdata, sizeof(char) );
-  //printf("j:%d \n",j);
-  //tcflush( uart->fd, TCIOFLUSH );
+  int w = write( uart->fd, uart->txdata, 64 );
+  usleep(w*200);
+  int r = read( uart->fd, uart->rxdata, sizeof(char)*64 );
+  tcflush( uart->fd, TCIOFLUSH );
   return;
 }
 
@@ -91,11 +89,11 @@ void uart_update ( uart_struct *uart )  {
 //  Close the UART file descriptors.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void uart_exit ( void )  {
-  if (DEBUG)  printf("Exit UARTs \n" );
-  if ( close(uart1.fd) <0 )  printf( "Error (uart_exit): Couldn't close UART1. \n" ); 
-  if ( close(uart2.fd) <0 )  printf( "Error (uart_exit): Couldn't close UART2. \n" ); 
-  if ( close(uart4.fd) <0 )  printf( "Error (uart_exit): Couldn't close UART4. \n" ); 
-  if ( close(uart5.fd) <0 )  printf( "Error (uart_exit): Couldn't close UART5. \n" ); 
+  if (DEBUG)  printf("Close UART \n" );
+  if (UART1_ENABLED)  if ( close(uart1.fd) <0 )  printf( "Error (uart_exit): Couldn't close UART1. \n" ); 
+  if (UART2_ENABLED)  if ( close(uart2.fd) <0 )  printf( "Error (uart_exit): Couldn't close UART2. \n" ); 
+  if (UART4_ENABLED)  if ( close(uart4.fd) <0 )  printf( "Error (uart_exit): Couldn't close UART4. \n" ); 
+  if (UART5_ENABLED)  if ( close(uart5.fd) <0 )  printf( "Error (uart_exit): Couldn't close UART5. \n" ); 
   return;
 }
 

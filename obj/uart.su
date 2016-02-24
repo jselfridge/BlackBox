@@ -1,4 +1,4 @@
 uart.c:44:6:uart_setup	96	dynamic,bounded
-uart.c:13:6:uart_init	56	static
-uart.c:78:6:uart_update	0	static
-uart.c:93:6:uart_exit	8	static
+uart.c:13:6:uart_init	40	static
+uart.c:78:6:uart_update	16	static
+uart.c:91:6:uart_exit	8	static

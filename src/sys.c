@@ -68,9 +68,13 @@ void sys_update ( void )  {
 
   // Select data for display
   //sys_sio();
-  sys_imuA();
-  sys_imuB();
-  sys_ahr();
+  //sys_imuA();
+  //sys_imuB();
+  //sys_ahr();
+  sys_uart1();
+  sys_uart2();
+  sys_uart4();
+  sys_uart5();
   //sys_ctrl();
 
   // Complete debugging display 
@@ -214,6 +218,58 @@ void sys_ahr ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  sys_uart1
+//  Prints UART1 debugging messages to the terminal.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void sys_uart1 ( void )  {
+  if (UART1_ENABLED)  {
+  printf( "TX1:  %s    ", uart1.txdata );  fflush(stdout);
+  printf( "RX1:  %s    ", uart1.rxdata );  fflush(stdout);
+  }
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  sys_uart2
+//  Prints UART2 debugging messages to the terminal.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void sys_uart2 ( void )  {
+  if (UART2_ENABLED)  {
+  printf( "TX2: %s    ", uart2.txdata );  fflush(stdout);
+  printf( "RX2: %s    ", uart2.rxdata );  fflush(stdout);
+  }
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  sys_uart4
+//  Prints UART4 debugging messages to the terminal.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void sys_uart4 ( void )  {
+  if (UART4_ENABLED)  {
+  printf( "TX4:  %s    ", uart4.txdata );  fflush(stdout);
+  printf( "RX4:  %s    ", uart4.rxdata );  fflush(stdout);
+  }
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  sys_uart5
+//  Prints UART5 debugging messages to the terminal.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void sys_uart5 ( void )  {
+  if (UART5_ENABLED)  {
+  printf( "TX5: %s    ", uart5.txdata );  fflush(stdout);
+  printf( "RX5: %s    ", uart5.rxdata );  fflush(stdout);
+  }
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_ctrl
 //  Prints controller values to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -249,19 +305,18 @@ void sys_exit (  )  {
 
   // Exit subsystems
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
-  //tmr_exit();
-
+  tmr_exit();
   //--  DEBUGGING  --//
   //datalog.enabled = false;
   //log_close();
   //-----------------//
-
   //log_exit();
   //ctl_exit();
-  //ahr_exit();
-  //imu_exit();
-  //flg_exit();
-  //sio_exit();
+  uart_exit();
+  ahr_exit();
+  imu_exit();
+  flg_exit();
+  sio_exit();
 
   // Shut everything down
   if(DEBUG)  printf("Program complete \n");

@@ -36,14 +36,19 @@ void tmr_init ( void )  {
   pthread_mutex_init( &mutex_eul,    NULL );
   pthread_mutex_init( &mutex_ahr,    NULL );
   //pthread_mutex_init( &mutex_ctrl,   NULL );
+  //pthread_mutex_init( &mutex_uart,   NULL );
 
   // Create primary timing threads
-  tmr_thread( &tmr_sio,  &attr, fcn_sio  );  usleep(100000);
-  tmr_thread( &tmr_flag, &attr, fcn_flag );  usleep(100000);
+  tmr_thread( &tmr_sio,   &attr, fcn_sio   );  usleep(100000);
+  tmr_thread( &tmr_flag,  &attr, fcn_flag  );  usleep(100000);
   if(USE_IMUA)  { tmr_thread( &tmr_imuA, &attr, fcn_imuA );  usleep(100000);  }
   if(USE_IMUB)  { tmr_thread( &tmr_imuB, &attr, fcn_imuB );  usleep(100000);  }
-  tmr_thread( &tmr_ahr,  &attr, fcn_ahr  );  usleep(100000);
-  tmr_thread( &tmr_ctrl, &attr, fcn_ctrl );  usleep(100000);
+  tmr_thread( &tmr_ahr,   &attr, fcn_ahr   );  usleep(100000);
+  if(UART1_ENABLED)  tmr_thread( &tmr_uart1, &attr, fcn_uart1 );  usleep(100000);
+  if(UART2_ENABLED)  tmr_thread( &tmr_uart2, &attr, fcn_uart2 );  usleep(100000);
+  if(UART4_ENABLED)  tmr_thread( &tmr_uart4, &attr, fcn_uart4 );  usleep(100000);
+  if(UART5_ENABLED)  tmr_thread( &tmr_uart5, &attr, fcn_uart5 );  usleep(100000);
+  tmr_thread( &tmr_ctrl,  &attr, fcn_ctrl  );  usleep(100000);
 
   // Possibly create debugging thread
   if(DEBUG) {
@@ -86,6 +91,26 @@ void tmr_setup ( void )  {
   tmr_ahr.name    =  "ahr";
   tmr_ahr.prio    =  PRIO_AHR;
   tmr_ahr.per     =  1000000 / HZ_AHR;
+
+  // UART1 timer
+  tmr_uart1.name  =  "uart1";
+  tmr_uart1.prio  =  PRIO_UART1;
+  tmr_uart1.per   =  1000000 / HZ_UART1;
+
+  // UART2 timer
+  tmr_uart2.name  =  "uart2";
+  tmr_uart2.prio  =  PRIO_UART2;
+  tmr_uart2.per   =  1000000 / HZ_UART2;
+
+  // UART4 timer
+  tmr_uart4.name  =  "uart4";
+  tmr_uart4.prio  =  PRIO_UART4;
+  tmr_uart4.per   =  1000000 / HZ_UART4;
+
+  // UART5 timer
+  tmr_uart5.name  =  "uart5";
+  tmr_uart5.prio  =  PRIO_UART5;
+  tmr_uart5.per   =  1000000 / HZ_UART5;
 
   // Control timer
   tmr_ctrl.name   =  "ctrl";
@@ -175,11 +200,40 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&mutex_eul);
   pthread_mutex_destroy(&mutex_ahr);
   //pthread_mutex_destroy(&mutex_ctrl);
+  //pthread_mutex_destroy(&mutex_uart);
 
   // Exit control thread
   if( pthread_join ( tmr_ctrl.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ctrl' thread. \n" );
   if(DEBUG)  printf( "ctrl " );
+
+  // Exit UART5 thread
+  if(UART5_ENABLED)  {
+  if( pthread_join ( tmr_uart5.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'uart5' thread. \n" );
+  if(DEBUG)  printf( "uart5 " );
+  }
+
+  // Exit UART4 thread
+  if(UART4_ENABLED)  {
+  if( pthread_join ( tmr_uart4.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'uart4' thread. \n" );
+  if(DEBUG)  printf( "uart4 " );
+  }
+
+  // Exit UART2 thread
+  if(UART2_ENABLED)  {
+  if( pthread_join ( tmr_uart2.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'uart2' thread. \n" );
+  if(DEBUG)  printf( "uart2 " );
+  }
+
+  // Exit UART1 thread
+  if(UART1_ENABLED)  {
+  if( pthread_join ( tmr_uart1.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'uart1' thread. \n" );
+  if(DEBUG)  printf( "uart1 " );
+  }
 
   // Exit AHR thread
   if( pthread_join ( tmr_ahr.id, NULL ) )
@@ -407,6 +461,76 @@ void *fcn_ahr (  )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  fcn_uart1
+//  Function handler for the UART1 timing thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void *fcn_uart1 (  )  {
+  tmr_create(&tmr_uart1);
+  while (running) {
+    tmr_start(&tmr_uart1);
+    temp1();
+    uart_update(&uart1);
+    tmr_finish(&tmr_uart1);
+    tmr_pause(&tmr_uart1);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  fcn_uart2
+//  Function handler for the UART2 timing thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void *fcn_uart2 (  )  {
+  tmr_create(&tmr_uart2);
+  while (running) {
+    tmr_start(&tmr_uart2);
+    uart_update(&uart2);
+    tmr_finish(&tmr_uart2);
+    tmr_pause(&tmr_uart2);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  fcn_uart4
+//  Function handler for the UART4 timing thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void *fcn_uart4 (  )  {
+  tmr_create(&tmr_uart4);
+  while (running) {
+    tmr_start(&tmr_uart4);
+    temp4();
+    uart_update(&uart4);
+    tmr_finish(&tmr_uart4);
+    tmr_pause(&tmr_uart4);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  fcn_uart5
+//  Function handler for the UART5 timing thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void *fcn_uart5 (  )  {
+  tmr_create(&tmr_uart5);
+  while (running) {
+    tmr_start(&tmr_uart5);
+    uart_update(&uart5);
+    tmr_finish(&tmr_uart5);
+    tmr_pause(&tmr_uart2);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  fcn_ctrl
 //  Function handler for the control law timing thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -442,3 +566,16 @@ void *fcn_debug (  )  {
 
 
 
+void temp1 ( void )  {
+  static int i = 0;
+  i++;
+  sprintf( uart1.txdata, "Current loop is %d", i );
+  return;
+}
+
+void temp4 ( void )  {
+  static int i = 0;
+  i++;
+  sprintf( uart4.txdata, "Current loop is %d", i );
+  return;
+}
