@@ -23,16 +23,17 @@ int main ( void )  {
   imu_init();
   ahr_init();
   uart_init();
+  gps_init();
   //ctl_init();
   //log_init();
   //--  DEBUGGING  --//
   //log_open();
   //datalog.enabled = true;
   //-----------------//
-  tmr_init();
+  //tmr_init();
 
   // Wait for exit condition
-  while(running)  usleep(100000);
+  //while(running)  usleep(100000);
 
   // Run exit functions
   sys_exit();

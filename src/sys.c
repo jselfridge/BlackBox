@@ -71,10 +71,10 @@ void sys_update ( void )  {
   //sys_imuA();
   //sys_imuB();
   //sys_ahr();
-  sys_uart1();
-  sys_uart2();
-  sys_uart4();
-  sys_uart5();
+  //sys_uart1();
+  //sys_uart2();
+  //sys_uart4();
+  //sys_uart5();
   //sys_ctrl();
 
   // Complete debugging display 
@@ -305,13 +305,14 @@ void sys_exit (  )  {
 
   // Exit subsystems
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
-  tmr_exit();
+  //tmr_exit();
   //--  DEBUGGING  --//
   //datalog.enabled = false;
   //log_close();
   //-----------------//
   //log_exit();
   //ctl_exit();
+  gps_exit();
   uart_exit();
   ahr_exit();
   imu_exit();

@@ -60,7 +60,7 @@ void uart_setup ( uart_struct *uart )  {
   if ( uart->fd <0 )  printf( "Error (uart): Couldn't open UART%d. \n", uart->id );
 
   // Set baud rate
-  if ( cfsetispeed( &(uart->param), B115200 ) <0 )
+  if ( cfsetispeed( &(uart->param), B9600 ) <0 )
     printf( "Error (uart): Couldn't set UART%d buad rate. \n", uart->id );
 
   // Assign parameters to device
