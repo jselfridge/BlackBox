@@ -9,10 +9,10 @@
 
 
 // Define stick hold durations
-#define FLG_HOLD_R  3.0
-#define FLG_HOLD_P  3.0
-#define FLG_HOLD_Y  3.0
-#define FLG_HOLD_T  0.0
+#define FLAG_HOLD_R  3.0
+#define FLAG_HOLD_P  3.0
+#define FLAG_HOLD_Y  3.0
+#define FLAG_HOLD_T  0.0
 
 
 // Program execution flag structure
@@ -25,9 +25,9 @@ flag_struct flag;
 
 
 // Program execution flag functions
-void  flg_init   ( void );
-void  flg_exit   ( void );
-void  flg_update ( void );
+void  flag_init   ( void );
+void  flag_exit   ( void );
+void  flag_update ( void );
 
 
 #endif

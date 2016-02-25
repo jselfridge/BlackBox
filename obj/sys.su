@@ -4,7 +4,7 @@ sys.c:55:6:sys_update	16	static
 sys.c:91:6:sys_sio	32	static
 sys.c:121:6:sys_imuA	48	static
 sys.c:160:6:sys_imuB	0	static
-sys.c:199:6:sys_ahr	32	static
+sys.c:199:6:sys_ahrs	32	static
 sys.c:224:6:sys_uart1	16	static
 sys.c:237:6:sys_uart2	16	static
 sys.c:250:6:sys_uart4	0	static

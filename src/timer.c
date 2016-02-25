@@ -34,7 +34,7 @@ void tmr_init ( void )  {
   pthread_mutex_init( &mutex_magB,   NULL );
   pthread_mutex_init( &mutex_quat,   NULL );
   pthread_mutex_init( &mutex_eul,    NULL );
-  pthread_mutex_init( &mutex_ahr,    NULL );
+  pthread_mutex_init( &mutex_ahrs,   NULL );
   //pthread_mutex_init( &mutex_ctrl,   NULL );
   //pthread_mutex_init( &mutex_uart,   NULL );
 
@@ -43,7 +43,7 @@ void tmr_init ( void )  {
   tmr_thread( &tmr_flag,  &attr, fcn_flag  );  usleep(100000);
   if(USE_IMUA)  { tmr_thread( &tmr_imuA, &attr, fcn_imuA );  usleep(100000);  }
   if(USE_IMUB)  { tmr_thread( &tmr_imuB, &attr, fcn_imuB );  usleep(100000);  }
-  tmr_thread( &tmr_ahr,   &attr, fcn_ahr   );  usleep(100000);
+  tmr_thread( &tmr_ahrs,  &attr, fcn_ahrs  );  usleep(100000);
   if(UART1_ENABLED)  tmr_thread( &tmr_uart1, &attr, fcn_uart1 );  usleep(100000);
   if(UART2_ENABLED)  tmr_thread( &tmr_uart2, &attr, fcn_uart2 );  usleep(100000);
   if(UART4_ENABLED)  tmr_thread( &tmr_uart4, &attr, fcn_uart4 );  usleep(100000);
@@ -88,9 +88,9 @@ void tmr_setup ( void )  {
   tmr_imuB.per    =  1000000 / HZ_IMU_FAST;
 
   // AHRS timer
-  tmr_ahr.name    =  "ahr";
-  tmr_ahr.prio    =  PRIO_AHR;
-  tmr_ahr.per     =  1000000 / HZ_AHR;
+  tmr_ahrs.name   =  "ahrs";
+  tmr_ahrs.prio   =  PRIO_AHRS;
+  tmr_ahrs.per    =  1000000 / HZ_AHRS;
 
   // UART1 timer
   tmr_uart1.name  =  "uart1";
@@ -198,7 +198,7 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&mutex_magB);
   pthread_mutex_destroy(&mutex_quat);
   pthread_mutex_destroy(&mutex_eul);
-  pthread_mutex_destroy(&mutex_ahr);
+  pthread_mutex_destroy(&mutex_ahrs);
   //pthread_mutex_destroy(&mutex_ctrl);
   //pthread_mutex_destroy(&mutex_uart);
 
@@ -235,10 +235,10 @@ void tmr_exit ( void )  {
   if(DEBUG)  printf( "uart1 " );
   }
 
-  // Exit AHR thread
-  if( pthread_join ( tmr_ahr.id, NULL ) )
-    printf( "Error (tmr_exit): Failed to exit 'ahr' thread. \n" );
-  if(DEBUG)  printf( "ahr " );
+  // Exit AHRS thread
+  if( pthread_join ( tmr_ahrs.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'ahrs' thread. \n" );
+  if(DEBUG)  printf( "ahrs " );
 
   // Exit IMUB thread
   if(USE_IMUB)  {
@@ -397,7 +397,7 @@ void *fcn_flag (  )  {
   tmr_create(&tmr_flag);
   while (running) {
     tmr_start(&tmr_flag);
-    flg_update();
+    flag_update();
     tmr_finish(&tmr_flag);
     tmr_pause(&tmr_flag);
   }
@@ -443,17 +443,17 @@ void *fcn_imuB (  )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_ahr
-//  Function handler for the AHR timing thread.
+//  fcn_ahrs
+//  Function handler for the AHRS timing thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void *fcn_ahr (  )  {
-  tmr_create(&tmr_ahr);
+void *fcn_ahrs (  )  {
+  tmr_create(&tmr_ahrs);
   while (running) {
-    tmr_start(&tmr_ahr);
-    ahr_update();
-    tmr_finish(&tmr_ahr);
-    if (datalog.enabled)  log_record(LOG_AHR);
-    tmr_pause(&tmr_ahr);
+    tmr_start(&tmr_ahrs);
+    ahrs_update();
+    tmr_finish(&tmr_ahrs);
+    if (datalog.enabled)  log_record(LOG_AHRS);
+    tmr_pause(&tmr_ahrs);
   }
   pthread_exit(NULL);
   return NULL;
@@ -538,7 +538,7 @@ void *fcn_ctrl (  )  {
   tmr_create(&tmr_ctrl);
   while (running) {
     tmr_start(&tmr_ctrl);
-    ctl_update();
+    ctrl_update();
     tmr_finish(&tmr_ctrl);
     //if (datalog.enabled)  log_record(LOG_CTL);
     tmr_pause(&tmr_ctrl);

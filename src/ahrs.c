@@ -1,34 +1,34 @@
 
 //============================================================
-//  ahr.c
+//  ahrs.c
 //  Justin M Selfridge
 //============================================================
-#include "ahr.h"
+#include "ahrs.h"
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ahr_init
+//  ahrs_init
 //  Initializes the attitude and heading reference algorithms.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ahr_init ( void )  {
-  if(DEBUG)  printf( "Initializing AHR \n" );
+void ahrs_init ( void )  {
+  if(DEBUG)  printf( "Initializing AHRS \n" );
 
   // Loop through entries with known zero values
   ushort i;
   for ( i=0; i<3; i++ ) {
-    ahr.quat  [i+1] = 0.0;
-    ahr.dquat [i+1] = 0.0;
-    ahr.eul   [i]   = 0.0;
-    ahr.deul  [i]   = 0.0;
-    ahr.bias  [i]   = 0.0;
+    ahrs.quat  [i+1] = 0.0;
+    ahrs.dquat [i+1] = 0.0;
+    ahrs.eul   [i]   = 0.0;
+    ahrs.deul  [i]   = 0.0;
+    ahrs.bias  [i]   = 0.0;
   }
 
   // Populate remaining values
-  ahr.quat[0]  = 1.0;
-  ahr.dquat[0] = 0.0;
-  ahr.fx       = 1.0;
-  ahr.fz       = -0.006;
-  ahr.dt       = 1.0 / HZ_AHR;
+  ahrs.quat[0]  = 1.0;
+  ahrs.dquat[0] = 0.0;
+  ahrs.fx       = 1.0;
+  ahrs.fz       = -0.006;
+  ahrs.dt       = 1.0 / HZ_AHRS;
 
   // Set Euler angle bias
   FILE* f;
@@ -39,14 +39,14 @@ void ahr_init ( void )  {
   if(!f)  printf( "Error (ahr_init): File for 'eul bias' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
-    ahr.orient[i] = atoi(buff) / 10000.0;
+    ahrs.orient[i] = atoi(buff) / 10000.0;
   }
   fclose(f);
 
   // Display Euler attitude offset
   if (DEBUG)  {
     printf("  Euler offset:" );
-    for ( i=0; i<3; i++ )  printf(" %6.3f", ahr.orient[i] );
+    for ( i=0; i<3; i++ )  printf(" %6.3f", ahrs.orient[i] );
     printf("\n");
   }
   return;
@@ -54,34 +54,34 @@ void ahr_init ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ahr_exit
+//  ahrs_exit
 //  Terminate the AHR algorithms.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ahr_exit ( void )  {
-  if(DEBUG)  printf("Close AHR \n");
+void ahrs_exit ( void )  {
+  if(DEBUG)  printf("Close AHRS \n");
   // Insert code if needed...
   return;
 }
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ahr_update
+//  ahrs_update
 //  Run appropriate functions to update the AHR values.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ahr_update ( void )  {
+void ahrs_update ( void )  {
 
-  ahr_fusion();
-  //ahr_kalman();  // Future work
+  ahrs_fusion();
+  //ahrs_kalman();  // Future work
 
   return;
 }
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ahr_fusion
+//  ahrs_fusion
 //  Implement 9DOF data fusion algorithm.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ahr_fusion ( void )  {
+void ahrs_fusion ( void )  {
 
   // Local variables
   ushort i;
@@ -94,9 +94,9 @@ void ahr_fusion ( void )  {
   // Get values from AHR data structure
   double q[4], b[3], fx, fz, dt;
   pthread_mutex_lock(&mutex_quat);
-  fx = ahr.fx;  fz = ahr.fz;  dt = ahr.dt;
-  for ( i=0; i<4; i++ )  q[i] = ahr.quat[i];
-  for ( i=0; i<3; i++ )  b[i] = ahr.bias[i];
+  fx = ahrs.fx;  fz = ahrs.fz;  dt = ahrs.dt;
+  for ( i=0; i<4; i++ )  q[i] = ahrs.quat[i];
+  for ( i=0; i<3; i++ )  b[i] = ahrs.bias[i];
   pthread_mutex_unlock(&mutex_quat);
 
   // Get values from IMU data structure
@@ -224,27 +224,27 @@ void ahr_fusion ( void )  {
 
   // Calculate euler angles
   double e[3];
-  e[X] = atan2 ( ( 2.0 * ( qwx + qyz ) ), ( 1.0 - 2.0 * ( qxx + qyy ) ) ) - ahr.orient[X];
-  e[Y] = asin  (   2.0 * ( qwy - qxz ) )                                  - ahr.orient[Y];
-  e[Z] = atan2 ( ( 2.0 * ( qwz + qxy ) ), ( 1.0 - 2.0 * ( qyy + qzz ) ) ) - ahr.orient[Z];
+  e[X] = atan2 ( ( 2.0 * ( qwx + qyz ) ), ( 1.0 - 2.0 * ( qxx + qyy ) ) ) - ahrs.orient[X];
+  e[Y] = asin  (   2.0 * ( qwy - qxz ) )                                  - ahrs.orient[Y];
+  e[Z] = atan2 ( ( 2.0 * ( qwz + qxy ) ), ( 1.0 - 2.0 * ( qyy + qzz ) ) ) - ahrs.orient[Z];
 
   // Update AHR values
-  ahr.fx = fx;  ahr.fz = fz;
+  ahrs.fx = fx;  ahrs.fz = fz;
 
   // Push quaternion data to struct
   pthread_mutex_lock(&mutex_quat);
   for ( i=0; i<4; i++ )  {
-    ahr.quat[i]  = q[i];
-    ahr.dquat[i] = qd[i];
+    ahrs.quat[i]  = q[i];
+    ahrs.dquat[i] = qd[i];
   }
   pthread_mutex_unlock(&mutex_quat);
 
   // Push Euler data to struct
   pthread_mutex_unlock(&mutex_eul);
   for ( i=0; i<3; i++ ) {
-    ahr.eul[i]  = e[i];
-    ahr.deul[i] = g[i];
-    ahr.bias[i] = b[i];
+    ahrs.eul[i]  = e[i];
+    ahrs.deul[i] = g[i];
+    ahrs.bias[i] = b[i];
   }
   pthread_mutex_unlock(&mutex_eul);
 
@@ -253,10 +253,10 @@ void ahr_fusion ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ahr_kalman
+//  ahrs_kalman
 //  Implement Kalman filter algorithm.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ahr_kalman ( void )  {
+void ahrs_kalman ( void )  {
   // Future work
   return;
 }

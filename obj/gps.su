@@ -1,2 +1,4 @@
-gps.c:13:6:gps_init	8	static
+gps.c:13:6:gps_init	0	static
 gps.c:28:6:gps_exit	0	static
+gps.c:38:6:gps_hex2dec	0	static
+gps.c:51:6:gps_adafruit	176	dynamic,bounded

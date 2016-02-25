@@ -10,7 +10,7 @@
 
 // Define timer priorities
 #define PRIO_IMU    96
-#define PRIO_AHR    94
+#define PRIO_AHRS   94
 #define PRIO_SIO    92
 #define PRIO_CTRL   90
 #define PRIO_UART1  88
@@ -25,7 +25,7 @@
 #define HZ_IMU_FAST   1000
 #define HZ_IMU_SLOW    100
 #define HZ_SIO          50
-#define HZ_AHR          50
+#define HZ_AHRS         50
 #define HZ_CTRL         50
 #define HZ_FLAG         10
 #define HZ_DEBUG        10
@@ -55,7 +55,7 @@ timer_struct tmr_sio;
 timer_struct tmr_flag;
 timer_struct tmr_imuA;
 timer_struct tmr_imuB;
-timer_struct tmr_ahr;
+timer_struct tmr_ahrs;
 timer_struct tmr_uart1;
 timer_struct tmr_uart2;
 timer_struct tmr_uart4;
@@ -75,7 +75,7 @@ pthread_mutex_t mutex_accB;
 pthread_mutex_t mutex_magB;
 pthread_mutex_t mutex_quat;
 pthread_mutex_t mutex_eul;
-pthread_mutex_t mutex_ahr;
+pthread_mutex_t mutex_ahrs;
 //pthread_mutex_t mutex_ctrl;
 //pthread_mutex_t uart;
 
@@ -97,7 +97,7 @@ void *fcn_sio    (  );
 void *fcn_flag   (  );
 void *fcn_imuA   (  );
 void *fcn_imuB   (  );
-void *fcn_ahr    (  );
+void *fcn_ahrs   (  );
 void *fcn_uart1  (  );
 void *fcn_uart2  (  );
 void *fcn_uart4  (  );

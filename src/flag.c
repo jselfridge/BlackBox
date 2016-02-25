@@ -7,10 +7,10 @@
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  flg_init
+//  flag_init
 //  Initializes the program execution flag structure.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void flg_init ( void )  {
+void flag_init ( void )  {
   if(DEBUG)  printf("Initializing program execution flags \n");
 
   // Set boolean values
@@ -31,20 +31,20 @@ void flg_init ( void )  {
 
   // Set proper timing limits
   if(DEBUG)  printf("  Set timing limits \n");
-  flag.limit[CH_R] = FLG_HOLD_R * HZ_FLAG;
-  flag.limit[CH_P] = FLG_HOLD_P * HZ_FLAG;
-  flag.limit[CH_Y] = FLG_HOLD_Y * HZ_FLAG;
-  flag.limit[CH_T] = FLG_HOLD_T * HZ_FLAG;
+  flag.limit[CH_R] = FLAG_HOLD_R * HZ_FLAG;
+  flag.limit[CH_P] = FLAG_HOLD_P * HZ_FLAG;
+  flag.limit[CH_Y] = FLAG_HOLD_Y * HZ_FLAG;
+  flag.limit[CH_T] = FLAG_HOLD_T * HZ_FLAG;
 
   return;
 }
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  flg_exit
+//  flag_exit
 //  End of program related taskss.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void flg_exit ( void )  {
+void flag_exit ( void )  {
   if(DEBUG)  printf("Close flags \n");
   // Add code and functions as needed...
   return;
@@ -52,10 +52,10 @@ void flg_exit ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  flg_update
+//  flag_update
 //  Updates the current status of the program execution flags.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void flg_update ( void )  {
+void flag_update ( void )  {
 
   // Local variables
   ushort ch;

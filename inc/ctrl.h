@@ -124,12 +124,12 @@ ctrl_struct ctrl;
 
 
 // CTRL functions
-void    ctl_init    ( void );
-void    ctl_exit    ( void );
-void    ctl_update  ( void );
-//void    ctl_quad    ( void );
-void    ctl_plane   ( void );
-void    ctl_disarm  ( void );
+void    ctrl_init    ( void );
+void    ctrl_exit    ( void );
+void    ctrl_update  ( void );
+//void    ctrl_quad    ( void );
+void    ctrl_plane   ( void );
+void    ctrl_disarm  ( void );
 
 
 #endif

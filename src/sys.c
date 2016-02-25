@@ -70,7 +70,7 @@ void sys_update ( void )  {
   //sys_sio();
   //sys_imuA();
   //sys_imuB();
-  //sys_ahr();
+  //sys_ahrs();
   //sys_uart1();
   //sys_uart2();
   //sys_uart4();
@@ -193,24 +193,24 @@ void sys_imuB ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_ahr
-//  Prints AHR debugging messages to the terminal.
+//  sys_ahrs
+//  Prints AHRS debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void sys_ahr ( void )  {
+void sys_ahrs ( void )  {
 
   // Loop counter
   ushort i;
 
   /*// Quaternion data
   pthread_mutex_lock(&mutex_quat);
-  for ( i=0; i<4; i++ )  printf("%7.4f ", ahr.quat[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<4; i++ )  printf("%7.4f ", ahr.dquat[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<4; i++ )  printf("%7.4f ", ahrs.quat[i]  );  printf("   ");  fflush(stdout);
+  for ( i=0; i<4; i++ )  printf("%7.4f ", ahrs.dquat[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_quat);*/
 
   // Euler data
   pthread_mutex_lock(&mutex_eul);
-  for ( i=0; i<3; i++ )  printf("%7.2f ", ahr.eul[i]  * (180.0/PI) );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%7.2f ", ahr.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%7.2f ", ahrs.eul[i]  * (180.0/PI) );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%7.2f ", ahrs.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_eul); 
 
   return;
@@ -305,7 +305,7 @@ void sys_exit (  )  {
 
   // Exit subsystems
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
-  //tmr_exit();
+  tmr_exit();
   //--  DEBUGGING  --//
   //datalog.enabled = false;
   //log_close();
@@ -314,10 +314,10 @@ void sys_exit (  )  {
   //ctl_exit();
   gps_exit();
   uart_exit();
-  //ahr_exit();
-  //imu_exit();
-  //flg_exit();
-  //sio_exit();
+  ahrs_exit();
+  imu_exit();
+  flag_exit();
+  sio_exit();
 
   // Shut everything down
   if(DEBUG)  printf("Program complete \n");

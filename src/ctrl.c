@@ -7,10 +7,10 @@
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ctl_init
+//  ctrl_init
 //  Initializes the control structure.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ctl_init ( void )  {
+void ctrl_init ( void )  {
   if (DEBUG)  printf("Initializing controller \n");
 
   // Array index
@@ -85,10 +85,10 @@ void ctl_init ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ctl_exit
+//  ctrl_exit
 //  Exits the controller code.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ctl_exit ( void )  {
+void ctrl_exit ( void )  {
   if (DEBUG)  printf("Close controller \n");
   // Add exit code as needed...
   return;
@@ -96,25 +96,25 @@ void ctl_exit ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ctl_update
+//  ctrl_update
 //  Executes the top level logic to update each control loop.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ctl_update ( void )  {
+void ctrl_update ( void )  {
   if (armed)  {
-    //if ( !strcmp( SYSTEM, "quad"  ) )  ctl_quad();
-    if ( !strcmp( SYSTEM, "plane" ) )  ctl_plane();
+    //if ( !strcmp( SYSTEM, "quad"  ) )  ctrl_quad();
+    if ( !strcmp( SYSTEM, "plane" ) )  ctrl_plane();
   }
-  else  ctl_disarm();
+  else  ctrl_disarm();
   return;
 }
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ctl_quad
+//  ctrl_quad
 //  Apply control to quadrotor system.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /*
-void ctl_quad ( void )  {
+void ctrl_quad ( void )  {
 
   // Local variables
   bool reset;
@@ -127,7 +127,7 @@ void ctl_quad ( void )  {
 
   // Obtain states
   pthread_mutex_lock(&mutex_eul);
-  for ( ch=0; ch<3; ch++ )  {  eul[ch] = ahr.eul[ch];  ang[ch] = ahr.deul[ch];  }
+  for ( ch=0; ch<3; ch++ )  {  eul[ch] = ahrs.eul[ch];  ang[ch] = ahrs.deul[ch];  }
   pthread_mutex_unlock(&mutex_eul);
 
   // Obtain inputs
@@ -214,10 +214,10 @@ void ctl_quad ( void )  {
 */
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ctl_plane
+//  ctrl_plane
 //  Apply control to plane configuration.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ctl_plane ( void )  {
+void ctrl_plane ( void )  {
 
   // Local variables
   double elev, rudd, thrl, dial, prop, thresh;
@@ -241,7 +241,7 @@ void ctl_plane ( void )  {
     sio_setnorm( PLANE_RUDD, -rudd );
     sio_setnorm( PLANE_THRL,  prop );
   }
-  else  ctl_disarm();
+  else  ctrl_disarm();
 
   return;
 }
@@ -355,10 +355,10 @@ void ctl_plane ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ctl_disarm
+//  ctrl_disarm
 //  Set all system outputs to their disarmed state.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void ctl_disarm ( void )  {
+void ctrl_disarm ( void )  {
   ushort ch;
   for ( ch=0; ch<OUT_CH; ch++ )  sio_setnorm( ch, ctrl.off[ch] );
   return;

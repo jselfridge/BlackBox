@@ -7,7 +7,7 @@ timer.c:280:6:tmr_create	40	static
 timer.c:555:7:fcn_debug	40	static
 timer.c:537:7:fcn_ctrl	40	static
 timer.c:485:7:fcn_uart2	40	static
-timer.c:449:7:fcn_ahr	40	static
+timer.c:449:7:fcn_ahrs	40	static
 timer.c:413:7:fcn_imuA	40	static
 timer.c:396:7:fcn_flag	40	static
 timer.c:378:7:fcn_sio	40	static

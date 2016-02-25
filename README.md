@@ -17,13 +17,20 @@ a ground control station (GCS).
 <li><b> v0.1.X - Receive parameter updates from GCS </b></li>
 <li><b> v0.1.X - Send state info to GCS </b></li>
 <li><b> v0.1.X - Send heartbeat to GCS </b></li>
-<li><b> v0.1.X - Compiler revisions </b></li>
+<li><b> v0.1.X - Compiler revisions </b></li><
 <li><b> v0.1.X - Airplane controller </b></li>
 <ul>
   <li> Indicate vehicle type in terminal </li>
   <li> Added PD controller structure for airplane system </li>
   <li> Unique disarming values for specific systems </li>
   <li> Moved calibration files so they can be board specific </li>
+</ul>
+<li><b> v0.1.X - GPS Receiver </b></li>
+<ul>
+  <li> Read GPS through UART port. </li>
+  <li> Add code to configure GPS parameters. </li>
+  <li> (WIP) Parse GPS data stream. </li>
+  <li> (WIP) Log GPS data. </li>
 </ul>
 </ul>
 

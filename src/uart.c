@@ -78,7 +78,8 @@ void uart_setup ( uart_struct *uart )  {
 void uart_update ( uart_struct *uart )  {
   int w = write( uart->fd, uart->txdata, 64 );
   usleep(w*200);
-  int r = read( uart->fd, uart->rxdata, sizeof(char)*64 );
+  //int r = read( uart->fd, uart->rxdata, sizeof(char)*64 );
+  read( uart->fd, uart->rxdata, sizeof(char)*64 );
   tcflush( uart->fd, TCIOFLUSH );
   return;
 }
