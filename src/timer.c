@@ -468,7 +468,6 @@ void *fcn_uart1 (  )  {
   tmr_create(&tmr_uart1);
   while (running) {
     tmr_start(&tmr_uart1);
-    temp1();
     uart_update(&uart1);
     tmr_finish(&tmr_uart1);
     tmr_pause(&tmr_uart1);
@@ -503,7 +502,6 @@ void *fcn_uart4 (  )  {
   tmr_create(&tmr_uart4);
   while (running) {
     tmr_start(&tmr_uart4);
-    temp4();
     uart_update(&uart4);
     tmr_finish(&tmr_uart4);
     tmr_pause(&tmr_uart4);
@@ -566,16 +564,3 @@ void *fcn_debug (  )  {
 
 
 
-void temp1 ( void )  {
-  static int i = 0;
-  i++;
-  sprintf( uart1.txdata, "Current loop is %d", i );
-  return;
-}
-
-void temp4 ( void )  {
-  static int i = 0;
-  i++;
-  sprintf( uart4.txdata, "Current loop is %d", i );
-  return;
-}

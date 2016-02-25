@@ -106,10 +106,6 @@ void *fcn_ctrl   (  );
 void *fcn_debug  (  );
 
 
-void temp1 ( void );
-void temp4 ( void );
-
-
 #endif
 
 

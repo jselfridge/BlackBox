@@ -71,7 +71,7 @@ void sys_update ( void )  {
   //sys_imuA();
   //sys_imuB();
   //sys_ahrs();
-  //sys_uart1();
+  sys_uart1();
   //sys_uart2();
   //sys_uart4();
   //sys_uart5();
