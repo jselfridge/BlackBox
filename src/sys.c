@@ -314,10 +314,10 @@ void sys_exit (  )  {
   //ctl_exit();
   gps_exit();
   uart_exit();
-  ahr_exit();
-  imu_exit();
-  flg_exit();
-  sio_exit();
+  //ahr_exit();
+  //imu_exit();
+  //flg_exit();
+  //sio_exit();
 
   // Shut everything down
   if(DEBUG)  printf("Program complete \n");
