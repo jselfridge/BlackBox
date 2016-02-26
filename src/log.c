@@ -24,6 +24,7 @@ void log_init ( void )  {
   log_accB.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
   log_magB.limit   = MAX_LOG_DUR * HZ_IMU_SLOW;
   log_ahrs.limit   = MAX_LOG_DUR * HZ_AHRS;
+  log_gps.limit    = MAX_LOG_DUR * HZ_GPS;
   //log_ctrl.limit   = MAX_LOG_DUR * HZ_CTRL;
 
   return;
@@ -46,6 +47,7 @@ void log_open ( void )  {
   log_accB.count   = 0;
   log_magB.count   = 0;
   log_ahrs.count   = 0;
+  log_gps.count    = 0;
   //log_ctrl.count   = 0;
 
   // Input signal storage
@@ -123,6 +125,10 @@ void log_open ( void )  {
   log_ahrs.fx    =  malloc( sizeof(float) * log_ahrs.limit     );
   log_ahrs.fz    =  malloc( sizeof(float) * log_ahrs.limit     );
 
+  // Global Positioning System storage
+  log_gps.time   =  malloc( sizeof(float) * log_gps.limit );
+  log_gps.dur    =  malloc( sizeof(ulong) * log_gps.limit );
+
   /*// Controller parameter storage
   log_ctrl.time =  malloc( sizeof(float) * log_ctrl.limit     );
   log_ctrl.dur  =  malloc( sizeof(ulong) * log_ctrl.limit     );
@@ -172,7 +178,7 @@ void log_close ( void )  {
 
   // Local variables
   char *file = malloc(64);
-  FILE *fnote, *fin, *fout, *fgyrA, *faccA, *fmagA, *fgyrB, *faccB, *fmagB, *fahrs; // *fctl;
+  FILE *fnote, *fin, *fout, *fgyrA, *faccA, *fmagA, *fgyrB, *faccB, *fmagB, *fahrs, *fgps; // *fctl;
   ushort i;
   ulong row;
 
@@ -419,6 +425,24 @@ void log_close ( void )  {
   free(log_ahrs.fx);
   free(log_ahrs.fz);
 
+  // Create GPS datalog file
+  sprintf( file, "%sgps.txt", datalog.path );
+  fgps = fopen( file, "w" );
+  if( fgps == NULL )  printf( "Error (log_close): Cannot generate 'gps' file. \n" );
+  fprintf( fgps,
+    "       Gtime    Gdur     ");
+
+  // Loop through GPS data
+  for ( row = 0; row < log_gps.count; row++ ) {
+    fprintf( fgps, "\n %011.6f  %06ld    ", log_gps.time[row], log_gps.dur[row] );
+    //for ( i=0; i<4; i++ )  fprintf( fahrs, "%07.4f  ", log_ahrs.quat  [ row*4 +i ] );  fprintf( fahrs, "   " );
+    fprintf( fgps, "   " );
+  }
+
+  // Free attitude/heading memory
+  free(log_gps.time);
+  free(log_gps.dur);
+
   /*// Create controller datalog file
   sprintf( file, "%sctrl.txt", datalog.path );
   fctl = fopen( file, "w" );
@@ -463,6 +487,7 @@ void log_close ( void )  {
     fclose(fmagB);
   }
   fclose(fahrs);
+  fclose(fgps);
   //fclose(fctl);
 
   // Switch datalog setup flag
@@ -626,7 +651,7 @@ void log_record ( enum log_index index )  {
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Record AHR data
+  // Record AHRS data
   case LOG_AHRS :
 
     timestamp = (float) ( tmr_ahrs.start_sec + ( tmr_ahrs.start_usec / 1000000.0f ) ) - datalog.offset;
@@ -653,6 +678,28 @@ void log_record ( enum log_index index )  {
       pthread_mutex_unlock(&mutex_ahrs);
 
       log_ahrs.count++;
+    }
+
+    return;
+
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Record GPS data
+  case LOG_GPS :
+
+    timestamp = (float) ( tmr_gps.start_sec + ( tmr_gps.start_usec / 1000000.0f ) ) - datalog.offset;
+
+    if ( log_gps.count < log_gps.limit ) {
+      row = log_gps.count;
+      log_gps.time[row] = timestamp;
+      log_gps.dur[row]  = tmr_gps.dur;
+
+      pthread_mutex_lock(&mutex_gps);
+      //for ( i=0; i<4; i++ )  log_ahrs.quat  [ row*4 +i ] = ahrs.quat  [i];
+      //for ( i=0; i<4; i++ )  log_ahrs.dquat [ row*4 +i ] = ahrs.dquat [i];
+      pthread_mutex_unlock(&mutex_gps);
+
+      log_gps.count++;
     }
 
     return;

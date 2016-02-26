@@ -17,8 +17,9 @@ enum log_index {
   LOG_SIO  = 0,
   LOG_IMUA = 1,
   LOG_IMUB = 2,
-  LOG_AHRS = 3
-  //LOG_CTL  = 4
+  LOG_AHRS = 3,
+  LOG_GPS  = 4
+  //LOG_CTL  = 5
 } log_index;
 
 
@@ -68,6 +69,17 @@ typedef struct log_ahrs_struct {
   float *fz;
 } log_ahrs_struct;
 log_ahrs_struct log_ahrs;
+
+
+// Log GPS structure
+typedef struct log_gps_struct {
+  ulong count;
+  ulong limit;
+  float *time;
+  ulong *dur;
+
+} log_gps_struct;
+log_gps_struct log_gps;
 
 
 /*// Log controller structure
