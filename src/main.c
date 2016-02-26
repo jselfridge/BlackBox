@@ -18,11 +18,11 @@ int main ( void )  {
 
   // Initialize subsystems
   sys_init();
-  sio_init();
-  flag_init();
-  imu_init();
-  ahrs_init();
-  uart_init();
+  //sio_init();
+  //flag_init();
+  //imu_init();
+  //ahrs_init();
+  //uart_init();
   gps_init();
   //ctrl_init();
   //log_init();

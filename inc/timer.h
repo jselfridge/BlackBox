@@ -13,10 +13,11 @@
 #define PRIO_AHRS   94
 #define PRIO_SIO    92
 #define PRIO_CTRL   90
-#define PRIO_UART1  88
-#define PRIO_UART2  88
-#define PRIO_UART4  88
-#define PRIO_UART5  88
+#define PRIO_GPS    88
+//#define PRIO_UART1  88
+//#define PRIO_UART2  88
+//#define PRIO_UART4  88
+//#define PRIO_UART5  88
 #define PRIO_FLAG   86
 #define PRIO_DEBUG  84
 
@@ -28,11 +29,12 @@
 #define HZ_AHRS         50
 #define HZ_CTRL         50
 #define HZ_FLAG         10
+#define HZ_GPS          10
 #define HZ_DEBUG        10
-#define HZ_UART1        10
-#define HZ_UART2        10
-#define HZ_UART4        10
-#define HZ_UART5        10
+//#define HZ_UART1        10
+//#define HZ_UART2        10
+//#define HZ_UART4        10
+//#define HZ_UART5        10
 
 
 // Timer structure
@@ -56,10 +58,11 @@ timer_struct tmr_flag;
 timer_struct tmr_imuA;
 timer_struct tmr_imuB;
 timer_struct tmr_ahrs;
-timer_struct tmr_uart1;
-timer_struct tmr_uart2;
-timer_struct tmr_uart4;
-timer_struct tmr_uart5;
+timer_struct tmr_gps;
+//timer_struct tmr_uart1;
+//timer_struct tmr_uart2;
+//timer_struct tmr_uart4;
+//timer_struct tmr_uart5;
 timer_struct tmr_ctrl;
 timer_struct tmr_debug;
 
@@ -76,8 +79,8 @@ pthread_mutex_t mutex_magB;
 pthread_mutex_t mutex_quat;
 pthread_mutex_t mutex_eul;
 pthread_mutex_t mutex_ahrs;
+pthread_mutex_t mutex_gps;
 //pthread_mutex_t mutex_ctrl;
-//pthread_mutex_t uart;
 
 
 // Thread functions
@@ -98,10 +101,11 @@ void *fcn_flag   (  );
 void *fcn_imuA   (  );
 void *fcn_imuB   (  );
 void *fcn_ahrs   (  );
-void *fcn_uart1  (  );
-void *fcn_uart2  (  );
-void *fcn_uart4  (  );
-void *fcn_uart5  (  );
+void *fcn_gps    (  );
+//void *fcn_uart1  (  );
+//void *fcn_uart2  (  );
+//void *fcn_uart4  (  );
+//void *fcn_uart5  (  );
 void *fcn_ctrl   (  );
 void *fcn_debug  (  );
 

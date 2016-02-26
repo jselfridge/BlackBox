@@ -31,18 +31,25 @@
 #define GPS_RMCGGA          "$PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*28\r\n"
 
 
-// GPS data structure
-typedef struct gps_data_struct {
-  double  dt;
-  double  fz;
-} gps_data_struct;
-gps_data_struct gps_current;
-gps_data_struct gps_desired;
+// GPS structure
+typedef struct gps_struct {
+  int     fd;
+  char    path [16];
+  char    msg  [255];
+  double  lat;
+  double  lon;
+  double  alt;
+  double  heading;
+  double  speed;
+  uint    numsat;
+} gps_struct;
+gps_struct gps;
 
 
 // GPS functions
 void  gps_init     ( void );
 void  gps_exit     ( void );
+void  gps_update   ( void );
 uint  gps_hex2dec  ( char c );
 void  gps_adafruit ( void );
 

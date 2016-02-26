@@ -71,7 +71,8 @@ void sys_update ( void )  {
   //sys_imuA();
   //sys_imuB();
   //sys_ahrs();
-  sys_uart1();
+  sys_gps();
+  //sys_uart1();
   //sys_uart2();
   //sys_uart4();
   //sys_uart5();
@@ -218,9 +219,24 @@ void sys_ahrs ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  sys_gps
+//  Prints GPS debugging messages to the terminal.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void sys_gps ( void )  {
+
+  pthread_mutex_lock(&mutex_gps);
+  printf("GPS msg:    %s ", gps.msg );  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&mutex_gps);
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_uart1
 //  Prints UART1 debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/*
 void sys_uart1 ( void )  {
   if (UART1_ENABLED)  {
   printf( "TX1:  %s    ", uart1.txdata );  fflush(stdout);
@@ -228,12 +244,13 @@ void sys_uart1 ( void )  {
   }
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_uart2
 //  Prints UART2 debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/*
 void sys_uart2 ( void )  {
   if (UART2_ENABLED)  {
   printf( "TX2: %s    ", uart2.txdata );  fflush(stdout);
@@ -241,12 +258,13 @@ void sys_uart2 ( void )  {
   }
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_uart4
 //  Prints UART4 debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/*
 void sys_uart4 ( void )  {
   if (UART4_ENABLED)  {
   printf( "TX4:  %s    ", uart4.txdata );  fflush(stdout);
@@ -254,12 +272,13 @@ void sys_uart4 ( void )  {
   }
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_uart5
 //  Prints UART5 debugging messages to the terminal.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/*
 void sys_uart5 ( void )  {
   if (UART5_ENABLED)  {
   printf( "TX5: %s    ", uart5.txdata );  fflush(stdout);
@@ -267,7 +286,7 @@ void sys_uart5 ( void )  {
   }
   return;
 }
-
+*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  sys_ctrl
@@ -313,11 +332,11 @@ void sys_exit (  )  {
   //log_exit();
   //ctl_exit();
   gps_exit();
-  uart_exit();
-  ahrs_exit();
-  imu_exit();
-  flag_exit();
-  sio_exit();
+  //uart_exit();
+  //ahrs_exit();
+  //imu_exit();
+  //flag_exit();
+  //sio_exit();
 
   // Shut everything down
   if(DEBUG)  printf("Program complete \n");

@@ -12,11 +12,39 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
 void gps_init ( void )  {
   if (DEBUG)  printf("Initializing GPS \n");
+
+  sprintf( gps.path, "/dev/ttyO1" );
+  memset ( gps.msg, 0, sizeof(gps.msg) );
+
+  // Assign settings
+  struct termios settings;
+  memset( &settings, 0, sizeof( &settings ) );
+  settings.c_iflag     = 0;
+  settings.c_oflag     = 0;
+  settings.c_cflag     = CS8 | CREAD | CLOCAL;
+  settings.c_lflag     = 0;
+  settings.c_cc[VTIME] = 5;
+  settings.c_cc[VMIN]  = 0;
+  //uart->param = settings;
+
+  // Open the file descriptor
+  gps.fd = open ( gps.path, O_RDWR | O_NOCTTY );  //| O_NONBLOCK );
+  if ( gps.fd <0 )  printf( "Error (gps_init): Couldn't open GPS file descriptor. \n" );
+
+  // Set baud rate
+  if ( cfsetispeed( &settings, B9600 ) <0 )
+    printf( "Error (gps_init): Couldn't set GPS buad rate. \n" );
+
+  // Assign parameters to device
+  if ( tcsetattr( gps.fd, TCSAFLUSH, &settings ) <0 )
+    printf( "Error (gps_init): Failed to assign GPS parameters. \n" );
+
+  // Send config
   int i;
   //i = write( uart1.fd, GPS_DEFAULT,       sizeof(GPS_DEFAULT)       );  usleep(i*200);  // printf("i: %d \n",i);
   //i = write( uart1.fd, GPS_BAUD_9600,     sizeof(GPS_BAUD_9600)     );  usleep(i*200);  // printf("i: %d \n",i);
-  i = write( uart1.fd, GPS_RMCONLY,       sizeof(GPS_RMCONLY)       );  usleep(i*200);  // printf("i: %d \n",i);
-  i = write( uart1.fd, GPS_UPDATE_001_HZ, sizeof(GPS_UPDATE_001_HZ) );  usleep(i*200);  // printf("i: %d \n",i);
+  i = write( gps.fd, GPS_RMCONLY,       sizeof(GPS_RMCONLY)       );  usleep(i*200);  // printf("i: %d \n",i);
+  i = write( gps.fd, GPS_UPDATE_010_HZ, sizeof(GPS_UPDATE_010_HZ) );  usleep(i*200);  // printf("i: %d \n",i);
   return;
 }
 
@@ -27,6 +55,29 @@ void gps_init ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
 void gps_exit ( void )  {
   // Add code as needed...
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  gps_update
+//  Obtains a new set of GPS data.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+void gps_update ( void)  {
+
+  char buf[255];
+  read( gps.fd, buf, sizeof(buf) );
+
+  int len = strlen(buf);
+  //printf("\n\nlen: %d\n\n", len);
+
+  buf[len-1] = '\0';
+
+  pthread_mutex_lock(&mutex_gps);
+  //sprintf( gps.msg, "Hi there you good lookin coder!" );
+  sprintf( gps.msg, buf );
+  pthread_mutex_unlock(&mutex_gps);
+
   return;
 }
 
