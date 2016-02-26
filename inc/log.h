@@ -77,7 +77,7 @@ typedef struct log_gps_struct {
   ulong limit;
   float *time;
   ulong *dur;
-
+  char  *msg;
 } log_gps_struct;
 log_gps_struct log_gps;
 

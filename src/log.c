@@ -128,6 +128,7 @@ void log_open ( void )  {
   // Global Positioning System storage
   log_gps.time   =  malloc( sizeof(float) * log_gps.limit );
   log_gps.dur    =  malloc( sizeof(ulong) * log_gps.limit );
+  log_gps.msg    =  malloc( sizeof(char)  * log_gps.limit * 96 );
 
   /*// Controller parameter storage
   log_ctrl.time =  malloc( sizeof(float) * log_ctrl.limit     );
@@ -430,18 +431,19 @@ void log_close ( void )  {
   fgps = fopen( file, "w" );
   if( fgps == NULL )  printf( "Error (log_close): Cannot generate 'gps' file. \n" );
   fprintf( fgps,
-    "       Gtime    Gdur     ");
+    "       Gtime    Gdur    Data    ");
 
   // Loop through GPS data
   for ( row = 0; row < log_gps.count; row++ ) {
     fprintf( fgps, "\n %011.6f  %06ld    ", log_gps.time[row], log_gps.dur[row] );
-    //for ( i=0; i<4; i++ )  fprintf( fahrs, "%07.4f  ", log_ahrs.quat  [ row*4 +i ] );  fprintf( fahrs, "   " );
+    fprintf( fgps, "%s ", &log_gps.msg[row*96] );//  fprintf( fgps, "   " );
     fprintf( fgps, "   " );
   }
 
   // Free attitude/heading memory
   free(log_gps.time);
   free(log_gps.dur);
+  free(log_gps.msg);
 
   /*// Create controller datalog file
   sprintf( file, "%sctrl.txt", datalog.path );
@@ -695,8 +697,8 @@ void log_record ( enum log_index index )  {
       log_gps.dur[row]  = tmr_gps.dur;
 
       pthread_mutex_lock(&mutex_gps);
-      //for ( i=0; i<4; i++ )  log_ahrs.quat  [ row*4 +i ] = ahrs.quat  [i];
-      //for ( i=0; i<4; i++ )  log_ahrs.dquat [ row*4 +i ] = ahrs.dquat [i];
+      sprintf( &log_gps.msg[row*96], gps.msg );
+      //printf("\nGPS.MSG: %s \n", &log_gps.msg[row*96] );
       pthread_mutex_unlock(&mutex_gps);
 
       log_gps.count++;

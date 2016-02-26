@@ -25,10 +25,10 @@ int main ( void )  {
   //uart_init();
   gps_init();
   //ctrl_init();
-  //log_init();
+  log_init();
   //--  DEBUGGING  --//
-  //log_open();
-  //datalog.enabled = true;
+  log_open();
+  datalog.enabled = true;
   //-----------------//
   tmr_init();
 

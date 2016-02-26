@@ -485,7 +485,7 @@ void *fcn_gps (  )  {
     tmr_start(&tmr_gps);
     gps_update();
     tmr_finish(&tmr_gps);
-    //if (datalog.enabled)  log_record(LOG_GPS);
+    if (datalog.enabled)  log_record(LOG_GPS);
     tmr_pause(&tmr_gps);
   }
   pthread_exit(NULL);

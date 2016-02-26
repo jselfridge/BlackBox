@@ -73,19 +73,17 @@ void gps_exit ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
 void gps_update ( void)  {
 
-  bool valid = false;
-  char pf[8] = "fail";
-  static int loop = 0;  loop++;
 
   uint sum = 0;
   uint i;
-  char msg[127];    memset( msg, 0, sizeof(msg) );
+  bool valid = false;
+  char msg[96];    memset( msg, 0, sizeof(msg) );
 
   read( gps.fd, msg, sizeof(msg) );
   tcflush( gps.fd, TCIOFLUSH ); 
 
   // Debugging message
-  //sprintf( msg, "$GPRMC,233325.200,A,3702.0833,N,07628.0617,W,1.74,217.31,240216,,,A*7B\r\n" );    // 7A
+  //sprintf( msg, "$GPRMC,233325.200,A,3702.0833,N,07628.0617,W,1.74,217.31,240216,,,A*7A\r\n" );    // 7A
 
   int len = strlen(msg);
 
@@ -102,7 +100,7 @@ void gps_update ( void)  {
     }
 
     // Evaluate check sum
-    if (sum == 0)  {  sprintf( pf, "pass" );  valid = true;   }
+    if (sum == 0)   valid = true;
 
   }
 
@@ -114,8 +112,6 @@ void gps_update ( void)  {
   pthread_mutex_lock(&mutex_gps);
   sprintf( gps.msg, msg );
   pthread_mutex_unlock(&mutex_gps);
-
-  //printf( "GPS %3d %s: %s    \n", loop, pf, msg );  fflush(stdout);
 
   return;
 }

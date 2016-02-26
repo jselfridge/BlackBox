@@ -1,5 +1,5 @@
 gps.c:13:6:gps_init	88	dynamic,bounded
 gps.c:64:6:gps_exit	0	static
-gps.c:74:6:gps_update	176	dynamic,bounded
-gps.c:128:6:gps_hex2dec	0	static
-gps.c:141:6:gps_adafruit	176	dynamic,bounded
+gps.c:74:6:gps_update	128	dynamic,bounded
+gps.c:124:6:gps_hex2dec	0	static
+gps.c:137:6:gps_adafruit	176	dynamic,bounded
