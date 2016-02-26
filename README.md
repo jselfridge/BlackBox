@@ -19,12 +19,6 @@ a ground control station (GCS).
 <li><b> v0.1.X - Send heartbeat to GCS </b></li>
 <li><b> v0.1.X - Compiler revisions </b></li><
 <li><b> v0.1.X - Airplane controller </b></li>
-<ul>
-  <li> Indicate vehicle type in terminal </li>
-  <li> Added PD controller structure for airplane system </li>
-  <li> Unique disarming values for specific systems </li>
-  <li> Moved calibration files so they can be board specific </li>
-</ul>
 </ul>
 
 
