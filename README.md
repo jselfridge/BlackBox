@@ -25,13 +25,16 @@ a ground control station (GCS).
   <li> Unique disarming values for specific systems </li>
   <li> Moved calibration files so they can be board specific </li>
 </ul>
-<li><b> v0.1.X - GPS Receiver </b></li>
-<ul>
-  <li> Read GPS through UART port. </li>
-  <li> Add code to configure GPS parameters. </li>
-  <li> (WIP) Parse GPS data stream. </li>
-  <li> (WIP) Log GPS data. </li>
 </ul>
+
+
+v0.1.3 - GPS Receiver
+---------------------
+<ul>
+  <li> Reading GPS through UART port. </li>
+  <li> Added code to configure GPS parameters. </li>
+  <li> Running checksum to verify accurate message. </li>
+  <li> Logging GPS message data. </li>
 </ul>
 
 
