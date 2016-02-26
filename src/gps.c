@@ -16,35 +16,43 @@ void gps_init ( void )  {
   sprintf( gps.path, "/dev/ttyO1" );
   memset ( gps.msg, 0, sizeof(gps.msg) );
 
-  // Assign settings
-  struct termios settings;
-  memset( &settings, 0, sizeof( &settings ) );
-  settings.c_iflag     = 0;
-  settings.c_oflag     = 0;
-  settings.c_cflag     = CS8 | CREAD | CLOCAL;
-  settings.c_lflag     = 0;
-  settings.c_cc[VTIME] = 5;
-  settings.c_cc[VMIN]  = 0;
-  //uart->param = settings;
-
   // Open the file descriptor
-  gps.fd = open ( gps.path, O_RDWR | O_NOCTTY );  //| O_NONBLOCK );
+  gps.fd = open ( gps.path, O_RDWR | O_NOCTTY );
   if ( gps.fd <0 )  printf( "Error (gps_init): Couldn't open GPS file descriptor. \n" );
 
-  // Set baud rate
-  if ( cfsetispeed( &settings, B9600 ) <0 )
-    printf( "Error (gps_init): Couldn't set GPS buad rate. \n" );
+  // Get current (old) parameters
+  //struct termios oldparam;
+  //memset( &oldparam, 0, sizeof( &oldparam ) );
+
+  // Send GPS configuration packets
+  int i;
+  //i = write( gps.fd, GPS_DEFAULT,       sizeof(GPS_DEFAULT)       );  usleep(i*300);
+  i = write( gps.fd, GPS_BAUD_9600,     sizeof(GPS_BAUD_9600)    );  usleep(i*300);
+  i = write( gps.fd, GPS_RMCONLY,       sizeof(GPS_RMCONLY)       );  usleep(i*300);
+  i = write( gps.fd, GPS_UPDATE_010_HZ, sizeof(GPS_UPDATE_010_HZ) );  usleep(i*300);
+
+  // Assign desired (new) parameters
+  struct termios newparam;
+  memset( &newparam, 0, sizeof( &newparam ) );
+  newparam.c_iflag     = 0;
+  newparam.c_oflag     = 0;
+  newparam.c_cflag     = CS8 | CREAD | CLOCAL;
+  newparam.c_lflag     = 0;
+  newparam.c_cc[VTIME] = 5;
+  newparam.c_cc[VMIN]  = 0;
+
+  // Set input baud rate
+  if ( cfsetispeed( &newparam, B9600 ) <0 )
+    printf( "Error (gps_init): Couldn't set GPS input buad rate. \n" );
+
+  // Set output baud rate
+  if ( cfsetospeed( &newparam, B9600 ) <0 )
+    printf( "Error (gps_init): Couldn't set GPS output buad rate. \n" );
 
   // Assign parameters to device
-  if ( tcsetattr( gps.fd, TCSAFLUSH, &settings ) <0 )
+  if ( tcsetattr( gps.fd, TCSAFLUSH, &newparam ) <0 )
     printf( "Error (gps_init): Failed to assign GPS parameters. \n" );
 
-  // Send config
-  int i;
-  //i = write( uart1.fd, GPS_DEFAULT,       sizeof(GPS_DEFAULT)       );  usleep(i*200);  // printf("i: %d \n",i);
-  //i = write( uart1.fd, GPS_BAUD_9600,     sizeof(GPS_BAUD_9600)     );  usleep(i*200);  // printf("i: %d \n",i);
-  i = write( gps.fd, GPS_RMCONLY,       sizeof(GPS_RMCONLY)       );  usleep(i*200);  // printf("i: %d \n",i);
-  i = write( gps.fd, GPS_UPDATE_010_HZ, sizeof(GPS_UPDATE_010_HZ) );  usleep(i*200);  // printf("i: %d \n",i);
   return;
 }
 
