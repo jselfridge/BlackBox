@@ -27,9 +27,9 @@ void gps_init ( void )  {
   // Send GPS configuration packets
   int i;
   //i = write( gps.fd, GPS_DEFAULT,       sizeof(GPS_DEFAULT)       );  usleep(i*300);
-  i = write( gps.fd, GPS_BAUD_9600,     sizeof(GPS_BAUD_9600)    );  usleep(i*300);
   i = write( gps.fd, GPS_RMCONLY,       sizeof(GPS_RMCONLY)       );  usleep(i*300);
   i = write( gps.fd, GPS_UPDATE_010_HZ, sizeof(GPS_UPDATE_010_HZ) );  usleep(i*300);
+  i = write( gps.fd, GPS_BAUD_9600,     sizeof(GPS_BAUD_9600)    );  usleep(i*300);
 
   // Assign desired (new) parameters
   struct termios newparam;
@@ -38,8 +38,8 @@ void gps_init ( void )  {
   newparam.c_oflag     = 0;
   newparam.c_cflag     = CS8 | CREAD | CLOCAL;
   newparam.c_lflag     = 0;
-  newparam.c_cc[VTIME] = 5;
-  newparam.c_cc[VMIN]  = 0;
+  newparam.c_cc[VTIME] = 1;
+  newparam.c_cc[VMIN]  = 50;
 
   // Set input baud rate
   if ( cfsetispeed( &newparam, B9600 ) <0 )
@@ -73,18 +73,49 @@ void gps_exit ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
 void gps_update ( void)  {
 
-  char buf[255];
-  read( gps.fd, buf, sizeof(buf) );
+  bool valid = false;
+  char pf[8] = "fail";
+  static int loop = 0;  loop++;
 
-  int len = strlen(buf);
-  //printf("\n\nlen: %d\n\n", len);
+  uint sum = 0;
+  uint i;
+  char msg[127];    memset( msg, 0, sizeof(msg) );
 
-  buf[len-1] = '\0';
+  read( gps.fd, msg, sizeof(msg) );
+  tcflush( gps.fd, TCIOFLUSH ); 
 
+  // Debugging message
+  //sprintf( msg, "$GPRMC,233325.200,A,3702.0833,N,07628.0617,W,1.74,217.31,240216,,,A*7B\r\n" );    // 7A
+
+  int len = strlen(msg);
+
+  // Evaluate message
+  if ( msg[len-5] == '*' )  {
+
+    // Obtain checksum
+    sum  = gps_hex2dec ( msg[len-4] ) * 16;
+    sum += gps_hex2dec ( msg[len-3] );
+
+    // Loop through content
+    for ( i=1; i < (len-5); i++ )  {
+      sum ^= msg[i];
+    }
+
+    // Evaluate check sum
+    if (sum == 0)  {  sprintf( pf, "pass" );  valid = true;   }
+
+  }
+
+  // Assign message
+  if (valid)  msg[len-2] = '\0';
+  else        sprintf( msg, "Bad data" );
+
+  // Assign GPS message
   pthread_mutex_lock(&mutex_gps);
-  //sprintf( gps.msg, "Hi there you good lookin coder!" );
-  sprintf( gps.msg, buf );
+  sprintf( gps.msg, msg );
   pthread_mutex_unlock(&mutex_gps);
+
+  //printf( "GPS %3d %s: %s    \n", loop, pf, msg );  fflush(stdout);
 
   return;
 }

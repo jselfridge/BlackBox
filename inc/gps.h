@@ -35,7 +35,7 @@
 typedef struct gps_struct {
   int     fd;
   char    path [16];
-  char    msg  [255];
+  char    msg  [127];
   double  lat;
   double  lon;
   double  alt;
