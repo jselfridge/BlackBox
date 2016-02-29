@@ -8,22 +8,27 @@ Box" functionality for research and development.
 
 Current Tasks
 -------------
-This software version focuses on getting multiple types of aircraft
-configured for the avionics board.  It adds controls for a standard
-tube-and-wing aircraft, enables the serial telemetry and incorporates
-a ground control station (GCS).
+This software version focuses on expanding the minimum working 
+software set, to include features that are needed for autonomous 
+navigation capabilities.
 
 <ul>
-<li><b> v0.1.X - Receive parameter updates from GCS </b></li>
-<li><b> v0.1.X - Send state info to GCS </b></li>
-<li><b> v0.1.X - Send heartbeat to GCS </b></li>
-<li><b> v0.1.X - Compiler revisions </b></li><
 <li><b> v0.1.X - Airplane controller </b></li>
 <ul>
   <li> Indicate vehicle type in terminal </li>
   <li> Added PD controller structure for airplane system </li>
   <li> Unique disarming values for specific systems </li>
   <li> Moved calibration files so they can be board specific </li>
+</ul>
+<li><b> v0.1.X - Ground Control Station </b></li>
+<ul> 
+  <li> (WIP) Set up timing thread code for GCS and send generic msg </li>
+  <li> (WIP) Read transmission through external USB/FTDI cable </li>
+  <li> (WIP) Download and setup standard MavLink header code library </li>
+  <li> (WIP) Send heartbeat over UART </li>
+  <li> (WIP) Read heartbeat in QGroundControl platform </li>
+  <li> (WIP) Send state info to GCS </li>
+  <li> (WIP) Receive parameter updates from GCS </li>
 </ul>
 </ul>
 

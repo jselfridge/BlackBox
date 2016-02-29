@@ -13,7 +13,8 @@
 void gps_init ( void )  {
   if (DEBUG)  printf("Initializing GPS \n");
 
-  sprintf( gps.path, "/dev/ttyO1" );
+  //sprintf( gps.path, "/dev/ttyO1" );
+  strcpy( gps.path, "/dev/ttyO1" );
   memset ( gps.msg, 0, sizeof(gps.msg) );
 
   // Open the file descriptor
@@ -83,6 +84,7 @@ void gps_update ( void)  {
   tcflush( gps.fd, TCIOFLUSH ); 
 
   // Debugging message
+  //strcpy( msg, "$GPRMC,233325.200,A,3702.0833,N,07628.0617,W,1.74,217.31,240216,,,A*7A\r\n" );    // 7A
   //sprintf( msg, "$GPRMC,233325.200,A,3702.0833,N,07628.0617,W,1.74,217.31,240216,,,A*7A\r\n" );    // 7A
 
   int len = strlen(msg);

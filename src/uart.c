@@ -20,11 +20,17 @@ void uart_init ( void )  {
   //uart4.id = 4;
   //uart5.id = 5;
 
-  // Specify device paths
+  // Specify device paths (orig)
   //sprintf( uart1.path, "/dev/ttyO1" );
   //sprintf( uart2.path, "/dev/ttyO2" );
   //sprintf( uart4.path, "/dev/ttyO4" );
   //sprintf( uart5.path, "/dev/ttyO5" );
+
+  // Specify device paths
+  //strcpy( uart1.path, "/dev/ttyO1" );
+  //strcpy( uart2.path, "/dev/ttyO2" );
+  //strcpy( uart4.path, "/dev/ttyO4" );
+  //strcpy( uart5.path, "/dev/ttyO5" );
 
   // Setup each UART device
   //if (DEBUG)  printf("  Configured:  " );
