@@ -169,6 +169,46 @@ void gcs_tx ( void)  {
 //  Receive from the ground control station.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
 void gcs_rx ( void)  {
+
+  /*
+  // Local mavlink variables
+  mavlink_message_t msg;
+  mavlink_status_t status;
+
+  // Check for available serial 
+  while( uart0_char_available() )  {
+
+    uint8_t c = uart0_get_char();
+
+    // Try to get a new message
+    if ( mavlink_parse_char( MAVLINK_COMM_0, c, &msg, &status ) )  {
+
+      // Handle message
+      switch(msg.msgid)  {
+
+        case MAVLINK_MSG_ID_HEARTBEAT:
+        // E.g. read GCS heartbeat and go into
+        // comm lost mode if timer times out
+        break;
+
+        case MAVLINK_MSG_ID_COMMAND_LONG:
+        // EXECUTE ACTION
+        break;
+
+        default:
+        //Do nothing
+        break;
+
+      }
+
+    }
+
+  }
+
+  // Update global packet drops counter
+  packet_drops += status.packet_rx_drop_count;
+  */
+
   return;
 }
 

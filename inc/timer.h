@@ -14,13 +14,14 @@
 #define PRIO_SIO    92
 #define PRIO_CTRL   90
 #define PRIO_GPS    88
-#define PRIO_GCS    86
+#define PRIO_GCSTX  86
+#define PRIO_GCSRX  84
 //#define PRIO_UART1  88
 //#define PRIO_UART2  88
 //#define PRIO_UART4  88
 //#define PRIO_UART5  88
-#define PRIO_FLAG   84
-#define PRIO_DEBUG  82
+#define PRIO_FLAG   82
+#define PRIO_DEBUG  80
 
 
 // Define timer frequencies
@@ -31,7 +32,8 @@
 #define HZ_CTRL         50
 #define HZ_FLAG         10
 #define HZ_GPS          10
-#define HZ_GCS          10
+#define HZ_GCSTX        10
+#define HZ_GCSRX        10
 #define HZ_DEBUG        10
 //#define HZ_UART1        10
 //#define HZ_UART2        10
@@ -61,7 +63,8 @@ timer_struct tmr_imuA;
 timer_struct tmr_imuB;
 timer_struct tmr_ahrs;
 timer_struct tmr_gps;
-timer_struct tmr_gcs;
+timer_struct tmr_gcstx;
+timer_struct tmr_gcsrx;
 //timer_struct tmr_uart1;
 //timer_struct tmr_uart2;
 //timer_struct tmr_uart4;
@@ -106,7 +109,8 @@ void *fcn_imuA   (  );
 void *fcn_imuB   (  );
 void *fcn_ahrs   (  );
 void *fcn_gps    (  );
-void *fcn_gcs    (  );
+void *fcn_gcstx  (  );
+void *fcn_gcsrx  (  );
 //void *fcn_uart1  (  );
 //void *fcn_uart2  (  );
 //void *fcn_uart4  (  );

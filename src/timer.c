@@ -46,7 +46,8 @@ void tmr_init ( void )  {
   if(USE_IMUB)  { tmr_thread( &tmr_imuB, &attr, fcn_imuB );  usleep(100000);  }
   tmr_thread( &tmr_ahrs,  &attr, fcn_ahrs  );  usleep(100000);
   //tmr_thread( &tmr_gps,   &attr, fcn_gps   );  usleep(100000);
-  tmr_thread( &tmr_gcs,   &attr, fcn_gcs   );  usleep(100000);
+  tmr_thread( &tmr_gcstx, &attr, fcn_gcstx );  usleep(100000);
+  tmr_thread( &tmr_gcsrx, &attr, fcn_gcsrx );  usleep(100000);
   //if(UART1_ENABLED)  tmr_thread( &tmr_uart1, &attr, fcn_uart1 );  usleep(100000);
   //if(UART2_ENABLED)  tmr_thread( &tmr_uart2, &attr, fcn_uart2 );  usleep(100000);
   //if(UART4_ENABLED)  tmr_thread( &tmr_uart4, &attr, fcn_uart4 );  usleep(100000);
@@ -100,10 +101,15 @@ void tmr_setup ( void )  {
   tmr_gps.prio   =  PRIO_GPS;
   tmr_gps.per    =  1000000 / HZ_GPS;
 
-  // GCS timer
-  tmr_gcs.name   =  "gcs";
-  tmr_gcs.prio   =  PRIO_GCS;
-  tmr_gcs.per    =  1000000 / HZ_GCS;
+  // GCSTX timer
+  tmr_gcstx.name =  "gcstx";
+  tmr_gcstx.prio =  PRIO_GCSTX;
+  tmr_gcstx.per  =  1000000 / HZ_GCSTX;
+
+  // GCSRX timer
+  tmr_gcsrx.name =  "gcsrx";
+  tmr_gcsrx.prio =  PRIO_GCSRX;
+  tmr_gcsrx.per  =  1000000 / HZ_GCSRX;
 
   /*
   // UART1 timer
@@ -252,10 +258,15 @@ void tmr_exit ( void )  {
   }
   */
 
-  // Exit GCS thread
-  if( pthread_join ( tmr_gcs.id, NULL ) )
-    printf( "Error (tmr_exit): Failed to exit 'gcs' thread. \n" );
-  if(DEBUG)  printf( "gcs " );
+  // Exit GCSRX thread
+  if( pthread_join ( tmr_gcsrx.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'gcsrx' thread. \n" );
+  if(DEBUG)  printf( "gcsrx " );
+
+  // Exit GCSTX thread
+  if( pthread_join ( tmr_gcstx.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'gcstx' thread. \n" );
+  if(DEBUG)  printf( "gcstx " );
 
   /* // Exit GPS thread
   if( pthread_join ( tmr_gps.id, NULL ) )
@@ -506,16 +517,33 @@ void *fcn_gps (  )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_gcs
-//  Function handler for the GCS timing thread.
+//  fcn_gcstx
+//  Function handler for the GCS transmission timing thread.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void *fcn_gcs (  )  {
-  tmr_create(&tmr_gcs);
+void *fcn_gcstx (  )  {
+  tmr_create(&tmr_gcstx);
   while (running) {
-    tmr_start(&tmr_gcs);
+    tmr_start(&tmr_gcstx);
     gcs_tx();
-    tmr_finish(&tmr_gcs);
-    tmr_pause(&tmr_gcs);
+    tmr_finish(&tmr_gcstx);
+    tmr_pause(&tmr_gcstx);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  fcn_gcsrx
+//  Function handler for the GCS receiver timing thread.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void *fcn_gcsrx (  )  {
+  tmr_create(&tmr_gcsrx);
+  while (running) {
+    tmr_start(&tmr_gcsrx);
+    gcs_rx();
+    tmr_finish(&tmr_gcsrx);
+    tmr_pause(&tmr_gcsrx);
   }
   pthread_exit(NULL);
   return NULL;
