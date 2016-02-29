@@ -42,9 +42,9 @@ void tmr_init ( void )  {
   // Create primary timing threads
   //tmr_thread( &tmr_sio,   &attr, fcn_sio   );  usleep(100000);
   //tmr_thread( &tmr_flag,  &attr, fcn_flag  );  usleep(100000);
-  //if(USE_IMUA)  { tmr_thread( &tmr_imuA, &attr, fcn_imuA );  usleep(100000);  }
-  //if(USE_IMUB)  { tmr_thread( &tmr_imuB, &attr, fcn_imuB );  usleep(100000);  }
-  //tmr_thread( &tmr_ahrs,  &attr, fcn_ahrs  );  usleep(100000);
+  if(USE_IMUA)  { tmr_thread( &tmr_imuA, &attr, fcn_imuA );  usleep(100000);  }
+  if(USE_IMUB)  { tmr_thread( &tmr_imuB, &attr, fcn_imuB );  usleep(100000);  }
+  tmr_thread( &tmr_ahrs,  &attr, fcn_ahrs  );  usleep(100000);
   //tmr_thread( &tmr_gps,   &attr, fcn_gps   );  usleep(100000);
   tmr_thread( &tmr_gcs,   &attr, fcn_gcs   );  usleep(100000);
   //if(UART1_ENABLED)  tmr_thread( &tmr_uart1, &attr, fcn_uart1 );  usleep(100000);
@@ -222,8 +222,7 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_ctrl.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ctrl' thread. \n" );
   if(DEBUG)  printf( "ctrl " );
-  */
-  /*
+
   // Exit UART5 thread
   if(UART5_ENABLED)  {
   if( pthread_join ( tmr_uart5.id, NULL ) )
@@ -253,7 +252,7 @@ void tmr_exit ( void )  {
   }
   */
 
-  // Exit GPS thread
+  // Exit GCS thread
   if( pthread_join ( tmr_gcs.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gcs' thread. \n" );
   if(DEBUG)  printf( "gcs " );
@@ -262,7 +261,7 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_gps.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gps' thread. \n" );
   if(DEBUG)  printf( "gps " );
-
+  */
   // Exit AHRS thread
   if( pthread_join ( tmr_ahrs.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ahrs' thread. \n" );
@@ -279,7 +278,7 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_imuA.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'imuA' thread. \n" );
   if(DEBUG)  printf( "imuA " );  }
-
+  /*
   // Exit program execution flags thread
   if( pthread_join ( tmr_flag.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'flag' thread. \n" );

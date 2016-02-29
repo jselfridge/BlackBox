@@ -1,9 +1,9 @@
 sys.c:319:6:sys_exit	8	static
 sys.c:13:6:sys_init	184	dynamic,bounded
-sys.c:55:6:sys_update	16	static
 sys.c:92:6:sys_sio	32	static
 sys.c:122:6:sys_imuA	48	static
 sys.c:161:6:sys_imuB	0	static
 sys.c:200:6:sys_ahrs	32	static
+sys.c:55:6:sys_update	16	static
 sys.c:225:6:sys_gps	8	static
 sys.c:295:6:sys_ctrl	0	static

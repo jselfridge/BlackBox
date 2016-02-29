@@ -100,20 +100,65 @@ void gcs_tx ( void)  {
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
  
-  // Pack the message
-  mavlink_msg_heartbeat_pack ( mavlink_system.sysid, mavlink_system.compid, &msg, system_type, autopilot_type, system_mode, custom_mode, system_state );
+  // Pack the heartbeat message
+  mavlink_msg_heartbeat_pack ( 
+    mavlink_system.sysid, 
+    mavlink_system.compid, 
+    &msg, 
+    system_type, 
+    autopilot_type, 
+    system_mode, 
+    custom_mode, 
+    system_state 
+  );
  
-  // Copy the message to the send buffer
+  // Copy the heartbeat message to the send buffer
   uint len = mavlink_msg_to_send_buffer( buf, &msg );
- 
+
   // Send the message with the standard UART send function
   // uart0_send might be named differently depending on
   // the individual microcontroller / library in use.
   //uart0_send(buf, len);
   int w = write( gcs.fd, buf, len );
-  usleep(w*200);
+  usleep(w*300);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  // Clear the message and buffer
+  memset( &msg, 0, sizeof(&msg) );
+  memset( &buf, 0, sizeof(&buf) );
+
+  // Collect the data
+  uint32_t time_boot_ms = 0;
+  pthread_mutex_lock(&mutex_eul);
+  float roll       = ahrs.eul[0];
+  float pitch      = ahrs.eul[1];
+  float yaw        = ahrs.eul[2];
+  float rollspeed  = ahrs.deul[0];
+  float pitchspeed = ahrs.deul[1];
+  float yawspeed   = ahrs.deul[2];
+  pthread_mutex_unlock(&mutex_eul);
+
+  // Pack the attitude message 
+  mavlink_msg_attitude_pack ( 
+    mavlink_system.sysid, 
+    mavlink_system.compid, 
+    &msg,  
+    time_boot_ms, 
+    roll, 
+    pitch, 
+    yaw, 
+    rollspeed, 
+    pitchspeed, 
+    yawspeed
+    );
+
+  // Copy the heartbeat message to the send buffer
+  uint attlen = mavlink_msg_to_send_buffer( buf, &msg );
+
+  // Transmit the attitude data
+  int attw = write( gcs.fd, buf, attlen );
+  usleep(attw*300);
 
   return;
 }
