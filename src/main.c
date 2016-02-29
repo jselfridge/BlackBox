@@ -22,13 +22,14 @@ int main ( void )  {
   //flag_init();
   //imu_init();
   //ahrs_init();
-  //uart_init();
-  gps_init();
+  uart_init();
+  //gps_init();
+  gcs_init();
   //ctrl_init();
-  log_init();
+  //log_init();
   //--  DEBUGGING  --//
-  log_open();
-  datalog.enabled = true;
+  //log_open();
+  //datalog.enabled = true;
   //-----------------//
   tmr_init();
 

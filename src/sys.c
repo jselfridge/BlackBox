@@ -71,7 +71,7 @@ void sys_update ( void )  {
   //sys_imuA();
   //sys_imuB();
   //sys_ahrs();
-  sys_gps();
+  //sys_gps();
   //sys_uart1();
   //sys_uart2();
   //sys_uart4();
@@ -326,13 +326,14 @@ void sys_exit (  )  {
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   tmr_exit();
   //--  DEBUGGING  --//
-  datalog.enabled = false;
-  log_close();
+  //datalog.enabled = false;
+  //log_close();
   //-----------------//
-  log_exit();
+  //log_exit();
   //ctl_exit();
-  gps_exit();
-  //uart_exit();
+  gcs_exit();
+  //gps_exit();
+  uart_exit();
   //ahrs_exit();
   //imu_exit();
   //flag_exit();

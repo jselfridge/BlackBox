@@ -1,4 +1,5 @@
-uart.c:13:6:uart_init	0	static
-uart.c:45:6:uart_setup	0	static
-uart.c:80:6:uart_update	0	static
-uart.c:96:6:uart_exit	0	static
+uart.c:51:6:0	96	dynamic,bounded
+uart.c:13:6:uart_init	16	static
+uart.c:51:6:uart_setup	96	dynamic,bounded
+uart.c:90:6:uart_update	0	static
+uart.c:106:6:uart_exit	8	static

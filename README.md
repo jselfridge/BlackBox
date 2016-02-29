@@ -22,8 +22,8 @@ navigation capabilities.
 </ul>
 <li><b> v0.1.X - Ground Control Station </b></li>
 <ul> 
-  <li> (WIP) Set up timing thread code for GCS and send generic msg </li>
-  <li> (WIP) Read transmission through external USB/FTDI cable </li>
+  <li> Set up timing thread code for GCS and send generic msg </li>
+  <li> Read transmission through external USB/FTDI cable </li>
   <li> (WIP) Download and setup standard MavLink header code library </li>
   <li> (WIP) Send heartbeat over UART </li>
   <li> (WIP) Read heartbeat in QGroundControl platform </li>

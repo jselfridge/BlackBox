@@ -12,13 +12,13 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void uart_init ( void )  {
 
-  //if(DEBUG)  printf( "Initializing serial communications \n" );
+  if(DEBUG)  printf( "Initializing serial communications \n" );
 
   // Set IDs
   //uart1.id = 1;
   //uart2.id = 2;
   //uart4.id = 4;
-  //uart5.id = 5;
+  uart5.id = 5;
 
   // Specify device paths (orig)
   //sprintf( uart1.path, "/dev/ttyO1" );
@@ -30,15 +30,15 @@ void uart_init ( void )  {
   //strcpy( uart1.path, "/dev/ttyO1" );
   //strcpy( uart2.path, "/dev/ttyO2" );
   //strcpy( uart4.path, "/dev/ttyO4" );
-  //strcpy( uart5.path, "/dev/ttyO5" );
+  strcpy( uart5.path, "/dev/ttyO5" );
 
   // Setup each UART device
-  //if (DEBUG)  printf("  Configured:  " );
+  if (DEBUG)  printf("  Configured:  " );
   //if (UART1_ENABLED)  uart_setup(&uart1);
   //if (UART2_ENABLED)  uart_setup(&uart2);
   //if (UART4_ENABLED)  uart_setup(&uart4);
-  //if (UART5_ENABLED)  uart_setup(&uart5);
-  //if (DEBUG)  printf("\n");
+  if (UART5_ENABLED)  uart_setup(&uart5);
+  if (DEBUG)  printf("\n");
 
   return;
 }
@@ -49,7 +49,7 @@ void uart_init ( void )  {
 //  Setup the UART parameters.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void uart_setup ( uart_struct *uart )  {
-  /*
+
   if (DEBUG)  printf("UART%d ", uart->id );
  
   // Assign settings
@@ -64,17 +64,21 @@ void uart_setup ( uart_struct *uart )  {
   uart->param = settings;
 
   // Open the file descriptor
-  uart->fd = open ( uart->path, O_RDWR | O_NOCTTY );  //| O_NONBLOCK );
+  uart->fd = open ( uart->path, O_RDWR | O_NOCTTY );
   if ( uart->fd <0 )  printf( "Error (uart): Couldn't open UART%d. \n", uart->id );
 
-  // Set baud rate
-  if ( cfsetispeed( &(uart->param), B9600 ) <0 )
-    printf( "Error (uart): Couldn't set UART%d buad rate. \n", uart->id );
+  // Set input baud rate
+  if ( cfsetispeed( &(uart->param), B57600 ) <0 )
+    printf( "Error (uart): Couldn't set UART%d input buad rate. \n", uart->id );
+
+  // Set output baud rate
+  if ( cfsetospeed( &(uart->param), B57600 ) <0 )
+    printf( "Error (uart): Couldn't set UART%d output buad rate. \n", uart->id );
 
   // Assign parameters to device
   if ( tcsetattr( uart->fd, TCSAFLUSH, &(uart->param) ) <0 )
     printf( "Error (uart): Failed to assign UART%d parameters. \n", uart->id );
-  */
+
   return;
 }
 
@@ -100,13 +104,13 @@ void uart_update ( uart_struct *uart )  {
 //  Close the UART file descriptors.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void uart_exit ( void )  {
-  /*
+
   if (DEBUG)  printf("Close UART \n" );
   if (UART1_ENABLED)  if ( close(uart1.fd) <0 )  printf( "Error (uart_exit): Couldn't close UART1. \n" ); 
   if (UART2_ENABLED)  if ( close(uart2.fd) <0 )  printf( "Error (uart_exit): Couldn't close UART2. \n" ); 
   if (UART4_ENABLED)  if ( close(uart4.fd) <0 )  printf( "Error (uart_exit): Couldn't close UART4. \n" ); 
   if (UART5_ENABLED)  if ( close(uart5.fd) <0 )  printf( "Error (uart_exit): Couldn't close UART5. \n" ); 
-  */
+
   return;
 }
 
