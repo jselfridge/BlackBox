@@ -1,4 +1,4 @@
 gcs.c:13:6:gcs_init	88	dynamic,bounded
 gcs.c:58:6:gcs_exit	0	static
-gcs.c:68:6:gcs_tx	96	dynamic,bounded
-gcs.c:85:6:gcs_rx	0	static
+gcs.c:68:6:gcs_tx	640	dynamic,bounded
+gcs.c:126:6:gcs_rx	0	static

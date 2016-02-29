@@ -24,9 +24,9 @@ navigation capabilities.
 <ul> 
   <li> Set up timing thread code for GCS and send generic msg </li>
   <li> Read transmission through external USB/FTDI cable </li>
-  <li> (WIP) Download and setup standard MavLink header code library </li>
-  <li> (WIP) Send heartbeat over UART </li>
-  <li> (WIP) Read heartbeat in QGroundControl platform </li>
+  <li> Download and setup standard MavLink header code library </li>
+  <li> Send heartbeat over UART </li>
+  <li> Connect to QGC and read heartbeat in software </li>
   <li> (WIP) Send state info to GCS </li>
   <li> (WIP) Receive parameter updates from GCS </li>
 </ul>

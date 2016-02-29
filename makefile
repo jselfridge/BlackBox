@@ -30,7 +30,7 @@ $(EXEC) : $(OBJ) $(BIN)
 	$(CC) -o $@ $(OBJ) $(LIB)   # -L$(LDIR)
 
 obj/%.o : src/%.c inc/%.h
-	$(CC) $(CFLAGS) $(DEFS) -Iinc -o $@ $<  # -I$(IDIR) 
+	$(CC) $(CFLAGS) $(DEFS) -Iinc -Imavlink -o $@ $<  # -I$(IDIR) 
 
 bin/%.bin : pru/%.p
 	pasm -b $<

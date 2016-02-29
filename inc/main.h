@@ -55,6 +55,10 @@
 #include <pruss_intc_mapping.h>
 
 
+// Mavlink include
+#include <common/mavlink.h>
+
+
 // MPU function wrapper
 #define get_ms         i2c_get_ms
 #define log_i          printf
