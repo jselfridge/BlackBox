@@ -1,0 +1,7 @@
+gcs.c:13:6:gcs_init	96	dynamic,bounded
+gcs.c:60:6:gcs_exit	0	static
+gcs.c:130:6:gcs_rx	336	dynamic,bounded
+gcs.c:209:6:gcs_paramlist	616	dynamic,bounded
+gcs.c:251:6:gcs_missionlist	624	dynamic,bounded
+gcs.c:292:6:gcs_heartbeat	640	dynamic,bounded
+gcs.c:70:6:gcs_tx	8	static

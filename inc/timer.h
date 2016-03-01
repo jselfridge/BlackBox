@@ -15,13 +15,13 @@
 #define PRIO_CTRL   90
 #define PRIO_GPS    88
 #define PRIO_GCSTX  86
-#define PRIO_GCSRX  84
+#define PRIO_GCSRX  86
 //#define PRIO_UART1  88
 //#define PRIO_UART2  88
 //#define PRIO_UART4  88
 //#define PRIO_UART5  88
-#define PRIO_FLAG   82
-#define PRIO_DEBUG  80
+#define PRIO_FLAG   84
+#define PRIO_DEBUG  82
 
 
 // Define timer frequencies

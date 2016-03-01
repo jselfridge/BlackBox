@@ -20,8 +20,8 @@ int main ( void )  {
   sys_init();
   //sio_init();
   //flag_init();
-  imu_init();
-  ahrs_init();
+  //imu_init();
+  //ahrs_init();
   //uart_init();
   //gps_init();
   gcs_init();

@@ -70,7 +70,7 @@ void sys_update ( void )  {
   //sys_sio();
   //sys_imuA();
   //sys_imuB();
-  sys_ahrs();
+  //sys_ahrs();
   //sys_gps();
   //sys_uart1();
   //sys_uart2();
@@ -334,8 +334,8 @@ void sys_exit (  )  {
   gcs_exit();
   //gps_exit();
   //uart_exit();
-  ahrs_exit();
-  imu_exit();
+  //ahrs_exit();
+  //imu_exit();
   //flag_exit();
   //sio_exit();
 

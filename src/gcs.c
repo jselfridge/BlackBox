@@ -13,17 +13,17 @@
 void gcs_init ( void )  {
   if (DEBUG)  printf("Initializing GCS \n");
 
-  //sprintf( gps.path, "/dev/ttyO1" );
+  // Allocate memory
+  memset ( gcs.path,      0, sizeof(gcs.path)         );
+  //memset ( gcs.msg,       0, sizeof(gcs.msg)          );
+  //memset ( &(gcs.system), 0, sizeof(mavlink_system_t) );
+
+  // Assign UART path
   strcpy( gcs.path, "/dev/ttyO2" );
-  memset ( gcs.msg, 0, sizeof(gcs.msg) );
 
   // Open the file descriptor
   gcs.fd = open ( gcs.path, O_RDWR | O_NOCTTY );
   if ( gcs.fd <0 )  printf( "Error (gcs_init): Couldn't open GCS file descriptor. \n" );
-
-  // Get current (old) parameters
-  //struct termios oldparam;
-  //memset( &oldparam, 0, sizeof( &oldparam ) );
 
   // Assign UART settings
   struct termios settings;
@@ -32,8 +32,8 @@ void gcs_init ( void )  {
   settings.c_oflag     = 0;
   settings.c_cflag     = CS8 | CREAD | CLOCAL;
   settings.c_lflag     = 0;
-  settings.c_cc[VTIME] = 1;
-  settings.c_cc[VMIN]  = 10;
+  settings.c_cc[VTIME] = 0;
+  settings.c_cc[VMIN]  = 0;
 
   // Set input baud rate
   if ( cfsetispeed( &settings, B57600 ) <0 )
@@ -47,6 +47,8 @@ void gcs_init ( void )  {
   if ( tcsetattr( gcs.fd, TCSAFLUSH, &settings ) <0 )
     printf( "Error (gcs_init): Failed to assign GCS UART parameters. \n" );
 
+  gcs.sendparam = false;
+
   return;
 }
 
@@ -56,7 +58,7 @@ void gcs_init ( void )  {
 //  Exits the GCS sensor.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
 void gcs_exit ( void )  {
-  // Add code as needed...
+  close ( gcs.fd );
   return;
 }
 
@@ -67,64 +69,19 @@ void gcs_exit ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
 void gcs_tx ( void)  {
   
-  /*
-  static uint loop = 0;  loop++;
-  printf( "GCS Loop: %d \n\n", loop );
-  char debugmsg[64];
-  memset( debugmsg,0,sizeof(debugmsg) );
-  sprintf( debugmsg, "GCS Loop: %d \r\n", loop );
-  int w = write( gcs.fd, debugmsg, 64 );
-  usleep(w*200);
-  */
+  gcs_heartbeat();
+
+  //pthread_mutex_lock(&mutex_gcs);
+  if (gcs.sendparam)  gcs_paramlist();  gcs.sendparam = false;
+  //pthread_mutex_unlock(&mutex_gcs);
+
+  //pthread_mutex_lock(&mutex_gcs);
+  if (gcs.sendmission)  gcs_missionlist();  gcs.sendmission = false;
+  //pthread_mutex_unlock(&mutex_gcs);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  // The default UART header for your MCU
-  //#include "uart.h"
-  //#include <mavlink/v1.0/common/mavlink.h>
- 
-  mavlink_system_t mavlink_system;
- 
-  mavlink_system.sysid = 20;                   ///< ID 20 for this airplane
-  mavlink_system.compid = MAV_COMP_ID_IMU;     ///< The component sending the message is the IMU, it could be also a Linux process
- 
-  // Define the system type, in this case an airplane
-  uint system_type     = MAV_TYPE_FIXED_WING;
-  uint autopilot_type  = MAV_AUTOPILOT_GENERIC;
- 
-  uint system_mode     = MAV_MODE_PREFLIGHT; ///< Booting up
-  uint custom_mode     = 0;                 ///< Custom mode, can be defined by user/adopter
-  uint system_state    = MAV_STATE_STANDBY; ///< System ready for flight
- 
-  // Initialize the required buffers
-  mavlink_message_t msg;
-  uint8_t buf[MAVLINK_MAX_PACKET_LEN];
- 
-  // Pack the heartbeat message
-  mavlink_msg_heartbeat_pack ( 
-    mavlink_system.sysid, 
-    mavlink_system.compid, 
-    &msg, 
-    system_type, 
-    autopilot_type, 
-    system_mode, 
-    custom_mode, 
-    system_state 
-  );
- 
-  // Copy the heartbeat message to the send buffer
-  uint len = mavlink_msg_to_send_buffer( buf, &msg );
-
-  // Send the message with the standard UART send function
-  // uart0_send might be named differently depending on
-  // the individual microcontroller / library in use.
-  //uart0_send(buf, len);
-  int w = write( gcs.fd, buf, len );
-  usleep(w*300);
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  // Clear the message and buffer
+  /*  // Clear the message and buffer
   memset( &msg, 0, sizeof(&msg) );
   memset( &buf, 0, sizeof(&buf) );
 
@@ -141,8 +98,8 @@ void gcs_tx ( void)  {
 
   // Pack the attitude message 
   mavlink_msg_attitude_pack ( 
-    mavlink_system.sysid, 
-    mavlink_system.compid, 
+    20, 
+    MAV_COMP_ID_IMU,
     &msg,  
     time_boot_ms, 
     roll, 
@@ -160,6 +117,8 @@ void gcs_tx ( void)  {
   int attw = write( gcs.fd, buf, attlen );
   usleep(attw*300);
 
+  */
+
   return;
 }
 
@@ -170,294 +129,200 @@ void gcs_tx ( void)  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
 void gcs_rx ( void)  {
 
-  /*
+  bool moredata = true;
+
   // Local mavlink variables
   mavlink_message_t msg;
   mavlink_status_t status;
 
   // Check for available serial 
-  while( uart0_char_available() )  {
+  while( moredata )  {
 
-    uint8_t c = uart0_get_char();
+    uint8_t c;
+
+    pthread_mutex_lock(&mutex_gcs);
+    int r = read( gcs.fd, &c, 1 );
+    pthread_mutex_unlock(&mutex_gcs);
+
+    if ( r == 0 )  moredata = false;
 
     // Try to get a new message
-    if ( mavlink_parse_char( MAVLINK_COMM_0, c, &msg, &status ) )  {
+    if ( mavlink_parse_char( 0, c, &msg, &status ) )  {
+
+      printf("\n");
 
       // Handle message
       switch(msg.msgid)  {
 
         case MAVLINK_MSG_ID_HEARTBEAT:
-        // E.g. read GCS heartbeat and go into
-        // comm lost mode if timer times out
+	  printf("RX: Heartbeat");  fflush(stdout);
+        break;
+
+        case MAVLINK_MSG_ID_PARAM_REQUEST_LIST:
+	  printf("RX: Param Request List");  fflush(stdout);
+          //pthread_mutex_lock(&mutex_gcs);
+	  gcs.sendparam = true;
+          //pthread_mutex_unlock(&mutex_gcs);
+        break;
+
+        case MAVLINK_MSG_ID_PARAM_REQUEST_READ:
+	  printf("RX: Param Request Read");  fflush(stdout);
+          //pthread_mutex_lock(&mutex_gcs);
+	  gcs.sendparam = true;
+          //pthread_mutex_unlock(&mutex_gcs);
+        break;
+
+        case MAVLINK_MSG_ID_PARAM_SET:
+	  printf("RX: Param Set");  fflush(stdout);
+        break;
+
+        case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
+	  printf("RX: Mission Request List");  fflush(stdout);
+          //pthread_mutex_lock(&mutex_gcs);
+	  gcs.sendmission = true;
+          //pthread_mutex_unlock(&mutex_gcs);
         break;
 
         case MAVLINK_MSG_ID_COMMAND_LONG:
-        // EXECUTE ACTION
+	  printf("RX: Command Long");  fflush(stdout);
         break;
 
         default:
-        //Do nothing
+          printf("RX: New ID: %d ", msg.msgid );  fflush(stdout);
         break;
 
       }
-
     }
-
   }
 
   // Update global packet drops counter
-  packet_drops += status.packet_rx_drop_count;
-  */
+  //packet_drops += status.packet_rx_drop_count;
 
   return;
 }
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gps_update
-//  Obtains a new set of GPS data.
+//  gcs_paramlist
+//  Sends the onboard parameter list.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
-/*
-void gps_update ( void)  {
+void gcs_paramlist ( void)  {
 
-
-  uint sum = 0;
-  uint i;
-  bool valid = false;
-  char msg[96];    memset( msg, 0, sizeof(msg) );
-
-  read( gps.fd, msg, sizeof(msg) );
-  tcflush( gps.fd, TCIOFLUSH ); 
-
-  // Debugging message
-  //strcpy( msg, "$GPRMC,233325.200,A,3702.0833,N,07628.0617,W,1.74,217.31,240216,,,A*7A\r\n" );    // 7A
-  //sprintf( msg, "$GPRMC,233325.200,A,3702.0833,N,07628.0617,W,1.74,217.31,240216,,,A*7A\r\n" );    // 7A
-
-  int len = strlen(msg);
-
-  // Evaluate message
-  if ( msg[len-5] == '*' )  {
-
-    // Obtain checksum
-    sum  = gps_hex2dec ( msg[len-4] ) * 16;
-    sum += gps_hex2dec ( msg[len-3] );
-
-    // Loop through content
-    for ( i=1; i < (len-5); i++ )  {
-      sum ^= msg[i];
-    }
-
-    // Evaluate check sum
-    if (sum == 0)   valid = true;
-
-  }
-
-  // Assign message
-  if (valid)  msg[len-2] = '\0';
-  else        sprintf( msg, "Bad data" );
-
-  // Assign GPS message
-  pthread_mutex_lock(&mutex_gps);
-  sprintf( gps.msg, msg );
-  pthread_mutex_unlock(&mutex_gps);
-
-  return;
-}
-*/
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gps_hex2dec
-//  Converts a hex character into an integer
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
-/*
-uint gps_hex2dec ( char c )  {
-  if ( c <  '0' )  return 0;
-  if ( c <= '9' )  return c - '0';
-  if ( c <  'A' )  return 0;
-  if ( c <= 'F' )  return (c - 'A')+10;
-  return 0;
-}
-*/
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gps_adafruit
-//  Temp code obtained from Adafruit sample.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
-/*
-void gps_adafruit ( void )  {
+  //printf("\nTX: Param List " );  fflush(stdout);
 
   // Local variables
-  uint sum, i;
-  long degree, minutes;
-  char degreebuff[10];
-  double latitudeDegrees;
-  double longitudeDegrees;
+  int len, w;
 
-  // Testing buffer
-  char buf[96] = "$GPRMC,233325.200,A,3702.0833,N,07628.0617,W,1.74,217.31,240216,,,A*7A\r\n";
-  //char buf[96] = "$GPRMC,233325.200";
-  printf("buf:  %s \n", buf);
+  // Initialize the required buffers
+  mavlink_message_t msg;
+  uint8_t buf[MAVLINK_MAX_PACKET_LEN];
 
-  // Get array length
-  int len = strlen(buf);
-  printf("len: %d \n", len );
+  // Pack parameter message
+  memset( &msg, 0, sizeof(&msg) );
+  mavlink_msg_param_value_pack(
+    20, 
+    MAV_COMP_ID_IMU,
+    &msg, 
+    "ParamA", 
+    1.0, 
+    MAVLINK_TYPE_FLOAT,
+    1, 
+    0
+  );
 
-  // Star char must be present
-  if ( buf[len-5] == '*' )   printf("Found it!\n");
-  else                       printf("Keep looking!\n");
+  // Send parameter to GCS
+  memset( buf, 0, sizeof(buf) );
+  len = mavlink_msg_to_send_buffer( buf, &msg );
 
-  // Obtain checksum
-  sum  = gps_hex2dec ( buf[len-4] ) * 16;
-  sum += gps_hex2dec ( buf[len-3] );
-  printf( "sum: %2d \n", sum );
+  pthread_mutex_lock(&mutex_gcs);
+  w = write( gcs.fd, buf, len );
+  pthread_mutex_unlock(&mutex_gcs);
 
-  // Loop through content
-  for ( i=1; i < (len-5); i++ )  {
-    sum ^= buf[i];
-  }
-
-  // Evaluate check sum
-  if (sum != 0)  printf("Bad check sum \n");
-  else           printf("Success!! \n");
-
-  // Process RMC data
-  if ( strstr( buf, "$GPRMC" ) )  {
-
-    // found RMC
-    char *p = buf;
-    printf("Found the GPRMC string. \n");
-
-    // Get GPS HMS
-    p = strchr( p, ',' ) +1;
-    char timestr[6];
-    memcpy( &timestr, p, 6 );
-    uint timeint = atoi(timestr);
-
-    // Get GPS ms
-    p = strchr( p, '.' ) +1;
-    char msstr[3];
-    memcpy( &msstr, p, 3 );
-    uint ms = atoi(msstr);
-
-    // Calculate time
-    uint hr  = timeint / 10000;
-    uint min = (timeint % 10000) / 100;
-    uint sec = (timeint % 100);
-
-    // Display time results
-    printf("timeint: %d \n", timeint );
-    printf("time:  %2d:%2d:%2d.%3d \n", hr, min, sec, ms );
-
-    // GPS fix status
-    //bool fix;
-    p = strchr( p, ',' )+1;
-    if ( p[0] == 'A' )  {  
-      //fix = true;
-      printf("Good fix \n");
-    }
-    else if ( p[0] == 'V' )  {
-      //fix = false;
-      printf("No fix \n");
-    }
-    else  {
-      //fix = false;
-      printf("Bad status \n");
-    }
-
-    // Parse GPS latitude
-    p = strchr( p, ',' )+1;
-    if ( ',' != *p )  {
-      strncpy(degreebuff, p, 2);
-      degreebuff[2] = '\0';
-      degree = atol(degreebuff) * 10000000;
-      printf( "degree: %ld \n", degree );
-      p += 2;
-      strncpy(degreebuff, p, 2); // minutes
-      p += 3; // skip decimal point
-      strncpy(degreebuff + 2, p, 4);
-      degreebuff[6] = '\0';
-      printf("degbuff: %s \n", degreebuff );
-      minutes = 50 * atol(degreebuff) / 3;
-      printf("minutes: %ld \n", minutes);
-      long latitude_fixed = degree + minutes;
-      printf("latitude_fixed: %ld \n", latitude_fixed );
-      double latitude = degree / 100000 + minutes * 0.000006F;
-      printf("latitude: %f \n", latitude );
-      latitudeDegrees = ( latitude- 100* (int)(latitude/100) ) /60.0;
-      latitudeDegrees += (int)(latitude/100);
-      printf("latitudeDegrees: %f \n", latitudeDegrees );
-    }
-
-    // Convert N/S
-    p = strchr( p, ',' )+1;
-    char lat = 'O';
-    if ( ',' != *p )  {
-      if      ( p[0] == 'S' )  latitudeDegrees *= -1.0;
-      if      ( p[0] == 'N' )  lat = 'N';
-      else if ( p[0] == 'S' )  lat = 'S';
-      else if ( p[0] == ',' )  lat = '0';
-      else                     lat = '?';
-    }
-    printf("lat: %c \n", lat);
-
-    // Parse GPS longitude
-    p = strchr( p, ',' )+1;
-    if ( ',' != *p )  {
-      strncpy( degreebuff, p, 3 );
-      degreebuff[3] = '\0';
-      degree = atol(degreebuff) * 10000000;
-      printf( "degree: %ld \n", degree );
-      p += 3;
-      strncpy(degreebuff, p, 2); // minutes
-      p += 3; // skip decimal point
-      strncpy(degreebuff + 2, p, 4);
-      degreebuff[6] = '\0';
-      printf("degbuff: %s \n", degreebuff );
-      minutes = 50 * atol(degreebuff) / 3;
-      printf("minutes: %ld \n", minutes);
-      long longitude_fixed = degree + minutes;
-      printf("longitude_fixed: %ld \n", longitude_fixed );
-      double longitude = degree / 100000 + minutes * 0.000006F;
-      printf("longitude: %f \n", longitude );
-      longitudeDegrees = ( longitude - 100* (int)(longitude/100) ) /60.0;
-      longitudeDegrees += (int)(longitude/100);
-      printf("longitudeDegrees: %f \n", longitudeDegrees );
-    }
-
-    // Convert E/W
-    p = strchr(p, ',')+1;
-    char lon = 'O';
-    if ( ',' != *p )  {
-      if      ( p[0] == 'W' )  longitudeDegrees *= -1.0;
-      if      ( p[0] == 'W' )  lon = 'W';
-      else if ( p[0] == 'E' )  lon = 'E';
-      else if ( p[0] == ',' )  lon = '0';
-      else                     lon = '?';
-    }
-    printf( "lon: %c \n", lon );
-
-    // Speed
-    p = strchr( p, ',' )+1;
-    if ( ',' != *p )  {  double speed = atof(p);  printf( "speed: %f \n", speed );  }
-    
-    // Angle
-    p = strchr( p, ',' )+1;
-    if ( ',' != *p )  {  double angle = atof(p);  printf( "angle: %f \n", angle );  }
-
-    // Date
-    p = strchr( p, ',' )+1;
-    if ( ',' != *p )  {
-      ulong fulldate = atof(p);
-      ulong day = fulldate / 10000;
-      ulong month = (fulldate % 10000) / 100;
-      ulong year = (fulldate % 100);
-      printf("date: %2ld:%2ld:%2ld \n", month, day, year );
-    }
-
-  }
+  usleep(w*300);
 
   return;
 }
-*/
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  gcs_missionlist
+//  Sends the onboard mission list.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+void gcs_missionlist ( void)  {
+
+  printf("\nTX: Mission List " );  fflush(stdout);
+
+  // Local variables
+  int len, w;
+
+  // Initialize the required buffers
+  mavlink_message_t msg;
+  uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+
+  // Pack parameter message
+  memset( &msg, 0, sizeof(&msg) );
+
+  mavlink_msg_mission_count_pack (
+    20, 
+    MAV_COMP_ID_IMU, 
+    &msg,
+    0, 
+    0, 
+    0
+  );
+
+  // Send parameter to GCS
+  memset( buf, 0, sizeof(buf) );
+  len = mavlink_msg_to_send_buffer( buf, &msg );
+
+  pthread_mutex_lock(&mutex_gcs);
+  w = write( gcs.fd, buf, len );
+  pthread_mutex_unlock(&mutex_gcs);
+
+  usleep(w*300);
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  gcs_heartbeat
+//  Sends a heartbeat transmission.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+void gcs_heartbeat ( void)  {
+
+  //printf("\nTX: Heartbeat " );  fflush(stdout);
+
+  // Initialize the required buffers
+  mavlink_message_t msg;
+  uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+ 
+  // Pack the heartbeat message
+  mavlink_msg_heartbeat_pack ( 
+    20, 
+    MAV_COMP_ID_IMU,
+    &msg, 
+    MAV_TYPE_FIXED_WING,
+    MAV_AUTOPILOT_GENERIC,
+    MAV_MODE_PREFLIGHT,
+    0,
+    MAV_STATE_STANDBY
+  );
+ 
+  // Copy the heartbeat message to the send buffer
+  uint len = mavlink_msg_to_send_buffer( buf, &msg );
+
+  // Send the message 
+  pthread_mutex_lock(&mutex_gcs);
+  int w = write( gcs.fd, buf, len );
+  pthread_mutex_unlock(&mutex_gcs);
+
+  usleep(w*300);
+
+  return;
+}
+
+
+
 
 

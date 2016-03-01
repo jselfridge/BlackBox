@@ -42,9 +42,9 @@ void tmr_init ( void )  {
   // Create primary timing threads
   //tmr_thread( &tmr_sio,   &attr, fcn_sio   );  usleep(100000);
   //tmr_thread( &tmr_flag,  &attr, fcn_flag  );  usleep(100000);
-  if(USE_IMUA)  { tmr_thread( &tmr_imuA, &attr, fcn_imuA );  usleep(100000);  }
-  if(USE_IMUB)  { tmr_thread( &tmr_imuB, &attr, fcn_imuB );  usleep(100000);  }
-  tmr_thread( &tmr_ahrs,  &attr, fcn_ahrs  );  usleep(100000);
+  //if(USE_IMUA)  { tmr_thread( &tmr_imuA, &attr, fcn_imuA );  usleep(100000);  }
+  //if(USE_IMUB)  { tmr_thread( &tmr_imuB, &attr, fcn_imuB );  usleep(100000);  }
+  //tmr_thread( &tmr_ahrs,  &attr, fcn_ahrs  );  usleep(100000);
   //tmr_thread( &tmr_gps,   &attr, fcn_gps   );  usleep(100000);
   tmr_thread( &tmr_gcstx, &attr, fcn_gcstx );  usleep(100000);
   tmr_thread( &tmr_gcsrx, &attr, fcn_gcsrx );  usleep(100000);
@@ -55,10 +55,10 @@ void tmr_init ( void )  {
   //tmr_thread( &tmr_ctrl,  &attr, fcn_ctrl  );  usleep(100000);
 
   // Possibly create debugging thread
-  if(DEBUG) {
-    tmr_thread( &tmr_debug, &attr, fcn_debug );
-    printf("\n");
-  }
+  //if(DEBUG) {
+  //  tmr_thread( &tmr_debug, &attr, fcn_debug );
+  //  printf("\n");
+  //}
 
   return;
 }
@@ -272,7 +272,7 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_gps.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gps' thread. \n" );
   if(DEBUG)  printf( "gps " );
-  */
+
   // Exit AHRS thread
   if( pthread_join ( tmr_ahrs.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ahrs' thread. \n" );
@@ -289,7 +289,7 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_imuA.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'imuA' thread. \n" );
   if(DEBUG)  printf( "imuA " );  }
-  /*
+
   // Exit program execution flags thread
   if( pthread_join ( tmr_flag.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'flag' thread. \n" );
@@ -299,14 +299,14 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_sio.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'sio' thread. \n" );
   if(DEBUG)  printf( "sio " );
-  */
+
   // Exit debugging thread
   if(DEBUG) {
   if( pthread_join ( tmr_debug.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'debug' thread. \n" );
   printf( "debug \n" );
   }
-
+  */
   return;
 }
 
@@ -648,7 +648,7 @@ void *fcn_debug (  )  {
   tmr_create(&tmr_debug);
   while (running) {
     tmr_start(&tmr_debug);
-    sys_update();
+    //sys_update();
     tmr_finish(&tmr_debug);
     tmr_pause(&tmr_debug);
   }
