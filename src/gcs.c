@@ -110,7 +110,7 @@ void gcs_tx ( void)  {
 
   // Pack the attitude message 
   mavlink_msg_attitude_pack ( 
-    20, 
+    VEHICLE_ID, 
     MAV_COMP_ID_IMU,
     &msg,  
     time_boot_ms, 
@@ -188,6 +188,7 @@ void gcs_rx ( void)  {
         // ID: #23
         case MAVLINK_MSG_ID_PARAM_SET:
 	  printf("RX: Param Set");  fflush(stdout);
+          gcs_paramupdate(&msg);
         break;
 
         // ID: #43
@@ -245,7 +246,7 @@ void gcs_paramlist ( void )  {
     // Pack parameter message
     memset( &msg, 0, sizeof(&msg) );
     mavlink_msg_param_value_pack(
-      20, 
+      VEHICLE_ID, 
       MAV_COMP_ID_GAINS,
       &msg, 
       param.name[i], 
@@ -272,6 +273,95 @@ void gcs_paramlist ( void )  {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  gcs_paramupdate
+//  Updates the parameter values as needed.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+void gcs_paramupdate ( mavlink_message_t *msg )  {
+
+  uint i, j;
+  bool match;
+  mavlink_param_set_t set;
+  mavlink_msg_param_set_decode( msg, &set );
+
+  // Check if this message is for this system
+  if (  (uint8_t) set.target_system    == VEHICLE_ID  && 
+        (uint8_t) set.target_component == MAV_COMP_ID_GAINS )  {
+
+    char* key = (char*) set.param_id;
+
+    for ( i=0; i < PARAM_COUNT; i++ )  {
+
+      match = true;
+
+      for ( j=0; j < MAVLINK_MSG_PARAM_SET_FIELD_PARAM_ID_LEN; j++ )  {
+
+        // Compare
+        if ( ( (char) (param.name[i][j]) ) != (char) (key[j]) )  {  
+          match = false;
+        }
+
+        // End matching if null termination is reached
+        if ( ( (char) param.name[i][j] ) == '\0' )  {
+          break;
+        }
+      }
+
+
+      // Check if matched
+      if (match)  {
+
+        // Only write and emit changes if there is actually a difference
+        // AND only write if new value is NOT "not-a-number"
+        // AND is NOT infinity
+
+        if ( param.val[i] != set.param_value && !isnan(set.param_value) && !isinf(set.param_value) && set.param_type == MAVLINK_TYPE_FLOAT )  {
+
+          param.val[i] = set.param_value;
+
+          // Report back new value
+
+          //mavlink_msg_param_value_send(MAVLINK_COMM_0,
+          //(int8_t*) global_data.param_name[i],
+          //global_data.param[i], MAVLINK_TYPE_FLOAT, 
+          //ONBOARD_PARAM_COUNT, m_parameter_i);
+          //}
+
+          // Pack parameter message
+          mavlink_message_t confirm_msg;
+          memset( &confirm_msg, 0, sizeof(&confirm_msg) );
+          mavlink_msg_param_value_pack(
+            VEHICLE_ID, 
+            MAV_COMP_ID_GAINS,
+            &confirm_msg, 
+            param.name[i], 
+            param.val[i],
+            MAVLINK_TYPE_FLOAT,
+            PARAM_COUNT, 
+            i
+          );
+
+          // Send parameter to GCS
+          uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+          memset( buf, 0, sizeof(buf) );
+          int len = mavlink_msg_to_send_buffer( buf, &confirm_msg );
+
+          pthread_mutex_lock(&mutex_gcs);
+          int w = write( gcs.fd, buf, len );
+          pthread_mutex_unlock(&mutex_gcs);
+
+          usleep(w*300);
+
+
+	}
+      }
+    }
+  }
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  gcs_missionlist
 //  Sends the onboard mission list.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
@@ -290,7 +380,7 @@ void gcs_missionlist ( void)  {
   memset( &msg, 0, sizeof(&msg) );
 
   mavlink_msg_mission_count_pack (
-    20, 
+    VEHICLE_ID, 
     MAV_COMP_ID_IMU, 
     &msg,
     0, 
@@ -326,7 +416,7 @@ void gcs_heartbeat ( void)  {
  
   // Pack the heartbeat message
   mavlink_msg_heartbeat_pack ( 
-    20, 
+    VEHICLE_ID, 
     MAV_COMP_ID_IMU,
     &msg, 
     MAV_TYPE_FIXED_WING,

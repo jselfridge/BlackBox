@@ -12,6 +12,7 @@
 // Define statements
 #define MAV_COMP_ID_GAINS    120
 #define PARAM_COUNT   3
+#define VEHICLE_ID    20
 
 
 typedef struct param_struct {
@@ -38,6 +39,7 @@ void  gcs_tx           ( void );
 void  gcs_rx           ( void );
 void  gcs_heartbeat    ( void );
 void  gcs_paramlist    ( void );
+void  gcs_paramupdate  ( mavlink_message_t *msg );
 void  gcs_missionlist  ( void );
 
 
