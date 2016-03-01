@@ -6,39 +6,38 @@
 #ifndef _GCS_H_
 #define _GCS_H_
 #include <main.h>
+#include <common/mavlink.h>
 
 
 // Define statements
-//#define GPS_DEFAULT      "$PMTK104*37"
+#define MAV_COMP_ID_GAINS    120
+#define PARAM_COUNT   3
 
 
-
-// TEMP GLOBAL VARIABLES... PUT THEM IN STRUCT ASAP...
-//static int packet_drops = 0;
-//static int mode = MAV_MODE_UNINIT;    // Defined in mavlink_types.h, which is included by mavlink.h 
-
-//bool gcs_sendparam;
-
+typedef struct param_struct {
+  float val  [PARAM_COUNT];
+  char  name [PARAM_COUNT][MAVLINK_MSG_PARAM_SET_FIELD_PARAM_ID_LEN];
+} param_struct;
+param_struct param;
 
 // GCS structure
 typedef struct gcs_struct {
   int     fd;
   char    path [16];
+  bool    sendhb;
   bool    sendparam;
   bool    sendmission;
-  //mavlink_message_t   msg  [96];
-  //  mavlink_system_t system;
 } gcs_struct;
 gcs_struct gcs;
 
 
-// GPS functions
-void  gcs_init  ( void );
-void  gcs_exit  ( void );
-void  gcs_tx    ( void );
-void  gcs_rx    ( void );
-void  gcs_heartbeat  ( void );
-void  gcs_paramlist  ( void );
+// GCS functions
+void  gcs_init         ( void );
+void  gcs_exit         ( void );
+void  gcs_tx           ( void );
+void  gcs_rx           ( void );
+void  gcs_heartbeat    ( void );
+void  gcs_paramlist    ( void );
 void  gcs_missionlist  ( void );
 
 

@@ -13,12 +13,8 @@
 void gcs_init ( void )  {
   if (DEBUG)  printf("Initializing GCS \n");
 
-  // Allocate memory
-  memset ( gcs.path,      0, sizeof(gcs.path)         );
-  //memset ( gcs.msg,       0, sizeof(gcs.msg)          );
-  //memset ( &(gcs.system), 0, sizeof(mavlink_system_t) );
-
   // Assign UART path
+  memset ( gcs.path,      0, sizeof(gcs.path)         );
   strcpy( gcs.path, "/dev/ttyO2" );
 
   // Open the file descriptor
@@ -47,7 +43,19 @@ void gcs_init ( void )  {
   if ( tcsetattr( gcs.fd, TCSAFLUSH, &settings ) <0 )
     printf( "Error (gcs_init): Failed to assign GCS UART parameters. \n" );
 
-  gcs.sendparam = false;
+  // Set transmission flags
+  gcs.sendhb      = true;
+  gcs.sendparam   = false;
+  gcs.sendmission = false;
+
+  // Load default parameter values
+  strcpy( param.name[0], "ParamA" );  param.val[0] = 1.0;  
+  strcpy( param.name[1], "ParamB" );  param.val[1] = 2.0;  
+  strcpy( param.name[2], "ParamC" );  param.val[2] = 3.0;  
+
+  // Send initial parameters
+  gcs_paramlist();
+  gcs_missionlist();
 
   return;
 }
@@ -68,16 +76,20 @@ void gcs_exit ( void )  {
 //  Transmit to the ground control station.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
 void gcs_tx ( void)  {
-  
-  gcs_heartbeat();
 
-  //pthread_mutex_lock(&mutex_gcs);
-  if (gcs.sendparam)  gcs_paramlist();  gcs.sendparam = false;
-  //pthread_mutex_unlock(&mutex_gcs);
+  static int count = 0;
+  if ( count < 10 )  {  count++;  }
+  else               {  count = 0;  gcs.sendhb = true;  }
 
-  //pthread_mutex_lock(&mutex_gcs);
+  // Send as needed  
+  if (gcs.sendhb)       gcs_heartbeat();    gcs.sendhb = false;
+  if (gcs.sendparam)    gcs_paramlist();    gcs.sendparam = false;
   if (gcs.sendmission)  gcs_missionlist();  gcs.sendmission = false;
-  //pthread_mutex_unlock(&mutex_gcs);
+
+  // Send always if enabled
+  //if (GCS_EUL_ENABLED)   gcs_eul();
+  //if (GCS_QUAT_ENABLED)  gcs_quat();
+  //if (GCS_GPS_ENABLED)   gcs_gps();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -133,7 +145,7 @@ void gcs_rx ( void)  {
 
   // Local mavlink variables
   mavlink_message_t msg;
-  mavlink_status_t status;
+  mavlink_status_t  status;
 
   // Check for available serial 
   while( moredata )  {
@@ -154,39 +166,52 @@ void gcs_rx ( void)  {
       // Handle message
       switch(msg.msgid)  {
 
+        // ID: #0
         case MAVLINK_MSG_ID_HEARTBEAT:
-	  printf("RX: Heartbeat");  fflush(stdout);
+	  printf("RX: Heartbeat");  
+          printf("    %3.1f %3.1f %3.1f ", param.val[0], param.val[1], param.val[2] );
+          fflush(stdout);
         break;
 
-        case MAVLINK_MSG_ID_PARAM_REQUEST_LIST:
-	  printf("RX: Param Request List");  fflush(stdout);
-          //pthread_mutex_lock(&mutex_gcs);
-	  gcs.sendparam = true;
-          //pthread_mutex_unlock(&mutex_gcs);
-        break;
-
+        // ID: #20
         case MAVLINK_MSG_ID_PARAM_REQUEST_READ:
 	  printf("RX: Param Request Read");  fflush(stdout);
-          //pthread_mutex_lock(&mutex_gcs);
 	  gcs.sendparam = true;
-          //pthread_mutex_unlock(&mutex_gcs);
         break;
 
+        // ID: #21
+        case MAVLINK_MSG_ID_PARAM_REQUEST_LIST:
+	  printf("RX: Param Request List");  fflush(stdout);
+	  gcs.sendparam = true;
+        break;
+
+        // ID: #23
         case MAVLINK_MSG_ID_PARAM_SET:
 	  printf("RX: Param Set");  fflush(stdout);
         break;
 
+        // ID: #43
         case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
 	  printf("RX: Mission Request List");  fflush(stdout);
-          //pthread_mutex_lock(&mutex_gcs);
 	  gcs.sendmission = true;
-          //pthread_mutex_unlock(&mutex_gcs);
         break;
 
+        // ID: #47
+        case MAVLINK_MSG_ID_MISSION_ACK:
+	  printf("RX: Mission Acknowledge");  fflush(stdout);
+        break;
+
+        // ID: #75
+        case MAVLINK_MSG_ID_COMMAND_INT:
+	  printf("RX: Command Int");  fflush(stdout);
+        break;
+
+        // ID: #76
         case MAVLINK_MSG_ID_COMMAND_LONG:
 	  printf("RX: Command Long");  fflush(stdout);
         break;
 
+        // ID: #???
         default:
           printf("RX: New ID: %d ", msg.msgid );  fflush(stdout);
         break;
@@ -206,39 +231,41 @@ void gcs_rx ( void)  {
 //  gcs_paramlist
 //  Sends the onboard parameter list.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
-void gcs_paramlist ( void)  {
-
-  //printf("\nTX: Param List " );  fflush(stdout);
+void gcs_paramlist ( void )  {
 
   // Local variables
-  int len, w;
+  int len, w, i;
 
   // Initialize the required buffers
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
 
-  // Pack parameter message
-  memset( &msg, 0, sizeof(&msg) );
-  mavlink_msg_param_value_pack(
-    20, 
-    MAV_COMP_ID_IMU,
-    &msg, 
-    "ParamA", 
-    1.0, 
-    MAVLINK_TYPE_FLOAT,
-    1, 
-    0
-  );
+  for ( i=0; i<PARAM_COUNT; i++ )  {
 
-  // Send parameter to GCS
-  memset( buf, 0, sizeof(buf) );
-  len = mavlink_msg_to_send_buffer( buf, &msg );
+    // Pack parameter message
+    memset( &msg, 0, sizeof(&msg) );
+    mavlink_msg_param_value_pack(
+      20, 
+      MAV_COMP_ID_GAINS,
+      &msg, 
+      param.name[i], 
+      param.val[i],
+      MAVLINK_TYPE_FLOAT,
+      PARAM_COUNT, 
+      i
+    );
 
-  pthread_mutex_lock(&mutex_gcs);
-  w = write( gcs.fd, buf, len );
-  pthread_mutex_unlock(&mutex_gcs);
+    // Send parameter to GCS
+    memset( buf, 0, sizeof(buf) );
+    len = mavlink_msg_to_send_buffer( buf, &msg );
 
-  usleep(w*300);
+    pthread_mutex_lock(&mutex_gcs);
+    w = write( gcs.fd, buf, len );
+    pthread_mutex_unlock(&mutex_gcs);
+
+    usleep(w*300);
+
+  }
 
   return;
 }
