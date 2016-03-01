@@ -49,9 +49,12 @@ void gcs_init ( void )  {
   gcs.sendmission = false;
 
   // Load default parameter values
-  strcpy( param.name[0], "ParamA" );  param.val[0] = 1.0;  
-  strcpy( param.name[1], "ParamB" );  param.val[1] = 2.0;  
-  strcpy( param.name[2], "ParamC" );  param.val[2] = 3.0;  
+  strcpy( param.name[X_P], "X_P" );  param.val[X_P] = 10.0;  
+  strcpy( param.name[X_I], "X_I" );  param.val[X_I] =  0.1;  
+  strcpy( param.name[X_D], "X_D" );  param.val[X_D] =  1.0;  
+  strcpy( param.name[Y_P], "Y_P" );  param.val[Y_P] = 20.0;  
+  strcpy( param.name[Y_I], "Y_I" );  param.val[Y_I] =  0.2;  
+  strcpy( param.name[Y_D], "Y_D" );  param.val[Y_D] =  2.0;  
 
   // Send initial parameters
   gcs_paramlist();
@@ -171,6 +174,7 @@ void gcs_rx ( void)  {
 	  printf("RX: Heartbeat");  
           printf("    %3.1f %3.1f %3.1f ", param.val[0], param.val[1], param.val[2] );
           fflush(stdout);
+          // Add fail safe code here
         break;
 
         // ID: #20
@@ -267,6 +271,47 @@ void gcs_paramlist ( void )  {
     usleep(w*300);
 
   }
+
+  return;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  gcs_send_param
+//  Sends a parameter to the GCS.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+void gcs_send_param ( enum param_index name, float val )  {
+
+  // Initialize buffers
+  mavlink_message_t msg;
+  uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+
+  // Allocate memory
+  memset( &msg, 0, sizeof(&msg) );
+  memset( buf,  0, sizeof(buf)  );
+
+  // Pack parameter message
+  mavlink_msg_param_value_pack(
+    VEHICLE_ID, 
+    MAV_COMP_ID_GAINS,
+    &msg, 
+    param.name[i], 
+    param.val[i],
+    MAVLINK_TYPE_FLOAT,
+    PARAM_COUNT, 
+    i
+  );
+
+  // Send parameter to GCS
+  int len = mavlink_msg_to_send_buffer( buf, &msg );
+
+  // Write to UART
+  pthread_mutex_lock(&mutex_gcs);
+  int w = write( gcs.fd, buf, len );
+  pthread_mutex_unlock(&mutex_gcs);
+
+  // Pause during transmission
+  usleep(w*200);
 
   return;
 }

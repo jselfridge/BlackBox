@@ -11,8 +11,18 @@
 
 // Define statements
 #define MAV_COMP_ID_GAINS    120
-#define PARAM_COUNT   3
+#define PARAM_COUNT   6
 #define VEHICLE_ID    20
+
+
+enum param_index {
+  X_P = 0,
+  X_I = 1,
+  X_D = 2,
+  Y_P = 3,
+  Y_I = 4,
+  Y_D = 5
+};
 
 
 typedef struct param_struct {
@@ -39,6 +49,7 @@ void  gcs_tx           ( void );
 void  gcs_rx           ( void );
 void  gcs_heartbeat    ( void );
 void  gcs_paramlist    ( void );
+void  gcs_send_param   ( enum param_index name, float val );
 void  gcs_paramupdate  ( mavlink_message_t *msg );
 void  gcs_missionlist  ( void );
 
