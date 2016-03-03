@@ -12,8 +12,9 @@ This software version focuses on expanding the minimum working
 software set, to include features that are needed for autonomous 
 navigation capabilities.
 
-<ul>
-<li><b> v0.1.X - Ground Control Station </b></li>
+
+v0.1.4 - Ground Control Station
+-------------------------------
 <ul> 
   <li> Set up timing thread code for GCS and send generic msg </li>
   <li> Read transmission through external USB/FTDI cable </li>
@@ -22,7 +23,6 @@ navigation capabilities.
   <li> Connect to QGC and read heartbeat in software </li>
   <li> Send state info to GCS </li>
   <li> Receive parameter updates from GCS </li>
-</ul>
 </ul>
 
 
