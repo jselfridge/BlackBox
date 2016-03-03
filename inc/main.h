@@ -6,11 +6,11 @@
 
 // Standard includes
 #include <fcntl.h>
-// #include <limits.h>
+#include <limits.h>
 // #include <linux/i2c-dev.h>
 #include <malloc.h>
 // #include <math.h>
-// #include <pthread.h>
+#include <pthread.h>
 #include <sched.h>
 #include <signal.h>
 #include <stdbool.h>
@@ -22,7 +22,7 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 // #include <sys/time.h>
-// #include <sys/timerfd.h>
+#include <sys/timerfd.h>
 #include <sys/types.h>
 // #include <termios.h>
 // #include <time.h>
@@ -41,15 +41,15 @@
 #include <led.h>
 // #include <log.h>
 // #include <mpu.h>
-// #include <sio.h>
+#include <sio.h>
 #include <sys.h>
 #include <timer.h>
 // #include <uart.h>
 
 
 // PRU includes
-// #include <prussdrv.h>
-// #include <pruss_intc_mapping.h>
+#include <prussdrv.h>
+#include <pruss_intc_mapping.h>
 
 
 // Mavlink include
@@ -69,7 +69,7 @@ bool running;
 // bool armed;
 // unsigned char slave;
 struct sigaction sys_signal;
-
+//uint* memoryPtr;
 
 #endif
 

@@ -15,7 +15,7 @@ int main ( void )  {
 
   // Initialize subsystems
   sys_init();
-  //sio_init();
+  sio_init();
   //flag_init();
   //imu_init();
   //ahrs_init();
@@ -28,7 +28,7 @@ int main ( void )  {
   //log_open();
   //datalog.enabled = true;
   //-----------------//
-  //tmr_init();
+  tmr_init();
 
   // Wait for exit condition
   while(running)  usleep(100000);

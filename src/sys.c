@@ -49,27 +49,26 @@ void sys_init ( void )  {
  *  sys_update
  *  Prints system debugging messages to the terminal.
  */
-/*
 void sys_update ( void )  {
 
   // Start debugging display
   printf("\r");  fflush(stdout);
 
   // Datalog status
-  if (datalog.enabled)  printf(" Log %s: ", datalog.dir );
-  else                  printf(" - - - -  ");
-  fflush(stdout);
+  //if (datalog.enabled)  printf(" Log %s: ", datalog.dir );
+  //else                  printf(" - - - -  ");
+  //fflush(stdout);
 
   // Time values
-  float timestamp = (float) ( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f ) - datalog.offset );
+  float timestamp = (float) ( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f ) ); // - datalog.offset );
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
-  //sys_sio();
+  sys_sio();
   //sys_imuA();
   //sys_imuB();
   //sys_ahrs();
-  sys_gps();
+  //sys_gps();
   //sys_uart1();
   //sys_uart2();
   //sys_uart4();
@@ -81,13 +80,12 @@ void sys_update ( void )  {
 
   return;
 }
-*/
+
 
 /**
  *  sys_sio
  *  Prints system input/output values to the terminal.
  */
-/*
 void sys_sio ( void )  {
 
   // Loop counter
@@ -97,22 +95,22 @@ void sys_sio ( void )  {
   pthread_mutex_lock(&mutex_input);
   //for ( i=0; i<4; i++ )  printf("%5d ",   input.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<6; i++ )  printf("%4d ",   input.pwm[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<6; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<10; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_input);
 
   // Output signals
-  pthread_mutex_lock(&mutex_output);
+  //pthread_mutex_lock(&mutex_output);
   //for ( i=0; i<4; i++ )  printf("%5d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<6; i++ )  printf("%4d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
-  printf("%5.2f ", output.norm[0] );  printf("   ");  fflush(stdout);
-  printf("%5.2f ", output.norm[1] );  printf("   ");  fflush(stdout);
-  printf("%5.2f ", output.norm[4] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_output);
+  //printf("%5.2f ", output.norm[0] );  printf("   ");  fflush(stdout);
+  //printf("%5.2f ", output.norm[1] );  printf("   ");  fflush(stdout);
+  //printf("%5.2f ", output.norm[4] );  printf("   ");  fflush(stdout);
+  //pthread_mutex_unlock(&mutex_output);
 
   return;
 }
-*/
+
 
 /**
  *  sys_imuA
@@ -328,7 +326,7 @@ void sys_exit (  )  {
 
   // Exit subsystems
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
-  //tmr_exit();
+  tmr_exit();
   //--  DEBUGGING  --//
   //datalog.enabled = false;
   //log_close();
@@ -341,7 +339,7 @@ void sys_exit (  )  {
   //ahrs_exit();
   //imu_exit();
   //flag_exit();
-  //sio_exit();
+  sio_exit();
 
   // Shut everything down
   if(DEBUG)  printf("Program complete \n");

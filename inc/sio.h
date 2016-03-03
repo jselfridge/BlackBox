@@ -1,14 +1,11 @@
 
-//============================================================
-//  sio.h
-//  Justin M Selfridge
-//============================================================
+
 #ifndef _SIO_H_
 #define _SIO_H_
 #include <main.h>
 
 
-// Input signal variables
+// Input signal defines
 #define IN_CH       10
 #define IN_OFFSET   2049
 #define IN_REG2PWM  (30.0/200.0)
@@ -17,7 +14,7 @@
 #define IN_MAX      ( 2000 * IN_PWM2REG )
 
 
-// Output signal variables
+// Output signal defines
 #define OUT_CH      10
 #define OUT_OFFSET  2060
 #define OUT_REG2PWM (23.0/200.0)

@@ -1,15 +1,12 @@
 
-//============================================================
-//  sio.c
-//  Justin M Selfridge
-//============================================================
+
 #include "sio.h"
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sio_init
-//  Initializes the system input/output PRU subcomponents.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  sio_init
+ *  Initializes the system input/output PRU subcomponents.
+ */
 void sio_init ( void )  {
   if(DEBUG)  printf("Initializing system inputs/outputs \n");
 
@@ -40,6 +37,7 @@ void sio_init ( void )  {
 
   // Loops per PWM period  [ 21800 loops => 400Hz ]
   memoryPtr[ OUT_OFFSET -1 ] = 44000;
+  printf("%d", memoryPtr[OUT_OFFSET-1] );
 
   // Load assembly code
   if(DEBUG)  printf("  Load PRU binaries \n");
@@ -53,10 +51,10 @@ void sio_init ( void )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sio_exit
-//  Exits the system input/output PRU subcomponents.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  sio_exit
+ *  Exits the system input/output PRU subcomponents.
+ */
 void sio_exit ( void )  {
   if(DEBUG)  printf("Close system input/output \n");
   prussdrv_pru_disable(0);
@@ -67,10 +65,10 @@ void sio_exit ( void )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sio_update
-//  Obtains input values and assigns output values.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  sio_update
+ *  Obtains input values and assigns output values.
+ */
 void sio_update ( void )  {
 
   // Channel index
@@ -94,10 +92,10 @@ void sio_update ( void )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sio_setreg
-//  Assign register value output, and sync data structure.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  sio_setreg
+ *  Assign register value output, and sync data structure.
+ */
 void sio_setreg ( ushort ch, ushort reg )  {
 
   // Check function inputs
@@ -115,10 +113,10 @@ void sio_setreg ( ushort ch, ushort reg )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sio_setpwm
-//  Assign PWM value output, and sync data structure.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  sio_setpwm
+ *  Assign PWM value output, and sync data structure.
+ */
 void sio_setpwm ( ushort ch, ushort pwm )  {
 
   // Check function inputs
@@ -136,10 +134,10 @@ void sio_setpwm ( ushort ch, ushort pwm )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sio_setnorm
-//  Assign normalized value output, and sync data structure.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  sio_setnorm
+ *  Assign normalized value output, and sync data structure.
+ */
 void sio_setnorm ( ushort ch, double norm )  {
 
   // Check function inputs
@@ -162,10 +160,10 @@ void sio_setnorm ( ushort ch, double norm )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sio_norm
-//  Converts a register value into a normalized range.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  sio_norm
+ *  Converts a register value into a normalized range.
+ */
 double sio_norm ( ushort reg, char dir )  {
 
   // Local variables

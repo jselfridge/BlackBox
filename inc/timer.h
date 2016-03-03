@@ -8,7 +8,7 @@
 // Define timer priorities
 //#define PRIO_IMU    96
 //#define PRIO_AHRS   94
-//#define PRIO_SIO    92
+#define PRIO_SIO    92
 //#define PRIO_CTRL   90
 //#define PRIO_GPS    88
 //#define PRIO_GCSTX  86
@@ -18,26 +18,26 @@
 //#define PRIO_UART4  88
 //#define PRIO_UART5  88
 //#define PRIO_FLAG   84
-//#define PRIO_DEBUG  82
+#define PRIO_DEBUG  82
 
 
 // Define timer frequencies
 //#define HZ_IMU_FAST    500
 //#define HZ_IMU_SLOW    100
-//#define HZ_SIO          50
+#define HZ_SIO          50
 //#define HZ_AHRS         50
 //#define HZ_CTRL         50
 //#define HZ_FLAG         10
 //#define HZ_GPS          10
 //#define HZ_GCSTX        10
 //#define HZ_GCSRX        10
-//#define HZ_DEBUG        10
+#define HZ_DEBUG        10
 //#define HZ_UART1        10
 //#define HZ_UART2        10
 //#define HZ_UART4        10
 //#define HZ_UART5        10
 
-/*
+
 // Timer structure
 typedef struct timer_struct {
   char      *name;
@@ -51,10 +51,10 @@ typedef struct timer_struct {
   ulong     finish_usec;
   uint      dur;
 } timer_struct;
-*/
+
 
 // Timer declarations
-//timer_struct tmr_sio;
+timer_struct tmr_sio;
 //timer_struct tmr_flag;
 //timer_struct tmr_imuA;
 //timer_struct tmr_imuB;
@@ -67,12 +67,12 @@ typedef struct timer_struct {
 //timer_struct tmr_uart4;
 //timer_struct tmr_uart5;
 //timer_struct tmr_ctrl;
-//timer_struct tmr_debug;
+timer_struct tmr_debug;
 
 
 // Mutex declarations
-//pthread_mutex_t mutex_input;
-//pthread_mutex_t mutex_output;
+pthread_mutex_t mutex_input;
+pthread_mutex_t mutex_output;
 //pthread_mutex_t mutex_gyrA;
 //pthread_mutex_t mutex_accA;
 //pthread_mutex_t mutex_magA;
@@ -88,19 +88,19 @@ typedef struct timer_struct {
 
 
 // Thread functions
-//void  tmr_init      ( void );
-//void  tmr_setup     ( void );
-//void  tmr_attr      ( pthread_attr_t *attr );
-//void  tmr_thread    ( timer_struct *tmr, pthread_attr_t *attr, void *fcn );
-//void  tmr_exit      ( void );
-//void  tmr_create    ( timer_struct *tmr );
-//void  tmr_pause     ( timer_struct *tmr );
-//void  tmr_start     ( timer_struct *tmr );
-//void  tmr_finish    ( timer_struct *tmr );
+void  tmr_init      ( void );
+void  tmr_setup     ( void );
+void  tmr_attr      ( pthread_attr_t *attr );
+void  tmr_thread    ( timer_struct *tmr, pthread_attr_t *attr, void *fcn );
+void  tmr_exit      ( void );
+void  tmr_create    ( timer_struct *tmr );
+void  tmr_pause     ( timer_struct *tmr );
+void  tmr_start     ( timer_struct *tmr );
+void  tmr_finish    ( timer_struct *tmr );
 
 
 // Function handlers
-//void *fcn_sio    (  );
+void *fcn_sio    (  );
 //void *fcn_flag   (  );
 //void *fcn_imuA   (  );
 //void *fcn_imuB   (  );
@@ -108,13 +108,13 @@ typedef struct timer_struct {
 //void *fcn_gps    (  );
 //void *fcn_gcstx  (  );
 //void *fcn_gcsrx  (  );
+//void *fcn_ctrl   (  );
+void *fcn_debug  (  );
+
 //void *fcn_uart1  (  );
 //void *fcn_uart2  (  );
 //void *fcn_uart4  (  );
 //void *fcn_uart5  (  );
-//void *fcn_ctrl   (  );
-//void *fcn_debug  (  );
-
 
 #endif
 
