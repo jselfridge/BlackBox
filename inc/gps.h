@@ -8,10 +8,6 @@
 #include <main.h>
 
 
-// Define other packets
-#define GPS_DEFAULT      "$PMTK104*37"
-
-
 // Define GPS buad rates
 #define GPS_BAUD_57600  "$PMTK251,57600*2C"
 #define GPS_BAUD_9600   "$PMTK251,9600*17"

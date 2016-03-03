@@ -13,13 +13,6 @@ software set, to include features that are needed for autonomous
 navigation capabilities.
 
 <ul>
-<li><b> v0.1.X - Airplane controller </b></li>
-<ul>
-  <li> Indicate vehicle type in terminal </li>
-  <li> Added PD controller structure for airplane system </li>
-  <li> Unique disarming values for specific systems </li>
-  <li> Moved calibration files so they can be board specific </li>
-</ul>
 <li><b> v0.1.X - Ground Control Station </b></li>
 <ul> 
   <li> Set up timing thread code for GCS and send generic msg </li>
@@ -27,8 +20,8 @@ navigation capabilities.
   <li> Download and setup standard MavLink header code library </li>
   <li> Send heartbeat over UART </li>
   <li> Connect to QGC and read heartbeat in software </li>
-  <li> (WIP) Send state info to GCS </li>
-  <li> (WIP) Receive parameter updates from GCS </li>
+  <li> Send state info to GCS </li>
+  <li> Receive parameter updates from GCS </li>
 </ul>
 </ul>
 

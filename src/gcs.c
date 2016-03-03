@@ -281,7 +281,7 @@ void gcs_paramlist ( void )  {
 //  Sends a parameter to the GCS.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
 void gcs_send_param ( enum param_index name, float val )  {
-
+  /*
   // Initialize buffers
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -312,7 +312,7 @@ void gcs_send_param ( enum param_index name, float val )  {
 
   // Pause during transmission
   usleep(w*200);
-
+  */
   return;
 }
 

@@ -13,7 +13,6 @@
 void gps_init ( void )  {
   if (DEBUG)  printf("Initializing GPS \n");
 
-  //sprintf( gps.path, "/dev/ttyO1" );
   strcpy( gps.path, "/dev/ttyO1" );
   memset ( gps.msg, 0, sizeof(gps.msg) );
 
@@ -21,16 +20,11 @@ void gps_init ( void )  {
   gps.fd = open ( gps.path, O_RDWR | O_NOCTTY );
   if ( gps.fd <0 )  printf( "Error (gps_init): Couldn't open GPS file descriptor. \n" );
 
-  // Get current (old) parameters
-  //struct termios oldparam;
-  //memset( &oldparam, 0, sizeof( &oldparam ) );
-
   // Send GPS configuration packets
   int i;
-  //i = write( gps.fd, GPS_DEFAULT,       sizeof(GPS_DEFAULT)       );  usleep(i*300);
-  i = write( gps.fd, GPS_RMCONLY,       sizeof(GPS_RMCONLY)       );  usleep(i*300);
-  i = write( gps.fd, GPS_UPDATE_010_HZ, sizeof(GPS_UPDATE_010_HZ) );  usleep(i*300);
-  i = write( gps.fd, GPS_BAUD_9600,     sizeof(GPS_BAUD_9600)    );  usleep(i*300);
+  i = write( gps.fd, GPS_GGAONLY,       sizeof(GPS_GGAONLY)       );  usleep(i*200);  if ( i && DEBUG )  printf("  NMEA sentences \n");  
+  i = write( gps.fd, GPS_UPDATE_001_HZ, sizeof(GPS_UPDATE_001_HZ) );  usleep(i*200);  if ( i && DEBUG )  printf("  Update rate \n");  
+  i = write( gps.fd, GPS_BAUD_9600,     sizeof(GPS_BAUD_9600)     );  usleep(i*200);  if ( i && DEBUG )  printf("  Buad rate \n");  
 
   // Assign desired (new) parameters
   struct termios newparam;
@@ -40,7 +34,7 @@ void gps_init ( void )  {
   newparam.c_cflag     = CS8 | CREAD | CLOCAL;
   newparam.c_lflag     = 0;
   newparam.c_cc[VTIME] = 1;
-  newparam.c_cc[VMIN]  = 50;
+  newparam.c_cc[VMIN]  = 20;
 
   // Set input baud rate
   if ( cfsetispeed( &newparam, B9600 ) <0 )
@@ -74,7 +68,7 @@ void gps_exit ( void )  {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
 void gps_update ( void)  {
 
-
+  // Local variables
   uint sum = 0;
   uint i;
   bool valid = false;
@@ -84,8 +78,9 @@ void gps_update ( void)  {
   tcflush( gps.fd, TCIOFLUSH ); 
 
   // Debugging message
-  //strcpy( msg, "$GPRMC,233325.200,A,3702.0833,N,07628.0617,W,1.74,217.31,240216,,,A*7A\r\n" );    // 7A
-  //sprintf( msg, "$GPRMC,233325.200,A,3702.0833,N,07628.0617,W,1.74,217.31,240216,,,A*7A\r\n" );    // 7A
+  //strcpy( msg, "$GPGGA,194510.000,4042.6127,N,07400.4184,W,1,5,1.82,143.2,M,-34.2,M,,*6E\r\n" );
+  //strcpy( msg, "$GPRMC,194510.000,A,4042.6127,N,07400.4184,W,1.60,212.71,160412,,,A*7E\r\n" );
+  printf("\nupdate msg: \n%s", msg );
 
   int len = strlen(msg);
 

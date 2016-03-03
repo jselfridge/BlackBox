@@ -55,10 +55,10 @@ void tmr_init ( void )  {
   //tmr_thread( &tmr_ctrl,  &attr, fcn_ctrl  );  usleep(100000);
 
   // Possibly create debugging thread
-  //if(DEBUG) {
-  //  tmr_thread( &tmr_debug, &attr, fcn_debug );
-  //  printf("\n");
-  //}
+  if(DEBUG) {
+    tmr_thread( &tmr_debug, &attr, fcn_debug );
+    printf("\n");
+  }
 
   return;
 }
@@ -257,7 +257,6 @@ void tmr_exit ( void )  {
   if(DEBUG)  printf( "uart1 " );
   }
   */
-
   // Exit GCSRX thread
   if( pthread_join ( tmr_gcsrx.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gcsrx' thread. \n" );
@@ -267,8 +266,8 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_gcstx.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gcstx' thread. \n" );
   if(DEBUG)  printf( "gcstx " );
-
-  /* // Exit GPS thread
+  /*
+  // Exit GPS thread
   if( pthread_join ( tmr_gps.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gps' thread. \n" );
   if(DEBUG)  printf( "gps " );
@@ -299,14 +298,14 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_sio.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'sio' thread. \n" );
   if(DEBUG)  printf( "sio " );
-
+  */
   // Exit debugging thread
   if(DEBUG) {
   if( pthread_join ( tmr_debug.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'debug' thread. \n" );
   printf( "debug \n" );
   }
-  */
+
   return;
 }
 
