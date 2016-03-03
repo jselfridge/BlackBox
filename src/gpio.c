@@ -1,15 +1,12 @@
 
-//============================================================
-//  gpio.c
-//  Justin M Selfridge
-//============================================================
+
 #include "gpio.h"
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gpio_export
-//  Establishes a GPIO configuration.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  gpio_export
+ *  Establishes a GPIO configuration.
+ */
 void gpio_export ( uint gpio )  {
 
   int fd, len;
@@ -28,10 +25,10 @@ void gpio_export ( uint gpio )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gpio_unexport
-//  Disables a GPIO configuration.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  gpio_unexport
+ *  Disables a GPIO configuration.
+ */
 void gpio_unexport ( uint gpio )  {
 
   int fd, len;
@@ -50,10 +47,10 @@ void gpio_unexport ( uint gpio )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gpio_setdir
-//  Assign a GPIO pin as an input or output.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  gpio_setdir
+ *  Assign a GPIO pin as an input or output.
+ */
 void gpio_setdir ( uint gpio, enum PIN_DIR dir )  {
 
   int fd, len;
@@ -73,10 +70,10 @@ void gpio_setdir ( uint gpio, enum PIN_DIR dir )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gpio_setval
-//  Assign a value to a gpio pin.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  gpio_setval
+ *  Assign a value to a gpio pin.
+ */
 void gpio_setval ( uint gpio, enum PIN_VAL val )  {
 
   int fd, len;
@@ -96,10 +93,10 @@ void gpio_setval ( uint gpio, enum PIN_VAL val )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gpio_getval
-//  Determine the current value of a GPIO pin.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  gpio_getval
+ *  Determine the current value of a GPIO pin.
+ */
 void gpio_getval ( uint gpio, uint *val )  {
 
   int fd, len;
@@ -121,10 +118,10 @@ void gpio_getval ( uint gpio, uint *val )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gpio_setedge
-//  Edge assignment options: "none", "rising", "falling", "both".
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  gpio_setedge
+ *  Edge assignment options: "none", "rising", "falling", "both".
+ */
 void gpio_setedge ( uint gpio, char *edge )  {
 
   int fd, len;
@@ -143,10 +140,10 @@ void gpio_setedge ( uint gpio, char *edge )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gpio_fdopen
-//  Opens a GPIO file description.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  gpio_fdopen
+ *  Opens a GPIO file description.
+ */
 int gpio_fdopen ( uint gpio )  {
 
   int fd, len;
@@ -162,10 +159,10 @@ int gpio_fdopen ( uint gpio )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gpio_fdclose
-//  Closes a GPIO file description.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  gpio_fdclose
+ *  Closes a GPIO file description.
+ */
 void gpio_fdclose ( int fd )  {
   close(fd);
   return;

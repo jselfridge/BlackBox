@@ -1,15 +1,12 @@
 
-//============================================================
-//  sys.c
-//  Justin M Selfridge
-//============================================================
+
 #include "sys.h"
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_init
-//  Initializes the system.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  sys_init
+ *  Initializes the system.
+ */
 void sys_init ( void )  {
   if(DEBUG)  printf("Initializing system \n");
 
@@ -48,10 +45,11 @@ void sys_init ( void )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_update
-//  Prints system debugging messages to the terminal.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  sys_update
+ *  Prints system debugging messages to the terminal.
+ */
+/*
 void sys_update ( void )  {
 
   // Start debugging display
@@ -83,12 +81,13 @@ void sys_update ( void )  {
 
   return;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_sio
-//  Prints system input/output values to the terminal.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  sys_sio
+ *  Prints system input/output values to the terminal.
+ */
+/*
 void sys_sio ( void )  {
 
   // Loop counter
@@ -113,12 +112,13 @@ void sys_sio ( void )  {
 
   return;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_imuA
-//  Prints IMUA debugging messages to the terminal.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  sys_imuA
+ *  Prints IMUA debugging messages to the terminal.
+ */
+/*
 void sys_imuA ( void )  {
 
   // Check that IMUA is in use
@@ -152,12 +152,13 @@ void sys_imuA ( void )  {
 
   return;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_imuB
-//  Prints IMUB debugging messages to the terminal.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  sys_imuB
+ *  Prints IMUB debugging messages to the terminal.
+ */
+/*
 void sys_imuB ( void )  {
 
   // Check that IMUB is in use
@@ -191,22 +192,23 @@ void sys_imuB ( void )  {
 
   return;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_ahrs
-//  Prints AHRS debugging messages to the terminal.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  sys_ahrs
+ *  Prints AHRS debugging messages to the terminal.
+ */
+/*
 void sys_ahrs ( void )  {
 
   // Loop counter
   ushort i;
 
-  /*// Quaternion data
+  // Quaternion data
   pthread_mutex_lock(&mutex_quat);
   for ( i=0; i<4; i++ )  printf("%7.4f ", ahrs.quat[i]  );  printf("   ");  fflush(stdout);
   for ( i=0; i<4; i++ )  printf("%7.4f ", ahrs.dquat[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_quat);*/
+  pthread_mutex_unlock(&mutex_quat);
 
   // Euler data
   pthread_mutex_lock(&mutex_eul);
@@ -216,12 +218,13 @@ void sys_ahrs ( void )  {
 
   return;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_gps
-//  Prints GPS debugging messages to the terminal.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  sys_gps
+ *  Prints GPS debugging messages to the terminal.
+ */
+/*
 void sys_gps ( void )  {
 
   pthread_mutex_lock(&mutex_gps);
@@ -230,12 +233,12 @@ void sys_gps ( void )  {
 
   return;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_uart1
-//  Prints UART1 debugging messages to the terminal.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  sys_uart1
+ *  Prints UART1 debugging messages to the terminal.
+ */
 /*
 void sys_uart1 ( void )  {
   if (UART1_ENABLED)  {
@@ -246,10 +249,10 @@ void sys_uart1 ( void )  {
 }
 */
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_uart2
-//  Prints UART2 debugging messages to the terminal.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  sys_uart2
+ *  Prints UART2 debugging messages to the terminal.
+ */
 /*
 void sys_uart2 ( void )  {
   if (UART2_ENABLED)  {
@@ -260,10 +263,10 @@ void sys_uart2 ( void )  {
 }
 */
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_uart4
-//  Prints UART4 debugging messages to the terminal.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  sys_uart4
+ *  Prints UART4 debugging messages to the terminal.
+ */
 /*
 void sys_uart4 ( void )  {
   if (UART4_ENABLED)  {
@@ -274,10 +277,10 @@ void sys_uart4 ( void )  {
 }
 */
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_uart5
-//  Prints UART5 debugging messages to the terminal.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  sys_uart5
+ *  Prints UART5 debugging messages to the terminal.
+ */
 /*
 void sys_uart5 ( void )  {
   if (UART5_ENABLED)  {
@@ -288,10 +291,11 @@ void sys_uart5 ( void )  {
 }
 */
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_ctrl
-//  Prints controller values to the terminal.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  sys_ctrl
+ *  Prints controller values to the terminal.
+ */
+/*
 void sys_ctrl ( void )  {
 
   // Loop counter
@@ -310,12 +314,12 @@ void sys_ctrl ( void )  {
 
   return;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  sys_exit
-//  Code that runs prior to exiting the system.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  sys_exit
+ *  Code that runs prior to exiting the system.
+ */
 void sys_exit (  )  {
 
   // Change exit status
@@ -324,14 +328,14 @@ void sys_exit (  )  {
 
   // Exit subsystems
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
-  tmr_exit();
+  //tmr_exit();
   //--  DEBUGGING  --//
   //datalog.enabled = false;
   //log_close();
   //-----------------//
   //log_exit();
   //ctl_exit();
-  gcs_exit();
+  //gcs_exit();
   //gps_exit();
   //uart_exit();
   //ahrs_exit();

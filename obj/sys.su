@@ -1,0 +1,2 @@
+sys.c:323:6:sys_exit	8	static
+sys.c:10:6:sys_init	184	dynamic,bounded

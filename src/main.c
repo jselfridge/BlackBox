@@ -10,12 +10,11 @@
 int main ( void )  {
 
   // Begin the program
-  //if(DEBUG)  
-  printf("\n--- Begin BlackBox program ---\n");
-  //led_off(LED_SIO);  led_off(LED_IMU);  led_off(LED_LOG);  led_off(LED_MOT);
+  if(DEBUG)  printf("\n--- Begin BlackBox program ---\n");
+  led_off(LED_SIO);  led_off(LED_IMU);  led_off(LED_LOG);  led_off(LED_MOT);
 
   // Initialize subsystems
-  //sys_init();
+  sys_init();
   //sio_init();
   //flag_init();
   //imu_init();
@@ -32,10 +31,7 @@ int main ( void )  {
   //tmr_init();
 
   // Wait for exit condition
-  //while(running)  usleep(100000);
-
-  // Run exit functions
-  //sys_exit();
+  while(running)  usleep(100000);
 
   return 0;
 
