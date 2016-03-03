@@ -21,7 +21,7 @@ PRU   := $(shell cd pru; ls -F | grep ".p" )
 PNAME := $(patsubst %.p, %, $(PRU) )
 BIN   := $(foreach b, $(PNAME), bin/$(b).bin )
 
-DEFS = -DMPU9150 -DAK8975_SECONDARY
+#DEFS = -DMPU9150 -DAK8975_SECONDARY
 
 
 all : $(EXEC)
@@ -30,7 +30,7 @@ $(EXEC) : $(OBJ) $(BIN)
 	$(CC) -o $@ $(OBJ) $(LIB)   # -L$(LDIR)
 
 obj/%.o : src/%.c inc/%.h
-	$(CC) $(CFLAGS) $(DEFS) -Iinc -Imavlink -o $@ $<  # -I$(IDIR) 
+	$(CC) $(CFLAGS) -Iinc -o $@ $<  # -I$(IDIR) -Imavlink $(DEFS)
 
 bin/%.bin : pru/%.p
 	pasm -b $<
