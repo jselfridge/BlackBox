@@ -1,3 +1,0 @@
-flag.c:13:6:flag_init	16	static
-flag.c:47:6:flag_exit	0	static
-flag.c:58:6:flag_update	16	static

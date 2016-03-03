@@ -1,5 +1,0 @@
-ctrl.c:13:6:ctrl_init	16	static
-ctrl.c:91:6:ctrl_exit	0	static
-ctrl.c:220:6:ctrl_plane	40	static
-ctrl.c:102:6:ctrl_update	8	static
-ctrl.c:361:6:ctrl_disarm	8	static
