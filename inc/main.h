@@ -43,7 +43,7 @@
 // #include <mpu.h>
 // #include <sio.h>
 #include <sys.h>
-// #include <timer.h>
+#include <timer.h>
 // #include <uart.h>
 
 

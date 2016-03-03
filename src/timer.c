@@ -1,42 +1,40 @@
 
-//============================================================
-//  timer.c
-//  Justin M Selfridge
-//============================================================
+
 #include "timer.h"
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  tmr_init
-//  Initializes the various timing threads.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  tmr_init
+ *  Initializes the various timing threads.
+ */
+/*
 void tmr_init ( void )  {
   if(DEBUG)  printf("Initializing timing threads \n");
 
   // Local variables
-  pthread_attr_t attr;
+  //pthread_attr_t attr;
 
   // Run through setup functions
-  tmr_setup();
-  tmr_attr(&attr);
+  //tmr_setup();
+  //tmr_attr(&attr);
 
   // Begin each thread and mutex
-  if(DEBUG)  printf("  Create threads and mutexes:  ");
+  //if(DEBUG)  printf("  Create threads and mutexes:  ");
 
   // Create mutex conditions
-  pthread_mutex_init( &mutex_input,  NULL );
-  pthread_mutex_init( &mutex_output, NULL );
-  pthread_mutex_init( &mutex_gyrA,   NULL );
-  pthread_mutex_init( &mutex_accA,   NULL );
-  pthread_mutex_init( &mutex_magA,   NULL );
-  pthread_mutex_init( &mutex_gyrB,   NULL );
-  pthread_mutex_init( &mutex_accB,   NULL );
-  pthread_mutex_init( &mutex_magB,   NULL );
-  pthread_mutex_init( &mutex_quat,   NULL );
-  pthread_mutex_init( &mutex_eul,    NULL );
-  pthread_mutex_init( &mutex_ahrs,   NULL );
-  pthread_mutex_init( &mutex_gps,    NULL );
-  pthread_mutex_init( &mutex_gcs,    NULL );
+  //pthread_mutex_init( &mutex_input,  NULL );
+  //pthread_mutex_init( &mutex_output, NULL );
+  //pthread_mutex_init( &mutex_gyrA,   NULL );
+  //pthread_mutex_init( &mutex_accA,   NULL );
+  //pthread_mutex_init( &mutex_magA,   NULL );
+  //pthread_mutex_init( &mutex_gyrB,   NULL );
+  //pthread_mutex_init( &mutex_accB,   NULL );
+  //pthread_mutex_init( &mutex_magB,   NULL );
+  //pthread_mutex_init( &mutex_quat,   NULL );
+  //pthread_mutex_init( &mutex_eul,    NULL );
+  //pthread_mutex_init( &mutex_ahrs,   NULL );
+  //pthread_mutex_init( &mutex_gps,    NULL );
+  //pthread_mutex_init( &mutex_gcs,    NULL );
   //pthread_mutex_init( &mutex_ctrl,   NULL );
 
   // Create primary timing threads
@@ -46,8 +44,8 @@ void tmr_init ( void )  {
   //if(USE_IMUB)  { tmr_thread( &tmr_imuB, &attr, fcn_imuB );  usleep(100000);  }
   //tmr_thread( &tmr_ahrs,  &attr, fcn_ahrs  );  usleep(100000);
   //tmr_thread( &tmr_gps,   &attr, fcn_gps   );  usleep(100000);
-  tmr_thread( &tmr_gcstx, &attr, fcn_gcstx );  usleep(100000);
-  tmr_thread( &tmr_gcsrx, &attr, fcn_gcsrx );  usleep(100000);
+  //tmr_thread( &tmr_gcstx, &attr, fcn_gcstx );  usleep(100000);
+  //tmr_thread( &tmr_gcsrx, &attr, fcn_gcsrx );  usleep(100000);
   //if(UART1_ENABLED)  tmr_thread( &tmr_uart1, &attr, fcn_uart1 );  usleep(100000);
   //if(UART2_ENABLED)  tmr_thread( &tmr_uart2, &attr, fcn_uart2 );  usleep(100000);
   //if(UART4_ENABLED)  tmr_thread( &tmr_uart4, &attr, fcn_uart4 );  usleep(100000);
@@ -55,19 +53,20 @@ void tmr_init ( void )  {
   //tmr_thread( &tmr_ctrl,  &attr, fcn_ctrl  );  usleep(100000);
 
   // Possibly create debugging thread
-  if(DEBUG) {
-    tmr_thread( &tmr_debug, &attr, fcn_debug );
-    printf("\n");
-  }
+  //if(DEBUG) {
+  //  tmr_thread( &tmr_debug, &attr, fcn_debug );
+  //  printf("\n");
+  //}
 
   return;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  tmr_setup
-//  Assign timing thread parameters to a data structure.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  tmr_setup
+ *  Assign timing thread parameters to a data structure.
+ */
+/*
 void tmr_setup ( void )  {
   if(DEBUG)  printf("  Assign thread structure elements \n");
 
@@ -111,7 +110,6 @@ void tmr_setup ( void )  {
   tmr_gcsrx.prio =  PRIO_GCSRX;
   tmr_gcsrx.per  =  1000000 / HZ_GCSRX;
 
-  /*
   // UART1 timer
   tmr_uart1.name  =  "uart1";
   tmr_uart1.prio  =  PRIO_UART1;
@@ -131,7 +129,6 @@ void tmr_setup ( void )  {
   tmr_uart5.name  =  "uart5";
   tmr_uart5.prio  =  PRIO_UART5;
   tmr_uart5.per   =  1000000 / HZ_UART5;
-  */
 
   // Control timer
   tmr_ctrl.name   =  "ctrl";
@@ -145,12 +142,13 @@ void tmr_setup ( void )  {
 
   return;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  tmr_attr
-//  Sets the attributes of the timing threads.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  tmr_attr
+ *  Sets the attributes of the timing threads.
+ */
+/*
 void tmr_attr ( pthread_attr_t *attr )  {
   if(DEBUG)  printf("  Set timing thread attributes \n");
 
@@ -176,12 +174,13 @@ void tmr_attr ( pthread_attr_t *attr )  {
 
   return;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  tmr_thread
-//  Create a new pthread to run the timer. 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  tmr_thread
+ *  Create a new pthread to run the timer. 
+ */
+/*
 void tmr_thread ( timer_struct *tmr, pthread_attr_t *attr, void *fcn )  {
   if(DEBUG)  printf( "%s ", tmr->name );
 
@@ -199,32 +198,33 @@ void tmr_thread ( timer_struct *tmr, pthread_attr_t *attr, void *fcn )  {
 
   return;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  tmr_exit
-//  Cleanly exits the timing threads.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  tmr_exit
+ *  Cleanly exits the timing threads.
+ */
+/*
 void tmr_exit ( void )  {
   printf("Close timing threads:  ");
 
   // Destroy mutex locks
-  pthread_mutex_destroy(&mutex_input);
-  pthread_mutex_destroy(&mutex_output);
-  pthread_mutex_destroy(&mutex_gyrA);
-  pthread_mutex_destroy(&mutex_accA);
-  pthread_mutex_destroy(&mutex_magA);
-  pthread_mutex_destroy(&mutex_gyrB);
-  pthread_mutex_destroy(&mutex_accB);
-  pthread_mutex_destroy(&mutex_magB);
-  pthread_mutex_destroy(&mutex_quat);
-  pthread_mutex_destroy(&mutex_eul);
-  pthread_mutex_destroy(&mutex_ahrs);
-  pthread_mutex_destroy(&mutex_gps);
-  pthread_mutex_destroy(&mutex_gcs);
+  //pthread_mutex_destroy(&mutex_input);
+  //pthread_mutex_destroy(&mutex_output);
+  //pthread_mutex_destroy(&mutex_gyrA);
+  //pthread_mutex_destroy(&mutex_accA);
+  //pthread_mutex_destroy(&mutex_magA);
+  //pthread_mutex_destroy(&mutex_gyrB);
+  //pthread_mutex_destroy(&mutex_accB);
+  //pthread_mutex_destroy(&mutex_magB);
+  //pthread_mutex_destroy(&mutex_quat);
+  //pthread_mutex_destroy(&mutex_eul);
+  //pthread_mutex_destroy(&mutex_ahrs);
+  //pthread_mutex_destroy(&mutex_gps);
+  //pthread_mutex_destroy(&mutex_gcs);
   //pthread_mutex_destroy(&mutex_ctrl);
 
-  /*  // Exit control thread
+  // Exit control thread
   if( pthread_join ( tmr_ctrl.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ctrl' thread. \n" );
   if(DEBUG)  printf( "ctrl " );
@@ -256,7 +256,7 @@ void tmr_exit ( void )  {
     printf( "Error (tmr_exit): Failed to exit 'uart1' thread. \n" );
   if(DEBUG)  printf( "uart1 " );
   }
-  */
+
   // Exit GCSRX thread
   if( pthread_join ( tmr_gcsrx.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gcsrx' thread. \n" );
@@ -266,7 +266,7 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_gcstx.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gcstx' thread. \n" );
   if(DEBUG)  printf( "gcstx " );
-  /*
+
   // Exit GPS thread
   if( pthread_join ( tmr_gps.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gps' thread. \n" );
@@ -298,7 +298,7 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_sio.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'sio' thread. \n" );
   if(DEBUG)  printf( "sio " );
-  */
+
   // Exit debugging thread
   if(DEBUG) {
   if( pthread_join ( tmr_debug.id, NULL ) )
@@ -308,12 +308,13 @@ void tmr_exit ( void )  {
 
   return;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  tmr_create
-//  Creates the timer file descriptor within a thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  tmr_create
+ *  Creates the timer file descriptor within a thread.
+ */
+/*
 void tmr_create ( timer_struct *tmr )  {
 
   // Local variables
@@ -343,12 +344,13 @@ void tmr_create ( timer_struct *tmr )  {
 
   return;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  tmr_pause
-//  Implements the pause before starting the next loop.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  tmr_pause
+ *  Implements the pause before starting the next loop.
+ */
+/*
 void tmr_pause ( timer_struct *tmr )  {
 
   // Local variables
@@ -363,12 +365,13 @@ void tmr_pause ( timer_struct *tmr )  {
 
   return;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  tmr_start
-//  Start code for a timer loop.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  tmr_start
+ *  Start code for a timer loop.
+ */
+/*
 void tmr_start ( timer_struct *tmr )  {
 
   // Get current time
@@ -381,12 +384,13 @@ void tmr_start ( timer_struct *tmr )  {
 
   return;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  tmr_finish
-//  Finish code for a timer loop.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  tmr_finish
+ *  Finish code for a timer loop.
+ */
+/*
 void tmr_finish ( timer_struct *tmr )  {
 
   // Get current time
@@ -406,12 +410,13 @@ void tmr_finish ( timer_struct *tmr )  {
 
   return;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_sio
-//  Function handler for the system input/output timing thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  fcn_sio
+ *  Function handler for the system input/output timing thread.
+ */
+/*
 void *fcn_sio (  )  {
   tmr_create(&tmr_sio);
   while (running) {
@@ -424,12 +429,13 @@ void *fcn_sio (  )  {
   pthread_exit(NULL);
   return NULL;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_flag
-//  Function handler for the program execution flag timing thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  fcn_flag
+ *  Function handler for the program execution flag timing thread.
+ */
+/*
 void *fcn_flag (  )  {
   tmr_create(&tmr_flag);
   while (running) {
@@ -441,12 +447,13 @@ void *fcn_flag (  )  {
   pthread_exit(NULL);
   return NULL;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_imuA
-//  Function handler for the IMUA timing thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  fcn_imuA
+ *  Function handler for the IMUA timing thread.
+ */
+/*
 void *fcn_imuA (  )  {
   tmr_create(&tmr_imuA);
   while (running) {
@@ -459,12 +466,13 @@ void *fcn_imuA (  )  {
   pthread_exit(NULL);
   return NULL;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_imuB
-//  Function handler for the IMUB timing thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  fcn_imuB
+ *  Function handler for the IMUB timing thread.
+ */
+/*
 void *fcn_imuB (  )  {
   tmr_create(&tmr_imuB);
   while (running) {
@@ -477,12 +485,13 @@ void *fcn_imuB (  )  {
   pthread_exit(NULL);
   return NULL;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_ahrs
-//  Function handler for the AHRS timing thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  fcn_ahrs
+ *  Function handler for the AHRS timing thread.
+ */
+/*
 void *fcn_ahrs (  )  {
   tmr_create(&tmr_ahrs);
   while (running) {
@@ -495,12 +504,13 @@ void *fcn_ahrs (  )  {
   pthread_exit(NULL);
   return NULL;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_gps
-//  Function handler for the GPS timing thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  fcn_gps
+ *  Function handler for the GPS timing thread.
+ */
+/*
 void *fcn_gps (  )  {
   tmr_create(&tmr_gps);
   while (running) {
@@ -513,12 +523,13 @@ void *fcn_gps (  )  {
   pthread_exit(NULL);
   return NULL;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_gcstx
-//  Function handler for the GCS transmission timing thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  fcn_gcstx
+ *  Function handler for the GCS transmission timing thread.
+ */
+/*
 void *fcn_gcstx (  )  {
   tmr_create(&tmr_gcstx);
   while (running) {
@@ -530,12 +541,13 @@ void *fcn_gcstx (  )  {
   pthread_exit(NULL);
   return NULL;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_gcsrx
-//  Function handler for the GCS receiver timing thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  fcn_gcsrx
+ *  Function handler for the GCS receiver timing thread.
+ */
+/*
 void *fcn_gcsrx (  )  {
   tmr_create(&tmr_gcsrx);
   while (running) {
@@ -547,12 +559,12 @@ void *fcn_gcsrx (  )  {
   pthread_exit(NULL);
   return NULL;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_uart1
-//  Function handler for the UART1 timing thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  fcn_uart1
+ *  Function handler for the UART1 timing thread.
+ */
 /*
 void *fcn_uart1 (  )  {
   tmr_create(&tmr_uart1);
@@ -567,10 +579,10 @@ void *fcn_uart1 (  )  {
 }
 */
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_uart2
-//  Function handler for the UART2 timing thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  fcn_uart2
+ *  Function handler for the UART2 timing thread.
+ */
 /*
 void *fcn_uart2 (  )  {
   tmr_create(&tmr_uart2);
@@ -585,10 +597,10 @@ void *fcn_uart2 (  )  {
 }
 */
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_uart4
-//  Function handler for the UART4 timing thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  fcn_uart4
+ *  Function handler for the UART4 timing thread.
+ */
 /*
 void *fcn_uart4 (  )  {
   tmr_create(&tmr_uart4);
@@ -603,10 +615,10 @@ void *fcn_uart4 (  )  {
 }
 */
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_uart5
-//  Function handler for the UART5 timing thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  fcn_uart5
+ *  Function handler for the UART5 timing thread.
+ */
 /*
 void *fcn_uart5 (  )  {
   tmr_create(&tmr_uart5);
@@ -621,10 +633,11 @@ void *fcn_uart5 (  )  {
 }
 */
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_ctrl
-//  Function handler for the control law timing thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  fcn_ctrl
+ *  Function handler for the control law timing thread.
+ */
+/*
 void *fcn_ctrl (  )  {
   tmr_create(&tmr_ctrl);
   while (running) {
@@ -637,12 +650,13 @@ void *fcn_ctrl (  )  {
   pthread_exit(NULL);
   return NULL;
 }
+*/
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  fcn_debug
-//  Function handler for the debugging timing thread.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  fcn_debug
+ *  Function handler for the debugging timing thread.
+ */
+/*
 void *fcn_debug (  )  {
   tmr_create(&tmr_debug);
   while (running) {
@@ -654,6 +668,6 @@ void *fcn_debug (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 
