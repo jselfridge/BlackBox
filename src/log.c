@@ -17,9 +17,9 @@ void log_init ( void )  {
   log_gyrA.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
   log_accA.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
   log_magA.limit   = MAX_LOG_DUR * HZ_IMU_SLOW;
-  //log_gyrB.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
-  //log_accB.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
-  //log_magB.limit   = MAX_LOG_DUR * HZ_IMU_SLOW;
+  log_gyrB.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
+  log_accB.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
+  log_magB.limit   = MAX_LOG_DUR * HZ_IMU_SLOW;
   //log_ahrs.limit   = MAX_LOG_DUR * HZ_AHRS;
   //log_gps.limit    = MAX_LOG_DUR * HZ_GPS;
   //log_ctrl.limit   = MAX_LOG_DUR * HZ_CTRL;
@@ -40,9 +40,9 @@ void log_open ( void )  {
   log_gyrA.count   = 0;
   log_accA.count   = 0;
   log_magA.count   = 0;
-  //log_gyrB.count   = 0;
-  //log_accB.count   = 0;
-  //log_magB.count   = 0;
+  log_gyrB.count   = 0;
+  log_accB.count   = 0;
+  log_magB.count   = 0;
   //log_ahrs.count   = 0;
   //log_gps.count    = 0;
   //log_ctrl.count   = 0;
@@ -86,8 +86,7 @@ void log_open ( void )  {
   }
 
   // IMU B Storage
-  /*
-  if(USE_IMUB) {
+  if(IMUB_ENABLED) {
 
   // Gyroscope B storage
   log_gyrB.time =  malloc( sizeof(float) * log_gyrB.limit     );
@@ -110,7 +109,7 @@ void log_open ( void )  {
   log_magB.avg  =  malloc( sizeof(float) * log_magB.limit * 3 );
   log_magB.cal  =  malloc( sizeof(float) * log_magB.limit * 3 );
 
-  }*/
+  }
 
   // Attitude and Heading Reference System storage
   /*
@@ -180,7 +179,7 @@ void log_close ( void )  {
 
   // Local variables
   char *file = malloc(64);
-  FILE *fnote, *fin, *fout, *fgyrA, *faccA, *fmagA; //, *fgyrB, *faccB, *fmagB, *fahrs, *fgps, *fctl;
+  FILE *fnote, *fin, *fout, *fgyrA, *faccA, *fmagA, *fgyrB, *faccB, *fmagB; //, *fahrs, *fgps, *fctl;
   ushort i;
   ulong row;
 
@@ -310,9 +309,8 @@ void log_close ( void )  {
 
   }
 
-  /*
   // IMU B datalog
-  if (USE_IMUB)  {
+  if (IMUB_ENABLED)  {
 
   // Create gyroscope B datalog file
   sprintf( file, "%sgyrB.txt", datalog.path );
@@ -389,7 +387,7 @@ void log_close ( void )  {
   free(log_magB.avg);
   free(log_magB.cal);
 
-  }*/
+  }
 
   /*
   // Create attitude and heading reference system datalog file
@@ -490,11 +488,11 @@ void log_close ( void )  {
     fclose(faccA);
     fclose(fmagA);
   }
-  //if (USE_IMUB)  {
-  //  fclose(fgyrB);
-  //  fclose(faccB);
-  //  fclose(fmagB);
-  //}
+  if (IMUB_ENABLED)  {
+    fclose(fgyrB);
+    fclose(faccB);
+    fclose(fmagB);
+  }
   //fclose(fahrs);
   //fclose(fgps);
   //fclose(fctl);
@@ -613,7 +611,6 @@ void log_record ( enum log_index index )  {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record IMUB data
-  /*
   case LOG_IMUB :
 
     timestamp = (float) ( tmr_imuB.start_sec + ( tmr_imuB.start_usec / 1000000.0f ) ) - datalog.offset;
@@ -658,7 +655,7 @@ void log_record ( enum log_index index )  {
     pthread_mutex_unlock(&mutex_magB);
 
     return;
-  */
+
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record AHRS data

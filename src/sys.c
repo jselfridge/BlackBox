@@ -66,7 +66,7 @@ void sys_update ( void )  {
   // Select data for display
   //sys_sio();
   sys_imuA();
-  //sys_imuB();
+  sys_imuB();
   //sys_ahrs();
   //sys_gps();
   //sys_uart1();
@@ -155,11 +155,10 @@ void sys_imuA ( void )  {
  *  sys_imuB
  *  Prints IMUB debugging messages to the terminal.
  */
-/*
 void sys_imuB ( void )  {
 
   // Check that IMUB is in use
-  if (USE_IMUB) {
+  if (IMUB_ENABLED) {
 
   // Loop counter
   ushort i;
@@ -189,7 +188,7 @@ void sys_imuB ( void )  {
 
   return;
 }
-*/
+
 
 /**
  *  sys_ahrs

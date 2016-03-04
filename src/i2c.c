@@ -45,14 +45,29 @@ void i2c_exit ( int *fd )  {
  */
 int i2c_slave ( int fd, unsigned char slave_addr )  {
 
-  if ( slave == slave_addr )  return 0;
+  // Confirm valid fd value
+  if ( ( fd != imuA.fd ) && ( fd != imuB.fd ) )  {
+    printf( "Error (i2c_slave): Improper fd value. \n" );
+    return -1;
+  }
 
+  // Check if IMUA addr needs updating
+  if ( fd == imuA.fd )  {
+    if ( slave_addr == imuA.addr )  return 0;
+    else                            imuA.addr = slave_addr;
+  }
+
+  // Check if IMUB addr needs updating
+  if ( fd == imuB.fd )  {
+    if ( slave_addr == imuB.addr )  return 0;
+    else                            imuB.addr = slave_addr;
+  }
+
+  // Update the appropriate a
   if ( ioctl( fd, I2C_SLAVE, slave_addr ) < 0 )  {
     printf( "Error (i2c_slave): Returned negative value from 'ioctl' command. \n" );
     return -1;
   }
-
-  slave = slave_addr;
 
   return 0;
 }
@@ -70,7 +85,7 @@ int i2c_write ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsign
 
   // Check size of data
   if ( length > I2C_MAX_WRITE-1 )  {
-    printf( "Error (i2c_tx): Exceeded maximum write length. \n" );
+    printf( "Error (i2c_write): Exceeded maximum write length. \n" );
     return -1;
   }
 
@@ -80,11 +95,12 @@ int i2c_write ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsign
   if ( length == 0 )  {
     result = write( fd, &reg_addr, 1 );
     if ( result < 0 )  {
-      printf( "Error (i2c_tx): Returned negative value with 'write' command. \n" );
+      printf( "Error (i2c_write): Returned '%d' with 'write' command (no data). \n", result );
+      printf("errno = %d.\n", errno);
       return result;
     }
     else if ( result != 1 )  {
-      printf( "Error (i2c_tx): Did not transmit the byte. \n" );
+      printf( "Error (i2c_write): Did not transmit the byte. \n" );
       return -1;
     }
   }
@@ -95,11 +111,12 @@ int i2c_write ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsign
     for ( i=0; i<length; i++ )  buf[i+1] = data[i];
     result = write( fd, buf, length+1 );
     if ( result < 0 )  {
-      printf( "Error (i2c_tx): Returned negative value with 'write' command. \n" );
+      printf( "Error (i2c_write): Returned '%d' with 'write' command (%d bytes). \n", result, length );
+      printf("errno = %d.\n", errno);
       return result;
     }
     else if ( result < (int) length )  {
-      printf( "Error (i2c_tx): Only transmitted %d out of %u bytes. \n", result, length );
+      printf( "Error (i2c_write): Only transmitted %d out of %u bytes. \n", result, length );
       return -1;
     }
   }
@@ -122,7 +139,7 @@ int i2c_read ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsigne
   while ( total < length && tries < 5 )  {
     result = read( fd, data + total, length - total );
     if (result < 0) {
-      printf( "Error (i2c_rx): Returned a negative value from 'read' command. \n" );
+      printf( "Error (i2c_read): Returned a negative value from 'read' command. \n" );
       break;
     }
     total += result;

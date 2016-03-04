@@ -5,6 +5,7 @@
 
 
 // Standard includes
+#include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
 #include <linux/i2c-dev.h>
@@ -67,7 +68,7 @@
 // Global variables (remove as quickly as possible)
 bool running;
 bool armed;
-unsigned char slave;
+//unsigned char slave;
 struct sigaction sys_signal;
 
 

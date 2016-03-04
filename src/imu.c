@@ -32,7 +32,6 @@ void imu_init (  )  {
 
   }
 
-  /*
   // Setup IMUB
   if (IMUB_ENABLED)  {
 
@@ -51,7 +50,6 @@ void imu_init (  )  {
     imu_setic(&imuB);
 
   }
-  */
 
   // IMU warmup period
   usleep(500000);
@@ -68,7 +66,7 @@ void imu_init (  )  {
 void imu_exit ( void )  {
   if(DEBUG)  printf("Close IMU \n");
   if(IMUA_ENABLED)  i2c_exit( &(imuA.fd) );
-  //if(IMUB_ENABLED)  i2c_exit( &(imuB.fd) );
+  if(IMUB_ENABLED)  i2c_exit( &(imuB.fd) );
   led_off(LED_IMU);
   return;
 }
@@ -326,44 +324,38 @@ void imu_update ( imu_struct *imu )  {
   }
 
   // Push gyroscope values to data structure
-  //if ( imu->bus == 1 )
-  pthread_mutex_lock(&mutex_gyrA);
-  //if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_gyrB);
+  if ( imu->bus == 1 )  pthread_mutex_lock(&mutex_gyrA);
+  if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_gyrB);
   for ( i=0; i<3; i++ )  {
     imu->gyr->raw[i] = Graw[i];
     imu->gyr->avg[i] = Gavg[i];
     imu->gyr->cal[i] = Gcal[i];
   }
-  //if ( imu->bus == 1 )
-  pthread_mutex_unlock(&mutex_gyrA);
-  //if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_gyrB);
+  if ( imu->bus == 1 )  pthread_mutex_unlock(&mutex_gyrA);
+  if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_gyrB);
 
   // Push accerometer values to data structure
-  //if ( imu->bus == 1 )
-  pthread_mutex_lock(&mutex_accA);
-  //if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_accB);
+  if ( imu->bus == 1 )  pthread_mutex_lock(&mutex_accA);
+  if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_accB);
   for ( i=0; i<3; i++ )  {
     imu->acc->raw[i] = Araw[i];
     imu->acc->avg[i] = Aavg[i];
     imu->acc->cal[i] = Acal[i];
   }
-  //if ( imu->bus == 1 )
-  pthread_mutex_unlock(&mutex_accA);
-  //if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_accB);
+  if ( imu->bus == 1 )  pthread_mutex_unlock(&mutex_accA);
+  if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_accB);
 
   // Push magnetometer values to data structure
   if(imu->getmag) {
-  //if ( imu->bus == 1 )
-  pthread_mutex_lock(&mutex_magA);
-  //if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_magB);
+  if ( imu->bus == 1 )  pthread_mutex_lock(&mutex_magA);
+  if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_magB);
   for ( i=0; i<3; i++ )  {
     imu->mag->raw[i] = Mraw[i];
     imu->mag->avg[i] = Mavg[i];
     imu->mag->cal[i] = Mcal[i];
   }
-  //if ( imu->bus == 1 )
-  pthread_mutex_unlock(&mutex_magA);
-  //if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_magB);
+  if ( imu->bus == 1 )  pthread_mutex_unlock(&mutex_magA);
+  if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_magB);
   }
 
   return;

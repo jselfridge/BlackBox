@@ -26,9 +26,9 @@ void tmr_init ( void )  {
   pthread_mutex_init( &mutex_gyrA,   NULL );
   pthread_mutex_init( &mutex_accA,   NULL );
   pthread_mutex_init( &mutex_magA,   NULL );
-  //pthread_mutex_init( &mutex_gyrB,   NULL );
-  //pthread_mutex_init( &mutex_accB,   NULL );
-  //pthread_mutex_init( &mutex_magB,   NULL );
+  pthread_mutex_init( &mutex_gyrB,   NULL );
+  pthread_mutex_init( &mutex_accB,   NULL );
+  pthread_mutex_init( &mutex_magB,   NULL );
   //pthread_mutex_init( &mutex_quat,   NULL );
   //pthread_mutex_init( &mutex_eul,    NULL );
   //pthread_mutex_init( &mutex_ahrs,   NULL );
@@ -40,7 +40,7 @@ void tmr_init ( void )  {
                       tmr_thread( &tmr_sio,   &attr, fcn_sio   );  usleep(100000);
                       tmr_thread( &tmr_flag,  &attr, fcn_flag  );  usleep(100000);
   if(IMUA_ENABLED) {  tmr_thread( &tmr_imuA,  &attr, fcn_imuA  );  usleep(100000);  }
-  //if(USE_IMUB)  { tmr_thread( &tmr_imuB, &attr, fcn_imuB );  usleep(100000);  }
+  if(IMUB_ENABLED) {  tmr_thread( &tmr_imuB,  &attr, fcn_imuB  );  usleep(100000);  }
   //tmr_thread( &tmr_ahrs,  &attr, fcn_ahrs  );  usleep(100000);
   //tmr_thread( &tmr_gps,   &attr, fcn_gps   );  usleep(100000);
   //tmr_thread( &tmr_gcstx, &attr, fcn_gcstx );  usleep(100000);
@@ -83,11 +83,11 @@ void tmr_setup ( void )  {
   tmr_imuA.prio  =  PRIO_IMU;
   tmr_imuA.per   =  1000000 / HZ_IMU_FAST;
 
-  /*// IMUB timer
+  // IMUB timer
   tmr_imuB.name  =  "imuB";
   tmr_imuB.prio  =  PRIO_IMU;
   tmr_imuB.per   =  1000000 / HZ_IMU_FAST;
-  */
+
   /*// AHRS timer
   tmr_ahrs.name  =  "ahrs";
   tmr_ahrs.prio  =  PRIO_AHRS;
@@ -209,9 +209,9 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&mutex_gyrA);
   pthread_mutex_destroy(&mutex_accA);
   pthread_mutex_destroy(&mutex_magA);
-  //pthread_mutex_destroy(&mutex_gyrB);
-  //pthread_mutex_destroy(&mutex_accB);
-  //pthread_mutex_destroy(&mutex_magB);
+  pthread_mutex_destroy(&mutex_gyrB);
+  pthread_mutex_destroy(&mutex_accB);
+  pthread_mutex_destroy(&mutex_magB);
   //pthread_mutex_destroy(&mutex_quat);
   //pthread_mutex_destroy(&mutex_eul);
   //pthread_mutex_destroy(&mutex_ahrs);
@@ -273,11 +273,11 @@ void tmr_exit ( void )  {
   if(DEBUG)  printf( "ahrs " );
   */
   // Exit IMUB thread
-  /*if(USE_IMUB)  {
+  if(IMUB_ENABLED)  {
   if( pthread_join ( tmr_imuB.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'imuB' thread. \n" );
   if(DEBUG)  printf( "imuB " );  }
-  */
+
   // Exit IMUA thread
   if(IMUA_ENABLED)  {
   if( pthread_join ( tmr_imuA.id, NULL ) )
@@ -463,7 +463,6 @@ void *fcn_imuA (  )  {
  *  fcn_imuB
  *  Function handler for the IMUB timing thread.
  */
-/*
 void *fcn_imuB (  )  {
   tmr_create(&tmr_imuB);
   while (running) {
@@ -476,7 +475,7 @@ void *fcn_imuB (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-*/
+
 
 /**
  *  fcn_ahrs

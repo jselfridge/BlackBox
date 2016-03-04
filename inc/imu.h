@@ -5,23 +5,24 @@
 #include <main.h>
 
 
-// Define statements
+// Define hardware
+#define IMUA_ENABLED   false
+#define IMUB_ENABLED   true
 
-#define IMUA_ENABLED   true
-//#define IMUB_ENABLED   false
-
+// Define LPF history length
 #define GYR_HIST   10
 #define ACC_HIST   10
 #define MAG_HIST   10
 
+// Define LPF cutoff freq
 #define GYR_LPF    20.0
 #define ACC_LPF    20.0
 #define MAG_LPF     2.0
 
+// Define MPU constants
 #define GYR_FSR    500
 #define ACC_FSR    4
 #define GYR_SCALE  ( 500.0 / 32768.0 ) * ( PI / 180.0 )
-
 #define PI  M_PI
 
 
@@ -38,9 +39,9 @@ typedef struct imu_data_struct {
 imu_data_struct gyrA;
 imu_data_struct accA;
 imu_data_struct magA;
-//imu_data_struct gyrB;
-//imu_data_struct accB;
-//imu_data_struct magB;
+imu_data_struct gyrB;
+imu_data_struct accB;
+imu_data_struct magB;
 
 
 // IMU structure
@@ -57,7 +58,7 @@ typedef struct imu_struct {
   imu_data_struct* mag;
 } imu_struct;
 imu_struct imuA;
-//imu_struct imuB;
+imu_struct imuB;
 
 
 // IMU functions
