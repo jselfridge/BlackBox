@@ -38,8 +38,7 @@ void tmr_init ( void )  {
 
   // Create primary timing threads
   tmr_thread( &tmr_sio,   &attr, fcn_sio   );  usleep(100000);
-
-  //tmr_thread( &tmr_flag,  &attr, fcn_flag  );  usleep(100000);
+  tmr_thread( &tmr_flag,  &attr, fcn_flag  );  usleep(100000);
   //if(USE_IMUA)  { tmr_thread( &tmr_imuA, &attr, fcn_imuA );  usleep(100000);  }
   //if(USE_IMUB)  { tmr_thread( &tmr_imuB, &attr, fcn_imuB );  usleep(100000);  }
   //tmr_thread( &tmr_ahrs,  &attr, fcn_ahrs  );  usleep(100000);
@@ -74,11 +73,11 @@ void tmr_setup ( void )  {
   tmr_sio.prio   =  PRIO_SIO;
   tmr_sio.per    =  1000000 / HZ_SIO;
 
-  /*// Flags timer
+  // Flags timer
   tmr_flag.name  =  "flag";
   tmr_flag.prio  =  PRIO_FLAG;
   tmr_flag.per   =  1000000 / HZ_FLAG;
-  */
+
   /*// IMUA timer
   tmr_imuA.name  =  "imuA";
   tmr_imuA.prio  =  PRIO_IMU;
@@ -286,10 +285,10 @@ void tmr_exit ( void )  {
   if(DEBUG)  printf( "imuA " );  }
   */
   // Exit program execution flags thread
-  /*if( pthread_join ( tmr_flag.id, NULL ) )
+  if( pthread_join ( tmr_flag.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'flag' thread. \n" );
   if(DEBUG)  printf( "flag " );
-  */
+
   // Exit system input/output thread
   if( pthread_join ( tmr_sio.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'sio' thread. \n" );
@@ -413,6 +412,13 @@ void *fcn_sio (  )  {
   while (running) {
     tmr_start(&tmr_sio);
     sio_update();
+    //--- DEBUGGING ---//
+    //pthread_mutex_lock(&mutex_input);
+    //pthread_mutex_lock(&mutex_output);
+    int i; for (i=0; i<10; i++)  sio_setnorm( i, input.norm[i] );
+    //pthread_mutex_unlock(&mutex_output);
+    //pthread_mutex_unlock(&mutex_input);
+    //--- DEBUGGING ---//
     tmr_finish(&tmr_sio);
     //if (datalog.enabled)  log_record(LOG_SIO);
     tmr_pause(&tmr_sio);
@@ -426,7 +432,6 @@ void *fcn_sio (  )  {
  *  fcn_flag
  *  Function handler for the program execution flag timing thread.
  */
-/*
 void *fcn_flag (  )  {
   tmr_create(&tmr_flag);
   while (running) {
@@ -438,7 +443,7 @@ void *fcn_flag (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-*/
+
 
 /**
  *  fcn_imuA

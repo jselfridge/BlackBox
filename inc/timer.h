@@ -17,7 +17,7 @@
 //#define PRIO_UART2  88
 //#define PRIO_UART4  88
 //#define PRIO_UART5  88
-//#define PRIO_FLAG   84
+#define PRIO_FLAG   84
 #define PRIO_DEBUG  82
 
 
@@ -27,7 +27,7 @@
 #define HZ_SIO          50
 //#define HZ_AHRS         50
 //#define HZ_CTRL         50
-//#define HZ_FLAG         10
+#define HZ_FLAG         10
 //#define HZ_GPS          10
 //#define HZ_GCSTX        10
 //#define HZ_GCSRX        10
@@ -55,7 +55,7 @@ typedef struct timer_struct {
 
 // Timer declarations
 timer_struct tmr_sio;
-//timer_struct tmr_flag;
+timer_struct tmr_flag;
 //timer_struct tmr_imuA;
 //timer_struct tmr_imuB;
 //timer_struct tmr_ahrs;
@@ -101,7 +101,7 @@ void  tmr_finish    ( timer_struct *tmr );
 
 // Function handlers
 void *fcn_sio    (  );
-//void *fcn_flag   (  );
+void *fcn_flag   (  );
 //void *fcn_imuA   (  );
 //void *fcn_imuB   (  );
 //void *fcn_ahrs   (  );

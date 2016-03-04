@@ -32,7 +32,7 @@
 // Custom includes
 // #include <ahrs.h>
 // #include <ctrl.h>
-// #include <flag.h>
+#include <flag.h>
 #include <gpio.h>
 // #include <gcs.h>
 // #include <gps.h>
@@ -66,7 +66,7 @@
 
 // Global variables (remove as quickly as possible)
 bool running;
-// bool armed;
+bool armed;
 // unsigned char slave;
 struct sigaction sys_signal;
 //uint* memoryPtr;

@@ -16,7 +16,7 @@ int main ( void )  {
   // Initialize subsystems
   sys_init();
   sio_init();
-  //flag_init();
+  flag_init();
   //imu_init();
   //ahrs_init();
   //uart_init();
@@ -32,6 +32,10 @@ int main ( void )  {
 
   // Wait for exit condition
   while(running)  usleep(100000);
+
+  // Exit the program
+  //usleep(200000);
+  sys_exit();
 
   return 0;
 

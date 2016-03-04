@@ -1,25 +1,22 @@
 
-//============================================================
-//  flag.c
-//  Justin M Selfridge
-//============================================================
+
 #include "flag.h"
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  flag_init
-//  Initializes the program execution flag structure.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  flag_init
+ *  Initializes the program execution flag structure.
+ */
 void flag_init ( void )  {
   if(DEBUG)  printf("Initializing program execution flags \n");
 
   // Set boolean values
   if(DEBUG)  printf("  Set run time flags \n");
-  datalog.enabled  = false;
-  datalog.setup    = false;
-  datalog.saving   = false;
-  armed            = false;
+  //datalog.enabled  = false;
+  //datalog.setup    = false;
+  //datalog.saving   = false;
   running          = true;
+  armed            = false;
 
   // Zero out counters
   if(DEBUG)  printf("  Zero out counters \n");
@@ -40,10 +37,10 @@ void flag_init ( void )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  flag_exit
-//  End of program related taskss.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  flag_exit
+ *  End of program related taskss.
+ */
 void flag_exit ( void )  {
   if(DEBUG)  printf("Close flags \n");
   // Add code and functions as needed...
@@ -51,10 +48,10 @@ void flag_exit ( void )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  flag_update
-//  Updates the current status of the program execution flags.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  flag_update
+ *  Updates the current status of the program execution flags.
+ */
 void flag_update ( void )  {
 
   // Local variables
@@ -73,13 +70,13 @@ void flag_update ( void )  {
   // Data log: roll stick only, no yaw command
   if ( !energized && !flag.lower[CH_Y] && !flag.upper[CH_Y] )  {
     if ( flag.lower[CH_R] >= flag.limit[CH_R] ) {
-      if (!datalog.setup)  log_open();
-      datalog.enabled = true;
+      //if (!datalog.setup)  log_open();
+      //datalog.enabled = true;
       led_on(LED_LOG);
     }
     if ( flag.upper[CH_R] >= flag.limit[CH_R] ) {
-      datalog.enabled = false;
-      if (datalog.setup)  log_close();
+      //datalog.enabled = false;
+      //if (datalog.setup)  log_close();
       led_off(LED_LOG);
     }
   }
