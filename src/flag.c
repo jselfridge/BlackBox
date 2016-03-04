@@ -12,9 +12,9 @@ void flag_init ( void )  {
 
   // Set boolean values
   if(DEBUG)  printf("  Set run time flags \n");
-  //datalog.enabled  = false;
-  //datalog.setup    = false;
-  //datalog.saving   = false;
+  datalog.enabled  = false;
+  datalog.setup    = false;
+  datalog.saving   = false;
   running          = true;
   armed            = false;
 
@@ -70,13 +70,13 @@ void flag_update ( void )  {
   // Data log: roll stick only, no yaw command
   if ( !energized && !flag.lower[CH_Y] && !flag.upper[CH_Y] )  {
     if ( flag.lower[CH_R] >= flag.limit[CH_R] ) {
-      //if (!datalog.setup)  log_open();
-      //datalog.enabled = true;
+      if (!datalog.setup)  log_open();
+      datalog.enabled = true;
       led_on(LED_LOG);
     }
     if ( flag.upper[CH_R] >= flag.limit[CH_R] ) {
-      //datalog.enabled = false;
-      //if (datalog.setup)  log_close();
+      datalog.enabled = false;
+      if (datalog.setup)  log_close();
       led_off(LED_LOG);
     }
   }

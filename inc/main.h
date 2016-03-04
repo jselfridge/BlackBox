@@ -39,7 +39,7 @@
 // #include <i2c.h>
 // #include <imu.h>
 #include <led.h>
-// #include <log.h>
+#include <log.h>
 // #include <mpu.h>
 #include <sio.h>
 #include <sys.h>

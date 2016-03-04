@@ -23,7 +23,7 @@ int main ( void )  {
   //gps_init();
   //gcs_init();
   //ctrl_init();
-  //log_init();
+  log_init();
   //--  DEBUGGING  --//
   //log_open();
   //datalog.enabled = true;

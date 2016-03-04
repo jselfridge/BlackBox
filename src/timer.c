@@ -420,7 +420,7 @@ void *fcn_sio (  )  {
     //pthread_mutex_unlock(&mutex_input);
     //--- DEBUGGING ---//
     tmr_finish(&tmr_sio);
-    //if (datalog.enabled)  log_record(LOG_SIO);
+    if (datalog.enabled)  log_record(LOG_SIO);
     tmr_pause(&tmr_sio);
   }
   pthread_exit(NULL);

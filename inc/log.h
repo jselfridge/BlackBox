@@ -1,8 +1,5 @@
 
-//============================================================
-//  log.h
-//  Justin M Selfridge
-//============================================================
+
 #ifndef _LOG_H_
 #define _LOG_H_
 #include <main.h>
@@ -15,10 +12,10 @@
 // Log enumerations
 enum log_index {
   LOG_SIO  = 0,
-  LOG_IMUA = 1,
-  LOG_IMUB = 2,
-  LOG_AHRS = 3,
-  LOG_GPS  = 4
+  //LOG_IMUA = 1,
+  //LOG_IMUB = 2,
+  //LOG_AHRS = 3,
+  //LOG_GPS  = 4
   //LOG_CTL  = 5
 } log_index;
 
@@ -37,6 +34,7 @@ log_sio_struct log_output;
 
 
 // Log IMU structure
+/*
 typedef struct log_imu_struct {
   ulong count;
   ulong limit;
@@ -52,9 +50,10 @@ log_imu_struct log_magA;
 log_imu_struct log_gyrB;
 log_imu_struct log_accB;
 log_imu_struct log_magB;
-
+*/
 
 // Log AHRS structure
+/*
 typedef struct log_ahrs_struct {
   ulong count;
   ulong limit;
@@ -69,9 +68,10 @@ typedef struct log_ahrs_struct {
   float *fz;
 } log_ahrs_struct;
 log_ahrs_struct log_ahrs;
-
+*/
 
 // Log GPS structure
+/*
 typedef struct log_gps_struct {
   ulong count;
   ulong limit;
@@ -80,9 +80,10 @@ typedef struct log_gps_struct {
   char  *msg;
 } log_gps_struct;
 log_gps_struct log_gps;
+*/
 
-
-/*// Log controller structure
+// Log controller structure
+/*
 typedef struct log_ctrl_struct {
   ulong  count;
   ulong  limit;

@@ -55,12 +55,12 @@ void sys_update ( void )  {
   printf("\r");  fflush(stdout);
 
   // Datalog status
-  //if (datalog.enabled)  printf(" Log %s: ", datalog.dir );
-  //else                  printf(" - - - -  ");
-  //fflush(stdout);
+  if (datalog.enabled)  printf(" Log %s: ", datalog.dir );
+  else                  printf(" - - - -  ");
+  fflush(stdout);
 
   // Time values
-  float timestamp = (float) ( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f ) ); // - datalog.offset );
+  float timestamp = (float) ( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f ) - datalog.offset );
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
@@ -331,7 +331,7 @@ void sys_exit (  )  {
   //datalog.enabled = false;
   //log_close();
   //-----------------//
-  //log_exit();
+  log_exit();
   //ctl_exit();
   //gcs_exit();
   //gps_exit();
