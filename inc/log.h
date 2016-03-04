@@ -12,9 +12,9 @@
 // Log enumerations
 enum log_index {
   LOG_SIO  = 0,
-  //LOG_IMUA = 1,
-  //LOG_IMUB = 2,
-  //LOG_AHRS = 3,
+  LOG_IMUA = 1
+  //LOG_IMUB = 2
+  //LOG_AHRS = 3
   //LOG_GPS  = 4
   //LOG_CTL  = 5
 } log_index;
@@ -34,7 +34,6 @@ log_sio_struct log_output;
 
 
 // Log IMU structure
-/*
 typedef struct log_imu_struct {
   ulong count;
   ulong limit;
@@ -47,10 +46,10 @@ typedef struct log_imu_struct {
 log_imu_struct log_gyrA;
 log_imu_struct log_accA;
 log_imu_struct log_magA;
-log_imu_struct log_gyrB;
-log_imu_struct log_accB;
-log_imu_struct log_magB;
-*/
+//log_imu_struct log_gyrB;
+//log_imu_struct log_accB;
+//log_imu_struct log_magB;
+
 
 // Log AHRS structure
 /*

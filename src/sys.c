@@ -64,8 +64,8 @@ void sys_update ( void )  {
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
-  sys_sio();
-  //sys_imuA();
+  //sys_sio();
+  sys_imuA();
   //sys_imuB();
   //sys_ahrs();
   //sys_gps();
@@ -116,11 +116,10 @@ void sys_sio ( void )  {
  *  sys_imuA
  *  Prints IMUA debugging messages to the terminal.
  */
-/*
 void sys_imuA ( void )  {
 
   // Check that IMUA is in use
-  if (USE_IMUA) {
+  if (IMUA_ENABLED) {
 
   // Loop counter
   ushort i;
@@ -150,7 +149,7 @@ void sys_imuA ( void )  {
 
   return;
 }
-*/
+
 
 /**
  *  sys_imuB
@@ -337,7 +336,7 @@ void sys_exit (  )  {
   //gps_exit();
   //uart_exit();
   //ahrs_exit();
-  //imu_exit();
+  imu_exit();
   flag_exit();
   sio_exit();
 

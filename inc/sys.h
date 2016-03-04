@@ -14,7 +14,7 @@
 void sys_init   ( void );
 void sys_update ( void );
 void sys_sio    ( void );
-//void sys_imuA   ( void );
+void sys_imuA   ( void );
 //void sys_imuB   ( void );
 //void sys_ahrs   ( void );
 //void sys_gps    ( void );

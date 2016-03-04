@@ -1,8 +1,5 @@
 
-//============================================================
-//  imu.h
-//  Justin M Selfridge
-//============================================================
+
 #ifndef _IMU_H_
 #define _IMU_H_
 #include <main.h>
@@ -10,8 +7,8 @@
 
 // Define statements
 
-#define USE_IMUA   true
-#define USE_IMUB   false
+#define IMUA_ENABLED   true
+//#define IMUB_ENABLED   false
 
 #define GYR_HIST   10
 #define ACC_HIST   10
@@ -41,9 +38,9 @@ typedef struct imu_data_struct {
 imu_data_struct gyrA;
 imu_data_struct accA;
 imu_data_struct magA;
-imu_data_struct gyrB;
-imu_data_struct accB;
-imu_data_struct magB;
+//imu_data_struct gyrB;
+//imu_data_struct accB;
+//imu_data_struct magB;
 
 
 // IMU structure
@@ -60,7 +57,7 @@ typedef struct imu_struct {
   imu_data_struct* mag;
 } imu_struct;
 imu_struct imuA;
-imu_struct imuB;
+//imu_struct imuB;
 
 
 // IMU functions

@@ -1,15 +1,12 @@
 
-//============================================================
-//  imu.c
-//  Justin M Selfridge
-//============================================================
+
 #include "imu.h"
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_init
-//  Initializes an MPU sensor.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  imu_init
+ *  Initializes an MPU sensor.
+ */
 void imu_init (  )  {
   if(DEBUG)  printf( "Initializing IMU \n" );
 
@@ -17,7 +14,7 @@ void imu_init (  )  {
   led_blink( LED_IMU, 200, 200 );
 
   // Setup IMUA
-  if (USE_IMUA)  {
+  if (IMUA_ENABLED)  {
 
     // Struct values
     imuA.id   = 'A';
@@ -35,8 +32,9 @@ void imu_init (  )  {
 
   }
 
+  /*
   // Setup IMUB
-  if (USE_IMUB)  {
+  if (IMUB_ENABLED)  {
 
     // Struct values
     imuB.id   = 'B';
@@ -53,6 +51,7 @@ void imu_init (  )  {
     imu_setic(&imuB);
 
   }
+  */
 
   // IMU warmup period
   usleep(500000);
@@ -62,23 +61,23 @@ void imu_init (  )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_exit
-//  Terminate an MPU sensor.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  imu_exit
+ *  Terminate an MPU sensor.
+ */
 void imu_exit ( void )  {
   if(DEBUG)  printf("Close IMU \n");
-  if(USE_IMUA)  i2c_exit( &(imuA.fd) );
-  if(USE_IMUB)  i2c_exit( &(imuB.fd) );
+  if(IMUA_ENABLED)  i2c_exit( &(imuA.fd) );
+  //if(IMUB_ENABLED)  i2c_exit( &(imuB.fd) );
   led_off(LED_IMU);
   return;
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_param
-//  Assign parameters to an MPU sensor.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  imu_param
+ *  Assign parameters to an MPU sensor.
+ */
 void imu_param ( imu_struct *imu )  {
 
   if(DEBUG) {  printf("  Assign IMU%c parameters ", imu->id );  fflush(stdout);  }
@@ -112,10 +111,10 @@ void imu_param ( imu_struct *imu )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_getcal
-//  Gets the calibration parameters for the MPU sensor.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  imu_getcal
+ *  Gets the calibration parameters for the MPU sensor.
+ */
 void imu_getcal ( imu_struct *imu )  {
   if(DEBUG)  printf( "  IMU%c calibration values: \n", imu->id );
 
@@ -192,10 +191,10 @@ void imu_getcal ( imu_struct *imu )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_setic
-//  Sets the initial conditions for the MPU sensor.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  imu_setic
+ *  Sets the initial conditions for the MPU sensor.
+ */
 void imu_setic ( imu_struct *imu )  {
   if(DEBUG)  printf( "  Set IMU%c initial conditions \n", imu->id );
 
@@ -237,10 +236,10 @@ void imu_setic ( imu_struct *imu )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  imu_update
-//  Update system with new IMU sensor data.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  imu_update
+ *  Update system with new IMU sensor data.
+ */
 void imu_update ( imu_struct *imu )  {
 
   // Local variables
@@ -327,38 +326,44 @@ void imu_update ( imu_struct *imu )  {
   }
 
   // Push gyroscope values to data structure
-  if ( imu->bus == 1 )  pthread_mutex_lock(&mutex_gyrA);
-  if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_gyrB);
+  //if ( imu->bus == 1 )
+  pthread_mutex_lock(&mutex_gyrA);
+  //if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_gyrB);
   for ( i=0; i<3; i++ )  {
     imu->gyr->raw[i] = Graw[i];
     imu->gyr->avg[i] = Gavg[i];
     imu->gyr->cal[i] = Gcal[i];
   }
-  if ( imu->bus == 1 )  pthread_mutex_unlock(&mutex_gyrA);
-  if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_gyrB);
+  //if ( imu->bus == 1 )
+  pthread_mutex_unlock(&mutex_gyrA);
+  //if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_gyrB);
 
   // Push accerometer values to data structure
-  if ( imu->bus == 1 )  pthread_mutex_lock(&mutex_accA);
-  if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_accB);
+  //if ( imu->bus == 1 )
+  pthread_mutex_lock(&mutex_accA);
+  //if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_accB);
   for ( i=0; i<3; i++ )  {
     imu->acc->raw[i] = Araw[i];
     imu->acc->avg[i] = Aavg[i];
     imu->acc->cal[i] = Acal[i];
   }
-  if ( imu->bus == 1 )  pthread_mutex_unlock(&mutex_accA);
-  if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_accB);
+  //if ( imu->bus == 1 )
+  pthread_mutex_unlock(&mutex_accA);
+  //if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_accB);
 
   // Push magnetometer values to data structure
   if(imu->getmag) {
-  if ( imu->bus == 1 )  pthread_mutex_lock(&mutex_magA);
-  if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_magB);
+  //if ( imu->bus == 1 )
+  pthread_mutex_lock(&mutex_magA);
+  //if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_magB);
   for ( i=0; i<3; i++ )  {
     imu->mag->raw[i] = Mraw[i];
     imu->mag->avg[i] = Mavg[i];
     imu->mag->cal[i] = Mcal[i];
   }
-  if ( imu->bus == 1 )  pthread_mutex_unlock(&mutex_magA);
-  if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_magB);
+  //if ( imu->bus == 1 )
+  pthread_mutex_unlock(&mutex_magA);
+  //if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_magB);
   }
 
   return;

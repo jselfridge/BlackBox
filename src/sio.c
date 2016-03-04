@@ -37,7 +37,6 @@ void sio_init ( void )  {
 
   // Loops per PWM period  [ 21800 loops => 400Hz ]
   memoryPtr[ OUT_OFFSET -1 ] = 44000;
-  printf("%d", memoryPtr[OUT_OFFSET-1] );
 
   // Load assembly code
   if(DEBUG)  printf("  Load PRU binaries \n");

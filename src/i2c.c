@@ -1,15 +1,12 @@
 
-//============================================================
-//  i2c.c
-//  Justin M Selfridge
-//============================================================
+
 #include "i2c.h"
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  i2c_init
-//  Assigns a file descriptor after opening an I2C bus. 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/**
+ *  i2c_init
+ *  Assigns a file descriptor after opening an I2C bus. 
+ */
 int i2c_init ( int *fd, ushort bus, ushort slave_addr )  {
 
   char buf[32];
@@ -31,10 +28,10 @@ int i2c_init ( int *fd, ushort bus, ushort slave_addr )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  i2c_exit
-//  Closes file descriptor and exits I2C channel.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/**
+ *  i2c_exit
+ *  Closes file descriptor and exits I2C channel.
+ */
 void i2c_exit ( int *fd )  {
   close(*fd);
   *fd=0;
@@ -42,10 +39,10 @@ void i2c_exit ( int *fd )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  i2c_slave
-//  Configures 'ioctl' when the slave address is changed.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/**
+ *  i2c_slave
+ *  Configures 'ioctl' when the slave address is changed.
+ */
 int i2c_slave ( int fd, unsigned char slave_addr )  {
 
   if ( slave == slave_addr )  return 0;
@@ -61,10 +58,10 @@ int i2c_slave ( int fd, unsigned char slave_addr )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  i2c_write
-//  Write data to the I2C bus.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/**
+ *  i2c_write
+ *  Write data to the I2C bus.
+ */
 int i2c_write ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char const *data )  {
 
   // Local variables
@@ -111,10 +108,10 @@ int i2c_write ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsign
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  i2c_read
-//  Read data from the I2C.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/**
+ *  i2c_read
+ *  Read data from the I2C.
+ */
 int i2c_read ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char *data )  {
 
   int result;
@@ -140,10 +137,10 @@ int i2c_read ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsigne
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  i2c_get_ms
-//  Determines the number of milliseconds since epoch.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/**
+ *  i2c_get_ms
+ *  Determines the number of milliseconds since epoch.
+ */
 int i2c_get_ms ( unsigned long *ms )  {
   struct timeval t;
   if (!ms)  return -1;

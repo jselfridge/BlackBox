@@ -23,9 +23,9 @@ void tmr_init ( void )  {
   // Create mutex conditions
   pthread_mutex_init( &mutex_input,  NULL );
   pthread_mutex_init( &mutex_output, NULL );
-  //pthread_mutex_init( &mutex_gyrA,   NULL );
-  //pthread_mutex_init( &mutex_accA,   NULL );
-  //pthread_mutex_init( &mutex_magA,   NULL );
+  pthread_mutex_init( &mutex_gyrA,   NULL );
+  pthread_mutex_init( &mutex_accA,   NULL );
+  pthread_mutex_init( &mutex_magA,   NULL );
   //pthread_mutex_init( &mutex_gyrB,   NULL );
   //pthread_mutex_init( &mutex_accB,   NULL );
   //pthread_mutex_init( &mutex_magB,   NULL );
@@ -37,9 +37,9 @@ void tmr_init ( void )  {
   //pthread_mutex_init( &mutex_ctrl,   NULL );
 
   // Create primary timing threads
-  tmr_thread( &tmr_sio,   &attr, fcn_sio   );  usleep(100000);
-  tmr_thread( &tmr_flag,  &attr, fcn_flag  );  usleep(100000);
-  //if(USE_IMUA)  { tmr_thread( &tmr_imuA, &attr, fcn_imuA );  usleep(100000);  }
+                      tmr_thread( &tmr_sio,   &attr, fcn_sio   );  usleep(100000);
+                      tmr_thread( &tmr_flag,  &attr, fcn_flag  );  usleep(100000);
+  if(IMUA_ENABLED) {  tmr_thread( &tmr_imuA,  &attr, fcn_imuA  );  usleep(100000);  }
   //if(USE_IMUB)  { tmr_thread( &tmr_imuB, &attr, fcn_imuB );  usleep(100000);  }
   //tmr_thread( &tmr_ahrs,  &attr, fcn_ahrs  );  usleep(100000);
   //tmr_thread( &tmr_gps,   &attr, fcn_gps   );  usleep(100000);
@@ -78,11 +78,11 @@ void tmr_setup ( void )  {
   tmr_flag.prio  =  PRIO_FLAG;
   tmr_flag.per   =  1000000 / HZ_FLAG;
 
-  /*// IMUA timer
+  // IMUA timer
   tmr_imuA.name  =  "imuA";
   tmr_imuA.prio  =  PRIO_IMU;
   tmr_imuA.per   =  1000000 / HZ_IMU_FAST;
-  */
+
   /*// IMUB timer
   tmr_imuB.name  =  "imuB";
   tmr_imuB.prio  =  PRIO_IMU;
@@ -206,9 +206,9 @@ void tmr_exit ( void )  {
   // Destroy mutex locks
   pthread_mutex_destroy(&mutex_input);
   pthread_mutex_destroy(&mutex_output);
-  //pthread_mutex_destroy(&mutex_gyrA);
-  //pthread_mutex_destroy(&mutex_accA);
-  //pthread_mutex_destroy(&mutex_magA);
+  pthread_mutex_destroy(&mutex_gyrA);
+  pthread_mutex_destroy(&mutex_accA);
+  pthread_mutex_destroy(&mutex_magA);
   //pthread_mutex_destroy(&mutex_gyrB);
   //pthread_mutex_destroy(&mutex_accB);
   //pthread_mutex_destroy(&mutex_magB);
@@ -279,11 +279,11 @@ void tmr_exit ( void )  {
   if(DEBUG)  printf( "imuB " );  }
   */
   // Exit IMUA thread
-  /*if(USE_IMUA)  {
+  if(IMUA_ENABLED)  {
   if( pthread_join ( tmr_imuA.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'imuA' thread. \n" );
   if(DEBUG)  printf( "imuA " );  }
-  */
+
   // Exit program execution flags thread
   if( pthread_join ( tmr_flag.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'flag' thread. \n" );
@@ -413,11 +413,7 @@ void *fcn_sio (  )  {
     tmr_start(&tmr_sio);
     sio_update();
     //--- DEBUGGING ---//
-    //pthread_mutex_lock(&mutex_input);
-    //pthread_mutex_lock(&mutex_output);
     int i; for (i=0; i<10; i++)  sio_setnorm( i, input.norm[i] );
-    //pthread_mutex_unlock(&mutex_output);
-    //pthread_mutex_unlock(&mutex_input);
     //--- DEBUGGING ---//
     tmr_finish(&tmr_sio);
     if (datalog.enabled)  log_record(LOG_SIO);
@@ -449,7 +445,6 @@ void *fcn_flag (  )  {
  *  fcn_imuA
  *  Function handler for the IMUA timing thread.
  */
-/*
 void *fcn_imuA (  )  {
   tmr_create(&tmr_imuA);
   while (running) {
@@ -462,7 +457,7 @@ void *fcn_imuA (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-*/
+
 
 /**
  *  fcn_imuB

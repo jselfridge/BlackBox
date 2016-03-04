@@ -14,9 +14,9 @@ void log_init ( void )  {
   if(DEBUG)  printf("  Establish datalog limits \n");
   log_input.limit  = MAX_LOG_DUR * HZ_SIO;
   log_output.limit = MAX_LOG_DUR * HZ_SIO;
-  //log_gyrA.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
-  //log_accA.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
-  //log_magA.limit   = MAX_LOG_DUR * HZ_IMU_SLOW;
+  log_gyrA.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
+  log_accA.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
+  log_magA.limit   = MAX_LOG_DUR * HZ_IMU_SLOW;
   //log_gyrB.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
   //log_accB.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
   //log_magB.limit   = MAX_LOG_DUR * HZ_IMU_SLOW;
@@ -37,9 +37,9 @@ void log_open ( void )  {
   // Clear counters for new session
   log_input.count  = 0;
   log_output.count = 0;
-  //log_gyrA.count   = 0;
-  //log_accA.count   = 0;
-  //log_magA.count   = 0;
+  log_gyrA.count   = 0;
+  log_accA.count   = 0;
+  log_magA.count   = 0;
   //log_gyrB.count   = 0;
   //log_accB.count   = 0;
   //log_magB.count   = 0;
@@ -60,8 +60,7 @@ void log_open ( void )  {
   log_output.norm =  malloc( sizeof(float)  * log_output.limit * 10 );
 
   // IMU A Storage
-  /*
-  if(USE_IMUA) {
+  if(IMUA_ENABLED) {
 
   // Gyroscope A storage
   log_gyrA.time =  malloc( sizeof(float) * log_gyrA.limit     );
@@ -84,7 +83,7 @@ void log_open ( void )  {
   log_magA.avg  =  malloc( sizeof(float) * log_magA.limit * 3 );
   log_magA.cal  =  malloc( sizeof(float) * log_magA.limit * 3 );
 
-  }*/
+  }
 
   // IMU B Storage
   /*
@@ -181,7 +180,7 @@ void log_close ( void )  {
 
   // Local variables
   char *file = malloc(64);
-  FILE *fnote, *fin, *fout;//, *fgyrA, *faccA, *fmagA, *fgyrB, *faccB, *fmagB, *fahrs, *fgps, *fctl;
+  FILE *fnote, *fin, *fout, *fgyrA, *faccA, *fmagA; //, *fgyrB, *faccB, *fmagB, *fahrs, *fgps, *fctl;
   ushort i;
   ulong row;
 
@@ -231,16 +230,15 @@ void log_close ( void )  {
   free(log_output.pwm);
   free(log_output.norm);
 
-  /*
   // IMU A datalogs
-  if(USE_IMUA)  {
+  if(IMUA_ENABLED)  {
 
   // Create gyroscope A datalog file
   sprintf( file, "%sgyrA.txt", datalog.path );
   fgyrA = fopen( file, "w" );
   if( fgyrA == NULL )  printf( "Error (log_close): Cannot generate 'gyrA' file. \n" );
   fprintf( fgyrA,
-    "       Gtime    Gdur   \
+    "     GyrTime  GyrDur   \
     Grx     Gry     Grz       \
     Gax        Gay        Gaz     \
     Gcx      Gcy      Gcz");
@@ -265,7 +263,7 @@ void log_close ( void )  {
   faccA = fopen( file, "w" );
   if( faccA == NULL )  printf( "Error (log_close): Cannot generate 'accA' file. \n" );
   fprintf( faccA, 
-    "       Atime    Adur   \
+    "     AccTime  AccDur   \
     Arx     Ary     Arz       \
     Aax        Aay        Aaz     \
     Acx      Acy      Acz");
@@ -290,7 +288,7 @@ void log_close ( void )  {
   fmagA = fopen( file, "w" );
   if( fmagA == NULL )  printf( "Error (log_close): Cannot generate 'magA' file. \n" );
   fprintf( fmagA,
-    "       Mtime    Mdur   \
+    "     MagTime  MagDur   \
     Mrx     Mry     Mrz       \
     Max        May        Maz     \
     Mcx      Mcy      Mcz");
@@ -310,7 +308,7 @@ void log_close ( void )  {
   free(log_magA.avg);
   free(log_magA.cal);
 
-  }*/
+  }
 
   /*
   // IMU B datalog
@@ -487,11 +485,11 @@ void log_close ( void )  {
   fclose(fnote);
   fclose(fin);
   fclose(fout);
-  //if (USE_IMUA)  {
-  //  fclose(fgyrA);
-  //  fclose(faccA);
-  //  fclose(fmagA);
-  //}
+  if (IMUA_ENABLED)  {
+    fclose(fgyrA);
+    fclose(faccA);
+    fclose(fmagA);
+  }
   //if (USE_IMUB)  {
   //  fclose(fgyrB);
   //  fclose(faccB);
@@ -567,7 +565,6 @@ void log_record ( enum log_index index )  {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record IMUA data
-  /*
   case LOG_IMUA :
 
     timestamp = (float) ( tmr_imuA.start_sec + ( tmr_imuA.start_usec / 1000000.0f ) ) - datalog.offset;
@@ -612,7 +609,7 @@ void log_record ( enum log_index index )  {
     pthread_mutex_unlock(&mutex_magA);
 
     return;
-  */
+
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record IMUB data
