@@ -135,7 +135,7 @@ int mpu_load_firmware(int fd, unsigned short length, const unsigned char *firmwa
 int mpu_reg_dump(int fd);
 int mpu_read_reg(int fd, unsigned char reg, unsigned char *data);
 int mpu_run_self_test(int fd, long *gyro, long *accel);
-int mpu_run_6500_self_test(long *gyro, long *accel, unsigned char debug);
+int mpu_run_6500_self_test(int fd, long *gyro, long *accel, unsigned char debug);
 int mpu_register_tap_cb(void (*func)(unsigned char, unsigned char));
 
 #endif

@@ -29,8 +29,8 @@ void tmr_init ( void )  {
   pthread_mutex_init( &mutex_gyrB,   NULL );
   pthread_mutex_init( &mutex_accB,   NULL );
   pthread_mutex_init( &mutex_magB,   NULL );
-  pthread_mutex_init( &mutex_i2ctx,  NULL );
-  pthread_mutex_init( &mutex_i2crx,  NULL );
+  pthread_mutex_init( &mutex_i2c1,   NULL );
+  pthread_mutex_init( &mutex_i2c2,   NULL );
   //pthread_mutex_init( &mutex_quat,   NULL );
   //pthread_mutex_init( &mutex_eul,    NULL );
   //pthread_mutex_init( &mutex_ahrs,   NULL );
@@ -214,8 +214,8 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&mutex_gyrB);
   pthread_mutex_destroy(&mutex_accB);
   pthread_mutex_destroy(&mutex_magB);
-  pthread_mutex_destroy(&mutex_i2ctx);
-  pthread_mutex_destroy(&mutex_i2crx);
+  pthread_mutex_destroy(&mutex_i2c1);
+  pthread_mutex_destroy(&mutex_i2c2);
   //pthread_mutex_destroy(&mutex_quat);
   //pthread_mutex_destroy(&mutex_eul);
   //pthread_mutex_destroy(&mutex_ahrs);

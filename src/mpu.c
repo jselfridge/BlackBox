@@ -2206,7 +2206,7 @@ static const unsigned short mpu_6500_st_tb[256] = {
 	30903,31212,31524,31839,32157,32479,32804,33132
 };
 
-static int accel_6500_self_test(long *bias_regular, long *bias_st, int debug)
+static int accel_6500_self_test( int fd, long *bias_regular, long *bias_st, int debug)
 {
     int i, result = 0, otp_value_zero = 0;
     float accel_st_al_min, accel_st_al_max;
@@ -2532,7 +2532,7 @@ static int get_st_6500_biases(int fd, long *gyro, long *accel, unsigned char hw_
  *  @param[in]  debug       Debug flag used to print out more detailed logs. Must first set up logging in Motion Driver.
  *  @return     Result mask (see above).
  */
-int mpu_run_6500_self_test(long *gyro, long *accel, unsigned char debug)
+int mpu_run_6500_self_test( int fd, long *gyro, long *accel, unsigned char debug)
 {
     const unsigned char tries = 2;
     long gyro_st[3], accel_st[3];
@@ -2543,15 +2543,15 @@ int mpu_run_6500_self_test(long *gyro, long *accel, unsigned char debug)
     int ii;
 
     int result;
-    unsigned char accel_fsr, fifo_sensors, sensors_on;
-    unsigned short gyro_fsr, sample_rate, lpf;
+    unsigned char accel_fsr=2, fifo_sensors, sensors_on;
+    unsigned short gyro_fsr, sample_rate=50, lpf;
     unsigned char dmp_was_on;
 
     if(debug)
     	log_i("Starting MPU6500 HWST!\r\n");
 
     if (st.chip_cfg.dmp_on) {
-        mpu_set_dmp_state(0);
+        mpu_set_dmp_state( fd, 0 );
         dmp_was_on = 1;
     } else
         dmp_was_on = 0;
@@ -2568,7 +2568,7 @@ int mpu_run_6500_self_test(long *gyro, long *accel, unsigned char debug)
     	log_i("Retrieving Biases\r\n");
 
     for (ii = 0; ii < tries; ii++)
-        if (!get_st_6500_biases(gyro, accel, 0, debug))
+        if (!get_st_6500_biases( fd, gyro, accel, 0, debug ) )
             break;
     if (ii == tries) {
         /* If we reach this point, we most likely encountered an I2C error.
@@ -2585,7 +2585,7 @@ int mpu_run_6500_self_test(long *gyro, long *accel, unsigned char debug)
     	log_i("Retrieving ST Biases\n");
 
     for (ii = 0; ii < tries; ii++)
-        if (!get_st_6500_biases(gyro_st, accel_st, 1, debug))
+        if (!get_st_6500_biases( fd, gyro_st, accel_st, 1, debug ) )
             break;
     if (ii == tries) {
 
@@ -2597,11 +2597,11 @@ int mpu_run_6500_self_test(long *gyro, long *accel, unsigned char debug)
         goto restore;
     }
 
-    accel_result = accel_6500_self_test(accel, accel_st, debug);
+    accel_result = accel_6500_self_test( fd, accel, accel_st, debug );
     if(debug)
     	log_i("Accel Self Test Results: %d\n", accel_result);
 
-    gyro_result = gyro_6500_self_test(gyro, gyro_st, debug);
+    gyro_result = gyro_6500_self_test( fd, gyro, gyro_st, debug );
     if(debug)
     	log_i("Gyro Self Test Results: %d\n", gyro_result);
 
@@ -2612,7 +2612,7 @@ int mpu_run_6500_self_test(long *gyro, long *accel, unsigned char debug)
         result |= 0x02;
 
 #ifdef AK89xx_SECONDARY
-    compass_result = compass_self_test();
+    compass_result = compass_self_test(fd);
     if(debug)
     	log_i("Compass Self Test Results: %d\n", compass_result);
     if (!compass_result)
@@ -2631,15 +2631,15 @@ restore:
 	st.chip_cfg.sensors = 0xFF;
 	st.chip_cfg.fifo_enable = 0xFF;
 	st.chip_cfg.clk_src = INV_CLK_PLL;
-	mpu_set_gyro_fsr(gyro_fsr);
-	mpu_set_accel_fsr(accel_fsr);
-	mpu_set_lpf(lpf);
-	mpu_set_sample_rate(sample_rate);
-	mpu_set_sensors(sensors_on);
-	mpu_configure_fifo(fifo_sensors);
+	mpu_set_gyro_fsr( fd, gyro_fsr );
+	mpu_set_accel_fsr( fd, accel_fsr );
+	mpu_set_lpf( fd, lpf );
+	mpu_set_sample_rate( fd, sample_rate );
+	mpu_set_sensors( fd, sensors_on );
+	mpu_configure_fifo( fd, fifo_sensors );
 
 	if (dmp_was_on)
-		mpu_set_dmp_state(1);
+	  mpu_set_dmp_state( fd, 1 );
 
 	return result;
 }
@@ -2722,7 +2722,7 @@ restore:
     /* For now, this function will return a "pass" result for all three sensors
      * for compatibility with current test applications.
      */
-    get_st_biases(gyro, accel, 0);
+	get_st_biases( fd, gyro, accel, 0 );
     result = 0x7;
 #endif
     /* Set to invalid values to ensure no I2C writes are skipped. */
@@ -2952,7 +2952,7 @@ static int setup_compass(int fd)
         return -1;
     delay_ms(1);
 
-    mpu_set_bypass(fd, 0);
+    mpu_set_bypass( fd, 0 );
 
     /* Set up master mode, master clock, and ES bit. */
     data[0] = 0x40;
@@ -3166,7 +3166,7 @@ int mpu_lp_motion_interrupt(int fd, unsigned short thresh, unsigned char time,
 
 #if defined MPU6500
         /* Disable hardware interrupts. */
-        set_int_enable(0);
+        set_int_enable(fd,0);
 
         /* Enter full-power accel-only mode, no FIFO/DMP. */
         data[0] = 0;
