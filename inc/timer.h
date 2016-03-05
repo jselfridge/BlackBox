@@ -79,6 +79,8 @@ pthread_mutex_t mutex_magA;
 pthread_mutex_t mutex_gyrB;
 pthread_mutex_t mutex_accB;
 pthread_mutex_t mutex_magB;
+pthread_mutex_t mutex_i2ctx;
+pthread_mutex_t mutex_i2crx;
 //pthread_mutex_t mutex_quat;
 //pthread_mutex_t mutex_eul;
 //pthread_mutex_t mutex_ahrs;

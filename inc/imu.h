@@ -6,7 +6,7 @@
 
 
 // Define hardware
-#define IMUA_ENABLED   false
+#define IMUA_ENABLED   true
 #define IMUB_ENABLED   true
 
 // Define LPF history length

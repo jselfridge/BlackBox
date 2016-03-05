@@ -93,7 +93,9 @@ int i2c_write ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsign
 
   // No data to send
   if ( length == 0 )  {
+    pthread_mutex_lock(&mutex_i2ctx);
     result = write( fd, &reg_addr, 1 );
+    pthread_mutex_unlock(&mutex_i2ctx);
     if ( result < 0 )  {
       printf( "Error (i2c_write): Returned '%d' with 'write' command (no data). \n", result );
       printf("errno = %d.\n", errno);
@@ -109,7 +111,9 @@ int i2c_write ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsign
   else {
     buf[0] = reg_addr;
     for ( i=0; i<length; i++ )  buf[i+1] = data[i];
+    pthread_mutex_lock(&mutex_i2ctx);
     result = write( fd, buf, length+1 );
+    pthread_mutex_unlock(&mutex_i2ctx);
     if ( result < 0 )  {
       printf( "Error (i2c_write): Returned '%d' with 'write' command (%d bytes). \n", result, length );
       printf("errno = %d.\n", errno);
@@ -137,7 +141,9 @@ int i2c_read ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsigne
   if ( i2c_write( fd, slave_addr, reg_addr, 0, NULL ) )  return -1;
 
   while ( total < length && tries < 5 )  {
+    pthread_mutex_lock(&mutex_i2crx);
     result = read( fd, data + total, length - total );
+    pthread_mutex_unlock(&mutex_i2crx);
     if (result < 0) {
       printf( "Error (i2c_read): Returned a negative value from 'read' command. \n" );
       break;

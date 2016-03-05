@@ -3,5 +3,5 @@ i2c.c:10:5:i2c_init	48	static
 i2c.c:35:6:i2c_exit	16	static
 i2c.c:46:5:i2c_slave	8	static
 i2c.c:80:5:i2c_write	560	dynamic,bounded
-i2c.c:132:5:i2c_read	24	static
-i2c.c:161:5:i2c_get_ms	24	static
+i2c.c:136:5:i2c_read	32	static
+i2c.c:167:5:i2c_get_ms	24	static
