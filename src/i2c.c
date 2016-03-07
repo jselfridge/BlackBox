@@ -53,13 +53,13 @@ int i2c_slave ( int fd, unsigned char slave_addr )  {
 
   // Check if IMUA addr needs updating
   if ( fd == imuA.fd )  {
-    if ( slave_addr == imuA.addr )  return 0;
+    if ( imuA.addr == slave_addr )  return 0;
     else                            imuA.addr = slave_addr;
   }
 
   // Check if IMUB addr needs updating
   if ( fd == imuB.fd )  {
-    if ( slave_addr == imuB.addr )  return 0;
+    if ( imuB.addr == slave_addr )  return 0;
     else                            imuB.addr = slave_addr;
   }
 
@@ -100,9 +100,17 @@ int i2c_write ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsign
   // No data to send
   if ( length == 0 )  {
 
-    pthread_mutex_lock(&mutex_i2c1);
-    result = write( fd, &reg_addr, 1 );
-    pthread_mutex_unlock(&mutex_i2c1);
+    if ( fd == imuA.fd )  {
+      pthread_mutex_lock(&mutex_i2c1);
+      result = write( imuA.fd, &reg_addr, 1 );
+      pthread_mutex_unlock(&mutex_i2c1);
+    }
+
+    if ( fd == imuB.fd )  {
+      pthread_mutex_lock(&mutex_i2c2);
+      result = write( imuB.fd, &reg_addr, 1 );
+      pthread_mutex_unlock(&mutex_i2c2);
+    }
 
     if ( result < 0 )  {
       printf( "Error (i2c_write): Returned '%d' with 'write' command (no data). \n", result );
@@ -123,9 +131,17 @@ int i2c_write ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsign
     buf[0] = reg_addr;
     for ( i=0; i<length; i++ )  buf[i+1] = data[i];
 
-    pthread_mutex_lock(&mutex_i2c1);
-    result = write( fd, buf, length+1 );
-    pthread_mutex_unlock(&mutex_i2c1);
+    if ( fd == imuA.fd )  {
+      pthread_mutex_lock(&mutex_i2c1);
+      result = write( imuA.fd, buf, length+1 );
+      pthread_mutex_unlock(&mutex_i2c1);
+    }
+
+    if ( fd == imuB.fd )  {
+      pthread_mutex_lock(&mutex_i2c2);
+      result = write( imuB.fd, buf, length+1 );
+      pthread_mutex_unlock(&mutex_i2c2);
+    }
 
     if ( result < 0 )  {
       printf( "Error (i2c_write): Returned '%d' with 'write' command (%d bytes). \n", result, length );
@@ -162,9 +178,17 @@ int i2c_read ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsigne
 
   while ( total < length && tries < 5 )  {
 
-    pthread_mutex_lock(&mutex_i2c1);
-    result = read( fd, data + total, length - total );
-    pthread_mutex_unlock(&mutex_i2c1);
+    if ( fd == imuA.fd )  {
+      pthread_mutex_lock(&mutex_i2c1);
+      result = read( imuA.fd, data + total, length - total );
+      pthread_mutex_unlock(&mutex_i2c1);
+    }
+
+    if ( fd == imuB.fd )  {
+      pthread_mutex_lock(&mutex_i2c2);
+      result = read( imuB.fd, data + total, length - total );
+      pthread_mutex_unlock(&mutex_i2c2);
+    }
 
     if (result < 0) {
       printf( "Error (i2c_read): Returned a negative value from 'read' command. \n" );
