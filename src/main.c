@@ -25,8 +25,8 @@ int main ( void )  {
   //ctrl_init();
   log_init();
   //--  DEBUGGING  --//
-  //log_open();
-  //datalog.enabled = true;
+  log_open();
+  datalog.enabled = true;
   //-----------------//
   tmr_init();
 

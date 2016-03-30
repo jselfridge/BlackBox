@@ -573,7 +573,8 @@ void log_record ( enum log_index index )  {
     if ( log_gyrA.count < log_gyrA.limit ) {
       row = log_gyrA.count;
       log_gyrA.time[row] = timestamp;
-      log_gyrA.dur[row]  = tmr_imuA.dur;
+      if (IMUB_ENABLED)  log_gyrA.dur[row]  = tmr_imu.dur;
+      else               log_gyrA.dur[row]  = tmr_imuA.dur;
       for ( i=0; i<3; i++ )  log_gyrA.raw[ row*3 +i ] = gyrA.raw[i];
       for ( i=0; i<3; i++ )  log_gyrA.avg[ row*3 +i ] = gyrA.avg[i];
       for ( i=0; i<3; i++ )  log_gyrA.cal[ row*3 +i ] = gyrA.cal[i];
@@ -586,7 +587,8 @@ void log_record ( enum log_index index )  {
     if ( log_accA.count < log_accA.limit ) {
       row = log_accA.count;
       log_accA.time[row] = timestamp;
-      log_accA.dur[row]  = tmr_imuA.dur;
+      if (IMUB_ENABLED)  log_accA.dur[row]  = tmr_imu.dur;
+      else               log_accA.dur[row]  = tmr_imuA.dur;
       for ( i=0; i<3; i++ )  log_accA.raw[ row*3 +i ] = accA.raw[i];
       for ( i=0; i<3; i++ )  log_accA.avg[ row*3 +i ] = accA.avg[i];
       for ( i=0; i<3; i++ )  log_accA.cal[ row*3 +i ] = accA.cal[i];
@@ -599,7 +601,8 @@ void log_record ( enum log_index index )  {
     if( imuA.getmag && ( log_magA.count < log_magA.limit) ) {
       row = log_magA.count;
       log_magA.time[row] = timestamp;
-      log_magA.dur[row]  = tmr_imuA.dur;
+      if (IMUB_ENABLED)  log_magA.dur[row]  = tmr_imu.dur;
+      else               log_magA.dur[row]  = tmr_imuA.dur;
       for ( i=0; i<3; i++ )  log_magA.raw[ row*3 +i ] = magA.raw[i];
       for ( i=0; i<3; i++ )  log_magA.avg[ row*3 +i ] = magA.avg[i];
       for ( i=0; i<3; i++ )  log_magA.cal[ row*3 +i ] = magA.cal[i];
@@ -622,7 +625,8 @@ void log_record ( enum log_index index )  {
     if ( log_gyrB.count < log_gyrB.limit ) {
       row = log_gyrB.count;
       log_gyrB.time[row] = timestamp;
-      log_gyrB.dur[row]  = tmr_imuB.dur;
+      if (IMUA_ENABLED)  log_gyrB.dur[row]  = tmr_imu.dur;
+      else               log_gyrB.dur[row]  = tmr_imuB.dur;
       for ( i=0; i<3; i++ )  log_gyrB.raw[ row*3 +i ] = gyrB.raw[i];
       for ( i=0; i<3; i++ )  log_gyrB.avg[ row*3 +i ] = gyrB.avg[i];
       for ( i=0; i<3; i++ )  log_gyrB.cal[ row*3 +i ] = gyrB.cal[i];
@@ -635,7 +639,8 @@ void log_record ( enum log_index index )  {
     if ( log_accB.count < log_accB.limit ) {
       row = log_accB.count;
       log_accB.time[row] = timestamp;
-      log_accB.dur[row]  = tmr_imuB.dur;
+      if (IMUA_ENABLED)  log_accB.dur[row]  = tmr_imu.dur;
+      else               log_accB.dur[row]  = tmr_imuB.dur;
       for ( i=0; i<3; i++ )  log_accB.raw[ row*3 +i ] = accB.raw[i];
       for ( i=0; i<3; i++ )  log_accB.avg[ row*3 +i ] = accB.avg[i];
       for ( i=0; i<3; i++ )  log_accB.cal[ row*3 +i ] = accB.cal[i];
@@ -648,7 +653,8 @@ void log_record ( enum log_index index )  {
     if( imuB.getmag && ( log_magB.count < log_magB.limit) ) {
       row = log_magB.count;
       log_magB.time[row] = timestamp;
-      log_magB.dur[row]  = tmr_imuB.dur;
+      if (IMUA_ENABLED)  log_magB.dur[row]  = tmr_imu.dur;
+      else               log_magB.dur[row]  = tmr_imuB.dur;
       for ( i=0; i<3; i++ )  log_magB.raw[ row*3 +i ] = magB.raw[i];
       for ( i=0; i<3; i++ )  log_magB.avg[ row*3 +i ] = magB.avg[i];
       for ( i=0; i<3; i++ )  log_magB.cal[ row*3 +i ] = magB.cal[i];
