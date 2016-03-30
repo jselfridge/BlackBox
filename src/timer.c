@@ -31,20 +31,20 @@ void tmr_init ( void )  {
   pthread_mutex_init( &mutex_magB,   NULL );
   pthread_mutex_init( &mutex_i2c1,   NULL );
   pthread_mutex_init( &mutex_i2c2,   NULL );
-  //pthread_mutex_init( &mutex_quat,   NULL );
-  //pthread_mutex_init( &mutex_eul,    NULL );
-  //pthread_mutex_init( &mutex_ahrs,   NULL );
+  pthread_mutex_init( &mutex_quat,   NULL );
+  pthread_mutex_init( &mutex_eul,    NULL );
+  pthread_mutex_init( &mutex_ahrs,   NULL );
   //pthread_mutex_init( &mutex_gps,    NULL );
   //pthread_mutex_init( &mutex_gcs,    NULL );
   //pthread_mutex_init( &mutex_ctrl,   NULL );
 
   // Create primary timing threads
-                      tmr_thread( &tmr_sio,   &attr, fcn_sio   );  usleep(100000);
-                      tmr_thread( &tmr_flag,  &attr, fcn_flag  );  usleep(100000);
+  tmr_thread( &tmr_sio,   &attr, fcn_sio   );  usleep(100000);
+  tmr_thread( &tmr_flag,  &attr, fcn_flag  );  usleep(100000);
   if( IMUA_ENABLED &&  IMUB_ENABLED ) {  tmr_thread( &tmr_imu,   &attr, fcn_imu   );  usleep(100000);  }
   if( IMUA_ENABLED && !IMUB_ENABLED ) {  tmr_thread( &tmr_imuA,  &attr, fcn_imuA  );  usleep(100000);  }
   if( IMUB_ENABLED && !IMUA_ENABLED ) {  tmr_thread( &tmr_imuB,  &attr, fcn_imuB  );  usleep(100000);  }
-  //tmr_thread( &tmr_ahrs,  &attr, fcn_ahrs  );  usleep(100000);
+  tmr_thread( &tmr_ahrs,  &attr, fcn_ahrs  );  usleep(100000);
   //tmr_thread( &tmr_gps,   &attr, fcn_gps   );  usleep(100000);
   //tmr_thread( &tmr_gcstx, &attr, fcn_gcstx );  usleep(100000);
   //tmr_thread( &tmr_gcsrx, &attr, fcn_gcsrx );  usleep(100000);
@@ -96,11 +96,11 @@ void tmr_setup ( void )  {
   tmr_imuB.prio  =  PRIO_IMU;
   tmr_imuB.per   =  1000000 / HZ_IMU_FAST;
 
-  /*// AHRS timer
+  // AHRS timer
   tmr_ahrs.name  =  "ahrs";
   tmr_ahrs.prio  =  PRIO_AHRS;
   tmr_ahrs.per   =  1000000 / HZ_AHRS;
-  */
+
   /*// GPS timer
   tmr_gps.name   =  "gps";
   tmr_gps.prio   =  PRIO_GPS;
@@ -222,9 +222,9 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&mutex_magB);
   pthread_mutex_destroy(&mutex_i2c1);
   pthread_mutex_destroy(&mutex_i2c2);
-  //pthread_mutex_destroy(&mutex_quat);
-  //pthread_mutex_destroy(&mutex_eul);
-  //pthread_mutex_destroy(&mutex_ahrs);
+  pthread_mutex_destroy(&mutex_quat);
+  pthread_mutex_destroy(&mutex_eul);
+  pthread_mutex_destroy(&mutex_ahrs);
   //pthread_mutex_destroy(&mutex_gps);
   //pthread_mutex_destroy(&mutex_gcs);
   //pthread_mutex_destroy(&mutex_ctrl);
@@ -278,10 +278,10 @@ void tmr_exit ( void )  {
   if(DEBUG)  printf( "gps " );
   */
   // Exit AHRS thread
-  /*if( pthread_join ( tmr_ahrs.id, NULL ) )
+  if( pthread_join ( tmr_ahrs.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ahrs' thread. \n" );
   if(DEBUG)  printf( "ahrs " );
-  */
+
   // Exit IMUB thread
   if( IMUB_ENABLED && !IMUA_ENABLED )  {
   if( pthread_join ( tmr_imuB.id, NULL ) )
@@ -521,7 +521,6 @@ void *fcn_imuB (  )  {
  *  fcn_ahrs
  *  Function handler for the AHRS timing thread.
  */
-/*
 void *fcn_ahrs (  )  {
   tmr_create(&tmr_ahrs);
   while (running) {
@@ -534,7 +533,7 @@ void *fcn_ahrs (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-*/
+
 
 /**
  *  fcn_gps

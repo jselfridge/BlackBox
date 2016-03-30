@@ -20,7 +20,7 @@ void log_init ( void )  {
   log_gyrB.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
   log_accB.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
   log_magB.limit   = MAX_LOG_DUR * HZ_IMU_SLOW;
-  //log_ahrs.limit   = MAX_LOG_DUR * HZ_AHRS;
+  log_ahrs.limit   = MAX_LOG_DUR * HZ_AHRS;
   //log_gps.limit    = MAX_LOG_DUR * HZ_GPS;
   //log_ctrl.limit   = MAX_LOG_DUR * HZ_CTRL;
 
@@ -43,7 +43,7 @@ void log_open ( void )  {
   log_gyrB.count   = 0;
   log_accB.count   = 0;
   log_magB.count   = 0;
-  //log_ahrs.count   = 0;
+  log_ahrs.count   = 0;
   //log_gps.count    = 0;
   //log_ctrl.count   = 0;
 
@@ -112,7 +112,6 @@ void log_open ( void )  {
   }
 
   // Attitude and Heading Reference System storage
-  /*
   log_ahrs.time  =  malloc( sizeof(float) * log_ahrs.limit     );
   log_ahrs.dur   =  malloc( sizeof(ulong) * log_ahrs.limit     );
   log_ahrs.quat  =  malloc( sizeof(float) * log_ahrs.limit * 4 );
@@ -122,7 +121,7 @@ void log_open ( void )  {
   log_ahrs.bias  =  malloc( sizeof(float) * log_ahrs.limit * 3 );
   log_ahrs.fx    =  malloc( sizeof(float) * log_ahrs.limit     );
   log_ahrs.fz    =  malloc( sizeof(float) * log_ahrs.limit     );
-  */
+
   // Global Positioning System storage
   /*
   log_gps.time   =  malloc( sizeof(float) * log_gps.limit );
@@ -179,7 +178,7 @@ void log_close ( void )  {
 
   // Local variables
   char *file = malloc(64);
-  FILE *fnote, *fin, *fout, *fgyrA, *faccA, *fmagA, *fgyrB, *faccB, *fmagB; //, *fahrs, *fgps, *fctl;
+  FILE *fnote, *fin, *fout, *fgyrA, *faccA, *fmagA, *fgyrB, *faccB, *fmagB, *fahrs; //*fgps, *fctl;
   ushort i;
   ulong row;
 
@@ -389,7 +388,6 @@ void log_close ( void )  {
 
   }
 
-  /*
   // Create attitude and heading reference system datalog file
   sprintf( file, "%sahrs.txt", datalog.path );
   fahrs = fopen( file, "w" );
@@ -426,7 +424,6 @@ void log_close ( void )  {
   free(log_ahrs.bias);
   free(log_ahrs.fx);
   free(log_ahrs.fz);
-  */
 
   /*
   // Create GPS datalog file
@@ -493,7 +490,7 @@ void log_close ( void )  {
     fclose(faccB);
     fclose(fmagB);
   }
-  //fclose(fahrs);
+  fclose(fahrs);
   //fclose(fgps);
   //fclose(fctl);
 
@@ -667,7 +664,6 @@ void log_record ( enum log_index index )  {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record AHRS data
-  /*
   case LOG_AHRS :
 
     timestamp = (float) ( tmr_ahrs.start_sec + ( tmr_ahrs.start_usec / 1000000.0f ) ) - datalog.offset;
@@ -697,7 +693,7 @@ void log_record ( enum log_index index )  {
     }
 
     return;
-  */
+
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record GPS data

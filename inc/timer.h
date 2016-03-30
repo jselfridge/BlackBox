@@ -7,7 +7,7 @@
 
 // Define timer priorities
 #define PRIO_IMU    96
-//#define PRIO_AHRS   94
+#define PRIO_AHRS   94
 #define PRIO_SIO    92
 //#define PRIO_CTRL   90
 //#define PRIO_GPS    88
@@ -25,7 +25,7 @@
 #define HZ_IMU_FAST    500
 #define HZ_IMU_SLOW    100
 #define HZ_SIO          50
-//#define HZ_AHRS         50
+#define HZ_AHRS         50
 //#define HZ_CTRL         50
 #define HZ_FLAG         10
 //#define HZ_GPS          10
@@ -59,7 +59,7 @@ timer_struct tmr_flag;
 timer_struct tmr_imu;
 timer_struct tmr_imuA;
 timer_struct tmr_imuB;
-//timer_struct tmr_ahrs;
+timer_struct tmr_ahrs;
 //timer_struct tmr_gps;
 //timer_struct tmr_gcstx;
 //timer_struct tmr_gcsrx;
@@ -82,9 +82,9 @@ pthread_mutex_t mutex_accB;
 pthread_mutex_t mutex_magB;
 pthread_mutex_t mutex_i2c1;
 pthread_mutex_t mutex_i2c2;
-//pthread_mutex_t mutex_quat;
-//pthread_mutex_t mutex_eul;
-//pthread_mutex_t mutex_ahrs;
+pthread_mutex_t mutex_quat;
+pthread_mutex_t mutex_eul;
+pthread_mutex_t mutex_ahrs;
 //pthread_mutex_t mutex_gps;
 //pthread_mutex_t mutex_gcs;  // Is this needed???
 //pthread_mutex_t mutex_ctrl;
@@ -108,7 +108,7 @@ void *fcn_flag   (  );
 void *fcn_imu    (  );
 void *fcn_imuA   (  );
 void *fcn_imuB   (  );
-//void *fcn_ahrs   (  );
+void *fcn_ahrs   (  );
 //void *fcn_gps    (  );
 //void *fcn_gcstx  (  );
 //void *fcn_gcsrx  (  );

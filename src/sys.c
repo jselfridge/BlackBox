@@ -65,9 +65,9 @@ void sys_update ( void )  {
 
   // Select data for display
   //sys_sio();
-  sys_imuA();
-  sys_imuB();
-  //sys_ahrs();
+  //sys_imuA();
+  //sys_imuB();
+  sys_ahrs();
   //sys_gps();
   //sys_uart1();
   //sys_uart2();
@@ -194,7 +194,6 @@ void sys_imuB ( void )  {
  *  sys_ahrs
  *  Prints AHRS debugging messages to the terminal.
  */
-/*
 void sys_ahrs ( void )  {
 
   // Loop counter
@@ -214,7 +213,7 @@ void sys_ahrs ( void )  {
 
   return;
 }
-*/
+
 
 /**
  *  sys_gps
@@ -334,7 +333,7 @@ void sys_exit (  )  {
   //gcs_exit();
   //gps_exit();
   //uart_exit();
-  //ahrs_exit();
+  ahrs_exit();
   imu_exit();
   flag_exit();
   sio_exit();

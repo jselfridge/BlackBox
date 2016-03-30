@@ -31,7 +31,7 @@
 
 
 // Custom includes
-// #include <ahrs.h>
+#include <ahrs.h>
 // #include <ctrl.h>
 #include <flag.h>
 #include <gpio.h>

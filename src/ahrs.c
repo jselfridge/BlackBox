@@ -1,15 +1,12 @@
 
-//============================================================
-//  ahrs.c
-//  Justin M Selfridge
-//============================================================
+
 #include "ahrs.h"
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ahrs_init
-//  Initializes the attitude and heading reference algorithms.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  ahrs_init
+ *  Initializes the attitude and heading reference algorithms.
+ */
 void ahrs_init ( void )  {
   if(DEBUG)  printf( "Initializing AHRS \n" );
 
@@ -53,10 +50,10 @@ void ahrs_init ( void )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ahrs_exit
-//  Terminate the AHR algorithms.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  ahrs_exit
+ *  Terminate the AHR algorithms.
+ */
 void ahrs_exit ( void )  {
   if(DEBUG)  printf("Close AHRS \n");
   // Insert code if needed...
@@ -64,10 +61,10 @@ void ahrs_exit ( void )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ahrs_update
-//  Run appropriate functions to update the AHR values.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  ahrs_update
+ *  Run appropriate functions to update the AHR values.
+ */
 void ahrs_update ( void )  {
 
   ahrs_fusion();
@@ -77,10 +74,10 @@ void ahrs_update ( void )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ahrs_fusion
-//  Implement 9DOF data fusion algorithm.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  ahrs_fusion
+ *  Implement 9DOF data fusion algorithm.
+ */
 void ahrs_fusion ( void )  {
 
   // Local variables
@@ -94,16 +91,27 @@ void ahrs_fusion ( void )  {
   // Get values from AHR data structure
   double q[4], b[3], fx, fz, dt;
   pthread_mutex_lock(&mutex_quat);
-  fx = ahrs.fx;  fz = ahrs.fz;  dt = ahrs.dt;
   for ( i=0; i<4; i++ )  q[i] = ahrs.quat[i];
-  for ( i=0; i<3; i++ )  b[i] = ahrs.bias[i];
   pthread_mutex_unlock(&mutex_quat);
+  pthread_mutex_lock(&mutex_ahrs);
+  fx = ahrs.fx;  fz = ahrs.fz;  dt = ahrs.dt;
+  for ( i=0; i<3; i++ )  b[i] = ahrs.bias[i];
+  pthread_mutex_unlock(&mutex_ahrs);
 
   // Get values from IMU data structure
   double g[3], a[3], m[3];
-  pthread_mutex_lock(&mutex_gyrA);  for ( i=0; i<3; i++ )  g[i] =  gyrA.cal[i];  pthread_mutex_unlock(&mutex_gyrA);
-  pthread_mutex_lock(&mutex_accA);  for ( i=0; i<3; i++ )  a[i] = -accA.cal[i];  pthread_mutex_unlock(&mutex_accA);
-  pthread_mutex_lock(&mutex_magA);  for ( i=0; i<3; i++ )  m[i] =  magA.cal[i];  pthread_mutex_unlock(&mutex_magA);
+  for ( i=0; i<3; i++ )  {  g[i] = 0.0;  a[i] = 0.0;  m[i] = 0.0;  }
+  if (IMUA_ENABLED) {
+    pthread_mutex_lock(&mutex_gyrA);  for ( i=0; i<3; i++ )  g[i] +=  gyrA.cal[i];  pthread_mutex_unlock(&mutex_gyrA);
+    pthread_mutex_lock(&mutex_accA);  for ( i=0; i<3; i++ )  a[i] += -accA.cal[i];  pthread_mutex_unlock(&mutex_accA);
+    pthread_mutex_lock(&mutex_magA);  for ( i=0; i<3; i++ )  m[i] +=  magA.cal[i];  pthread_mutex_unlock(&mutex_magA);
+  }
+  if (IMUB_ENABLED) {
+    pthread_mutex_lock(&mutex_gyrB);  for ( i=0; i<3; i++ )  g[i] +=  gyrB.cal[i];  pthread_mutex_unlock(&mutex_gyrB);
+    pthread_mutex_lock(&mutex_accB);  for ( i=0; i<3; i++ )  a[i] += -accB.cal[i];  pthread_mutex_unlock(&mutex_accB);
+    pthread_mutex_lock(&mutex_magB);  for ( i=0; i<3; i++ )  m[i] +=  magB.cal[i];  pthread_mutex_unlock(&mutex_magB);
+  }
+  if ( IMUA_ENABLED && IMUB_ENABLED )  {  for ( i=0; i<3; i++ )  {  g[i] /= 2.0;  a[i] /= 2.0;  m[i] /= 2.0;  }  }
 
   // Normalize magnetometer
   norm = 0.0;
@@ -228,9 +236,6 @@ void ahrs_fusion ( void )  {
   e[Y] = asin  (   2.0 * ( qwy - qxz ) )                                  - ahrs.orient[Y];
   e[Z] = atan2 ( ( 2.0 * ( qwz + qxy ) ), ( 1.0 - 2.0 * ( qyy + qzz ) ) ) - ahrs.orient[Z];
 
-  // Update AHR values
-  ahrs.fx = fx;  ahrs.fz = fz;
-
   // Push quaternion data to struct
   pthread_mutex_lock(&mutex_quat);
   for ( i=0; i<4; i++ )  {
@@ -240,50 +245,31 @@ void ahrs_fusion ( void )  {
   pthread_mutex_unlock(&mutex_quat);
 
   // Push Euler data to struct
-  pthread_mutex_unlock(&mutex_eul);
+  pthread_mutex_lock(&mutex_eul);
   for ( i=0; i<3; i++ ) {
     ahrs.eul[i]  = e[i];
     ahrs.deul[i] = g[i];
-    ahrs.bias[i] = b[i];
   }
   pthread_mutex_unlock(&mutex_eul);
+
+  // Push AHRS data to struct
+  pthread_mutex_lock(&mutex_ahrs);
+  ahrs.fx = fx;  ahrs.fz = fz;
+  for ( i=0; i<3; i++ )  ahrs.bias[i] = b[i];
+  pthread_mutex_unlock(&mutex_ahrs);
 
   return;
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  ahrs_kalman
-//  Implement Kalman filter algorithm.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ *  ahrs_kalman
+ *  Implement Kalman filter algorithm.
+ */
 void ahrs_kalman ( void )  {
   // Future work
   return;
 }
-
-
-
-
-/*
-  //~~~  MOVE TO 'CONVERGENCE' FUNCTION  ~~~//
-  
-  double temp[3];
-  for( i=0; i<3; i++ )  temp[i] = imu->Eul[i] - imu->Prev[i];
-  // Norm of delta
-  norm = 0.0;
-  for ( i=0; i<3; i++ )  norm += temp[i] * temp[i];
-  norm = sqrt(norm);
-  // Debugging statements
-  printf("E: %7.4f %7.4f %7.4f    ", imu->Eul[0], imu->Eul[1], imu->Eul[2] );
-  printf("D: %7.4f %7.4f %7.4f    ", temp[0], temp[1], temp[2] );
-  printf("N: %7.4f", norm);
-  //printf("E: %7.4f  A: %7.4f    ", imu->Eul[0], temp );
-  printf("\n");
-  fflush(stdout);
-  // Assign previous value
-  for ( i=0; i<3; i++ )  imu->Prev[i] = imu->Eul[i];
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-*/
 
 
 
