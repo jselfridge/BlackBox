@@ -565,8 +565,9 @@ void log_record ( enum log_index index )  {
   // Record IMUA data
   case LOG_IMUA :
 
-    timestamp = (float) ( tmr_imuA.start_sec + ( tmr_imuA.start_usec / 1000000.0f ) ) - datalog.offset;
-    
+    if (IMUB_ENABLED)  {  timestamp = (float) ( tmr_imu.start_sec  + ( tmr_imu.start_usec  / 1000000.0f ) ) - datalog.offset;  }
+    else               {  timestamp = (float) ( tmr_imuA.start_sec + ( tmr_imuA.start_usec / 1000000.0f ) ) - datalog.offset;  }
+
     // Gyroscope A data
     pthread_mutex_lock(&mutex_gyrA);
     if ( log_gyrA.count < log_gyrA.limit ) {
@@ -613,8 +614,9 @@ void log_record ( enum log_index index )  {
   // Record IMUB data
   case LOG_IMUB :
 
-    timestamp = (float) ( tmr_imuB.start_sec + ( tmr_imuB.start_usec / 1000000.0f ) ) - datalog.offset;
-    
+    if (IMUA_ENABLED)  {  timestamp = (float) ( tmr_imu.start_sec  + ( tmr_imu.start_usec  / 1000000.0f ) ) - datalog.offset;  }
+    else               {  timestamp = (float) ( tmr_imuB.start_sec + ( tmr_imuB.start_usec / 1000000.0f ) ) - datalog.offset;  }
+
     // Gyroscope B data
     pthread_mutex_lock(&mutex_gyrB);
     if ( log_gyrB.count < log_gyrB.limit ) {

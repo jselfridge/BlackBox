@@ -41,8 +41,9 @@ void tmr_init ( void )  {
   // Create primary timing threads
                       tmr_thread( &tmr_sio,   &attr, fcn_sio   );  usleep(100000);
                       tmr_thread( &tmr_flag,  &attr, fcn_flag  );  usleep(100000);
-  if(IMUA_ENABLED) {  tmr_thread( &tmr_imuA,  &attr, fcn_imuA  );  usleep(100000);  }
-  if(IMUB_ENABLED) {  tmr_thread( &tmr_imuB,  &attr, fcn_imuB  );  usleep(100000);  }
+  if( IMUA_ENABLED &&  IMUB_ENABLED ) {  tmr_thread( &tmr_imu,   &attr, fcn_imu   );  usleep(100000);  }
+  if( IMUA_ENABLED && !IMUB_ENABLED ) {  tmr_thread( &tmr_imuA,  &attr, fcn_imuA  );  usleep(100000);  }
+  if( IMUB_ENABLED && !IMUA_ENABLED ) {  tmr_thread( &tmr_imuB,  &attr, fcn_imuB  );  usleep(100000);  }
   //tmr_thread( &tmr_ahrs,  &attr, fcn_ahrs  );  usleep(100000);
   //tmr_thread( &tmr_gps,   &attr, fcn_gps   );  usleep(100000);
   //tmr_thread( &tmr_gcstx, &attr, fcn_gcstx );  usleep(100000);
@@ -79,6 +80,11 @@ void tmr_setup ( void )  {
   tmr_flag.name  =  "flag";
   tmr_flag.prio  =  PRIO_FLAG;
   tmr_flag.per   =  1000000 / HZ_FLAG;
+
+  // IMU timer
+  tmr_imu.name   =  "imu";
+  tmr_imu.prio   =  PRIO_IMU;
+  tmr_imu.per    =  1000000 / HZ_IMU_FAST;
 
   // IMUA timer
   tmr_imuA.name  =  "imuA";
@@ -277,16 +283,22 @@ void tmr_exit ( void )  {
   if(DEBUG)  printf( "ahrs " );
   */
   // Exit IMUB thread
-  if(IMUB_ENABLED)  {
+  if( IMUB_ENABLED && !IMUA_ENABLED )  {
   if( pthread_join ( tmr_imuB.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'imuB' thread. \n" );
   if(DEBUG)  printf( "imuB " );  }
 
   // Exit IMUA thread
-  if(IMUA_ENABLED)  {
+  if( IMUA_ENABLED && !IMUB_ENABLED )  {
   if( pthread_join ( tmr_imuA.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'imuA' thread. \n" );
   if(DEBUG)  printf( "imuA " );  }
+
+  // Exit IMU thread
+  if( IMUA_ENABLED && IMUB_ENABLED )  {
+  if( pthread_join ( tmr_imu.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'imu' thread. \n" );
+  if(DEBUG)  printf( "imu " );  }
 
   // Exit program execution flags thread
   if( pthread_join ( tmr_flag.id, NULL ) )
@@ -439,6 +451,30 @@ void *fcn_flag (  )  {
     flag_update();
     tmr_finish(&tmr_flag);
     tmr_pause(&tmr_flag);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+
+/**
+ *  fcn_imu
+ *  Function handler for dual IMU timing thread.
+ */
+void *fcn_imu (  )  {
+  tmr_create(&tmr_imu);
+  while (running) {
+    tmr_start(&tmr_imu);
+    if (!datalog.saving) {  
+      imu_update(&imuA);
+      imu_update(&imuB);
+    }
+    tmr_finish(&tmr_imu);
+    if (datalog.enabled) {
+      log_record(LOG_IMUA);
+      log_record(LOG_IMUB);
+    }
+    tmr_pause(&tmr_imu);
   }
   pthread_exit(NULL);
   return NULL;
