@@ -324,8 +324,8 @@ void sys_exit (  )  {
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   tmr_exit();
   //--  DEBUGGING  --//
-  datalog.enabled = false;
-  log_close();
+  //datalog.enabled = false;
+  //log_close();
   //-----------------//
   log_exit();
   //ctl_exit();

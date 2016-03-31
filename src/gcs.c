@@ -29,11 +29,11 @@ void gcs_init ( void )  {
   settings.c_cc[VMIN]  = 0;
 
   // Set input baud rate
-  if ( cfsetispeed( &settings, B57600 ) <0 )
+  if ( cfsetispeed( &settings, B57600 ) <0 )  // 57600 115200
     printf( "Error (gcs_init): Couldn't set GCS input buad rate. \n" );
 
   // Set output baud rate
-  if ( cfsetospeed( &settings, B57600 ) <0 )
+  if ( cfsetospeed( &settings, B57600 ) <0 )  // 57600 115200
     printf( "Error (gcs_init): Couldn't set GCS output buad rate. \n" );
 
   // Assign parameters to device
@@ -87,50 +87,13 @@ void gcs_tx ( void)  {
   if (gcs.sendmission)  gcs_missionlist();  gcs.sendmission = false;
 
   // Send always if enabled
-  if (GCS_RAW_ACC_ENABLED) gcs_raw_acc();
-  //if (GCS_EUL_ENABLED)   gcs_eul();
+  if (GCS_RAW_IMUA_ENABLED)  if (IMUA_ENABLED)  gcs_raw_imuA();
+  if (GCS_RAW_IMUB_ENABLED)  if (IMUB_ENABLED)  gcs_raw_imuB();
+  if (GCS_EUL_ENABLED)   gcs_eul();
   //if (GCS_QUAT_ENABLED)  gcs_quat();
   //if (GCS_GPS_ENABLED)   gcs_gps();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /*  // Clear the message and buffer
-  memset( &msg, 0, sizeof(&msg) );
-  memset( &buf, 0, sizeof(&buf) );
-
-  // Collect the data
-  uint32_t time_boot_ms = 0;
-  pthread_mutex_lock(&mutex_eul);
-  float roll       = ahrs.eul[0];
-  float pitch      = ahrs.eul[1];
-  float yaw        = ahrs.eul[2];
-  float rollspeed  = ahrs.deul[0];
-  float pitchspeed = ahrs.deul[1];
-  float yawspeed   = ahrs.deul[2];
-  pthread_mutex_unlock(&mutex_eul);
-
-  // Pack the attitude message 
-  mavlink_msg_attitude_pack ( 
-    VEHICLE_ID, 
-    MAV_COMP_ID_IMU,
-    &msg,  
-    time_boot_ms, 
-    roll, 
-    pitch, 
-    yaw, 
-    rollspeed, 
-    pitchspeed, 
-    yawspeed
-    );
-
-  // Copy the heartbeat message to the send buffer
-  uint attlen = mavlink_msg_to_send_buffer( buf, &msg );
-
-  // Transmit the attitude data
-  int attw = write( gcs.fd, buf, attlen );
-  usleep(attw*300);
-
-  */
 
   return;
 }
@@ -248,7 +211,7 @@ void gcs_paramlist ( void )  {
     // Pack parameter message
     memset( &msg, 0, sizeof(&msg) );
     mavlink_msg_param_value_pack(
-      VEHICLE_ID, 
+      GCS_SYSID,
       MAV_COMP_ID_GAINS,
       &msg, 
       param.name[i], 
@@ -326,7 +289,7 @@ void gcs_paramupdate ( mavlink_message_t *msg )  {
   mavlink_msg_param_set_decode( msg, &set );
 
   // Check if this message is for this system
-  if (  (uint8_t) set.target_system    == VEHICLE_ID  && 
+  if (  (uint8_t) set.target_system    == GCS_SYSID  && 
         (uint8_t) set.target_component == MAV_COMP_ID_GAINS )  {
 
     char* key = (char*) set.param_id;
@@ -372,7 +335,7 @@ void gcs_paramupdate ( mavlink_message_t *msg )  {
           mavlink_message_t confirm_msg;
           memset( &confirm_msg, 0, sizeof(&confirm_msg) );
           mavlink_msg_param_value_pack(
-            VEHICLE_ID, 
+            GCS_SYSID,
             MAV_COMP_ID_GAINS,
             &confirm_msg, 
             param.name[i], 
@@ -420,7 +383,7 @@ void gcs_missionlist ( void)  {
   memset( &msg, 0, sizeof(&msg) );
 
   mavlink_msg_mission_count_pack (
-    VEHICLE_ID, 
+    GCS_SYSID, 
     MAV_COMP_ID_IMU, 
     &msg,
     0, 
@@ -455,7 +418,7 @@ void gcs_heartbeat ( void)  {
  
   // Pack the heartbeat message
   mavlink_msg_heartbeat_pack ( 
-    VEHICLE_ID, 
+    GCS_SYSID, 
     MAV_COMP_ID_IMU,
     &msg, 
     MAV_TYPE_FIXED_WING,
@@ -479,10 +442,144 @@ void gcs_heartbeat ( void)  {
 
 
 /**
- *  gcs_raw_acc
- *  Sends the raw accelerometer data.
+ *  gcs_raw_imuA
+ *  Sends the raw IMUA data.
  */
-void gcs_raw_acc ( void )  {
+void gcs_raw_imuA ( void )  {
+
+  // Initialize the required buffers
+  mavlink_message_t msg;
+  uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+
+  // Clear the message and buffer
+  memset( &msg, 0, sizeof(&msg) );
+  memset( &buf, 0, sizeof(&buf) );
+
+  // Collect the data
+  uint32_t time_boot_ms = 0;
+  pthread_mutex_lock(&mutex_accA);
+  int16_t xacc  = (int16_t) imuA.acc->raw[0];
+  int16_t yacc  = (int16_t) imuA.acc->raw[1];
+  int16_t zacc  = (int16_t) imuA.acc->raw[2];
+  pthread_mutex_unlock(&mutex_accA);
+  pthread_mutex_lock(&mutex_gyrA);
+  int16_t xgyro = (int16_t) imuA.gyr->raw[0];
+  int16_t ygyro = (int16_t) imuA.gyr->raw[1];
+  int16_t zgyro = (int16_t) imuA.gyr->raw[2];
+  pthread_mutex_unlock(&mutex_gyrA);
+  pthread_mutex_lock(&mutex_magA);
+  int16_t xmag  = (int16_t) imuA.mag->raw[0];
+  int16_t ymag  = (int16_t) imuA.mag->raw[1];
+  int16_t zmag  = (int16_t) imuA.mag->raw[2];
+  pthread_mutex_unlock(&mutex_magA);
+
+  // Pack the attitude message 
+  mavlink_msg_raw_imu_pack ( 
+    GCS_SYSID, GCS_IMUA, &msg, time_boot_ms, 
+    xacc, yacc, zacc, 
+    xgyro, ygyro, zgyro,
+    xmag, ymag, zmag );
+
+  // Copy the heartbeat message to the send buffer
+  uint len = mavlink_msg_to_send_buffer( buf, &msg );
+
+  // Transmit the attitude data
+  int w = write( gcs.fd, buf, len );
+  usleep(w*300);
+
+  return;
+}
+
+
+/**
+ *  gcs_raw_imuB
+ *  Sends the raw IMUB data.
+ */
+void gcs_raw_imuB ( void )  {
+
+  // Initialize the required buffers
+  mavlink_message_t msg;
+  uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+
+  // Clear the message and buffer
+  memset( &msg, 0, sizeof(&msg) );
+  memset( &buf, 0, sizeof(&buf) );
+
+  // Collect the data
+  uint32_t time_boot_ms = 0;
+  pthread_mutex_lock(&mutex_accB);
+  int16_t xacc  = (int16_t) imuB.acc->raw[0];
+  int16_t yacc  = (int16_t) imuB.acc->raw[1];
+  int16_t zacc  = (int16_t) imuB.acc->raw[2];
+  pthread_mutex_unlock(&mutex_accB);
+  pthread_mutex_lock(&mutex_gyrB);
+  int16_t xgyro = (int16_t) imuB.gyr->raw[0];
+  int16_t ygyro = (int16_t) imuB.gyr->raw[1];
+  int16_t zgyro = (int16_t) imuB.gyr->raw[2];
+  pthread_mutex_unlock(&mutex_gyrB);
+  pthread_mutex_lock(&mutex_magB);
+  int16_t xmag  = (int16_t) imuB.mag->raw[0];
+  int16_t ymag  = (int16_t) imuB.mag->raw[1];
+  int16_t zmag  = (int16_t) imuB.mag->raw[2];
+  pthread_mutex_unlock(&mutex_magB);
+
+  // Pack the attitude message 
+  mavlink_msg_raw_imu_pack ( 
+    GCS_SYSID, GCS_IMUB, &msg, time_boot_ms, 
+    xacc, yacc, zacc, 
+    xgyro, ygyro, zgyro,
+    xmag, ymag, zmag
+    );
+
+  // Copy the heartbeat message to the send buffer
+  uint len = mavlink_msg_to_send_buffer( buf, &msg );
+
+  // Transmit the attitude data
+  int w = write( gcs.fd, buf, len );
+  usleep(w*300);
+
+  return;
+}
+
+
+/**
+ *  gcs_eul
+ *  Sends the Euler attitude state.
+ */
+void gcs_eul ( void )  {
+
+  // Initialize the required buffers
+  mavlink_message_t msg;
+  uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+
+  // Clear the message and buffer
+  memset( &msg, 0, sizeof(&msg) );
+  memset( &buf, 0, sizeof(&buf) );
+
+  // Collect the data
+  uint32_t time_boot_ms = 0;
+  pthread_mutex_lock(&mutex_ahrs);
+  float roll       = (float) ahrs.eul[0];
+  float pitch      = (float) ahrs.eul[1];
+  float yaw        = (float) ahrs.eul[2];
+  float rollspeed  = (float) ahrs.deul[0];
+  float pitchspeed = (float) ahrs.deul[1];
+  float yawspeed   = (float) ahrs.deul[2];
+  pthread_mutex_unlock(&mutex_ahrs);
+
+  // Pack the attitude message 
+  mavlink_msg_attitude_pack ( 
+    GCS_SYSID, GCS_ATT, &msg, time_boot_ms, 
+    roll, pitch, yaw, 
+    rollspeed, pitchspeed, yawspeed
+    );
+
+  // Copy the heartbeat message to the send buffer
+  uint len = mavlink_msg_to_send_buffer( buf, &msg );
+
+  // Transmit the attitude data
+  int w = write( gcs.fd, buf, len );
+  usleep(w*300);
 
   return;
 }

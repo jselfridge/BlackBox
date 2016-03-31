@@ -24,10 +24,10 @@ int main ( void )  {
   gcs_init();
   //ctrl_init();
   log_init();
-  //--  DEBUGGING  --//
-  log_open();
-  datalog.enabled = true;
-  //-----------------//
+  //---  DEBUGGING  ---//
+  //log_open();
+  //datalog.enabled = true;
+  //-------------------//
   tmr_init();
 
   // Wait for exit condition

@@ -9,11 +9,20 @@
 // Define statements
 #define MAV_COMP_ID_GAINS    120
 #define PARAM_COUNT   6
-#define VEHICLE_ID    20
+
+
+// Define 
+#define GCS_SYSID  01
+#define GCS_IMU    10
+#define GCS_IMUA   11
+#define GCS_IMUB   12
+#define GCS_ATT    20
 
 
 // Define data transmissions
-#define GCS_RAW_ACC_ENABLED   true
+#define GCS_RAW_IMUA_ENABLED   true
+#define GCS_RAW_IMUB_ENABLED   true
+#define GCS_EUL_ENABLED        true
 
 
 // Parameter enumeration
@@ -57,7 +66,9 @@ void  gcs_send_param   ( enum param_index name, float val );
 void  gcs_paramupdate  ( mavlink_message_t *msg );
 void  gcs_missionlist  ( void );
 
-void  gcs_raw_acc      ( void );
+void  gcs_raw_imuA     ( void );
+void  gcs_raw_imuB     ( void );
+void  gcs_eul          ( void );
 
 
 #endif

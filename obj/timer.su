@@ -9,11 +9,11 @@ timer.c:577:7:fcn_gcsrx	40	static
 timer.c:560:7:fcn_gcstx	40	static
 timer.c:542:7:fcn_gps	40	static
 timer.c:524:7:fcn_ahrs	40	static
-timer.c:488:7:fcn_imuA	40	static
+timer.c:464:7:fcn_imu	40	static
 timer.c:447:7:fcn_flag	40	static
 timer.c:426:7:fcn_sio	40	static
 timer.c:363:6:tmr_pause	24	static
 timer.c:383:6:tmr_start	16	static
 timer.c:401:6:tmr_finish	24	static
-timer.c:464:7:fcn_imu	40	static
+timer.c:488:7:fcn_imuA	40	static
 timer.c:506:7:fcn_imuB	40	static

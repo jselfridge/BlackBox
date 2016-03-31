@@ -307,13 +307,13 @@ void imu_update ( imu_struct *imu )  {
   }}
 
   // Shift and orient gyroscope readings
-  Gcal[x] =   ( Gavg[y] - imu->gyr->bias[y] ) * GYR_SCALE;
-  Gcal[y] =   ( Gavg[x] - imu->gyr->bias[x] ) * GYR_SCALE;
+  Gcal[x] = - ( Gavg[x] - imu->gyr->bias[x] ) * GYR_SCALE;
+  Gcal[y] =   ( Gavg[y] - imu->gyr->bias[y] ) * GYR_SCALE;
   Gcal[z] = - ( Gavg[z] - imu->gyr->bias[z] ) * GYR_SCALE;
 
   // Shift and orient accelerometer readings
-  Acal[x] =   ( Aavg[y] - imu->acc->bias[y] ) / (double) (imu->acc->range[y]);
-  Acal[y] =   ( Aavg[x] - imu->acc->bias[x] ) / (double) (imu->acc->range[x]);
+  Acal[x] = - ( Aavg[x] - imu->acc->bias[x] ) / (double) (imu->acc->range[x]);
+  Acal[y] =   ( Aavg[y] - imu->acc->bias[y] ) / (double) (imu->acc->range[y]);
   Acal[z] = - ( Aavg[z] - imu->acc->bias[z] ) / (double) (imu->acc->range[z]);
 
   // Shift and orient magnetometer readings
