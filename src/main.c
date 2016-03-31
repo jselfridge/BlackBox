@@ -21,7 +21,7 @@ int main ( void )  {
   ahrs_init();
   //uart_init();
   gps_init();
-  //gcs_init();
+  gcs_init();
   //ctrl_init();
   log_init();
   //--  DEBUGGING  --//

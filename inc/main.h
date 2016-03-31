@@ -35,7 +35,7 @@
 // #include <ctrl.h>
 #include <flag.h>
 #include <gpio.h>
-// #include <gcs.h>
+#include <gcs.h>
 #include <gps.h>
 #include <i2c.h>
 #include <imu.h>

@@ -35,7 +35,7 @@ void tmr_init ( void )  {
   pthread_mutex_init( &mutex_eul,    NULL );
   pthread_mutex_init( &mutex_ahrs,   NULL );
   pthread_mutex_init( &mutex_gps,    NULL );
-  //pthread_mutex_init( &mutex_gcs,    NULL );
+  pthread_mutex_init( &mutex_gcs,    NULL );    // Is this needed?
   //pthread_mutex_init( &mutex_ctrl,   NULL );
 
   // Create primary timing threads
@@ -46,8 +46,8 @@ void tmr_init ( void )  {
   if( IMUB_ENABLED && !IMUA_ENABLED ) {  tmr_thread( &tmr_imuB,  &attr, fcn_imuB  );  usleep(100000);  }
   tmr_thread( &tmr_ahrs,  &attr, fcn_ahrs  );  usleep(100000);
   tmr_thread( &tmr_gps,   &attr, fcn_gps   );  usleep(100000);
-  //tmr_thread( &tmr_gcstx, &attr, fcn_gcstx );  usleep(100000);
-  //tmr_thread( &tmr_gcsrx, &attr, fcn_gcsrx );  usleep(100000);
+  tmr_thread( &tmr_gcstx, &attr, fcn_gcstx );  usleep(100000);
+  tmr_thread( &tmr_gcsrx, &attr, fcn_gcsrx );  usleep(100000);
   //if(UART1_ENABLED)  tmr_thread( &tmr_uart1, &attr, fcn_uart1 );  usleep(100000);
   //if(UART2_ENABLED)  tmr_thread( &tmr_uart2, &attr, fcn_uart2 );  usleep(100000);
   //if(UART4_ENABLED)  tmr_thread( &tmr_uart4, &attr, fcn_uart4 );  usleep(100000);
@@ -106,16 +106,16 @@ void tmr_setup ( void )  {
   tmr_gps.prio   =  PRIO_GPS;
   tmr_gps.per    =  1000000 / HZ_GPS;
 
-  /*// GCSTX timer
+  // GCSTX timer
   tmr_gcstx.name =  "gcstx";
   tmr_gcstx.prio =  PRIO_GCSTX;
   tmr_gcstx.per  =  1000000 / HZ_GCSTX;
-  */
-  /*// GCSRX timer
+
+  // GCSRX timer
   tmr_gcsrx.name =  "gcsrx";
   tmr_gcsrx.prio =  PRIO_GCSRX;
   tmr_gcsrx.per  =  1000000 / HZ_GCSRX;
-  */
+
   /*// UART1 timer
   tmr_uart1.name  =  "uart1";
   tmr_uart1.prio  =  PRIO_UART1;
@@ -226,7 +226,7 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&mutex_eul);
   pthread_mutex_destroy(&mutex_ahrs);
   pthread_mutex_destroy(&mutex_gps);
-  //pthread_mutex_destroy(&mutex_gcs);
+  pthread_mutex_destroy(&mutex_gcs);    // Is this needed?
   //pthread_mutex_destroy(&mutex_ctrl);
 
   // Exit control thread
@@ -263,14 +263,14 @@ void tmr_exit ( void )  {
   }*/
 
   // Exit GCSRX thread
-  /*if( pthread_join ( tmr_gcsrx.id, NULL ) )
+  if( pthread_join ( tmr_gcsrx.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gcsrx' thread. \n" );
-  if(DEBUG)  printf( "gcsrx " );*/
+  if(DEBUG)  printf( "gcsrx " );
 
   // Exit GCSTX thread
-  /*if( pthread_join ( tmr_gcstx.id, NULL ) )
+  if( pthread_join ( tmr_gcstx.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gcstx' thread. \n" );
-  if(DEBUG)  printf( "gcstx " );*/
+  if(DEBUG)  printf( "gcstx " );
 
   // Exit GPS thread
   if( pthread_join ( tmr_gps.id, NULL ) )
@@ -557,7 +557,6 @@ void *fcn_gps (  )  {
  *  fcn_gcstx
  *  Function handler for the GCS transmission timing thread.
  */
-/*
 void *fcn_gcstx (  )  {
   tmr_create(&tmr_gcstx);
   while (running) {
@@ -569,13 +568,12 @@ void *fcn_gcstx (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-*/
+
 
 /**
  *  fcn_gcsrx
  *  Function handler for the GCS receiver timing thread.
  */
-/*
 void *fcn_gcsrx (  )  {
   tmr_create(&tmr_gcsrx);
   while (running) {
@@ -587,7 +585,7 @@ void *fcn_gcsrx (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-*/
+
 
 /**
  *  fcn_uart1

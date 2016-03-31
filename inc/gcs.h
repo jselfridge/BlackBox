@@ -1,8 +1,5 @@
 
-//============================================================
-//  gcs.h
-//  Justin M Selfridge
-//============================================================
+
 #ifndef _GCS_H_
 #define _GCS_H_
 #include <main.h>
@@ -15,6 +12,7 @@
 #define VEHICLE_ID    20
 
 
+// Parameter enumeration
 enum param_index {
   X_P = 0,
   X_I = 1,
@@ -25,11 +23,13 @@ enum param_index {
 };
 
 
+// Parameter structure
 typedef struct param_struct {
   float val  [PARAM_COUNT];
   char  name [PARAM_COUNT][MAVLINK_MSG_PARAM_SET_FIELD_PARAM_ID_LEN];
 } param_struct;
 param_struct param;
+
 
 // GCS structure
 typedef struct gcs_struct {

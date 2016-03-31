@@ -1,0 +1,9 @@
+gcs.c:68:6:gcs_exit	0	static
+gcs.c:236:6:gcs_paramlist	640	dynamic,bounded
+gcs.c:280:6:gcs_send_param	0	static
+gcs.c:321:6:gcs_paramupdate	688	dynamic,bounded
+gcs.c:142:6:gcs_rx	352	dynamic,bounded
+gcs.c:410:6:gcs_missionlist	624	dynamic,bounded
+gcs.c:10:6:gcs_init	104	dynamic,bounded
+gcs.c:451:6:gcs_heartbeat	640	dynamic,bounded
+gcs.c:78:6:gcs_tx	8	static

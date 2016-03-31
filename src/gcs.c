@@ -1,21 +1,18 @@
 
-//============================================================
-//  gcs.c
-//  Justin M Selfridge
-//============================================================
+
 #include "gcs.h"
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gcs_init
-//  Initializes the GCS communication.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/**
+ *  gcs_init
+ *  Initializes the GCS communication.
+ */
 void gcs_init ( void )  {
   if (DEBUG)  printf("Initializing GCS \n");
 
   // Assign UART path
-  memset ( gcs.path,      0, sizeof(gcs.path)         );
-  strcpy( gcs.path, "/dev/ttyO2" );
+  memset( gcs.path, 0, sizeof(gcs.path) );
+  strcpy( gcs.path, "/dev/ttyO1" );
 
   // Open the file descriptor
   gcs.fd = open ( gcs.path, O_RDWR | O_NOCTTY );
@@ -64,20 +61,20 @@ void gcs_init ( void )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gcs_exit
-//  Exits the GCS sensor.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/**
+ *  gcs_exit
+ *  Exits the GCS sensor.
+ */
 void gcs_exit ( void )  {
   close ( gcs.fd );
   return;
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gcs_tx
-//  Transmit to the ground control station.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/**
+ *  gcs_tx
+ *  Transmit to the ground control station.
+ */
 void gcs_tx ( void)  {
 
   static int count = 0;
@@ -138,10 +135,10 @@ void gcs_tx ( void)  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gcs_rx
-//  Receive from the ground control station.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/**
+ *  gcs_rx
+ *  Receive from the ground control station.
+ */
 void gcs_rx ( void)  {
 
   bool moredata = true;
@@ -232,10 +229,10 @@ void gcs_rx ( void)  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gcs_paramlist
-//  Sends the onboard parameter list.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/**
+ *  gcs_paramlist
+ *  Sends the onboard parameter list.
+ */
 void gcs_paramlist ( void )  {
 
   // Local variables
@@ -276,10 +273,10 @@ void gcs_paramlist ( void )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gcs_send_param
-//  Sends a parameter to the GCS.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/**
+ *  gcs_send_param
+ *  Sends a parameter to the GCS.
+ */
 void gcs_send_param ( enum param_index name, float val )  {
   /*
   // Initialize buffers
@@ -317,10 +314,10 @@ void gcs_send_param ( enum param_index name, float val )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gcs_paramupdate
-//  Updates the parameter values as needed.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/**
+ *  gcs_paramupdate
+ *  Updates the parameter values as needed.
+ */
 void gcs_paramupdate ( mavlink_message_t *msg )  {
 
   uint i, j;
@@ -406,10 +403,10 @@ void gcs_paramupdate ( mavlink_message_t *msg )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gcs_missionlist
-//  Sends the onboard mission list.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/**
+ *  gcs_missionlist
+ *  Sends the onboard mission list.
+ */
 void gcs_missionlist ( void)  {
 
   printf("\nTX: Mission List " );  fflush(stdout);
@@ -447,10 +444,10 @@ void gcs_missionlist ( void)  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gcs_heartbeat
-//  Sends a heartbeat transmission.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/**
+ *  gcs_heartbeat
+ *  Sends a heartbeat transmission.
+ */
 void gcs_heartbeat ( void)  {
 
   //printf("\nTX: Heartbeat " );  fflush(stdout);
@@ -483,8 +480,6 @@ void gcs_heartbeat ( void)  {
 
   return;
 }
-
-
 
 
 
