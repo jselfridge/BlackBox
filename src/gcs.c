@@ -87,6 +87,7 @@ void gcs_tx ( void)  {
   if (gcs.sendmission)  gcs_missionlist();  gcs.sendmission = false;
 
   // Send always if enabled
+  if (GCS_RAW_ACC_ENABLED) gcs_raw_acc();
   //if (GCS_EUL_ENABLED)   gcs_eul();
   //if (GCS_QUAT_ENABLED)  gcs_quat();
   //if (GCS_GPS_ENABLED)   gcs_gps();
@@ -161,61 +162,61 @@ void gcs_rx ( void)  {
     // Try to get a new message
     if ( mavlink_parse_char( 0, c, &msg, &status ) )  {
 
-      printf("\n");
+      //printf("\n");
 
       // Handle message
       switch(msg.msgid)  {
 
         // ID: #0
         case MAVLINK_MSG_ID_HEARTBEAT:
-	  printf("RX: Heartbeat");  
-          printf("    %3.1f %3.1f %3.1f ", param.val[0], param.val[1], param.val[2] );
-          fflush(stdout);
+	  //printf("RX: Heartbeat");  
+          //printf("    %3.1f %3.1f %3.1f ", param.val[0], param.val[1], param.val[2] );
+          //fflush(stdout);
           // Add fail safe code here
         break;
 
         // ID: #20
         case MAVLINK_MSG_ID_PARAM_REQUEST_READ:
-	  printf("RX: Param Request Read");  fflush(stdout);
+	  //printf("RX: Param Request Read");  fflush(stdout);
 	  gcs.sendparam = true;
         break;
 
         // ID: #21
         case MAVLINK_MSG_ID_PARAM_REQUEST_LIST:
-	  printf("RX: Param Request List");  fflush(stdout);
+	  //printf("RX: Param Request List");  fflush(stdout);
 	  gcs.sendparam = true;
         break;
 
         // ID: #23
         case MAVLINK_MSG_ID_PARAM_SET:
-	  printf("RX: Param Set");  fflush(stdout);
+	  //printf("RX: Param Set");  fflush(stdout);
           gcs_paramupdate(&msg);
         break;
 
         // ID: #43
         case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
-	  printf("RX: Mission Request List");  fflush(stdout);
+	  //printf("RX: Mission Request List");  fflush(stdout);
 	  gcs.sendmission = true;
         break;
 
         // ID: #47
         case MAVLINK_MSG_ID_MISSION_ACK:
-	  printf("RX: Mission Acknowledge");  fflush(stdout);
+	  //printf("RX: Mission Acknowledge");  fflush(stdout);
         break;
 
         // ID: #75
         case MAVLINK_MSG_ID_COMMAND_INT:
-	  printf("RX: Command Int");  fflush(stdout);
+	  //printf("RX: Command Int");  fflush(stdout);
         break;
 
         // ID: #76
         case MAVLINK_MSG_ID_COMMAND_LONG:
-	  printf("RX: Command Long");  fflush(stdout);
+	  //printf("RX: Command Long");  fflush(stdout);
         break;
 
         // ID: #???
         default:
-          printf("RX: New ID: %d ", msg.msgid );  fflush(stdout);
+          //printf("RX: New ID: %d ", msg.msgid );  fflush(stdout);
         break;
 
       }
@@ -264,7 +265,6 @@ void gcs_paramlist ( void )  {
     pthread_mutex_lock(&mutex_gcs);
     w = write( gcs.fd, buf, len );
     pthread_mutex_unlock(&mutex_gcs);
-
     usleep(w*300);
 
   }
@@ -390,9 +390,7 @@ void gcs_paramupdate ( mavlink_message_t *msg )  {
           pthread_mutex_lock(&mutex_gcs);
           int w = write( gcs.fd, buf, len );
           pthread_mutex_unlock(&mutex_gcs);
-
           usleep(w*300);
-
 
 	}
       }
@@ -409,7 +407,7 @@ void gcs_paramupdate ( mavlink_message_t *msg )  {
  */
 void gcs_missionlist ( void)  {
 
-  printf("\nTX: Mission List " );  fflush(stdout);
+  //printf("\nTX: Mission List " );  fflush(stdout);
 
   // Local variables
   int len, w;
@@ -437,7 +435,6 @@ void gcs_missionlist ( void)  {
   pthread_mutex_lock(&mutex_gcs);
   w = write( gcs.fd, buf, len );
   pthread_mutex_unlock(&mutex_gcs);
-
   usleep(w*300);
 
   return;
@@ -475,8 +472,17 @@ void gcs_heartbeat ( void)  {
   pthread_mutex_lock(&mutex_gcs);
   int w = write( gcs.fd, buf, len );
   pthread_mutex_unlock(&mutex_gcs);
-
   usleep(w*300);
+
+  return;
+}
+
+
+/**
+ *  gcs_raw_acc
+ *  Sends the raw accelerometer data.
+ */
+void gcs_raw_acc ( void )  {
 
   return;
 }

@@ -65,8 +65,8 @@ void sys_update ( void )  {
 
   // Select data for display
   //sys_sio();
-  //sys_imuA();
-  //sys_imuB();
+  sys_imuA();
+  sys_imuB();
   //sys_ahrs();
   //sys_gps();
   //sys_uart1();

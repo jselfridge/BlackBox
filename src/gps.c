@@ -23,7 +23,7 @@ void gps_init ( void )  {
   i = write( gps.fd, GPS_UPDATE_010_HZ, sizeof(GPS_UPDATE_010_HZ) );  usleep(i*200);  if ( i && DEBUG )  printf("  Update rate \n");  
   i = write( gps.fd, GPS_BAUD_9600,     sizeof(GPS_BAUD_9600)     );  usleep(i*200);  if ( i && DEBUG )  printf("  Buad rate \n");  
 
-  // Assign desired (new) parameters
+  // Assign desired parameters
   struct termios newparam;
   memset( &newparam, 0, sizeof( &newparam ) );
   newparam.c_iflag     = 0;
@@ -129,7 +129,7 @@ uint gps_hex2dec ( char c )  {
  *  Temp code obtained from Adafruit sample.
  */
 void gps_adafruit ( void )  {
-
+  /*
   // Local variables
   uint sum, i;
   long degree, minutes;
@@ -299,7 +299,7 @@ void gps_adafruit ( void )  {
     }
 
   }
-
+  */
   return;
 }
 
