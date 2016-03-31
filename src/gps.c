@@ -1,19 +1,16 @@
 
-//============================================================
-//  gps.c
-//  Justin M Selfridge
-//============================================================
+
 #include "gps.h"
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gps_init
-//  Initializes the GPS sensor.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/**
+ *  gps_init
+ *  Initializes the GPS sensor.
+ */
 void gps_init ( void )  {
   if (DEBUG)  printf("Initializing GPS \n");
 
-  strcpy( gps.path, "/dev/ttyO1" );
+  strcpy( gps.path, "/dev/ttyO2" );
   memset ( gps.msg, 0, sizeof(gps.msg) );
 
   // Open the file descriptor
@@ -23,7 +20,7 @@ void gps_init ( void )  {
   // Send GPS configuration packets
   int i;
   i = write( gps.fd, GPS_GGAONLY,       sizeof(GPS_GGAONLY)       );  usleep(i*200);  if ( i && DEBUG )  printf("  NMEA sentences \n");  
-  i = write( gps.fd, GPS_UPDATE_001_HZ, sizeof(GPS_UPDATE_001_HZ) );  usleep(i*200);  if ( i && DEBUG )  printf("  Update rate \n");  
+  i = write( gps.fd, GPS_UPDATE_010_HZ, sizeof(GPS_UPDATE_010_HZ) );  usleep(i*200);  if ( i && DEBUG )  printf("  Update rate \n");  
   i = write( gps.fd, GPS_BAUD_9600,     sizeof(GPS_BAUD_9600)     );  usleep(i*200);  if ( i && DEBUG )  printf("  Buad rate \n");  
 
   // Assign desired (new) parameters
@@ -52,20 +49,20 @@ void gps_init ( void )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gps_exit
-//  Exits the GPS sensor.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/**
+ *  gps_exit
+ *  Exits the GPS sensor.
+ */
 void gps_exit ( void )  {
   // Add code as needed...
   return;
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gps_update
-//  Obtains a new set of GPS data.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/**
+ *  gps_update
+ *  Obtains a new set of GPS data.
+ */
 void gps_update ( void)  {
 
   // Local variables
@@ -80,7 +77,7 @@ void gps_update ( void)  {
   // Debugging message
   //strcpy( msg, "$GPGGA,194510.000,4042.6127,N,07400.4184,W,1,5,1.82,143.2,M,-34.2,M,,*6E\r\n" );
   //strcpy( msg, "$GPRMC,194510.000,A,4042.6127,N,07400.4184,W,1.60,212.71,160412,,,A*7E\r\n" );
-  printf("\nupdate msg: \n%s", msg );
+  //printf("\nupdate msg: \n%s", msg );
 
   int len = strlen(msg);
 
@@ -114,10 +111,10 @@ void gps_update ( void)  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gps_hex2dec
-//  Converts a hex character into an integer
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/**
+ *  gps_hex2dec
+ *  Converts a hex character into an integer
+ */
 uint gps_hex2dec ( char c )  {
   if ( c <  '0' )  return 0;
   if ( c <= '9' )  return c - '0';
@@ -127,10 +124,10 @@ uint gps_hex2dec ( char c )  {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  gps_adafruit
-//  Temp code obtained from Adafruit sample.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/**
+ *  gps_adafruit
+ *  Temp code obtained from Adafruit sample.
+ */
 void gps_adafruit ( void )  {
 
   // Local variables

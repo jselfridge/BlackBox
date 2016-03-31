@@ -25,7 +25,7 @@
 #include <sys/time.h>
 #include <sys/timerfd.h>
 #include <sys/types.h>
-// #include <termios.h>
+#include <termios.h>
 // #include <time.h>
 #include <unistd.h>
 
@@ -36,7 +36,7 @@
 #include <flag.h>
 #include <gpio.h>
 // #include <gcs.h>
-// #include <gps.h>
+#include <gps.h>
 #include <i2c.h>
 #include <imu.h>
 #include <led.h>

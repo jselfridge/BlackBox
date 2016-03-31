@@ -67,8 +67,8 @@ void sys_update ( void )  {
   //sys_sio();
   //sys_imuA();
   //sys_imuB();
-  sys_ahrs();
-  //sys_gps();
+  //sys_ahrs();
+  sys_gps();
   //sys_uart1();
   //sys_uart2();
   //sys_uart4();
@@ -219,7 +219,6 @@ void sys_ahrs ( void )  {
  *  sys_gps
  *  Prints GPS debugging messages to the terminal.
  */
-/*
 void sys_gps ( void )  {
 
   pthread_mutex_lock(&mutex_gps);
@@ -228,7 +227,7 @@ void sys_gps ( void )  {
 
   return;
 }
-*/
+
 
 /**
  *  sys_uart1
@@ -331,7 +330,7 @@ void sys_exit (  )  {
   log_exit();
   //ctl_exit();
   //gcs_exit();
-  //gps_exit();
+  gps_exit();
   //uart_exit();
   ahrs_exit();
   imu_exit();

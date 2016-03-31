@@ -34,7 +34,7 @@ void tmr_init ( void )  {
   pthread_mutex_init( &mutex_quat,   NULL );
   pthread_mutex_init( &mutex_eul,    NULL );
   pthread_mutex_init( &mutex_ahrs,   NULL );
-  //pthread_mutex_init( &mutex_gps,    NULL );
+  pthread_mutex_init( &mutex_gps,    NULL );
   //pthread_mutex_init( &mutex_gcs,    NULL );
   //pthread_mutex_init( &mutex_ctrl,   NULL );
 
@@ -45,7 +45,7 @@ void tmr_init ( void )  {
   if( IMUA_ENABLED && !IMUB_ENABLED ) {  tmr_thread( &tmr_imuA,  &attr, fcn_imuA  );  usleep(100000);  }
   if( IMUB_ENABLED && !IMUA_ENABLED ) {  tmr_thread( &tmr_imuB,  &attr, fcn_imuB  );  usleep(100000);  }
   tmr_thread( &tmr_ahrs,  &attr, fcn_ahrs  );  usleep(100000);
-  //tmr_thread( &tmr_gps,   &attr, fcn_gps   );  usleep(100000);
+  tmr_thread( &tmr_gps,   &attr, fcn_gps   );  usleep(100000);
   //tmr_thread( &tmr_gcstx, &attr, fcn_gcstx );  usleep(100000);
   //tmr_thread( &tmr_gcsrx, &attr, fcn_gcsrx );  usleep(100000);
   //if(UART1_ENABLED)  tmr_thread( &tmr_uart1, &attr, fcn_uart1 );  usleep(100000);
@@ -101,11 +101,11 @@ void tmr_setup ( void )  {
   tmr_ahrs.prio  =  PRIO_AHRS;
   tmr_ahrs.per   =  1000000 / HZ_AHRS;
 
-  /*// GPS timer
+  // GPS timer
   tmr_gps.name   =  "gps";
   tmr_gps.prio   =  PRIO_GPS;
   tmr_gps.per    =  1000000 / HZ_GPS;
-  */
+
   /*// GCSTX timer
   tmr_gcstx.name =  "gcstx";
   tmr_gcstx.prio =  PRIO_GCSTX;
@@ -225,7 +225,7 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&mutex_quat);
   pthread_mutex_destroy(&mutex_eul);
   pthread_mutex_destroy(&mutex_ahrs);
-  //pthread_mutex_destroy(&mutex_gps);
+  pthread_mutex_destroy(&mutex_gps);
   //pthread_mutex_destroy(&mutex_gcs);
   //pthread_mutex_destroy(&mutex_ctrl);
 
@@ -273,10 +273,10 @@ void tmr_exit ( void )  {
   if(DEBUG)  printf( "gcstx " );*/
 
   // Exit GPS thread
-  /*if( pthread_join ( tmr_gps.id, NULL ) )
+  if( pthread_join ( tmr_gps.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gps' thread. \n" );
   if(DEBUG)  printf( "gps " );
-  */
+
   // Exit AHRS thread
   if( pthread_join ( tmr_ahrs.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ahrs' thread. \n" );
@@ -539,7 +539,6 @@ void *fcn_ahrs (  )  {
  *  fcn_gps
  *  Function handler for the GPS timing thread.
  */
-/*
 void *fcn_gps (  )  {
   tmr_create(&tmr_gps);
   while (running) {
@@ -552,7 +551,7 @@ void *fcn_gps (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-*/
+
 
 /**
  *  fcn_gcstx

@@ -20,7 +20,7 @@ int main ( void )  {
   imu_init();
   ahrs_init();
   //uart_init();
-  //gps_init();
+  gps_init();
   //gcs_init();
   //ctrl_init();
   log_init();

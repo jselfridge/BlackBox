@@ -17,7 +17,7 @@ void sys_sio    ( void );
 void sys_imuA   ( void );
 void sys_imuB   ( void );
 void sys_ahrs   ( void );
-//void sys_gps    ( void );
+void sys_gps    ( void );
 //void sys_uart1  ( void );
 //void sys_uart2  ( void );
 //void sys_uart4  ( void );
