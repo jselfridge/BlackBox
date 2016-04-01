@@ -22,7 +22,7 @@ void log_init ( void )  {
   log_magB.limit   = MAX_LOG_DUR * HZ_IMU_SLOW;
   log_ahrs.limit   = MAX_LOG_DUR * HZ_AHRS;
   log_gps.limit    = MAX_LOG_DUR * HZ_GPS;
-  //log_ctrl.limit   = MAX_LOG_DUR * HZ_CTRL;
+  log_ctrl.limit   = MAX_LOG_DUR * HZ_CTRL;
 
   return;
 }
@@ -45,7 +45,7 @@ void log_open ( void )  {
   log_magB.count   = 0;
   log_ahrs.count   = 0;
   log_gps.count    = 0;
-  //log_ctrl.count   = 0;
+  log_ctrl.count   = 0;
 
   // Input signal storage
   log_input.time =  malloc( sizeof(float)  * log_input.limit      );
@@ -128,14 +128,12 @@ void log_open ( void )  {
   log_gps.msg    =  malloc( sizeof(char)  * log_gps.limit * 96 );
 
   // Controller parameter storage
-  /*
   log_ctrl.time =  malloc( sizeof(float) * log_ctrl.limit     );
   log_ctrl.dur  =  malloc( sizeof(ulong) * log_ctrl.limit     );
   log_ctrl.perr =  malloc( sizeof(float) * log_ctrl.limit * 3 );
   log_ctrl.ierr =  malloc( sizeof(float) * log_ctrl.limit * 3 );
   log_ctrl.derr =  malloc( sizeof(float) * log_ctrl.limit * 3 );
   log_ctrl.cmd  =  malloc( sizeof(float) * log_ctrl.limit * 4 );
-  */
 
   // Allocate dir/path/file memory
   datalog.dir  = malloc(16);
@@ -177,7 +175,7 @@ void log_close ( void )  {
 
   // Local variables
   char *file = malloc(64);
-  FILE *fnote, *fin, *fout, *fgyrA, *faccA, *fmagA, *fgyrB, *faccB, *fmagB, *fahrs, *fgps;//, *fctl;
+  FILE *fnote, *fin, *fout, *fgyrA, *faccA, *fmagA, *fgyrB, *faccB, *fmagB, *fahrs, *fgps, *fctrl;
   ushort i;
   ulong row;
 
@@ -443,12 +441,11 @@ void log_close ( void )  {
   free(log_gps.dur);
   free(log_gps.msg);
 
-  /*
   // Create controller datalog file
   sprintf( file, "%sctrl.txt", datalog.path );
-  fctl = fopen( file, "w" );
-  if( fctl == NULL )  printf( "Error (log_close): Cannot generate 'ctrl' file. \n" );
-  fprintf( fctl,
+  fctrl = fopen( file, "w" );
+  if( fctrl == NULL )  printf( "Error (log_close): Cannot generate 'ctrl' file. \n" );
+  fprintf( fctrl,
     "       Ctime    Cdur    \
     EPX      EPY      EPZ     \
     EIX      EIY      EIZ     \
@@ -457,11 +454,11 @@ void log_close ( void )  {
 
   // Loop through controller data
   for ( row = 0; row < log_ctrl.count; row++ ) {
-    fprintf( fctl, "\n %011.6f  %06ld    ", log_ctrl.time[row], log_ctrl.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( fctl, "%07.4f  ",  log_ctrl.perr[ row*3 +i ] );   fprintf( fctl, "   " );
-    for ( i=0; i<3; i++ )  fprintf( fctl, "%07.4f  ",  log_ctrl.ierr[ row*3 +i ] );   fprintf( fctl, "   " );
-    for ( i=0; i<3; i++ )  fprintf( fctl, "%07.4f  ",  log_ctrl.derr[ row*3 +i ] );   fprintf( fctl, "   " );
-    for ( i=0; i<4; i++ )  fprintf( fctl, "%07.4f  ",  log_ctrl.cmd [ row*4 +i ] );   fprintf( fctl, "   " );
+    fprintf( fctrl, "\n %011.6f  %06ld    ", log_ctrl.time[row], log_ctrl.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( fctrl, "%07.4f  ",  log_ctrl.perr[ row*3 +i ] );   fprintf( fctrl, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fctrl, "%07.4f  ",  log_ctrl.ierr[ row*3 +i ] );   fprintf( fctrl, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fctrl, "%07.4f  ",  log_ctrl.derr[ row*3 +i ] );   fprintf( fctrl, "   " );
+    for ( i=0; i<4; i++ )  fprintf( fctrl, "%07.4f  ",  log_ctrl.cmd [ row*4 +i ] );   fprintf( fctrl, "   " );
   }
 
   // Free controller memory
@@ -471,7 +468,6 @@ void log_close ( void )  {
   free(log_ctrl.ierr);
   free(log_ctrl.derr);
   free(log_ctrl.cmd);
-  */
 
   // Close files
   fclose(fnote);
@@ -489,7 +485,7 @@ void log_close ( void )  {
   }
   fclose(fahrs);
   fclose(fgps);
-  //fclose(fctl);
+  fclose(fctrl);
 
   // Switch datalog setup flag
   datalog.setup = false;
@@ -716,8 +712,7 @@ void log_record ( enum log_index index )  {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record CTRL data
-  /*
-  case LOG_CTL :
+  case LOG_CTRL :
 
     timestamp = (float) ( tmr_ctrl.start_sec + ( tmr_ctrl.start_usec / 1000000.0f ) ) - datalog.offset;
 
@@ -733,7 +728,7 @@ void log_record ( enum log_index index )  {
     }
 
     return;
-  */
+
 
   default :
     return;

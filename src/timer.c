@@ -36,7 +36,7 @@ void tmr_init ( void )  {
   pthread_mutex_init( &mutex_ahrs,   NULL );
   pthread_mutex_init( &mutex_gps,    NULL );
   pthread_mutex_init( &mutex_gcs,    NULL );    // Is this needed?
-  //pthread_mutex_init( &mutex_ctrl,   NULL );
+  pthread_mutex_init( &mutex_ctrl,   NULL );
 
   // Create primary timing threads
   tmr_thread( &tmr_sio,   &attr, fcn_sio   );  usleep(100000);
@@ -48,11 +48,11 @@ void tmr_init ( void )  {
   tmr_thread( &tmr_gps,   &attr, fcn_gps   );  usleep(100000);
   tmr_thread( &tmr_gcstx, &attr, fcn_gcstx );  usleep(100000);
   tmr_thread( &tmr_gcsrx, &attr, fcn_gcsrx );  usleep(100000);
+  tmr_thread( &tmr_ctrl,  &attr, fcn_ctrl  );  usleep(100000);
   //if(UART1_ENABLED)  tmr_thread( &tmr_uart1, &attr, fcn_uart1 );  usleep(100000);
   //if(UART2_ENABLED)  tmr_thread( &tmr_uart2, &attr, fcn_uart2 );  usleep(100000);
   //if(UART4_ENABLED)  tmr_thread( &tmr_uart4, &attr, fcn_uart4 );  usleep(100000);
   //if(UART5_ENABLED)  tmr_thread( &tmr_uart5, &attr, fcn_uart5 );  usleep(100000);
-  //tmr_thread( &tmr_ctrl,  &attr, fcn_ctrl  );  usleep(100000);
 
   // Possibly create debugging thread
   if(DEBUG) {
@@ -116,6 +116,16 @@ void tmr_setup ( void )  {
   tmr_gcsrx.prio =  PRIO_GCSRX;
   tmr_gcsrx.per  =  1000000 / HZ_GCSRX;
 
+  // Control timer
+  tmr_ctrl.name   =  "ctrl";
+  tmr_ctrl.prio   =  PRIO_CTRL;
+  tmr_ctrl.per    =  1000000 / HZ_CTRL;
+
+  // Debugging timer
+  tmr_debug.name  =  "debug";
+  tmr_debug.prio  =  PRIO_DEBUG;
+  tmr_debug.per   =  1000000 / HZ_DEBUG;
+
   /*// UART1 timer
   tmr_uart1.name  =  "uart1";
   tmr_uart1.prio  =  PRIO_UART1;
@@ -136,15 +146,6 @@ void tmr_setup ( void )  {
   tmr_uart5.prio  =  PRIO_UART5;
   tmr_uart5.per   =  1000000 / HZ_UART5;
   */
-  /*// Control timer
-  tmr_ctrl.name   =  "ctrl";
-  tmr_ctrl.prio   =  PRIO_CTRL;
-  tmr_ctrl.per    =  1000000 / HZ_CTRL;
-  */
-  // Debugging timer
-  tmr_debug.name  =  "debug";
-  tmr_debug.prio  =  PRIO_DEBUG;
-  tmr_debug.per   =  1000000 / HZ_DEBUG;
 
   return;
 }
@@ -227,13 +228,8 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&mutex_ahrs);
   pthread_mutex_destroy(&mutex_gps);
   pthread_mutex_destroy(&mutex_gcs);    // Is this needed?
-  //pthread_mutex_destroy(&mutex_ctrl);
+  pthread_mutex_destroy(&mutex_ctrl);
 
-  // Exit control thread
-  /*if( pthread_join ( tmr_ctrl.id, NULL ) )
-    printf( "Error (tmr_exit): Failed to exit 'ctrl' thread. \n" );
-  if(DEBUG)  printf( "ctrl " );
-  */
   // Exit UART5 thread
   /*if(UART5_ENABLED)  {
   if( pthread_join ( tmr_uart5.id, NULL ) )
@@ -261,6 +257,11 @@ void tmr_exit ( void )  {
     printf( "Error (tmr_exit): Failed to exit 'uart1' thread. \n" );
   if(DEBUG)  printf( "uart1 " );
   }*/
+
+  // Exit control thread
+  if( pthread_join ( tmr_ctrl.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'ctrl' thread. \n" );
+  if(DEBUG)  printf( "ctrl " );
 
   // Exit GCSRX thread
   if( pthread_join ( tmr_gcsrx.id, NULL ) )
@@ -429,7 +430,7 @@ void *fcn_sio (  )  {
     tmr_start(&tmr_sio);
     sio_update();
     //--- DEBUGGING ---//
-    int i; for (i=0; i<10; i++)  sio_setnorm( i, input.norm[i] );
+    //int i; for (i=0; i<10; i++)  sio_setnorm( i, input.norm[i] );
     //--- DEBUGGING ---//
     tmr_finish(&tmr_sio);
     if (datalog.enabled)  log_record(LOG_SIO);
@@ -588,6 +589,41 @@ void *fcn_gcsrx (  )  {
 
 
 /**
+ *  fcn_ctrl
+ *  Function handler for the control law timing thread.
+ */
+void *fcn_ctrl (  )  {
+  tmr_create(&tmr_ctrl);
+  while (running) {
+    tmr_start(&tmr_ctrl);
+    ctrl_update();
+    tmr_finish(&tmr_ctrl);
+    if (datalog.enabled)  log_record(LOG_CTRL);
+    tmr_pause(&tmr_ctrl);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+
+/**
+ *  fcn_debug
+ *  Function handler for the debugging timing thread.
+ */
+void *fcn_debug (  )  {
+  tmr_create(&tmr_debug);
+  while (running) {
+    tmr_start(&tmr_debug);
+    sys_update();
+    tmr_finish(&tmr_debug);
+    tmr_pause(&tmr_debug);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+
+/**
  *  fcn_uart1
  *  Function handler for the UART1 timing thread.
  */
@@ -658,41 +694,6 @@ void *fcn_uart5 (  )  {
   return NULL;
 }
 */
-
-/**
- *  fcn_ctrl
- *  Function handler for the control law timing thread.
- */
-/*
-void *fcn_ctrl (  )  {
-  tmr_create(&tmr_ctrl);
-  while (running) {
-    tmr_start(&tmr_ctrl);
-    ctrl_update();
-    tmr_finish(&tmr_ctrl);
-    //if (datalog.enabled)  log_record(LOG_CTL);
-    tmr_pause(&tmr_ctrl);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
-*/
-
-/**
- *  fcn_debug
- *  Function handler for the debugging timing thread.
- */
-void *fcn_debug (  )  {
-  tmr_create(&tmr_debug);
-  while (running) {
-    tmr_start(&tmr_debug);
-    sys_update();
-    tmr_finish(&tmr_debug);
-    tmr_pause(&tmr_debug);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
 
 
 

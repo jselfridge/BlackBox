@@ -22,7 +22,7 @@ int main ( void )  {
   //uart_init();
   gps_init();
   gcs_init();
-  //ctrl_init();
+  ctrl_init();
   log_init();
   //---  DEBUGGING  ---//
   //log_open();

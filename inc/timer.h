@@ -9,16 +9,17 @@
 #define PRIO_IMU    96
 #define PRIO_AHRS   94
 #define PRIO_SIO    92
-//#define PRIO_CTRL   90
+#define PRIO_CTRL   90
 #define PRIO_GPS    88
 #define PRIO_GCSTX  86
 #define PRIO_GCSRX  86
-//#define PRIO_UART1  88
-//#define PRIO_UART2  88
-//#define PRIO_UART4  88
-//#define PRIO_UART5  88
 #define PRIO_FLAG   84
 #define PRIO_DEBUG  82
+
+//#define PRIO_UART1  80
+//#define PRIO_UART2  80
+//#define PRIO_UART4  80
+//#define PRIO_UART5  80
 
 
 // Define timer frequencies
@@ -26,12 +27,13 @@
 #define HZ_IMU_SLOW    100
 #define HZ_SIO          50
 #define HZ_AHRS         50
-//#define HZ_CTRL         50
+#define HZ_CTRL         50
 #define HZ_FLAG         10
 #define HZ_GPS          10
 #define HZ_GCSTX        10
 #define HZ_GCSRX        10
 #define HZ_DEBUG        10
+
 //#define HZ_UART1        10
 //#define HZ_UART2        10
 //#define HZ_UART4        10
@@ -63,12 +65,13 @@ timer_struct tmr_ahrs;
 timer_struct tmr_gps;
 timer_struct tmr_gcstx;
 timer_struct tmr_gcsrx;
+timer_struct tmr_ctrl;
+timer_struct tmr_debug;
+
 //timer_struct tmr_uart1;
 //timer_struct tmr_uart2;
 //timer_struct tmr_uart4;
 //timer_struct tmr_uart5;
-//timer_struct tmr_ctrl;
-timer_struct tmr_debug;
 
 
 // Mutex declarations
@@ -87,7 +90,7 @@ pthread_mutex_t mutex_eul;
 pthread_mutex_t mutex_ahrs;
 pthread_mutex_t mutex_gps;
 pthread_mutex_t mutex_gcs;  // Is this needed???
-//pthread_mutex_t mutex_ctrl;
+pthread_mutex_t mutex_ctrl;
 
 
 // Thread functions
@@ -112,7 +115,7 @@ void *fcn_ahrs   (  );
 void *fcn_gps    (  );
 void *fcn_gcstx  (  );
 void *fcn_gcsrx  (  );
-//void *fcn_ctrl   (  );
+void *fcn_ctrl   (  );
 void *fcn_debug  (  );
 
 //void *fcn_uart1  (  );

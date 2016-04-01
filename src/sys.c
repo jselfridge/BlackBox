@@ -65,15 +65,16 @@ void sys_update ( void )  {
 
   // Select data for display
   //sys_sio();
-  sys_imuA();
-  sys_imuB();
+  //sys_imuA();
+  //sys_imuB();
   //sys_ahrs();
   //sys_gps();
+  sys_ctrl();
+
   //sys_uart1();
   //sys_uart2();
   //sys_uart4();
   //sys_uart5();
-  //sys_ctrl();
 
   // Complete debugging display 
   printf("  "); fflush(stdout);
@@ -230,6 +231,30 @@ void sys_gps ( void )  {
 
 
 /**
+ *  sys_ctrl
+ *  Prints controller values to the terminal.
+ */
+void sys_ctrl ( void )  {
+
+  // Loop counter
+  //ushort i;
+
+  // Control signals
+  //pthread_mutex_lock(&mutex_ctrl);
+  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.perr[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.ierr[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.derr[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.cmd[i]  );  printf("   ");  fflush(stdout);
+  //printf("%5.2f ", ctrl.bank    *(180.0/PI) );  printf("   ");  fflush(stdout);
+  //printf("%5.2f ", ctrl.climb   *(180.0/PI) );  printf("   ");  fflush(stdout);
+  //printf("%5.2f ", ctrl.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
+  //pthread_mutex_unlock(&mutex_ctrl);
+
+  return;
+}
+
+
+/**
  *  sys_uart1
  *  Prints UART1 debugging messages to the terminal.
  */
@@ -281,31 +306,6 @@ void sys_uart5 ( void )  {
   printf( "TX5: %s    ", uart5.txdata );  fflush(stdout);
   printf( "RX5: %s    ", uart5.rxdata );  fflush(stdout);
   }
-  return;
-}
-*/
-
-/**
- *  sys_ctrl
- *  Prints controller values to the terminal.
- */
-/*
-void sys_ctrl ( void )  {
-
-  // Loop counter
-  //ushort i;
-
-  // Control signals
-  //pthread_mutex_lock(&mutex_ctrl);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.perr[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.ierr[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.derr[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.cmd[i]  );  printf("   ");  fflush(stdout);
-  //printf("%5.2f ", ctrl.bank    *(180.0/PI) );  printf("   ");  fflush(stdout);
-  //printf("%5.2f ", ctrl.climb   *(180.0/PI) );  printf("   ");  fflush(stdout);
-  //printf("%5.2f ", ctrl.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
-  //pthread_mutex_unlock(&mutex_ctrl);
-
   return;
 }
 */

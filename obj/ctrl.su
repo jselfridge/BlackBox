@@ -1,0 +1,6 @@
+ctrl.c:10:6:ctrl_init	24	static
+ctrl.c:88:6:ctrl_exit	0	static
+ctrl.c:99:6:ctrl_update	8	static
+ctrl.c:113:6:ctrl_quad	264	static
+ctrl.c:216:6:ctrl_plane	40	static
+ctrl.c:357:6:ctrl_disarm	8	static

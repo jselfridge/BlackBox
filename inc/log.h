@@ -15,8 +15,8 @@ enum log_index {
   LOG_IMUA = 1,
   LOG_IMUB = 2,
   LOG_AHRS = 3,
-  LOG_GPS  = 4
-  //LOG_CTL  = 5
+  LOG_GPS  = 4,
+  LOG_CTRL = 5
 } log_index;
 
 
@@ -80,7 +80,6 @@ log_gps_struct log_gps;
 
 
 // Log controller structure
-/*
 typedef struct log_ctrl_struct {
   ulong  count;
   ulong  limit;
@@ -92,7 +91,7 @@ typedef struct log_ctrl_struct {
   float  *cmd;
 } log_ctrl_struct;
 log_ctrl_struct log_ctrl;
-*/
+
 
 // Log structure
 typedef struct datalog_struct {
