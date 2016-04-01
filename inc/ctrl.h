@@ -31,11 +31,11 @@
 
 
 // Define 'quad' range values (vehicle specific values)
-// R: rad    P: rad    Y: rad/s    T: ?thrust?
-#define QUAD_R_RANGE   0.50
-#define QUAD_P_RANGE   0.50
-#define QUAD_Y_RANGE   1.50
-#define QUAD_T_RANGE   0.70
+// X: rad    Y: rad    Z: rad/s    T: ?thrust?
+#define QUAD_X_RANGE   0.50
+#define QUAD_Y_RANGE   0.50
+#define QUAD_Z_RANGE   1.50
+#define QUAD_T_RANGE   0.50
 
 
 // Define 'quad' throttle gains (vehicle specific values)
@@ -58,7 +58,7 @@
 #define QUAD_DZ    0.00
 
 
-// Define 'plane' disarm values (same for any plane)
+/*// Define 'plane' disarm values (same for any plane)
 #define PLANE_OFF0   0.0
 #define PLANE_OFF1   0.0
 #define PLANE_OFF2   0.0
@@ -69,25 +69,26 @@
 #define PLANE_OFF7   0.0
 #define PLANE_OFF8   0.0
 #define PLANE_OFF9   0.0
+*/
 
-
-// Define 'plane' channel index
+/*// Define 'plane' channel index
 #define PLANE_ELEV  0
 #define PLANE_RUDD  1
 #define PLANE_THRL  4
+*/
 
-
-// Define 'plane' range values
+/*// Define 'plane' range values
 // R: rad/s    P: rad/s    Y: rad/s    T: ?thrust?
 //#define PLANE_R_RANGE   1.00
 //#define PLANE_P_RANGE   1.00
 //#define PLANE_Y_RANGE   1.00
 #define PLANE_T_RANGE   1.00
+*/
 
-
-// Define 'plane' throttle gains
+/*// Define 'plane' throttle gains
 #define PLANE_TMIN   0.00
 #define PLANE_TMAX   0.00
+*/
 
 // Plane PD Gains
 // P: ????    I: ????    D: ????
@@ -104,6 +105,7 @@ typedef struct ctrl_struct {
   double  dt;
   double  off   [10];
   double  scale [4];
+  double  thrl  [3];
   double  pgain [3];
   double  igain [3];
   double  dgain [3];
@@ -123,7 +125,7 @@ void    ctrl_init    ( void );
 void    ctrl_exit    ( void );
 void    ctrl_update  ( void );
 void    ctrl_quad    ( void );
-void    ctrl_plane   ( void );
+//void    ctrl_plane   ( void );
 void    ctrl_disarm  ( void );
 
 

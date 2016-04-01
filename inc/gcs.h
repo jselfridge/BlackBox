@@ -8,7 +8,7 @@
 
 // Define statements
 #define MAV_COMP_ID_GAINS    120
-#define PARAM_COUNT   6
+#define PARAM_COUNT   16
 
 
 // Define 
@@ -29,12 +29,33 @@
 
 // Parameter enumeration
 enum param_index {
-  X_P = 0,
-  X_I = 1,
-  X_D = 2,
-  Y_P = 3,
-  Y_I = 4,
-  Y_D = 5
+
+  // Roll gains
+  X_Kp = 0,
+  X_Ki,
+  X_Kd,
+
+  // Pitch gains
+  Y_Kp,
+  Y_Ki,
+  Y_Kd,
+
+  // Yaw gains
+  Z_Kp,
+  Z_Ki,
+  Z_Kd,
+
+  // Thrl values
+  T_min,
+  T_max, 
+  T_tilt,
+
+  // Range values
+  X_R,
+  Y_R,
+  Z_R,
+  T_R
+
 };
 
 

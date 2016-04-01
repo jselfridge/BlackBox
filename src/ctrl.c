@@ -32,15 +32,20 @@ void ctrl_init ( void )  {
     ctrl.off[9] = QUAD_OFF9;
 
     // Reference ranges
-    ctrl.scale[CH_R] = QUAD_R_RANGE;
-    ctrl.scale[CH_P] = QUAD_P_RANGE;
-    ctrl.scale[CH_Y] = QUAD_Y_RANGE;
+    ctrl.scale[CH_R] = QUAD_X_RANGE;
+    ctrl.scale[CH_P] = QUAD_Y_RANGE;
+    ctrl.scale[CH_Y] = QUAD_Z_RANGE;
     ctrl.scale[CH_T] = QUAD_T_RANGE;
 
     // Gain values
     ctrl.pgain[x] = QUAD_PX;  ctrl.pgain[y] = QUAD_PY;  ctrl.pgain[z] = QUAD_PZ;
     ctrl.igain[x] = QUAD_IX;  ctrl.igain[y] = QUAD_IY;  ctrl.igain[z] = QUAD_IZ;
     ctrl.dgain[x] = QUAD_DX;  ctrl.dgain[y] = QUAD_DY;  ctrl.dgain[z] = QUAD_DZ;
+
+    // Throttle values
+    ctrl.thrl[0] = QUAD_TMIN;
+    ctrl.thrl[1] = QUAD_TMAX;
+    ctrl.thrl[2] = QUAD_TILT;
 
   }
 
@@ -98,8 +103,8 @@ void ctrl_exit ( void )  {
  */
 void ctrl_update ( void )  {
   if (armed)  {
-    //if ( !strcmp( SYSTEM, "quad"  ) )  ctrl_quad();
-    if ( !strcmp( SYSTEM, "plane" ) )  ctrl_plane();
+    if ( !strcmp( SYSTEM, "quad"  ) )  ctrl_quad();
+    //if ( !strcmp( SYSTEM, "plane" ) )  ctrl_plane();
   }
   else  ctrl_disarm();
   return;
@@ -116,7 +121,8 @@ void ctrl_quad ( void )  {
   bool reset;
   ushort ch;
   ushort x=0, y=1, z=2, t=3;
-  double eul[3], ang[3], in[4], ref[4], cmd[4], out[4], heading, dial;
+  double eul[3], ang[3], in[4], ref[4], cmd[4], out[4];
+  double trange, tmin, tmax, tilt, heading, dial;
   static double perr[3] = { 0.0, 0.0, 0.0 };
   static double ierr[3] = { 0.0, 0.0, 0.0 };
   static double derr[3] = { 0.0, 0.0, 0.0 };
@@ -134,6 +140,10 @@ void ctrl_quad ( void )  {
 
   // Obtain vehicle heading
   pthread_mutex_lock(&mutex_ctrl);
+  trange  = ctrl.scale[3];
+  tmin    = ctrl.thrl[0];
+  tmax    = ctrl.thrl[1];
+  tilt    = ctrl.thrl[2];
   heading = ctrl.heading;
   pthread_mutex_unlock(&mutex_ctrl);
 
@@ -178,17 +188,17 @@ void ctrl_quad ( void )  {
            derr[z] * ctrl.dgain[z];
 
   // Determine throttle adjustment
-  double tilt = ( 1 - ( cos(eul[x]) * cos(eul[y]) ) ) * QUAD_TILT;
-  double thresh = ( 0.5 * ( dial + 1.0 ) * ( QUAD_TMAX - QUAD_TMIN ) ) + QUAD_TMIN - QUAD_T_RANGE;
-  if ( in[CH_T] <= -0.6 )  cmd[t] = ( 2.50 * ( in[CH_T] + 1.0 ) * ( thresh + 1.0 ) ) - 1.0 + tilt;
-  else                     cmd[t] = ( 1.25 * ( in[CH_T] + 0.6 ) * QUAD_T_RANGE ) + thresh + tilt; 
+  double tilt_adj = ( 1 - ( cos(eul[x]) * cos(eul[y]) ) ) * tilt;
+  double thresh = ( 0.5 * ( dial + 1.0 ) * ( tmax - tmin ) ) + tmin - trange;
+  if ( in[CH_T] <= -0.6 )  cmd[t] = ( 2.50 * ( in[CH_T] + 1.0 ) * ( thresh + 1.0 ) ) - 1.0 + tilt_adj;
+  else                     cmd[t] = ( 1.25 * ( in[CH_T] + 0.6 ) * trange ) + thresh + tilt_adj; 
 
   // Assign motor outputs
   if ( in[CH_T] > -0.9 ) {
   out[QUAD_FR] = cmd[t] - cmd[x] + cmd[y] + cmd[z];
+  out[QUAD_BR] = cmd[t] - cmd[x] - cmd[y] - cmd[z];
   out[QUAD_BL] = cmd[t] + cmd[x] - cmd[y] + cmd[z];
   out[QUAD_FL] = cmd[t] + cmd[x] + cmd[y] - cmd[z];
-  out[QUAD_BR] = cmd[t] - cmd[x] - cmd[y] - cmd[z];
   } else {  for ( ch=0; ch<4; ch++ )  out[ch] = -1.0;  }
 
   // Push control data
@@ -213,7 +223,7 @@ void ctrl_quad ( void )  {
  *  ctrl_plane
  *  Apply control to plane configuration.
  */
-void ctrl_plane ( void )  {
+/*void ctrl_plane ( void )  {
 
   // Local variables
   double elev, rudd, thrl, dial, prop, thresh;
@@ -241,7 +251,7 @@ void ctrl_plane ( void )  {
 
   return;
 }
-
+*/
 
   /*
   // Local variables

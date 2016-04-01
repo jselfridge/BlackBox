@@ -64,12 +64,12 @@ void sys_update ( void )  {
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
-  sys_sio();
+  //sys_sio();
   //sys_imuA();
   //sys_imuB();
   //sys_ahrs();
   //sys_gps();
-  //sys_ctrl();
+  sys_ctrl();
 
   //sys_uart1();
   //sys_uart2();
@@ -94,19 +94,16 @@ void sys_sio ( void )  {
 
   // Input signals
   pthread_mutex_lock(&mutex_input);
-  //for ( i=0; i<4; i++ )  printf("%5d ",   input.reg[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<6; i++ )  printf("%5d ",   input.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<6; i++ )  printf("%4d ",   input.pwm[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<10; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<6; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_input);
 
   // Output signals
   pthread_mutex_lock(&mutex_output);
   //for ( i=0; i<4; i++ )  printf("%5d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<6; i++ )  printf("%4d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<10; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
-  //printf("%5.2f ", output.norm[0] );  printf("   ");  fflush(stdout);
-  //printf("%5.2f ", output.norm[1] );  printf("   ");  fflush(stdout);
-  //printf("%5.2f ", output.norm[4] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%4d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
+  for ( i=0; i<4; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_output);
 
   return;
@@ -237,10 +234,15 @@ void sys_gps ( void )  {
 void sys_ctrl ( void )  {
 
   // Loop counter
-  //ushort i;
+  ushort i;
 
   // Control signals
-  //pthread_mutex_lock(&mutex_ctrl);
+  pthread_mutex_lock(&mutex_ctrl);
+  for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.pgain[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.igain[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.dgain[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.thrl[i]  );  printf("   ");  fflush(stdout);
+  for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.scale[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.perr[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.ierr[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.derr[i] );  printf("   ");  fflush(stdout);
@@ -248,7 +250,7 @@ void sys_ctrl ( void )  {
   //printf("%5.2f ", ctrl.bank    *(180.0/PI) );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", ctrl.climb   *(180.0/PI) );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", ctrl.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
-  //pthread_mutex_unlock(&mutex_ctrl);
+  pthread_mutex_unlock(&mutex_ctrl);
 
   return;
 }
@@ -328,7 +330,7 @@ void sys_exit (  )  {
   //log_close();
   //-----------------//
   log_exit();
-  //ctl_exit();
+  ctrl_exit();
   gcs_exit();
   gps_exit();
   //uart_exit();

@@ -44,9 +44,9 @@ enum radio_index {
   CH_P = CH2,
   CH_Y = CH3,
   CH_T = CH4,
-  CH_S = CH6,
-  CH_D = CH7,
-  CH_A = CH8
+  CH_S = CH5,
+  CH_D = CH6,
+  CH_A = CH7
 } radio_index;
 
 

@@ -45,13 +45,31 @@ void gcs_init ( void )  {
   gcs.sendparam   = false;
   gcs.sendmission = false;
 
-  // Load default parameter values
-  strcpy( param.name[X_P], "X_P" );  param.val[X_P] = 10.0;  
-  strcpy( param.name[X_I], "X_I" );  param.val[X_I] =  0.1;  
-  strcpy( param.name[X_D], "X_D" );  param.val[X_D] =  1.0;  
-  strcpy( param.name[Y_P], "Y_P" );  param.val[Y_P] = 20.0;  
-  strcpy( param.name[Y_I], "Y_I" );  param.val[Y_I] =  0.2;  
-  strcpy( param.name[Y_D], "Y_D" );  param.val[Y_D] =  2.0;  
+  // Roll gains
+  strcpy( param.name[X_Kp], "X_Kp" );  param.val[X_Kp] = QUAD_PX;
+  strcpy( param.name[X_Ki], "X_Ki" );  param.val[X_Ki] = QUAD_IX;
+  strcpy( param.name[X_Kd], "X_Kd" );  param.val[X_Kd] = QUAD_DX;
+
+  // Pitch gains
+  strcpy( param.name[Y_Kp], "Y_Kp" );  param.val[Y_Kp] = QUAD_PY;
+  strcpy( param.name[Y_Ki], "Y_Ki" );  param.val[Y_Ki] = QUAD_IY;
+  strcpy( param.name[Y_Kd], "Y_Kd" );  param.val[Y_Kd] = QUAD_DY;
+
+  // Yaw gains
+  strcpy( param.name[Z_Kp], "Z_Kp" );  param.val[Z_Kp] = QUAD_PZ;
+  strcpy( param.name[Z_Ki], "Z_Ki" );  param.val[Z_Ki] = QUAD_IZ;
+  strcpy( param.name[Z_Kd], "Z_Kd" );  param.val[Z_Kd] = QUAD_DZ;
+
+  // Throttle values
+  strcpy( param.name[T_min],  "T_min"  );  param.val[T_min]  = QUAD_TMIN;
+  strcpy( param.name[T_max],  "T_max"  );  param.val[T_max]  = QUAD_TMAX;
+  strcpy( param.name[T_tilt], "T_tilt" );  param.val[T_tilt] = QUAD_TILT;
+
+  // Range values
+  strcpy( param.name[X_R], "X_R" );  param.val[X_R] = QUAD_X_RANGE;
+  strcpy( param.name[Y_R], "Y_R" );  param.val[Y_R] = QUAD_Y_RANGE;
+  strcpy( param.name[Z_R], "Z_R" );  param.val[Z_R] = QUAD_Z_RANGE;
+  strcpy( param.name[T_R], "T_R" );  param.val[T_R] = QUAD_T_RANGE;
 
   // Send initial parameters
   gcs_paramlist();
@@ -91,10 +109,6 @@ void gcs_tx ( void)  {
   if (GCS_RAW_IMUB_ENABLED)  if (IMUB_ENABLED)  gcs_raw_imuB();
   if (GCS_EUL_ENABLED)   gcs_eul();
   if (GCS_RADIO_ENABLED)   gcs_radio();
-  //if (GCS_QUAT_ENABLED)  gcs_quat();
-  //if (GCS_GPS_ENABLED)   gcs_gps();
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   return;
 }
@@ -126,61 +140,52 @@ void gcs_rx ( void)  {
     // Try to get a new message
     if ( mavlink_parse_char( 0, c, &msg, &status ) )  {
 
-      //printf("\n");
-
       // Handle message
       switch(msg.msgid)  {
 
         // ID: #0
         case MAVLINK_MSG_ID_HEARTBEAT:
-	  //printf("RX: Heartbeat");  
-          //printf("    %3.1f %3.1f %3.1f ", param.val[0], param.val[1], param.val[2] );
-          //fflush(stdout);
           // Add fail safe code here
         break;
 
         // ID: #20
         case MAVLINK_MSG_ID_PARAM_REQUEST_READ:
-	  //printf("RX: Param Request Read");  fflush(stdout);
 	  gcs.sendparam = true;
         break;
 
         // ID: #21
         case MAVLINK_MSG_ID_PARAM_REQUEST_LIST:
-	  //printf("RX: Param Request List");  fflush(stdout);
 	  gcs.sendparam = true;
         break;
 
         // ID: #23
         case MAVLINK_MSG_ID_PARAM_SET:
-	  //printf("RX: Param Set");  fflush(stdout);
           gcs_paramupdate(&msg);
         break;
 
         // ID: #43
         case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
-	  //printf("RX: Mission Request List");  fflush(stdout);
 	  gcs.sendmission = true;
         break;
 
         // ID: #47
         case MAVLINK_MSG_ID_MISSION_ACK:
-	  //printf("RX: Mission Acknowledge");  fflush(stdout);
+	  // Add "Mission Acknowledge" code...
         break;
 
         // ID: #75
         case MAVLINK_MSG_ID_COMMAND_INT:
-	  //printf("RX: Command Int");  fflush(stdout);
+	  // Add "Command Int" code...
         break;
 
         // ID: #76
         case MAVLINK_MSG_ID_COMMAND_LONG:
-	  //printf("RX: Command Long");  fflush(stdout);
+	  // Add "Command Long" code...
         break;
 
         // ID: #???
         default:
-          //printf("RX: New ID: %d ", msg.msgid );  fflush(stdout);
+          // Add unknown ID code...
         break;
 
       }
@@ -284,6 +289,7 @@ void gcs_send_param ( enum param_index name, float val )  {
  */
 void gcs_paramupdate ( mavlink_message_t *msg )  {
 
+  // Local variables
   uint i, j;
   bool match;
   mavlink_param_set_t set;
@@ -324,14 +330,6 @@ void gcs_paramupdate ( mavlink_message_t *msg )  {
 
           param.val[i] = set.param_value;
 
-          // Report back new value
-
-          //mavlink_msg_param_value_send(MAVLINK_COMM_0,
-          //(int8_t*) global_data.param_name[i],
-          //global_data.param[i], MAVLINK_TYPE_FLOAT, 
-          //ONBOARD_PARAM_COUNT, m_parameter_i);
-          //}
-
           // Pack parameter message
           mavlink_message_t confirm_msg;
           memset( &confirm_msg, 0, sizeof(&confirm_msg) );
@@ -351,6 +349,7 @@ void gcs_paramupdate ( mavlink_message_t *msg )  {
           memset( buf, 0, sizeof(buf) );
           int len = mavlink_msg_to_send_buffer( buf, &confirm_msg );
 
+          // Write out to GCS
           pthread_mutex_lock(&mutex_gcs);
           int w = write( gcs.fd, buf, len );
           pthread_mutex_unlock(&mutex_gcs);
@@ -361,6 +360,34 @@ void gcs_paramupdate ( mavlink_message_t *msg )  {
     }
   }
 
+  uint x=0, y=1, z=2, t=3;
+
+  // Update roll gains
+  ctrl.pgain[x] = param.val[X_Kp];
+  ctrl.igain[x] = param.val[X_Ki];
+  ctrl.dgain[x] = param.val[X_Kd];
+
+  // Update pitch gains
+  ctrl.pgain[y] = param.val[Y_Kp];
+  ctrl.igain[y] = param.val[Y_Ki];
+  ctrl.dgain[y] = param.val[Y_Kd];
+
+  // Update yaw gains
+  ctrl.pgain[z] = param.val[Z_Kp];
+  ctrl.igain[z] = param.val[Z_Ki];
+  ctrl.dgain[z] = param.val[Z_Kd];
+
+  // Update throttle values
+  ctrl.thrl[0] = param.val[T_min];
+  ctrl.thrl[1] = param.val[T_max];
+  ctrl.thrl[2] = param.val[T_tilt];
+
+  // Update range values
+  ctrl.scale[x] = param.val[X_R];
+  ctrl.scale[y] = param.val[Y_R];
+  ctrl.scale[z] = param.val[Z_R];
+  ctrl.scale[t] = param.val[T_R];
+
   return;
 }
 
@@ -370,8 +397,6 @@ void gcs_paramupdate ( mavlink_message_t *msg )  {
  *  Sends the onboard mission list.
  */
 void gcs_missionlist ( void)  {
-
-  //printf("\nTX: Mission List " );  fflush(stdout);
 
   // Local variables
   int len, w;
@@ -410,8 +435,6 @@ void gcs_missionlist ( void)  {
  *  Sends a heartbeat transmission.
  */
 void gcs_heartbeat ( void)  {
-
-  //printf("\nTX: Heartbeat " );  fflush(stdout);
 
   // Initialize the required buffers
   mavlink_message_t msg;
