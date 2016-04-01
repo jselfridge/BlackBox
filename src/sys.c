@@ -64,12 +64,12 @@ void sys_update ( void )  {
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
-  //sys_sio();
+  sys_sio();
   //sys_imuA();
   //sys_imuB();
   //sys_ahrs();
   //sys_gps();
-  sys_ctrl();
+  //sys_ctrl();
 
   //sys_uart1();
   //sys_uart2();

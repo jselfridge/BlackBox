@@ -90,6 +90,7 @@ void gcs_tx ( void)  {
   if (GCS_RAW_IMUA_ENABLED)  if (IMUA_ENABLED)  gcs_raw_imuA();
   if (GCS_RAW_IMUB_ENABLED)  if (IMUB_ENABLED)  gcs_raw_imuB();
   if (GCS_EUL_ENABLED)   gcs_eul();
+  if (GCS_RADIO_ENABLED)   gcs_radio();
   //if (GCS_QUAT_ENABLED)  gcs_quat();
   //if (GCS_GPS_ENABLED)   gcs_gps();
 
@@ -572,6 +573,52 @@ void gcs_eul ( void )  {
     GCS_SYSID, GCS_ATT, &msg, time_boot_ms, 
     roll, pitch, yaw, 
     rollspeed, pitchspeed, yawspeed
+    );
+
+  // Copy the heartbeat message to the send buffer
+  uint len = mavlink_msg_to_send_buffer( buf, &msg );
+
+  // Transmit the attitude data
+  int w = write( gcs.fd, buf, len );
+  usleep(w*300);
+
+  return;
+}
+
+
+/**
+ *  gcs_radio
+ *  Sends the radio commands.
+ */
+void gcs_radio ( void )  {
+
+  // Initialize the required buffers
+  mavlink_message_t msg;
+  uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+
+  // Clear the message and buffer
+  memset( &msg, 0, sizeof(&msg) );
+  memset( &buf, 0, sizeof(&buf) );
+
+  // Collect the data
+  uint32_t time_boot_ms = 0;
+  uint8_t  port = 1;
+  uint8_t  rssi = 255;
+  pthread_mutex_lock(&mutex_input);
+  int16_t ch1 = (int16_t) ( input.norm[CH1] * 10000 );
+  int16_t ch2 = (int16_t) ( input.norm[CH2] * 10000 );
+  int16_t ch3 = (int16_t) ( input.norm[CH3] * 10000 );
+  int16_t ch4 = (int16_t) ( input.norm[CH4] * 10000 );
+  int16_t ch5 = (int16_t) ( input.norm[CH5] * 10000 );
+  int16_t ch6 = (int16_t) ( input.norm[CH6] * 10000 );
+  int16_t ch7 = (int16_t) ( input.norm[CH7] * 10000 );
+  int16_t ch8 = (int16_t) ( input.norm[CH8] * 10000 );
+  pthread_mutex_unlock(&mutex_input);
+
+  // Pack the attitude message 
+  mavlink_msg_rc_channels_scaled_pack ( 
+    GCS_SYSID, GCS_INPUT, &msg, time_boot_ms, port, 
+    ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8, rssi
     );
 
   // Copy the heartbeat message to the send buffer
