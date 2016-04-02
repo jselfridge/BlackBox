@@ -18,13 +18,15 @@
 #define GCS_IMUB   12
 #define GCS_ATT    20
 #define GCS_INPUT  30
+#define GCS_OUTPUT 40
 
 
 // Define data transmissions
 #define GCS_RAW_IMUA_ENABLED   true
 #define GCS_RAW_IMUB_ENABLED   true
 #define GCS_EUL_ENABLED        true
-#define GCS_RADIO_ENABLED      true
+#define GCS_INPUT_ENABLED      true
+#define GCS_OUTPUT_ENABLED     true
 
 
 // Parameter enumeration
@@ -92,7 +94,8 @@ void  gcs_missionlist  ( void );
 void  gcs_raw_imuA     ( void );
 void  gcs_raw_imuB     ( void );
 void  gcs_eul          ( void );
-void  gcs_radio        ( void );
+void  gcs_input        ( void );
+void  gcs_output       ( void );
 
 
 #endif
