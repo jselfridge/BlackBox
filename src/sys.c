@@ -68,8 +68,8 @@ void sys_update ( void )  {
   //sys_imuA();
   //sys_imuB();
   //sys_ahrs();
-  //sys_gps();
-  sys_ctrl();
+  sys_gps();
+  //sys_ctrl();
 
   //sys_uart1();
   //sys_uart2();
@@ -103,7 +103,12 @@ void sys_sio ( void )  {
   pthread_mutex_lock(&mutex_output);
   //for ( i=0; i<4; i++ )  printf("%5d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%4d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<4; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
+  printf("%5.2f ", output.norm[0] );
+  printf("%5.2f ", output.norm[1] );
+  printf("%5.2f ", output.norm[4] );
+  printf("%5.2f ", output.norm[5] );
+  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_output);
 
   return;
@@ -220,7 +225,14 @@ void sys_ahrs ( void )  {
 void sys_gps ( void )  {
 
   pthread_mutex_lock(&mutex_gps);
-  printf("GPS msg:    %s ", gps.msg );  printf("   ");  fflush(stdout);
+  //printf("GPS msg:    %s ", gps.msg );  printf("   ");  fflush(stdout);
+  /*  printf("lat: %s    ",     gps.lat     );
+  printf("lon: %s    ",     gps.lon     );
+  printf("alt: %s    ",     gps.alt     );
+  printf("heading: %s    ", gps.heading );
+  printf("speed: %s    ",   gps.speed   );
+  printf("numsat: %s    ",  gps.numsat  );
+  fflush(stdout); */
   pthread_mutex_unlock(&mutex_gps);
 
   return;

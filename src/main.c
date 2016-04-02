@@ -9,6 +9,9 @@
  */
 int main ( void )  {
 
+  gps_update();
+
+  /*
   // Begin the program
   if(DEBUG)  printf("\n--- Begin BlackBox program ---\n");
   led_off(LED_SIO);  led_off(LED_IMU);  led_off(LED_LOG);  led_off(LED_MOT);
@@ -36,6 +39,7 @@ int main ( void )  {
   // Exit the program
   //usleep(200000);
   sys_exit();
+  */
 
   return 0;
 

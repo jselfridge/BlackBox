@@ -5,6 +5,11 @@
 #include <main.h>
 
 
+// Define GPS messages
+#define GPS_RMC_ENABLED  true
+#define GPS_GGA_ENABLED  false
+
+
 // Define GPS buad rates
 #define GPS_BAUD_57600  "$PMTK251,57600*2C"
 #define GPS_BAUD_9600   "$PMTK251,9600*17"
@@ -44,6 +49,9 @@ void  gps_init     ( void );
 void  gps_exit     ( void );
 void  gps_update   ( void );
 uint  gps_hex2dec  ( char c );
+void  gps_rmc      ( char *msg );
+
+
 void  gps_adafruit ( void );
 
 

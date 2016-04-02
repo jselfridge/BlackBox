@@ -13,21 +13,21 @@
 // Define 'quad' disarm values
 #define QUAD_OFF0  -1.0
 #define QUAD_OFF1  -1.0
-#define QUAD_OFF2  -1.0
-#define QUAD_OFF3  -1.0
-#define QUAD_OFF4   0.0
-#define QUAD_OFF5   0.0
+#define QUAD_OFF2   0.0
+#define QUAD_OFF3   0.0
+#define QUAD_OFF4  -1.0
+#define QUAD_OFF5  -1.0
 #define QUAD_OFF6   0.0
 #define QUAD_OFF7   0.0
 #define QUAD_OFF8   0.0
 #define QUAD_OFF9   0.0
 
 
-// Define 'quad' motor channel index (smae for any quad)
-#define QUAD_FR  0
+// Define 'quad' motor channel index
+#define QUAD_FL  0
 #define QUAD_BL  1
-#define QUAD_FL  2
-#define QUAD_BR  3
+#define QUAD_BR  4
+#define QUAD_FR  5
 
 
 // Define 'quad' range values (vehicle specific values)

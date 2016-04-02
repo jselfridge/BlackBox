@@ -71,12 +71,12 @@ void gps_update ( void)  {
   bool valid = false;
   char msg[96];    memset( msg, 0, sizeof(msg) );
 
-  read( gps.fd, msg, sizeof(msg) );
-  tcflush( gps.fd, TCIOFLUSH ); 
+  //read( gps.fd, msg, sizeof(msg) );
+  //tcflush( gps.fd, TCIOFLUSH ); 
 
   // Debugging message
-  //strcpy( msg, "$GPGGA,194510.000,4042.6127,N,07400.4184,W,1,5,1.82,143.2,M,-34.2,M,,*6E\r\n" );
-  //strcpy( msg, "$GPRMC,194510.000,A,4042.6127,N,07400.4184,W,1.60,212.71,160412,,,A*7E\r\n" );
+  //strcpy( msg, "$GPGGA,194510.250,4042.6127,N,07400.4184,W,1,5,1.82,143.2,M,-34.2,M,,*69\r\n" );
+  strcpy( msg, "$GPRMC,194510.250,A,4042.6127,N,07400.4184,W,1.60,212.71,160412,,,A*79\r\n" );
   //printf("\nupdate msg: \n%s", msg );
 
   int len = strlen(msg);
@@ -107,6 +107,9 @@ void gps_update ( void)  {
   sprintf( gps.msg, msg );
   pthread_mutex_unlock(&mutex_gps);
 
+  // Parse message
+  if (GPS_RMC_ENABLED)  gps_rmc(msg);
+
   return;
 }
 
@@ -122,6 +125,157 @@ uint gps_hex2dec ( char c )  {
   if ( c <= 'F' )  return (c - 'A')+10;
   return 0;
 }
+
+
+/**
+ *  gps_rmc
+ *  Parse an RMC GPS message.
+ */
+void gps_rmc ( char *msg )  {
+
+  printf("Start parsing that message... \n");
+  printf( "msg:   %s \n", msg );
+
+  // Local variables
+  long degree, minutes;
+  char degreebuff[10];
+  double latitudeDegrees;
+  double longitudeDegrees;
+
+  // Work with temp buffer
+  char *p = msg;
+
+  // Get GPS HMS
+  p = strchr( p, ',' ) +1;
+  char timestr[6];
+  memcpy( &timestr, p, 6 );
+  uint timeint = atoi(timestr);
+  
+  // Get GPS ms
+  p = strchr( p, '.' ) +1;
+  char msstr[3];
+  memcpy( &msstr, p, 3 );
+  uint ms = atoi(msstr);
+
+  // Calculate time
+  uint hr  = timeint / 10000;
+  uint min = (timeint % 10000) / 100;
+  uint sec = (timeint % 100);
+
+  // Display time results
+  printf("timeint: %d \n", timeint );
+  printf("time:  %2d:%2d:%2d.%3d \n", hr, min, sec, ms );
+
+  // GPS fix status
+  //bool fix;
+  p = strchr( p, ',' )+1;
+  if ( p[0] == 'A' )  {  
+    //fix = true;
+    printf("Good fix \n");
+  }
+  else if ( p[0] == 'V' )  {
+    //fix = false;
+    printf("No fix \n");
+  }
+  else  {
+    //fix = false;
+    printf("Bad status \n");
+  }
+
+  // Parse GPS latitude
+  p = strchr( p, ',' )+1;
+  if ( ',' != *p )  {
+    strncpy(degreebuff, p, 2);
+    degreebuff[2] = '\0';
+    degree = atol(degreebuff) * 10000000;
+    printf( "degree: %ld \n", degree );
+    p += 2;
+    strncpy(degreebuff, p, 2); // minutes
+    p += 3; // skip decimal point
+    strncpy(degreebuff + 2, p, 4);
+    degreebuff[6] = '\0';
+    printf("degbuff: %s \n", degreebuff );
+    minutes = 50 * atol(degreebuff) / 3;
+    printf("minutes: %ld \n", minutes);
+    long latitude_fixed = degree + minutes;
+    printf("latitude_fixed: %ld \n", latitude_fixed );
+    double latitude = degree / 100000 + minutes * 0.000006F;
+    printf("latitude: %f \n", latitude );
+    latitudeDegrees = ( latitude- 100* (int)(latitude/100) ) /60.0;
+    latitudeDegrees += (int)(latitude/100);
+    printf("latitudeDegrees: %f \n", latitudeDegrees );
+  }
+
+  // Convert N/S
+  p = strchr( p, ',' )+1;
+  char lat = 'O';
+  if ( ',' != *p )  {
+    if      ( p[0] == 'S' )  latitudeDegrees *= -1.0;
+    if      ( p[0] == 'N' )  lat = 'N';
+    else if ( p[0] == 'S' )  lat = 'S';
+    else if ( p[0] == ',' )  lat = '0';
+    else                     lat = '?';
+  }
+  printf("lat: %c \n", lat);
+
+  // Parse GPS longitude
+  p = strchr( p, ',' )+1;
+  if ( ',' != *p )  {
+    strncpy( degreebuff, p, 3 );
+    degreebuff[3] = '\0';
+    degree = atol(degreebuff) * 10000000;
+    printf( "degree: %ld \n", degree );
+    p += 3;
+    strncpy(degreebuff, p, 2); // minutes
+    p += 3; // skip decimal point
+    strncpy(degreebuff + 2, p, 4);
+    degreebuff[6] = '\0';
+    printf("degbuff: %s \n", degreebuff );
+    minutes = 50 * atol(degreebuff) / 3;
+    printf("minutes: %ld \n", minutes);
+    long longitude_fixed = degree + minutes;
+    printf("longitude_fixed: %ld \n", longitude_fixed );
+    double longitude = degree / 100000 + minutes * 0.000006F;
+    printf("longitude: %f \n", longitude );
+    longitudeDegrees = ( longitude - 100* (int)(longitude/100) ) /60.0;
+    longitudeDegrees += (int)(longitude/100);
+    printf("longitudeDegrees: %f \n", longitudeDegrees );
+  }
+
+  // Convert E/W
+  p = strchr(p, ',')+1;
+  char lon = 'O';
+  if ( ',' != *p )  {
+    if      ( p[0] == 'W' )  longitudeDegrees *= -1.0;
+    if      ( p[0] == 'W' )  lon = 'W';
+    else if ( p[0] == 'E' )  lon = 'E';
+    else if ( p[0] == ',' )  lon = '0';
+    else                     lon = '?';
+  }
+  printf( "lon: %c \n", lon );
+
+  // Speed
+  p = strchr( p, ',' )+1;
+  if ( ',' != *p )  {  double speed = atof(p);  printf( "speed: %f \n", speed );  }
+
+  // Angle
+  p = strchr( p, ',' )+1;
+  if ( ',' != *p )  {  double angle = atof(p);  printf( "angle: %f \n", angle );  }
+
+  // Date
+  p = strchr( p, ',' )+1;
+  if ( ',' != *p )  {
+    ulong fulldate = atof(p);
+    ulong day = fulldate / 10000;
+    ulong month = (fulldate % 10000) / 100;
+    ulong year = (fulldate % 100);
+    printf("date: %2ld:%2ld:%2ld \n", month, day, year );
+  }
+
+  return;
+}
+
+
 
 
 /**

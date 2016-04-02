@@ -195,11 +195,16 @@ void ctrl_quad ( void )  {
 
   // Assign motor outputs
   if ( in[CH_T] > -0.9 ) {
-  out[QUAD_FR] = cmd[t] - cmd[x] + cmd[y] + cmd[z];
-  out[QUAD_BR] = cmd[t] - cmd[x] - cmd[y] - cmd[z];
-  out[QUAD_BL] = cmd[t] + cmd[x] - cmd[y] + cmd[z];
-  out[QUAD_FL] = cmd[t] + cmd[x] + cmd[y] - cmd[z];
-  } else {  for ( ch=0; ch<4; ch++ )  out[ch] = -1.0;  }
+    out[QUAD_FL] = cmd[t] + cmd[x] + cmd[y] - cmd[z];
+    out[QUAD_BL] = cmd[t] + cmd[x] - cmd[y] + cmd[z];
+    out[QUAD_BR] = cmd[t] - cmd[x] - cmd[y] - cmd[z];
+    out[QUAD_FR] = cmd[t] - cmd[x] + cmd[y] + cmd[z];
+  } else {
+    out[QUAD_FL] = -1.0;
+    out[QUAD_BL] = -1.0;
+    out[QUAD_BR] = -1.0;
+    out[QUAD_FR] = -1.0;
+  }
 
   // Push control data
   pthread_mutex_lock(&mutex_ctrl);
@@ -213,7 +218,10 @@ void ctrl_quad ( void )  {
   pthread_mutex_unlock(&mutex_ctrl);
 
   // Push system outputs
-  for ( ch=0; ch<4; ch++ )  sio_setnorm( ch, out[ch] );
+  sio_setnorm( QUAD_FL, out[QUAD_FL] );
+  sio_setnorm( QUAD_BL, out[QUAD_BL] );
+  sio_setnorm( QUAD_BR, out[QUAD_BR] );
+  sio_setnorm( QUAD_FR, out[QUAD_FR] );
 
   return;
 }
