@@ -11,5 +11,5 @@ gcs.c:524:6:gcs_raw_imuB	664	dynamic,bounded
 gcs.c:575:6:gcs_eul	664	dynamic,bounded
 gcs.c:618:6:gcs_input	680	dynamic,bounded
 gcs.c:664:6:gcs_output	656	dynamic,bounded
-gcs.c:96:6:gcs_tx	8	static
 gcs.c:709:6:gcs_gps	632	dynamic,bounded
+gcs.c:96:6:gcs_tx	8	static

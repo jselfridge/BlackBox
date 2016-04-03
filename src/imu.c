@@ -318,9 +318,9 @@ void imu_update ( imu_struct *imu )  {
 
   // Shift and orient magnetometer readings
   if(imu->getmag) {
-  Mcal[x] = ( Mavg[x] - imu->mag->bias[x] ) / (double) (imu->mag->range[x]);
-  Mcal[y] = ( Mavg[y] - imu->mag->bias[y] ) / (double) (imu->mag->range[y]);
-  Mcal[z] = ( Mavg[z] - imu->mag->bias[z] ) / (double) (imu->mag->range[z]);
+  Mcal[x] = - ( Mavg[y] - imu->mag->bias[y] ) / (double) (imu->mag->range[y]);
+  Mcal[y] =   ( Mavg[x] - imu->mag->bias[x] ) / (double) (imu->mag->range[x]);
+  Mcal[z] =   ( Mavg[z] - imu->mag->bias[z] ) / (double) (imu->mag->range[z]);
   }
 
   // Push gyroscope values to data structure

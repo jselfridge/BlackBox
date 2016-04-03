@@ -108,7 +108,7 @@ void gps_update ( void)  {
   pthread_mutex_unlock(&mutex_gps);
 
   // Parse message
-  if (GPS_RMC_ENABLED)  gps_rmc(msg);
+  //if (GPS_RMC_ENABLED)  gps_rmc(msg);
 
   return;
 }

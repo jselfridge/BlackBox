@@ -25,8 +25,8 @@
 // Define timer frequencies
 #define HZ_IMU_FAST    500
 #define HZ_IMU_SLOW    100
-#define HZ_SIO          50
-#define HZ_AHRS         50
+#define HZ_SIO         100
+#define HZ_AHRS        100
 #define HZ_CTRL         50
 #define HZ_FLAG         10
 #define HZ_GPS          10

@@ -107,10 +107,10 @@ void gcs_tx ( void)  {
   // Send always if enabled
   if (GCS_RAW_IMUA_ENABLED)  if (IMUA_ENABLED)  gcs_raw_imuA();
   if (GCS_RAW_IMUB_ENABLED)  if (IMUB_ENABLED)  gcs_raw_imuB();
-  if (GCS_EUL_ENABLED)   gcs_eul();
-  if (GCS_INPUT_ENABLED)   gcs_input();
+  if (GCS_EUL_ENABLED)      gcs_eul();
+  if (GCS_INPUT_ENABLED)    gcs_input();
   if (GCS_OUTPUT_ENABLED)   gcs_output();
-  if (GCS_GPS_ENABLED)   gcs_output();
+  if (GCS_GPS_ENABLED)      gcs_gps();
 
   return;
 }

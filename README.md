@@ -14,8 +14,8 @@ navigation capabilities.
 
 <b> Component Integration and Bench Testing </b>
 <ul>
-  <li> (WIP) </li>
-  <li> (WIP) </li>
+  <li> Incorporated second IMU into the system. </li>
+  <li> Configured tunable control gains for quadrotor vehicle. </li>
   <li> (WIP) </li>
   <li> (WIP) </li>
   <li> (WIP) </li>
@@ -173,6 +173,7 @@ The following list outlines some proposed upcoming change.
 </ul>
 <li><b> Sooner than later </b></li>
 <ul>
+  <li> Dedicated filter source code </li>
   <li> Butterworth filter </li>
   <li> Tunable LPF gains from GCS </li>
   <li> Test pull up resistors on Sparkfun breakout board </li>

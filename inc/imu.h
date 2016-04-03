@@ -7,7 +7,7 @@
 
 // Define hardware
 #define IMUA_ENABLED   true
-#define IMUB_ENABLED   false
+#define IMUB_ENABLED   true
 
 // Define LPF history length
 #define GYR_HIST   10
