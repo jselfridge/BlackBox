@@ -110,6 +110,7 @@ void gcs_tx ( void)  {
   if (GCS_EUL_ENABLED)   gcs_eul();
   if (GCS_INPUT_ENABLED)   gcs_input();
   if (GCS_OUTPUT_ENABLED)   gcs_output();
+  if (GCS_GPS_ENABLED)   gcs_output();
 
   return;
 }
@@ -689,6 +690,52 @@ void gcs_output ( void )  {
     GCS_SYSID, GCS_OUTPUT, &msg, time_usec, port, 
     ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8
     );
+
+  // Copy the heartbeat message to the send buffer
+  uint len = mavlink_msg_to_send_buffer( buf, &msg );
+
+  // Transmit the attitude data
+  int w = write( gcs.fd, buf, len );
+  usleep(w*300);
+
+  return;
+}
+
+
+/**
+ *  gcs_gps
+ *  Sends the GPS location data.
+ */
+void gcs_gps ( void )  {
+
+  // Initialize the required buffers
+  mavlink_message_t msg;
+  uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+
+  // Clear the message and buffer
+  memset( &msg, 0, sizeof(&msg) );
+  memset( &buf, 0, sizeof(&buf) );
+
+  // Collect the data
+  uint64_t time_usec = 0;
+  pthread_mutex_lock(&mutex_gps);
+  uint8_t  fix =  3;
+  int32_t  lat =  370349210;
+  int32_t  lon = -764677960;
+  int32_t  alt =  3000;
+  uint16_t eph = UINT16_MAX;
+  uint16_t epv = UINT16_MAX;
+  uint16_t vel = 100;
+  uint16_t cog = 31400;
+  uint8_t  num = 6;
+  pthread_mutex_unlock(&mutex_gps);
+
+  // Pack the attitude message 
+  mavlink_msg_gps_raw_int_pack ( 
+    GCS_SYSID, GCS_OUTPUT, &msg, time_usec,
+    fix, lat, lon, alt, 
+    eph, epv, vel, cog, num
+  );
 
   // Copy the heartbeat message to the send buffer
   uint len = mavlink_msg_to_send_buffer( buf, &msg );

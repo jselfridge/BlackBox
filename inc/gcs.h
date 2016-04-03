@@ -19,6 +19,7 @@
 #define GCS_ATT    20
 #define GCS_INPUT  30
 #define GCS_OUTPUT 40
+#define GCS_GPS    50
 
 
 // Define data transmissions
@@ -27,6 +28,7 @@
 #define GCS_EUL_ENABLED        true
 #define GCS_INPUT_ENABLED      true
 #define GCS_OUTPUT_ENABLED     true
+#define GCS_GPS_ENABLED        true
 
 
 // Parameter enumeration
@@ -96,6 +98,7 @@ void  gcs_raw_imuB     ( void );
 void  gcs_eul          ( void );
 void  gcs_input        ( void );
 void  gcs_output       ( void );
+void  gcs_gps          ( void );
 
 
 #endif
