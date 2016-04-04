@@ -1,4 +1,4 @@
-ctrl.c:10:6:ctrl_init	24	static
+ctrl.c:10:6:ctrl_init	40	static
 ctrl.c:93:6:ctrl_exit	0	static
 ctrl.c:118:6:ctrl_quad	264	static
 ctrl.c:104:6:ctrl_update	8	static

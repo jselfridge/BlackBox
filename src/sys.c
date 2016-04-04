@@ -342,14 +342,14 @@ void sys_exit (  )  {
   //log_close();
   //-----------------//
   log_exit();
-  ctrl_exit();
+  //ctrl_exit();
   gcs_exit();
-  gps_exit();
+  //gps_exit();
   //uart_exit();
-  ahrs_exit();
+  //ahrs_exit();
   imu_exit();
-  flag_exit();
-  sio_exit();
+  //flag_exit();
+  //sio_exit();
 
   // Shut everything down
   if(DEBUG)  printf("Program complete \n");

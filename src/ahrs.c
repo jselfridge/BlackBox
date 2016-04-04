@@ -102,14 +102,14 @@ void ahrs_fusion ( void )  {
   double g[3], a[3], m[3];
   for ( i=0; i<3; i++ )  {  g[i] = 0.0;  a[i] = 0.0;  m[i] = 0.0;  }
   if (IMUA_ENABLED) {
-    pthread_mutex_lock(&mutex_gyrA);  for ( i=0; i<3; i++ )  g[i] +=  gyrA.cal[i];  pthread_mutex_unlock(&mutex_gyrA);
-    pthread_mutex_lock(&mutex_accA);  for ( i=0; i<3; i++ )  a[i] += -accA.cal[i];  pthread_mutex_unlock(&mutex_accA);
-    pthread_mutex_lock(&mutex_magA);  for ( i=0; i<3; i++ )  m[i] +=  magA.cal[i];  pthread_mutex_unlock(&mutex_magA);
+    pthread_mutex_lock(&mutex_gyrA);  for ( i=0; i<3; i++ )  g[i] +=  gyrA.filter[i];  pthread_mutex_unlock(&mutex_gyrA);
+    pthread_mutex_lock(&mutex_accA);  for ( i=0; i<3; i++ )  a[i] += -accA.filter[i];  pthread_mutex_unlock(&mutex_accA);
+    pthread_mutex_lock(&mutex_magA);  for ( i=0; i<3; i++ )  m[i] +=  magA.filter[i];  pthread_mutex_unlock(&mutex_magA);
   }
   if (IMUB_ENABLED) {
-    pthread_mutex_lock(&mutex_gyrB);  for ( i=0; i<3; i++ )  g[i] +=  gyrB.cal[i];  pthread_mutex_unlock(&mutex_gyrB);
-    pthread_mutex_lock(&mutex_accB);  for ( i=0; i<3; i++ )  a[i] += -accB.cal[i];  pthread_mutex_unlock(&mutex_accB);
-    pthread_mutex_lock(&mutex_magB);  for ( i=0; i<3; i++ )  m[i] +=  magB.cal[i];  pthread_mutex_unlock(&mutex_magB);
+    pthread_mutex_lock(&mutex_gyrB);  for ( i=0; i<3; i++ )  g[i] +=  gyrB.filter[i];  pthread_mutex_unlock(&mutex_gyrB);
+    pthread_mutex_lock(&mutex_accB);  for ( i=0; i<3; i++ )  a[i] += -accB.filter[i];  pthread_mutex_unlock(&mutex_accB);
+    pthread_mutex_lock(&mutex_magB);  for ( i=0; i<3; i++ )  m[i] +=  magB.filter[i];  pthread_mutex_unlock(&mutex_magB);
   }
   if ( IMUA_ENABLED && IMUB_ENABLED )  {  for ( i=0; i<3; i++ )  {  g[i] /= 2.0;  a[i] /= 2.0;  m[i] /= 2.0;  }  }
 

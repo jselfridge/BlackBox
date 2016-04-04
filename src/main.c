@@ -15,14 +15,14 @@ int main ( void )  {
 
   // Initialize subsystems
   sys_init();
-  sio_init();
-  flag_init();
+  //sio_init();
+  //flag_init();
   imu_init();
-  ahrs_init();
+  //ahrs_init();
   //uart_init();
-  gps_init();
+  //gps_init();
   gcs_init();
-  ctrl_init();
+  //ctrl_init();
   log_init();
   //---  DEBUGGING  ---//
   //log_open();

@@ -40,8 +40,8 @@ typedef struct log_imu_struct {
   float *time;
   ulong *dur;
   short *raw;
-  float *avg;
-  float *cal;
+  float *scaled;
+  float *filter;
 } log_imu_struct;
 log_imu_struct log_gyrA;
 log_imu_struct log_accA;

@@ -47,14 +47,14 @@
 
 // Define 'quad' PID Gains (vehicle specific values)
 // P: 0.30    I: 0.15    D: 0.06
-#define QUAD_PX    0.00
-#define QUAD_PY    0.00
+#define QUAD_PX    0.33
+#define QUAD_PY    0.33
 #define QUAD_PZ    0.00
 #define QUAD_IX    0.00
 #define QUAD_IY    0.00
 #define QUAD_IZ    0.00
-#define QUAD_DX    0.00
-#define QUAD_DY    0.00
+#define QUAD_DX    0.10
+#define QUAD_DY    0.10
 #define QUAD_DZ    0.00
 
 
