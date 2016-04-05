@@ -2,12 +2,13 @@
 
 #ifndef _IMU_H_
 #define _IMU_H_
+#include <filter.h>
 #include <main.h>
 
 
 // Define hardware
 #define IMUA_ENABLED   true
-#define IMUB_ENABLED   true
+#define IMUB_ENABLED   false
 
 // Define LPF history length
 //#define GYR_HIST   1
@@ -15,9 +16,9 @@
 //#define MAG_HIST   1
 
 // Define LPF cutoff freq
-//#define GYR_LPF    0.0
-//#define ACC_LPF    0.0
-//#define MAG_LPF    0.0
+#define GYR_LPF    0.0
+#define ACC_LPF    0.0
+#define MAG_LPF    0.0
 
 // Define MPU constants
 #define GYR_FSR    500
@@ -26,17 +27,18 @@
 #define PI  M_PI
 
 
+// Forward declaration
+struct filter_struct;
+
+
 // IMU data structure
 typedef struct imu_data_struct {
-  //float  gain;
-  int    bias   [3];
-  int    range  [3];
-  short  raw    [3];
-  double scaled [3];
-  double filter [3];
-  //double avg   [3];
-  //double cal   [3];
-  pthread_mutex_t lock;
+  int    bias       [3];
+  int    range      [3];
+  short  raw        [3];
+  double scaled     [3];
+  double filter     [3];
+  struct filter_struct *lpf;
 } imu_data_struct;
 imu_data_struct gyrA;
 imu_data_struct accA;
@@ -55,9 +57,9 @@ typedef struct imu_struct {
   ushort loops;
   ushort count;
   bool   getmag;
-  imu_data_struct* gyr;
-  imu_data_struct* acc;
-  imu_data_struct* mag;
+  imu_data_struct *gyr;
+  imu_data_struct *acc;
+  imu_data_struct *mag;
 } imu_struct;
 imu_struct imuA;
 imu_struct imuB;

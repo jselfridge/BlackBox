@@ -23,12 +23,17 @@
 
 
 // Define data transmissions
-#define GCS_RAW_IMUA_ENABLED   true
-#define GCS_RAW_IMUB_ENABLED   true
-#define GCS_EUL_ENABLED        true
-#define GCS_INPUT_ENABLED      true
-#define GCS_OUTPUT_ENABLED     true
-#define GCS_GPS_ENABLED        true
+#define GCS_INPUT_ENABLED        true
+#define GCS_OUTPUT_ENABLED       true
+#define GCS_IMUA_RAW_ENABLED     true
+#define GCS_IMUA_SCALED_ENABLED  true
+#define GCS_IMUA_FILTER_ENABLED  true
+#define GCS_IMUB_RAW_ENABLED     true
+#define GCS_IMUB_SCALED_ENABLED  true
+#define GCS_IMUB_FILTER_ENABLED  true
+#define GCS_AHRS_EUL_ENABLED     true
+#define GCS_AHRS_QUAT_ENABLED    true
+#define GCS_GPS_ENABLED          true
 
 
 // Parameter enumeration
@@ -87,17 +92,24 @@ void  gcs_init         ( void );
 void  gcs_exit         ( void );
 void  gcs_tx           ( void );
 void  gcs_rx           ( void );
-void  gcs_heartbeat    ( void );
 void  gcs_paramlist    ( void );
 void  gcs_send_param   ( enum param_index name, float val );
 void  gcs_paramupdate  ( mavlink_message_t *msg );
 void  gcs_missionlist  ( void );
+void  gcs_heartbeat    ( void );
 
-void  gcs_raw_imuA     ( void );
-void  gcs_raw_imuB     ( void );
-void  gcs_eul          ( void );
+
+// Transmission functions
 void  gcs_input        ( void );
 void  gcs_output       ( void );
+void  gcs_imuA_raw     ( void );
+void  gcs_imuA_scaled  ( void );
+void  gcs_imuA_filter  ( void );
+void  gcs_imuB_raw     ( void );
+void  gcs_imuB_scaled  ( void );
+void  gcs_imuB_filter  ( void );
+void  gcs_ahrs_eul     ( void );
+void  gcs_ahrs_quat    ( void );
 void  gcs_gps          ( void );
 
 

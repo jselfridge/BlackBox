@@ -196,6 +196,9 @@ void imu_getcal ( imu_struct *imu )  {
 void imu_setic ( imu_struct *imu )  {
   if(DEBUG)  printf( "  Set IMU%c initial conditions \n", imu->id );
 
+  // Looping index
+  ushort i;
+
   // Assign loop counter values
   if ( HZ_IMU_FAST % HZ_IMU_SLOW != 0 )
     printf( "  *** WARNING ***  Slow loop must divide evenly into fast loop. \n" );
@@ -204,21 +207,21 @@ void imu_setic ( imu_struct *imu )  {
   imu->getmag = false;
 
   // Calculate time steps
-  //double gyr_dt, acc_dt, mag_dt;
-  //gyr_dt = 1.0 / HZ_IMU_FAST;
-  //acc_dt = 1.0 / HZ_IMU_FAST;
-  //mag_dt = 1.0 / HZ_IMU_SLOW;
+  double gyr_dt, acc_dt, mag_dt;
+  gyr_dt = 1.0 / HZ_IMU_FAST;  for ( i=0; i<3; i++ )  imu->gyr->lpf[i].dt = gyr_dt;
+  acc_dt = 1.0 / HZ_IMU_FAST;  for ( i=0; i<3; i++ )  imu->acc->lpf[i].dt = acc_dt;
+  mag_dt = 1.0 / HZ_IMU_SLOW;  for ( i=0; i<3; i++ )  imu->mag->lpf[i].dt = mag_dt;
 
   // Determine time constants
-  //double gyr_tc, acc_tc, mag_tc;
-  //if ( GYR_LPF != 0.0 )  gyr_tc = 1.0 / ( 2.0 * PI * GYR_LPF );  else  gyr_tc = 0.0;
-  //if ( ACC_LPF != 0.0 )  acc_tc = 1.0 / ( 2.0 * PI * ACC_LPF );  else  acc_tc = 0.0;
-  //if ( MAG_LPF != 0.0 )  mag_tc = 1.0 / ( 2.0 * PI * MAG_LPF );  else  mag_tc = 0.0;
+  double gyr_tc, acc_tc, mag_tc;
+  if ( GYR_LPF != 0.0 )  gyr_tc = 1.0 / ( 2.0 * PI * GYR_LPF );  else  gyr_tc = 0.0;
+  if ( ACC_LPF != 0.0 )  acc_tc = 1.0 / ( 2.0 * PI * ACC_LPF );  else  acc_tc = 0.0;
+  if ( MAG_LPF != 0.0 )  mag_tc = 1.0 / ( 2.0 * PI * MAG_LPF );  else  mag_tc = 0.0;
 
   // Calculate filter gain values
-  //imu->gyr->gain = gyr_dt / ( gyr_tc + gyr_dt );
-  //imu->acc->gain = acc_dt / ( acc_tc + acc_dt );
-  //imu->mag->gain = mag_dt / ( mag_tc + mag_dt );
+  for ( i=0; i<3; i++ )  imu->gyr->lpf[i].gain = gyr_dt / ( gyr_tc + gyr_dt );
+  for ( i=0; i<3; i++ )  imu->acc->lpf[i].gain = acc_dt / ( acc_tc + acc_dt );
+  for ( i=0; i<3; i++ )  imu->mag->lpf[i].gain = mag_dt / ( mag_tc + mag_dt );
 
   // Display settings
   /*if (DEBUG) {
