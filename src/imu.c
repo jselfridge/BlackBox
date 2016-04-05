@@ -13,13 +13,25 @@ void imu_init (  )  {
   // Start initialization
   led_blink( LED_IMU, 200, 200 );
 
+  // Check timing conditions
+  if ( HZ_IMU_FAST % HZ_IMU_SLOW != 0 )
+    printf( "  *** WARNING ***  Slow loop must divide evenly into fast loop. \n" );
+  uint loops = HZ_IMU_FAST / HZ_IMU_SLOW;
+
   // Setup IMUA
   if (IMUA_ENABLED)  {
 
-    // Struct values
+    // I2C parameters
     imuA.id   = 'A';
     imuA.bus  = 1;
     imuA.addr = 0x68;
+
+    // Loop counter values
+    imuA.count  = 0;
+    imuA.loops  = loops;
+    imuA.getmag = false;
+
+    // IMU data structures
     imuA.gyr  = &gyrA;
     imuA.acc  = &accA;
     imuA.mag  = &magA;
@@ -28,17 +40,23 @@ void imu_init (  )  {
     i2c_init( &(imuA.fd), imuA.bus, imuA.addr );
     imu_param(&imuA);
     imu_getcal(&imuA);
-    imu_setic(&imuA);
 
   }
 
   // Setup IMUB
   if (IMUB_ENABLED)  {
 
-    // Struct values
+    // I2C parameters
     imuB.id   = 'B';
     imuB.bus  = 2;
     imuB.addr = 0x68;
+
+    // Loop counter values
+    imuB.count  = 0;
+    imuB.loops  = loops;
+    imuB.getmag = false;
+
+    // IMU data structures
     imuB.gyr  = &gyrB;
     imuB.acc  = &accB;
     imuB.mag  = &magB;
@@ -47,7 +65,6 @@ void imu_init (  )  {
     i2c_init( &(imuB.fd), imuB.bus, imuB.addr );
     imu_param(&imuB);
     imu_getcal(&imuB);
-    imu_setic(&imuB);
 
   }
 
@@ -190,76 +207,21 @@ void imu_getcal ( imu_struct *imu )  {
 
 
 /**
- *  imu_setic
- *  Sets the initial conditions for the MPU sensor.
- */
-void imu_setic ( imu_struct *imu )  {
-  if(DEBUG)  printf( "  Set IMU%c initial conditions \n", imu->id );
-
-  // Looping index
-  ushort i;
-
-  // Assign loop counter values
-  if ( HZ_IMU_FAST % HZ_IMU_SLOW != 0 )
-    printf( "  *** WARNING ***  Slow loop must divide evenly into fast loop. \n" );
-  imu->loops  = HZ_IMU_FAST / HZ_IMU_SLOW;
-  imu->count  = 0;
-  imu->getmag = false;
-
-  // Calculate time steps
-  double gyr_dt, acc_dt, mag_dt;
-  gyr_dt = 1.0 / HZ_IMU_FAST;  for ( i=0; i<3; i++ )  imu->gyr->lpf[i].dt = gyr_dt;
-  acc_dt = 1.0 / HZ_IMU_FAST;  for ( i=0; i<3; i++ )  imu->acc->lpf[i].dt = acc_dt;
-  mag_dt = 1.0 / HZ_IMU_SLOW;  for ( i=0; i<3; i++ )  imu->mag->lpf[i].dt = mag_dt;
-
-  // Determine time constants
-  double gyr_tc, acc_tc, mag_tc;
-  if ( GYR_LPF != 0.0 )  gyr_tc = 1.0 / ( 2.0 * PI * GYR_LPF );  else  gyr_tc = 0.0;
-  if ( ACC_LPF != 0.0 )  acc_tc = 1.0 / ( 2.0 * PI * ACC_LPF );  else  acc_tc = 0.0;
-  if ( MAG_LPF != 0.0 )  mag_tc = 1.0 / ( 2.0 * PI * MAG_LPF );  else  mag_tc = 0.0;
-
-  // Calculate filter gain values
-  for ( i=0; i<3; i++ )  imu->gyr->lpf[i].gain = gyr_dt / ( gyr_tc + gyr_dt );
-  for ( i=0; i<3; i++ )  imu->acc->lpf[i].gain = acc_dt / ( acc_tc + acc_dt );
-  for ( i=0; i<3; i++ )  imu->mag->lpf[i].gain = mag_dt / ( mag_tc + mag_dt );
-
-  // Display settings
-  /*if (DEBUG) {
-    printf("    |  GYR  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
-	   HZ_IMU_FAST, gyr_dt, GYR_LPF, gyr_tc, imu->gyr->gain );
-    printf("    |  ACC  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
-	   HZ_IMU_FAST, acc_dt, ACC_LPF, acc_tc, imu->acc->gain );
-    printf("    |  MAG  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
-	   HZ_IMU_SLOW, mag_dt, MAG_LPF, mag_tc, imu->mag->gain );
-  }*/
-
-  return;
-}
-
-
-/**
  *  imu_update
  *  Update system with new IMU sensor data.
  */
 void imu_update ( imu_struct *imu )  {
 
-  // Local variables
+  // Loop counter
   ushort i;
-  //ushort i, j, k;
-  //double g, a, m;
 
   // Array index
   ushort x=0, y=1, z=2;
 
   // Local IMU struct arrays
-  short  Graw[3],    Araw[3],    Mraw[3];
-  double Gscaled[3], Ascaled[3], Mscaled[3];
-  double Gfilter[3], Afilter[3], Mfilter[3];
-
-  // Declare data history arrays
-  //static short Ghist[3][GYR_HIST];
-  //static short Ahist[3][ACC_HIST];
-  //static short Mhist[3][MAG_HIST];
+  short  Gr[3], Ar[3], Mr[3];
+  double Gs[3], As[3], Ms[3];
+  double Gf[3], Af[3], Mf[3];
 
   // Increment counter
   imu->getmag = false;
@@ -269,81 +231,47 @@ void imu_update ( imu_struct *imu )  {
   }
   imu->count--;
 
-  // Sample IMU
-  if( mpu_get_gyro_reg( imu->fd, Graw, NULL ) )
+  // Raw IMU data
+  if( mpu_get_gyro_reg( imu->fd, Gr, NULL ) )
     printf( "Error (imu_data): 'mpu_get_gyro_reg' failed. \n" );
-  if( mpu_get_accel_reg( imu->fd, Araw, NULL ) )
+  if( mpu_get_accel_reg( imu->fd, Ar, NULL ) )
     printf( "Error (imu_data): 'mpu_get_accel_reg' failed. \n" );
   if(imu->getmag){
-    if( mpu_get_compass_reg( imu->fd, Mraw, NULL ) )
+    if( mpu_get_compass_reg( imu->fd, Mr, NULL ) )
     printf( "Error (imu_data): 'mpu_get_compass_reg' failed. \n" );
   } 
 
-  /*// Gyroscope low pass filter
-  k = GYR_HIST;
-  for ( i=0; i<3; i++ ) {
-    for ( j=1; j<k; j++ )  Ghist[i][j-1] = Ghist[i][j];
-    Ghist[i][k-1] = Graw[i];
-    g = (float) (Ghist[i][0]);
-    for ( j=1; j<k; j++ )  g = g + imu->gyr->gain * (float) ( Ghist[i][j] - g );
-    Gavg[i] = g;
-  }*/
+  // Scaled gyroscope readings
+  Gs[x] = - ( Gr[x] - imu->gyr->bias[x] ) * GYR_SCALE;
+  Gs[y] =   ( Gr[y] - imu->gyr->bias[y] ) * GYR_SCALE;
+  Gs[z] = - ( Gr[z] - imu->gyr->bias[z] ) * GYR_SCALE;
 
-  /*// Accelerometer low pass filter
-  k = ACC_HIST;
-  for ( i=0; i<3; i++ ) {
-    for ( j=1; j<k; j++ )  Ahist[i][j-1] = Ahist[i][j];
-    Ahist[i][k-1] = Araw[i];
-    a = (float) (Ahist[i][0]);
-    for ( j=1; j<k; j++ )  a = a + imu->acc->gain * (float) ( Ahist[i][j] - a );
-    Aavg[i] = a;
-  }*/
+  // Scaled accelerometer readings
+  As[x] = - ( Ar[x] - imu->acc->bias[x] ) / (double) (imu->acc->range[x]);
+  As[y] =   ( Ar[y] - imu->acc->bias[y] ) / (double) (imu->acc->range[y]);
+  As[z] = - ( Ar[z] - imu->acc->bias[z] ) / (double) (imu->acc->range[z]);
 
-  /*// Magnetometer low pass filter
+  // Scaled magnetometer readings
   if(imu->getmag) {
-  k = MAG_HIST;
-  for ( i=0; i<3; i++ ) {
-    for ( j=1; j<k; j++ )  Mhist[i][j-1] = Mhist[i][j];
-    Mhist[i][k-1] = Mraw[i];
-    m = (float) (Mhist[i][0]);
-    for ( j=1; j<k; j++ )  m = m + imu->mag->gain * (float) ( Mhist[i][j] - m );
-    Mavg[i] = m;
-  }}*/
-
-  // Shift and orient gyroscope readings
-  Gscaled[x] = - ( Graw[x] - imu->gyr->bias[x] ) * GYR_SCALE;
-  Gscaled[y] =   ( Graw[y] - imu->gyr->bias[y] ) * GYR_SCALE;
-  Gscaled[z] = - ( Graw[z] - imu->gyr->bias[z] ) * GYR_SCALE;
-
-  // Shift and orient accelerometer readings
-  Ascaled[x] = - ( Araw[x] - imu->acc->bias[x] ) / (double) (imu->acc->range[x]);
-  Ascaled[y] =   ( Araw[y] - imu->acc->bias[y] ) / (double) (imu->acc->range[y]);
-  Ascaled[z] = - ( Araw[z] - imu->acc->bias[z] ) / (double) (imu->acc->range[z]);
-
-  // Shift and orient magnetometer readings
-  if(imu->getmag) {
-  Mscaled[x] = - ( Mraw[y] - imu->mag->bias[y] ) / (double) (imu->mag->range[y]);
-  Mscaled[y] =   ( Mraw[x] - imu->mag->bias[x] ) / (double) (imu->mag->range[x]);
-  Mscaled[z] =   ( Mraw[z] - imu->mag->bias[z] ) / (double) (imu->mag->range[z]);
+  Ms[x] = - ( Mr[y] - imu->mag->bias[y] ) / (double) (imu->mag->range[y]);
+  Ms[y] =   ( Mr[x] - imu->mag->bias[x] ) / (double) (imu->mag->range[x]);
+  Ms[z] =   ( Mr[z] - imu->mag->bias[z] ) / (double) (imu->mag->range[z]);
   }
 
-  // Filter scaled data values
-  //---  DEBUGGING  ---//
+  // Low pass filter
   for ( i=0; i<3; i++ ) {
-    Gfilter[i] = Gscaled[i];
-    Afilter[i] = Ascaled[i];
-    if (imu->getmag)  Mfilter[i] = Mscaled[i];
+    Gf[i] = filter_lpf ( Gs[i], imu->gyr->gain, gyrA_data[i], HIST_GYR );
+    Af[i] = filter_lpf ( As[i], imu->acc->gain, accA_data[i], HIST_ACC );
+    if (imu->getmag)    Mf[i] = filter_lpf ( Ms[i], imu->mag->gain, magA_data[i], HIST_MAG );
   }
-  //-------------------//
-
 
   // Push gyroscope values to data structure
   if ( imu->bus == 1 )  pthread_mutex_lock(&mutex_gyrA);
   if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_gyrB);
   for ( i=0; i<3; i++ )  {
-    imu->gyr->raw[i]    = Graw[i];
-    imu->gyr->scaled[i] = Gscaled[i];
-    imu->gyr->filter[i] = Gfilter[i];
+    imu->gyr->raw[i]    = Gr[i];
+    imu->gyr->scaled[i] = Gs[i];
+    imu->gyr->filter[i] = Gf[i];
   }
   if ( imu->bus == 1 )  pthread_mutex_unlock(&mutex_gyrA);
   if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_gyrB);
@@ -352,9 +280,9 @@ void imu_update ( imu_struct *imu )  {
   if ( imu->bus == 1 )  pthread_mutex_lock(&mutex_accA);
   if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_accB);
   for ( i=0; i<3; i++ )  {
-    imu->acc->raw[i]    = Araw[i];
-    imu->acc->scaled[i] = Ascaled[i];
-    imu->acc->filter[i] = Afilter[i];
+    imu->acc->raw[i]    = Ar[i];
+    imu->acc->scaled[i] = As[i];
+    imu->acc->filter[i] = Af[i];
   }
   if ( imu->bus == 1 )  pthread_mutex_unlock(&mutex_accA);
   if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_accB);
@@ -364,9 +292,9 @@ void imu_update ( imu_struct *imu )  {
   if ( imu->bus == 1 )  pthread_mutex_lock(&mutex_magA);
   if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_magB);
   for ( i=0; i<3; i++ )  {
-    imu->mag->raw[i]    = Mraw[i];
-    imu->mag->scaled[i] = Mscaled[i];
-    imu->mag->filter[i] = Mfilter[i];
+    imu->mag->raw[i]    = Mr[i];
+    imu->mag->scaled[i] = Ms[i];
+    imu->mag->filter[i] = Mf[i];
   }
   if ( imu->bus == 1 )  pthread_mutex_unlock(&mutex_magA);
   if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_magB);

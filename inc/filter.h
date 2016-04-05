@@ -5,48 +5,36 @@
 #include <main.h>
 
 
-// Globals to convert to GCS parameters
-/*
-double  g_lpf        0.0;
-double  a_lpf        0.0;
-double  m_lpf        0.0;
-*/
-
-// Define history array size
-/*
-#define GYR_HIST  1;
-#define ACC_HIST  1;
-#define MAG_HIST  1;
-*/
-
-// FIlter data structure
-typedef struct filter_struct {
-  uint   hist;
-  double dt;
-  double gain;
-  double *data;
-} filter_struct;
+// Define low pass filter values
+#define LPF_GYR   20.0
+#define LPF_ACC   20.0
+#define LPF_MAG    2.0
+#define LPF_EUL    0.0
+#define LPF_ANG    0.0
 
 
-/*
-imu_data_struct gyrA;
-imu_data_struct accA;
-imu_data_struct magA;
-imu_data_struct gyrB;
-imu_data_struct accB;
-imu_data_struct magB;
-*/
+// Define sample history duration
+#define HIST_GYR   2
+#define HIST_ACC   2
+#define HIST_MAG   2
+#define HIST_EUL   1
+#define HIST_ANG   1
+
+
+// Global storage arrays
+double gyrA_data [3][HIST_GYR];
+double accA_data [3][HIST_ACC];
+double magA_data [3][HIST_MAG];
+double gyrB_data [3][HIST_GYR];
+double accB_data [3][HIST_ACC];
+double magB_data [3][HIST_MAG];
 
 
 // Filter functions
 void    filter_init    ( void );
 void    filter_exit    ( void );
-double  filter_lpf     ( filter_struct *signal, double val );
+double  filter_lpf     ( double val, double gain, double *data, ushort hist );
 
-/*
-void  imu_setic   ( imu_struct *imu );
-void  imu_update  ( imu_struct *imu );
-*/
 
 #endif
 

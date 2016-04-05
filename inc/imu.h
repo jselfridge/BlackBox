@@ -10,35 +10,23 @@
 #define IMUA_ENABLED   true
 #define IMUB_ENABLED   false
 
-// Define LPF history length
-//#define GYR_HIST   1
-//#define ACC_HIST   1
-//#define MAG_HIST   1
-
-// Define LPF cutoff freq
-#define GYR_LPF    0.0
-#define ACC_LPF    0.0
-#define MAG_LPF    0.0
 
 // Define MPU constants
 #define GYR_FSR    500
 #define ACC_FSR    4
 #define GYR_SCALE  ( 500.0 / 32768.0 ) * ( PI / 180.0 )
-#define PI  M_PI
-
-
-// Forward declaration
-struct filter_struct;
+#define PI         M_PI
 
 
 // IMU data structure
 typedef struct imu_data_struct {
-  int    bias       [3];
-  int    range      [3];
-  short  raw        [3];
-  double scaled     [3];
-  double filter     [3];
-  struct filter_struct *lpf;
+  double dt;
+  double gain;
+  int    bias   [3];
+  int    range  [3];
+  short  raw    [3];
+  double scaled [3];
+  double filter [3];
 } imu_data_struct;
 imu_data_struct gyrA;
 imu_data_struct accA;
@@ -70,7 +58,6 @@ void  imu_init    ( void );
 void  imu_exit    ( void );
 void  imu_param   ( imu_struct *imu );
 void  imu_getcal  ( imu_struct *imu );
-void  imu_setic   ( imu_struct *imu );
 void  imu_update  ( imu_struct *imu );
 
 

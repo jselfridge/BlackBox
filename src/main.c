@@ -19,10 +19,10 @@ int main ( void )  {
   flag_init();
   imu_init();
   ahrs_init();
-  //uart_init();
   gps_init();
   gcs_init();
   ctrl_init();
+  filter_init();
   log_init();
   //---  DEBUGGING  ---//
   log_open();
@@ -34,7 +34,6 @@ int main ( void )  {
   while(running)  usleep(100000);
 
   // Exit the program
-  //usleep(200000);
   sys_exit();
 
   return 0;

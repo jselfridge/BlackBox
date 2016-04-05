@@ -7,56 +7,54 @@
  *  filter_init
  *  Initializes the system signal filters.
  */
-void filter_init (  )  {
+void filter_init ( void )  {
 
   if(DEBUG)  printf( "Initializing filters \n" );
 
-  /*
-  // Start initialization
-  led_blink( LED_IMU, 200, 200 );
+  // Calculate time steps
+  double dt_gyr, dt_acc, dt_mag;
+  dt_gyr = 1.0 / HZ_IMU_FAST;
+  dt_acc = 1.0 / HZ_IMU_FAST;
+  dt_mag = 1.0 / HZ_IMU_SLOW;
 
-  // Setup IMUA
-  if (IMUA_ENABLED)  {
+  // Determine time constants
+  double tc_gyr, tc_acc, tc_mag;
+  if ( LPF_GYR != 0.0 )  tc_gyr = 1.0 / ( 2.0 * PI * LPF_GYR );  else  tc_gyr = 0.0;
+  if ( LPF_ACC != 0.0 )  tc_acc = 1.0 / ( 2.0 * PI * LPF_ACC );  else  tc_acc = 0.0;
+  if ( LPF_MAG != 0.0 )  tc_mag = 1.0 / ( 2.0 * PI * LPF_MAG );  else  tc_mag = 0.0;
 
-    // Struct values
-    imuA.id   = 'A';
-    imuA.bus  = 1;
-    imuA.addr = 0x68;
-    imuA.gyr  = &gyrA;
-    imuA.acc  = &accA;
-    imuA.mag  = &magA;
+  // Determine gains values
+  double gain_gyr, gain_acc, gain_mag;
+  gain_gyr = dt_gyr / ( tc_gyr + dt_gyr );
+  gain_acc = dt_acc / ( tc_acc + dt_acc );
+  gain_mag = dt_mag / ( tc_mag + dt_mag );
 
-    // Setup functions
-    i2c_init( &(imuA.fd), imuA.bus, imuA.addr );
-    imu_param(&imuA);
-    imu_getcal(&imuA);
-    imu_setic(&imuA);
+  // Assign filter parameters
+  gyrA.dt = dt_gyr;  gyrA.gain = gain_gyr;
+  accA.dt = dt_acc;  accA.gain = gain_acc;
+  magA.dt = dt_mag;  magA.gain = gain_mag;
+  gyrB.dt = dt_gyr;  gyrB.gain = gain_gyr;
+  accB.dt = dt_acc;  accB.gain = gain_acc;
+  magB.dt = dt_mag;  magB.gain = gain_mag;
 
+  // Zero out data values
+  ushort i, j;
+  for ( i=0; i<3; i++ )  {
+    for ( j=0; j<HIST_GYR; j++ )  {  gyrA_data[i][j] = 0.0;  gyrB_data[i][j] = 0.0;  }
+    for ( j=0; j<HIST_ACC; j++ )  {  accA_data[i][j] = 0.0;  accB_data[i][j] = 0.0;  }
+    for ( j=0; j<HIST_MAG; j++ )  {  magA_data[i][j] = 0.0;  magB_data[i][j] = 0.0;  }
   }
 
-  // Setup IMUB
-  if (IMUB_ENABLED)  {
-
-    // Struct values
-    imuB.id   = 'B';
-    imuB.bus  = 2;
-    imuB.addr = 0x68;
-    imuB.gyr  = &gyrB;
-    imuB.acc  = &accB;
-    imuB.mag  = &magB;
-
-    // Setup functions
-    i2c_init( &(imuB.fd), imuB.bus, imuB.addr );
-    imu_param(&imuB);
-    imu_getcal(&imuB);
-    imu_setic(&imuB);
-
+  // Display settings
+  if (DEBUG) {
+    printf("  |  GYR  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
+       HZ_IMU_FAST, dt_gyr, LPF_GYR, tc_gyr, gain_gyr );
+    printf("  |  ACC  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
+       HZ_IMU_FAST, dt_acc, LPF_ACC, tc_acc, gain_acc );
+    printf("  |  MAG  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
+       HZ_IMU_SLOW, dt_mag, LPF_MAG, tc_mag, gain_mag );
   }
 
-  // IMU warmup period
-  usleep(500000);
-  led_on(LED_IMU);
-  */
   return;
 }
 
@@ -73,74 +71,29 @@ void filter_exit ( void )  {
 
 
 /**
- *  imu_setic
- *  Sets the initial conditions for the MPU sensor.
- */
-/*void imu_setic ( imu_struct *imu )  {
-  if(DEBUG)  printf( "  Set IMU%c initial conditions \n", imu->id );
-
-  // Assign loop counter values
-  if ( HZ_IMU_FAST % HZ_IMU_SLOW != 0 )
-    printf( "  *** WARNING ***  Slow loop must divide evenly into fast loop. \n" );
-  imu->loops  = HZ_IMU_FAST / HZ_IMU_SLOW;
-  imu->count  = 0;
-  imu->getmag = false;
-
-  // Calculate time steps
-  double gyr_dt, acc_dt, mag_dt;
-  gyr_dt = 1.0 / HZ_IMU_FAST;
-  acc_dt = 1.0 / HZ_IMU_FAST;
-  mag_dt = 1.0 / HZ_IMU_SLOW;
-
-  // Determine time constants
-  double gyr_tc, acc_tc, mag_tc;
-  if ( GYR_LPF != 0.0 )  gyr_tc = 1.0 / ( 2.0 * PI * GYR_LPF );  else  gyr_tc = 0.0;
-  if ( ACC_LPF != 0.0 )  acc_tc = 1.0 / ( 2.0 * PI * ACC_LPF );  else  acc_tc = 0.0;
-  if ( MAG_LPF != 0.0 )  mag_tc = 1.0 / ( 2.0 * PI * MAG_LPF );  else  mag_tc = 0.0;
-
-  // Calculate filter gain values
-  imu->gyr->gain = gyr_dt / ( gyr_tc + gyr_dt );
-  imu->acc->gain = acc_dt / ( acc_tc + acc_dt );
-  imu->mag->gain = mag_dt / ( mag_tc + mag_dt );
-
-  // Display settings
-  if (DEBUG) {
-    printf("    |  GYR  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
-	   HZ_IMU_FAST, gyr_dt, GYR_LPF, gyr_tc, imu->gyr->gain );
-    printf("    |  ACC  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
-	   HZ_IMU_FAST, acc_dt, ACC_LPF, acc_tc, imu->acc->gain );
-    printf("    |  MAG  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
-	   HZ_IMU_SLOW, mag_dt, MAG_LPF, mag_tc, imu->mag->gain );
-  }
-
-  return;
-}
-*/
-
-/**
  *  filter_lpf
  *  Run a signal through a low pass filter.
  */
-double filter_lpf ( filter_struct *signal, double val )  {
+double filter_lpf ( double val, double gain, double *data, ushort hist )  {
 
   // Local variables
   ushort i;
-  double f;
+  double lpf;
 
   // Shift stored data
-  for ( i=1; i < signal->hist; i++ )  signal->data[i-1] = signal->data[i];
+  for ( i=1; i<hist; i++ )  data[i-1] = data[i];
 
   // Assign newest data value
-  signal->data [ signal->hist -1 ] = val;
+  data[hist-1] = val;
 
   // Initialize starting value
-  f = signal->data[0];
+  lpf = data[0];
 
   // Loop through sequence
-  for ( i=1; i < signal->hist; i++ )  f = f + signal->gain * ( signal->data[i] - f );
+  for ( i=1; i<hist; i++ )  lpf = lpf + gain * ( data[i] - lpf );
 
   // Return filtered result
-  return f;
+  return lpf;
 
 }
 
