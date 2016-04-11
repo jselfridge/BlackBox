@@ -45,6 +45,11 @@ void gcs_init ( void )  {
   gcs.sendparam   = false;
   gcs.sendmission = false;
 
+  // LPF cutoff freq
+  strcpy( param.name[lpf_gyr], "lpf_gyr" );  param.val[lpf_gyr] = lpf_hz_gyr;
+  strcpy( param.name[lpf_acc], "lpf_acc" );  param.val[lpf_acc] = lpf_hz_acc;
+  strcpy( param.name[lpf_mag], "lpf_mag" );  param.val[lpf_mag] = lpf_hz_mag;
+
   // Roll gains
   strcpy( param.name[X_Kp], "X_Kp" );  param.val[X_Kp] = QUAD_PX;
   strcpy( param.name[X_Ki], "X_Ki" );  param.val[X_Ki] = QUAD_IX;
@@ -229,7 +234,7 @@ void gcs_paramlist ( void )  {
     memset( &msg, 0, sizeof(&msg) );
     mavlink_msg_param_value_pack(
       GCS_SYSID,
-      MAV_COMP_ID_GAINS,
+      100,
       &msg, 
       param.name[i], 
       param.val[i],
@@ -337,7 +342,11 @@ void gcs_paramupdate ( mavlink_message_t *msg )  {
         // AND only write if new value is NOT "not-a-number"
         // AND is NOT infinity
 
-        if ( param.val[i] != set.param_value && !isnan(set.param_value) && !isinf(set.param_value) && set.param_type == MAVLINK_TYPE_FLOAT )  {
+        if ( 
+          param.val[i] != set.param_value && 
+          !isnan(set.param_value) && 
+          !isinf(set.param_value) && set.param_type == MAVLINK_TYPE_FLOAT 
+        )  {
 
           param.val[i] = set.param_value;
 
@@ -346,7 +355,7 @@ void gcs_paramupdate ( mavlink_message_t *msg )  {
           memset( &confirm_msg, 0, sizeof(&confirm_msg) );
           mavlink_msg_param_value_pack(
             GCS_SYSID,
-            MAV_COMP_ID_GAINS,
+            100,
             &confirm_msg, 
             param.name[i], 
             param.val[i],
@@ -373,6 +382,11 @@ void gcs_paramupdate ( mavlink_message_t *msg )  {
 
   uint x=0, y=1, z=2, t=3;
 
+  // Update LPF cutoff freq
+  //lpf_hz_gyr = param.val[lpf_gyr];
+  //lpf_hz_acc = param.val[lpf_acc];
+  //lpf_hz_mag = param.val[lpf_mag];
+
   // Update roll gains
   ctrl.pgain[x] = param.val[X_Kp];
   ctrl.igain[x] = param.val[X_Ki];
@@ -398,6 +412,9 @@ void gcs_paramupdate ( mavlink_message_t *msg )  {
   ctrl.scale[y] = param.val[Y_R];
   ctrl.scale[z] = param.val[Z_R];
   ctrl.scale[t] = param.val[T_R];
+
+  // Update notes log file
+  
 
   return;
 }

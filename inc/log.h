@@ -101,6 +101,7 @@ typedef struct datalog_struct {
   float  offset;
   char   *dir;
   char   *path;
+  //FILE *fnote, *fin, *fout, *fgyrA, *faccA, *fmagA, *fgyrB, *faccB, *fmagB, *fahrs, *fgps, *fctrl;
 } datalog_struct;
 datalog_struct datalog;
 
@@ -111,6 +112,7 @@ void  log_open   ( void );
 void  log_close  ( void );
 void  log_exit   ( void );
 void  log_record ( enum log_index index );
+void  log_free   ( void );
 
 
 #endif

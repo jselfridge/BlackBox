@@ -260,9 +260,11 @@ void imu_update ( imu_struct *imu )  {
 
   // Low pass filter
   for ( i=0; i<3; i++ ) {
-    Gf[i] = filter_lpf ( Gs[i], imu->gyr->gain, gyrA_data[i], HIST_GYR );
-    Af[i] = filter_lpf ( As[i], imu->acc->gain, accA_data[i], HIST_ACC );
-    if (imu->getmag)    Mf[i] = filter_lpf ( Ms[i], imu->mag->gain, magA_data[i], HIST_MAG );
+
+    Gf[i] = filter_lpf ( filter_gyrA[i], Gs[i], imu->gyr->gain, HIST_GYR );
+    Af[i] = filter_lpf ( filter_accA[i], As[i], imu->acc->gain, HIST_ACC );
+    if (imu->getmag)   
+    Mf[i] = filter_lpf ( filter_magA[i], Ms[i], imu->mag->gain, HIST_MAG );
   }
 
   // Push gyroscope values to data structure

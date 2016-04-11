@@ -19,9 +19,9 @@ void filter_init ( void )  {
 
   // Determine time constants
   double tc_gyr, tc_acc, tc_mag;
-  if ( LPF_GYR != 0.0 )  tc_gyr = 1.0 / ( 2.0 * PI * LPF_GYR );  else  tc_gyr = 0.0;
-  if ( LPF_ACC != 0.0 )  tc_acc = 1.0 / ( 2.0 * PI * LPF_ACC );  else  tc_acc = 0.0;
-  if ( LPF_MAG != 0.0 )  tc_mag = 1.0 / ( 2.0 * PI * LPF_MAG );  else  tc_mag = 0.0;
+  if ( lpf_hz_gyr != 0.0 )  tc_gyr = 1.0 / ( 2.0 * PI * lpf_hz_gyr );  else  tc_gyr = 0.0;
+  if ( lpf_hz_acc != 0.0 )  tc_acc = 1.0 / ( 2.0 * PI * lpf_hz_acc );  else  tc_acc = 0.0;
+  if ( lpf_hz_mag != 0.0 )  tc_mag = 1.0 / ( 2.0 * PI * lpf_hz_mag );  else  tc_mag = 0.0;
 
   // Determine gains values
   double gain_gyr, gain_acc, gain_mag;
@@ -40,19 +40,19 @@ void filter_init ( void )  {
   // Zero out data values
   ushort i, j;
   for ( i=0; i<3; i++ )  {
-    for ( j=0; j<HIST_GYR; j++ )  {  gyrA_data[i][j] = 0.0;  gyrB_data[i][j] = 0.0;  }
-    for ( j=0; j<HIST_ACC; j++ )  {  accA_data[i][j] = 0.0;  accB_data[i][j] = 0.0;  }
-    for ( j=0; j<HIST_MAG; j++ )  {  magA_data[i][j] = 0.0;  magB_data[i][j] = 0.0;  }
+    for ( j=0; j<HIST_GYR; j++ )  {  filter_gyrA[i][j] = 0.0;  filter_gyrB[i][j] = 0.0;  }
+    for ( j=0; j<HIST_ACC; j++ )  {  filter_accA[i][j] = 0.0;  filter_accB[i][j] = 0.0;  }
+    for ( j=0; j<HIST_MAG; j++ )  {  filter_magA[i][j] = 0.0;  filter_magB[i][j] = 0.0;  }
   }
 
   // Display settings
   if (DEBUG) {
     printf("  |  GYR  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
-       HZ_IMU_FAST, dt_gyr, LPF_GYR, tc_gyr, gain_gyr );
+       HZ_IMU_FAST, dt_gyr, lpf_hz_gyr, tc_gyr, gain_gyr );
     printf("  |  ACC  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
-       HZ_IMU_FAST, dt_acc, LPF_ACC, tc_acc, gain_acc );
+       HZ_IMU_FAST, dt_acc, lpf_hz_acc, tc_acc, gain_acc );
     printf("  |  MAG  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
-       HZ_IMU_SLOW, dt_mag, LPF_MAG, tc_mag, gain_mag );
+       HZ_IMU_SLOW, dt_mag, lpf_hz_mag, tc_mag, gain_mag );
   }
 
   return;
@@ -74,7 +74,7 @@ void filter_exit ( void )  {
  *  filter_lpf
  *  Run a signal through a low pass filter.
  */
-double filter_lpf ( double val, double gain, double *data, ushort hist )  {
+double filter_lpf ( double *data, double sample, double gain, ushort hist )  {
 
   // Local variables
   ushort i;
@@ -84,7 +84,7 @@ double filter_lpf ( double val, double gain, double *data, ushort hist )  {
   for ( i=1; i<hist; i++ )  data[i-1] = data[i];
 
   // Assign newest data value
-  data[hist-1] = val;
+  data[hist-1] = sample;
 
   // Initialize starting value
   lpf = data[0];
@@ -97,5 +97,15 @@ double filter_lpf ( double val, double gain, double *data, ushort hist )  {
 
 }
 
+
+/**
+ *  filter_gains
+ *  Calculates the associated gain for a particular LPF cutoff freq.
+ */
+double filter_gains ( double hz )  {
+
+  return hz;
+
+}
 
 

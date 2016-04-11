@@ -8,7 +8,7 @@
 
 // Define statements
 #define MAV_COMP_ID_GAINS    120
-#define PARAM_COUNT   16
+#define PARAM_COUNT   19
 
 
 // Define 
@@ -39,8 +39,13 @@
 // Parameter enumeration
 enum param_index {
 
+  // LPF cutoff freq
+  lpf_gyr = 0,
+  lpf_acc,
+  lpf_mag,
+
   // Roll gains
-  X_Kp = 0,
+  X_Kp,
   X_Ki,
   X_Kd,
 

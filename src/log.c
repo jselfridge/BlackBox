@@ -174,8 +174,8 @@ void log_close ( void )  {
   usleep(200000);
 
   // Local variables
-  char *file = malloc(64);
-  FILE *fnote, *fin, *fout, *fgyrA, *faccA, *fmagA, *fgyrB, *faccB, *fmagB, *fahrs, *fgps, *fctrl;
+  //char *file = malloc(64);
+  //FILE *fnote, *fin, *fout, *fgyrA, *faccA, *fmagA, *fgyrB, *faccB, *fmagB, *fahrs, *fgps, *fctrl;
   ushort i;
   ulong row;
 
@@ -736,5 +736,11 @@ void log_record ( enum log_index index )  {
   }
 }
 
+
+/**
+ *  log_free
+ *  Free the memory used to store the recorded data.
+ */
+void log_free ( void )  {
 
 
