@@ -7,6 +7,10 @@
 #include <string.h>
 #include "led.h"
 #include "sys.h"
+#include "timer.h"
+
+
+double io_norm ( ushort reg, char dir ); 
 
 
 /**
@@ -75,7 +79,7 @@ void io_exit ( void )  {
  *  io_update
  *  Obtains input values and assigns output values.
  */
-/*void io_update ( void )  {
+void io_update ( void )  {
 
   // Channel index
   ushort ch;
@@ -85,7 +89,7 @@ void io_exit ( void )  {
   for ( ch=0; ch<IN_CH; ch++ ) {
     input.reg[ch]  = memoryPtr[ IN_OFFSET + ch ];
     input.pwm[ch]  = input.reg[ch] * IN_REG2PWM;
-    input.norm[ch] = sio_norm( input.reg[ch], 'i' );
+    input.norm[ch] = io_norm( input.reg[ch], 'i' );
   }
   pthread_mutex_unlock(&mutex_input);
 
@@ -96,13 +100,13 @@ void io_exit ( void )  {
 
   return;
 }
-*/
+
 
 /**
  *  io_setreg
  *  Assign register value output, and sync data structure.
  */
-/*void io_setreg ( ushort ch, ushort reg )  {
+void io_setreg ( ushort ch, ushort reg )  {
 
   // Check function inputs
   if( ch<0 || ch>=OUT_CH )
@@ -112,18 +116,18 @@ void io_exit ( void )  {
   pthread_mutex_lock(&mutex_output);
   output.reg[ch]  = reg;
   output.pwm[ch]  = reg * OUT_REG2PWM;
-  output.norm[ch] = sio_norm( reg, 'o' );
+  output.norm[ch] = io_norm( reg, 'o' );
   pthread_mutex_unlock(&mutex_output);
 
   return;
 }
-*/
+
 
 /**
  *  io_setpwm
  *  Assign PWM value output, and sync data structure.
  */
-/*void io_setpwm ( ushort ch, ushort pwm )  {
+void io_setpwm ( ushort ch, ushort pwm )  {
 
   // Check function inputs
   if( ch<0 || ch>=OUT_CH )
@@ -133,18 +137,18 @@ void io_exit ( void )  {
   pthread_mutex_lock(&mutex_output);
   output.pwm[ch]  = pwm;
   output.reg[ch]  = pwm * OUT_PWM2REG;
-  output.norm[ch] = sio_norm( output.reg[ch], 'o' );
+  output.norm[ch] = io_norm( output.reg[ch], 'o' );
   pthread_mutex_unlock(&mutex_output);
 
   return;
 }
-*/
+
 
 /**
  *  io_setnorm
  *  Assign normalized value output, and sync data structure.
  */
-/*void io_setnorm ( ushort ch, double norm )  {
+void io_setnorm ( ushort ch, double norm )  {
 
   // Check function inputs
   if( ch<0 || ch>=OUT_CH )
@@ -164,13 +168,13 @@ void io_exit ( void )  {
 
   return;
 }
-*/
+
 
 /**
  *  io_norm
  *  Converts a register value into a normalized range.
  */
-/*double io_norm ( ushort reg, char dir )  {
+double io_norm ( ushort reg, char dir )  {
 
   // Local variables
   double num, den, norm;
@@ -203,6 +207,6 @@ void io_exit ( void )  {
 
   return norm;
 }
-*/
+
 
 

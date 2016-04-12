@@ -3,6 +3,7 @@
 #include "flag.h"
 #include <stdio.h>
 #include "io.h"
+#include "led.h"
 #include "sys.h"
 #include "timer.h"
 
@@ -57,7 +58,7 @@ void flag_exit ( void )  {
  *  flag_update
  *  Updates the current status of the program execution flags.
  */
-/*void flag_update ( void )  {
+void flag_update ( void )  {
 
   // Local variables
   ushort ch;
@@ -75,13 +76,13 @@ void flag_exit ( void )  {
   // Data log: roll stick only, no yaw command
   if ( !energized && !flag.lower[CH_Y] && !flag.upper[CH_Y] )  {
     if ( flag.lower[CH_R] >= flag.limit[CH_R] ) {
-      if (!datalog.setup)  log_open();
-      datalog.enabled = true;
+      //if (!datalog.setup)  log_open();
+      //datalog.enabled = true;
       led_on(LED_LOG);
     }
     if ( flag.upper[CH_R] >= flag.limit[CH_R] ) {
-      datalog.enabled = false;
-      if (datalog.setup)  log_close();
+      //datalog.enabled = false;
+      //if (datalog.setup)  log_close();
       led_off(LED_LOG);
     }
   }
@@ -112,6 +113,6 @@ void flag_exit ( void )  {
 
   return;
 }
-*/
+
 
 

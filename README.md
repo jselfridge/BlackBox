@@ -153,52 +153,62 @@ Pending Work
 The following list outlines some proposed upcoming change.
 
 <ul>
-<li><b> Urgent: CSR Development </b></li>
+<li><b> Top Priority </b></li>
 <ul>
-  <li> Digital state feedback contorller </li>
-  <li> System ID quad </li>
-  <li> SISO MRAC quad </li>
-  <li> Controller for CL aircraft </li>
-  <li> System ID on CL aircraft </li>
-  <li> SISO MRAC on satellite </li>
+  <li> Revise source/header code structure </li>
+  <li> Add notes section to document parameter changes from GCS </li>
+  <li> Add filtering to signals </li>
+  <li> Develop more sophisticated quad controllers </li>
+  <li> Add safety features </li>
 </ul>
-<li><b> Priority </b></li>
-<ul>
-  <li> Transistor power distribution kill switch </li> 
-  <li> Develop GCS </li>
-  <li> Mavlink serial output </li>
-  <li> Add health/status monitoring thread </li>
-  <li> VICON data comparision </li>
-  <li> Kalman filter </li>
-</ul>
-<li><b> Sooner than later </b></li>
+<li><b> Filtering </b></li>
 <ul>
   <li> Dedicated filter source code </li>
-  <li> Butterworth filter </li>
-  <li> Tunable LPF gains from GCS </li>
-  <li> Test pull up resistors on Sparkfun breakout board </li>
-  <li> IMU interrupt when data is available </li>
-  <li> Add notes section to data log </li>
-  <li> Add warning for missed timing on thread </li>
-  <li> Enable address 0x69 in IMU code </li>
-  <li> Second IMU sensor on second I2C channel </li>
-  <li> Second IMU sensor on single I2C channel </li>
-  <li> Incorporate altitude hold </li> 
-  <li> Add altitude sensor </li>
-  <li> Disable clkout2 to enable CH5 input </li>
-  <li> Replace hard coded gyr bias with saved parameters from a file </li>
-  <li> Calculate and apply rotation transformation for accelerometer mounting errors </li>
-  <li> Abstract the controller to be applied to various vehicles with same structure </li>
-  <li> Make LPF a stand alone function </li>
+  <li> Low pass filter function <li>
+  <li> Butterworth filter function </li>
+  <li> Selectable filter from compiler settings <li>
+  <li> Tunable filter gains from GCS </li>
+  <li> Add Kalman filter </li>
 </ul>
-<li><b> Maybe next board </b></li>
+<li><b> Controls </b></li>
 <ul>
-  <li> IMU convergence on start up </li>
-  <li> IMU indicator for successful convergence </li>
+  <li> Generic PID function <li>
+  <li> Generic state feedback (SISO) functions <li>
+  <li> Generic state feedback (MIMO) functions <li>
+  <li> Multisine signal generator <li>
+  <li> System ID quad </li>
+  <li> SISO MRAC quad </li>
+  <li> MIMO MRAC quad </li>
+</ul>
+<li><b> Safety Features </b></li>
+<ul>
+  <li> Transistor power distribution kill switch </li> 
+  <li> Add health/status monitoring thread </li>
+  <li> Add warning for missed timing on thread </li>
+</ul>
+<li><b> Modularity </b></li>
+<ul>
+  <li> Abstract the controller to be applied to various vehicles with same structure </li>
   <li> Calibrated radio ranges </li>
   <li> Define statements to enable specific datalogs </li>
-  <li> Log generation with a function </li>
+  <li> Log generation within a function </li>
   <li> Modular structure to allow for differnet vehicles </li>
+</ul>
+<li><b> IMU and I2C Improvements </b></li>
+<ul>
+  <li> VICON data comparision </li>
+  <li> Replace hard coded gyr bias with saved parameters from a file </li>
+  <li> Make I2C source/header code more modular </li>
+  <li> Test pull up resistors on IMU breakout board </li>
+  <li> IMU convergence on start up </li>
+  <li> IMU indicator for successful convergence </li>
+  <li> IMU interrupt when data is available </li>
+  <li> Enable address 0x69 in IMU code </li>
+  <li> Second IMU sensor on single I2C channel </li>
+  <li> Independent/parallel I2C channel threads </li>
+  <li> Add altitude sensor </li>
+  <li> Incorporate altitude hold </li> 
+  <li> Calculate and apply rotation transformation for accelerometer mounting errors </li>
 </ul>
 </ul>
 

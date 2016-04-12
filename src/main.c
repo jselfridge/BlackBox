@@ -15,13 +15,13 @@ int main ( void )  {
   sys_init();
   flag_init();
   io_init();
-  filter_init();
-  imu_init();
-  ahrs_init();
-  gps_init();
-  gcs_init();
-  ctrl_init();
-  log_init();
+  //filter_init();
+  //imu_init();
+  //ahrs_init();
+  //gps_init();
+  //gcs_init();
+  //ctrl_init();
+  //log_init();
   //---  DEBUGGING  ---//
   //log_open();
   //datalog.enabled = true;
@@ -38,13 +38,13 @@ int main ( void )  {
   //datalog.enabled = false;
   //log_close();
   //-----------------//
-  log_exit();
-  ctrl_exit();
-  gcs_exit();
-  gps_exit();
-  ahrs_exit();
-  imu_exit();
-  filter_exit();
+  //log_exit();
+  //ctrl_exit();
+  //gcs_exit();
+  //gps_exit();
+  //ahrs_exit();
+  //imu_exit();
+  //filter_exit();
   io_exit();
   flag_exit();
   sys_exit();

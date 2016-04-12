@@ -9,6 +9,16 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #include "flag.h"
+#include "io.h"
+#include "timer.h"
+
+
+void sys_io    ( void );
+//void sys_imuA  ( void );
+//void sys_imuB  ( void );
+//void sys_ahrs  ( void );
+//void sys_gps   ( void );
+//void sys_ctrl  ( void );
 
 
 /**
@@ -57,14 +67,11 @@ void sys_init ( void )  {
  *  Code that runs prior to exiting the system.
  */
 void sys_exit ( void )  {
-
-  // Shut everything down
   if(DEBUG)  printf("Program complete \n");
   if( sigaction( SIGINT, &sys_signal, NULL ) == -1 )
     printf( "Error (sys_exit): Function 'sigaction' failed. \n" );
   if(!DEBUG)  system("shutdown -h now");
   kill( 0, SIGINT );
-
   return;
 }
 
@@ -84,45 +91,40 @@ void sys_quit (  )  {
  *  sys_update
  *  Prints system debugging messages to the terminal.
  */
-/*void sys_update ( void )  {
+void sys_update ( void )  {
 
   // Start debugging display
   printf("\r");  fflush(stdout);
 
   // Datalog status
-  if (datalog.enabled)  printf(" Log %s: ", datalog.dir );
-  else                  printf(" - - - -  ");
-  fflush(stdout);
+  //if (datalog.enabled)  printf(" Log %s: ", datalog.dir );
+  //else                  printf(" - - - -  ");
+  //fflush(stdout);
 
   // Time values
-  float timestamp = (float) ( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f ) - datalog.offset );
+  float timestamp = (float) ( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f ) ); // - datalog.offset );
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
-  //sys_sio();
-  sys_imuA();
+  sys_io();
+  //sys_imuA();
   //sys_imuB();
   //sys_ahrs();
   //sys_gps();
   //sys_ctrl();
-
-  //sys_uart1();
-  //sys_uart2();
-  //sys_uart4();
-  //sys_uart5();
 
   // Complete debugging display 
   printf("  "); fflush(stdout);
 
   return;
 }
-*/
+
 
 /**
- *  sys_sio
- *  Prints system input/output values to the terminal.
+ *  sys_io
+ *  Prints input/output values to the terminal.
  */
-/*void sys_sio ( void )  {
+void sys_io ( void )  {
 
   // Loop counter
   ushort i;
@@ -138,17 +140,17 @@ void sys_quit (  )  {
   pthread_mutex_lock(&mutex_output);
   //for ( i=0; i<4; i++ )  printf("%5d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%4d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<4; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
-  printf("%5.2f ", output.norm[0] );
-  printf("%5.2f ", output.norm[1] );
-  printf("%5.2f ", output.norm[4] );
-  printf("%5.2f ", output.norm[5] );
-  printf("   ");  fflush(stdout);
+  for ( i=0; i<6; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
+  //printf("%5.2f ", output.norm[0] );
+  //printf("%5.2f ", output.norm[1] );
+  //printf("%5.2f ", output.norm[4] );
+  //printf("%5.2f ", output.norm[5] );
+  //printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_output);
 
   return;
 }
-*/
+
 
 /**
  *  sys_imuA
@@ -303,56 +305,5 @@ void sys_quit (  )  {
 }
 */
 
-/**
- *  sys_uart1
- *  Prints UART1 debugging messages to the terminal.
- */
-/*void sys_uart1 ( void )  {
-  if (UART1_ENABLED)  {
-  printf( "TX1:  %s    ", uart1.txdata );  fflush(stdout);
-  printf( "RX1:  %s    ", uart1.rxdata );  fflush(stdout);
-  }
-  return;
-}
-*/
-
-/**
- *  sys_uart2
- *  Prints UART2 debugging messages to the terminal.
- */
-/*void sys_uart2 ( void )  {
-  if (UART2_ENABLED)  {
-  printf( "TX2: %s    ", uart2.txdata );  fflush(stdout);
-  printf( "RX2: %s    ", uart2.rxdata );  fflush(stdout);
-  }
-  return;
-}
-*/
-
-/**
- *  sys_uart4
- *  Prints UART4 debugging messages to the terminal.
- */
-/*void sys_uart4 ( void )  {
-  if (UART4_ENABLED)  {
-  printf( "TX4:  %s    ", uart4.txdata );  fflush(stdout);
-  printf( "RX4:  %s    ", uart4.rxdata );  fflush(stdout);
-  }
-  return;
-}
-*/
-
-/**
- *  sys_uart5
- *  Prints UART5 debugging messages to the terminal.
- */
-/*void sys_uart5 ( void )  {
-  if (UART5_ENABLED)  {
-  printf( "TX5: %s    ", uart5.txdata );  fflush(stdout);
-  printf( "RX5: %s    ", uart5.rxdata );  fflush(stdout);
-  }
-  return;
-}
-*/
 
 

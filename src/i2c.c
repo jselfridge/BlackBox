@@ -1,6 +1,15 @@
 
 
 #include "i2c.h"
+#include <errno.h>
+#include <fcntl.h>
+#include <linux/i2c-dev.h>
+#include <stdio.h>
+#include <sys/ioctl.h>
+#include <sys/time.h>
+#include <unistd.h>
+#include "imu.h"
+#include "timer.h"
 
 
 /**
@@ -8,8 +17,9 @@
  *  Assigns a file descriptor after opening an I2C bus. 
  */
 int i2c_init ( int *fd, ushort bus, ushort slave_addr )  {
-  /*
+
   char buf[32];
+
   sprintf( buf, "/dev/i2c-%d", bus );
   *fd = open( buf, O_RDWR | O_NONBLOCK );
 
@@ -23,7 +33,7 @@ int i2c_init ( int *fd, ushort bus, ushort slave_addr )  {
     printf( "Error (i2c_init): Returned negative value from 'ioctl' command. \n" );
     return -1;
   }
-  */
+
   return 0;
 }
 
@@ -33,10 +43,8 @@ int i2c_init ( int *fd, ushort bus, ushort slave_addr )  {
  *  Closes file descriptor and exits I2C channel.
  */
 void i2c_exit ( int *fd )  {
-  /*
   close(*fd);
   *fd=0;
-  */
   return;
 }
 
@@ -45,7 +53,7 @@ void i2c_exit ( int *fd )  {
  *  i2c_slave
  *  Configures 'ioctl' when the slave address is changed.
  */
-/*int i2c_slave ( int fd, unsigned char slave_addr )  {
+int i2c_slave ( int fd, unsigned char slave_addr )  {
 
   // Confirm valid fd value
   if ( ( fd != imuA.fd ) && ( fd != imuB.fd ) )  {
@@ -73,13 +81,14 @@ void i2c_exit ( int *fd )  {
 
   return 0;
 }
-*/
+
 
 /**
  *  i2c_write
  *  Write data to the I2C bus.
  */
-/*int i2c_write ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char const *data )  {
+int i2c_write ( int fd, unsigned char slave_addr, unsigned char reg_addr, 
+                unsigned char length, unsigned char const *data )  {
 
   // Confirm valid fd value
   if ( ( fd != imuA.fd ) && ( fd != imuB.fd ) )  {
@@ -88,7 +97,8 @@ void i2c_exit ( int *fd )  {
   }
 
   // Local variables
-  int  i, result=0;
+  int i;
+  int result = 0;
   char buf [I2C_MAX_WRITE];
 
   // Check size of data
@@ -160,13 +170,14 @@ void i2c_exit ( int *fd )  {
 
   return 0;
 }
-*/
+
 
 /**
  *  i2c_read
  *  Read data from the I2C.
  */
-/*int i2c_read ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char *data )  {
+int i2c_read ( int fd, unsigned char slave_addr, unsigned char reg_addr, 
+               unsigned char length, unsigned char *data )  {
 
   // Confirm valid fd value
   if ( ( fd != imuA.fd ) && ( fd != imuB.fd ) )  {
@@ -174,7 +185,9 @@ void i2c_exit ( int *fd )  {
     return -1;
   }
 
-  int result=0, tries=0, total=0;
+  int result = 0;
+  int tries  = 0;
+  int total  = 0;
 
   if ( i2c_write( fd, slave_addr, reg_addr, 0, NULL ) )  return -1;
 
@@ -208,13 +221,13 @@ void i2c_exit ( int *fd )  {
 
   return 0;
 }
-*/
+
 
 /**
  *  i2c_get_ms
  *  Determines the number of milliseconds since epoch.
  */
-/*int i2c_get_ms ( unsigned long *ms )  {
+int i2c_get_ms ( unsigned long *ms )  {
   struct timeval t;
   if (!ms)  return -1;
   if ( gettimeofday( &t, NULL ) < 0 )  {
@@ -225,6 +238,6 @@ void i2c_exit ( int *fd )  {
   printf( "ms: %ld \n", *ms );
   return 0;
 }
-*/
+
 
 

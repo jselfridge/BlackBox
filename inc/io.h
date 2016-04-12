@@ -58,14 +58,12 @@ io_struct output;
 uint *memoryPtr;
 
 
-void    io_init    ( void );
-void    io_exit    ( void );
-
-//void    io_update  ( void );
-//void    io_setreg  ( ushort ch, ushort reg  );
-//void    io_setpwm  ( ushort ch, ushort pwm  );
-//void    io_setnorm ( ushort ch, double norm );
-//double  io_norm    ( ushort reg, char dir   );
+void  io_init    ( void );
+void  io_exit    ( void );
+void  io_update  ( void );
+void  io_setreg  ( ushort ch, ushort reg  );
+void  io_setpwm  ( ushort ch, ushort pwm  );
+void  io_setnorm ( ushort ch, double norm );
 
 
 #endif

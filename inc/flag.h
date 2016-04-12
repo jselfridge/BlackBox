@@ -28,7 +28,7 @@ bool armed;
 
 void  flag_init   ( void );
 void  flag_exit   ( void );
-//void  flag_update ( void );
+void  flag_update ( void );
 
 
 #endif
