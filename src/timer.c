@@ -8,6 +8,7 @@
  *  Initializes the various timing threads.
  */
 void tmr_init ( void )  {
+/*
   if(DEBUG)  printf("Initializing timing threads \n");
 
   // Local variables
@@ -59,148 +60,7 @@ void tmr_init ( void )  {
     tmr_thread( &tmr_debug, &attr, fcn_debug );
     printf("\n");
   }
-
-  return;
-}
-
-
-/**
- *  tmr_setup
- *  Assign timing thread parameters to a data structure.
- */
-void tmr_setup ( void )  {
-  if(DEBUG)  printf("  Assign thread structure elements \n");
-
-  // System I/O timer
-  tmr_sio.name   =  "sio";
-  tmr_sio.prio   =  PRIO_SIO;
-  tmr_sio.per    =  1000000 / HZ_SIO;
-
-  // Flags timer
-  tmr_flag.name  =  "flag";
-  tmr_flag.prio  =  PRIO_FLAG;
-  tmr_flag.per   =  1000000 / HZ_FLAG;
-
-  // IMU timer
-  tmr_imu.name   =  "imu";
-  tmr_imu.prio   =  PRIO_IMU;
-  tmr_imu.per    =  1000000 / HZ_IMU_FAST;
-
-  // IMUA timer
-  tmr_imuA.name  =  "imuA";
-  tmr_imuA.prio  =  PRIO_IMU;
-  tmr_imuA.per   =  1000000 / HZ_IMU_FAST;
-
-  // IMUB timer
-  tmr_imuB.name  =  "imuB";
-  tmr_imuB.prio  =  PRIO_IMU;
-  tmr_imuB.per   =  1000000 / HZ_IMU_FAST;
-
-  // AHRS timer
-  tmr_ahrs.name  =  "ahrs";
-  tmr_ahrs.prio  =  PRIO_AHRS;
-  tmr_ahrs.per   =  1000000 / HZ_AHRS;
-
-  // GPS timer
-  tmr_gps.name   =  "gps";
-  tmr_gps.prio   =  PRIO_GPS;
-  tmr_gps.per    =  1000000 / HZ_GPS;
-
-  // GCSTX timer
-  tmr_gcstx.name =  "gcstx";
-  tmr_gcstx.prio =  PRIO_GCSTX;
-  tmr_gcstx.per  =  1000000 / HZ_GCSTX;
-
-  // GCSRX timer
-  tmr_gcsrx.name =  "gcsrx";
-  tmr_gcsrx.prio =  PRIO_GCSRX;
-  tmr_gcsrx.per  =  1000000 / HZ_GCSRX;
-
-  // Control timer
-  tmr_ctrl.name   =  "ctrl";
-  tmr_ctrl.prio   =  PRIO_CTRL;
-  tmr_ctrl.per    =  1000000 / HZ_CTRL;
-
-  // Debugging timer
-  tmr_debug.name  =  "debug";
-  tmr_debug.prio  =  PRIO_DEBUG;
-  tmr_debug.per   =  1000000 / HZ_DEBUG;
-
-  /*// UART1 timer
-  tmr_uart1.name  =  "uart1";
-  tmr_uart1.prio  =  PRIO_UART1;
-  tmr_uart1.per   =  1000000 / HZ_UART1;
-  */
-  /*// UART2 timer
-  tmr_uart2.name  =  "uart2";
-  tmr_uart2.prio  =  PRIO_UART2;
-  tmr_uart2.per   =  1000000 / HZ_UART2;
-  */
-  /*// UART4 timer
-  tmr_uart4.name  =  "uart4";
-  tmr_uart4.prio  =  PRIO_UART4;
-  tmr_uart4.per   =  1000000 / HZ_UART4;
-  */
-  /*// UART5 timer
-  tmr_uart5.name  =  "uart5";
-  tmr_uart5.prio  =  PRIO_UART5;
-  tmr_uart5.per   =  1000000 / HZ_UART5;
-  */
-
-  return;
-}
-
-
-/**
- *  tmr_attr
- *  Sets the attributes of the timing threads.
- */
-void tmr_attr ( pthread_attr_t *attr )  {
-  if(DEBUG)  printf("  Set timing thread attributes \n");
-
-  // Initialize attribute variable
-  if( pthread_attr_init(attr) )
-    printf( "Error (thr_attr): Failed to initialize thread attribute. \n" );
-
-  // Set stack size of threads
-  if ( pthread_attr_setstacksize( attr, PTHREAD_STACK_MIN + (100*1024) ) )
-    printf( "Error (thr_attr): Failed to set 'stack size' attribute. \n" );
-
-  // Make threads joinable
-  if ( pthread_attr_setdetachstate( attr, PTHREAD_CREATE_JOINABLE ) )
-    printf( "Error (thr_attr): Failed to set 'joinable' attribute. \n" );
-
-  // Specify inherit schedule
-  if ( pthread_attr_setinheritsched( attr, PTHREAD_EXPLICIT_SCHED ) )
-    printf( "Error (thr_attr): Failed to set 'explicit' attribute. \n" );
-
-  // Set scheduler policy
-  if ( pthread_attr_setschedpolicy( attr, SCHED_FIFO ) )
-    printf( "Error (thr_attr): Failed to set 'FIFO' attribute." );
-
-  return;
-}
-
-
-/**
- *  tmr_thread
- *  Create a new pthread to run the timer. 
- */
-void tmr_thread ( timer_struct *tmr, pthread_attr_t *attr, void *fcn )  {
-  if(DEBUG)  printf( "%s ", tmr->name );
-
-  // Declare thread priority
-  struct sched_param param;
-  param.sched_priority = tmr->prio;
-
-  // Assign thread priority and attributes
-  if( pthread_attr_setschedparam( attr, &param ) )
-    printf( "Error (thr_create): Failed to set '%s' priority. \n", tmr->name );
-
-  // Create thread
-  if( pthread_create ( &tmr->id, attr, fcn, (void*)NULL ) )
-    printf( "Error (thr_init): Failed to create '%s' thread. \n", tmr->name );
-
+*/
   return;
 }
 
@@ -210,6 +70,7 @@ void tmr_thread ( timer_struct *tmr, pthread_attr_t *attr, void *fcn )  {
  *  Cleanly exits the timing threads.
  */
 void tmr_exit ( void )  {
+  /*
   printf("Close timing threads:  ");
 
   // Destroy mutex locks
@@ -229,34 +90,6 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&mutex_gps);
   pthread_mutex_destroy(&mutex_gcs);    // Is this needed?
   pthread_mutex_destroy(&mutex_ctrl);
-
-  // Exit UART5 thread
-  /*if(UART5_ENABLED)  {
-  if( pthread_join ( tmr_uart5.id, NULL ) )
-    printf( "Error (tmr_exit): Failed to exit 'uart5' thread. \n" );
-  if(DEBUG)  printf( "uart5 " );
-  }*/
-
-  // Exit UART4 thread
-  /*if(UART4_ENABLED)  {
-  if( pthread_join ( tmr_uart4.id, NULL ) )
-    printf( "Error (tmr_exit): Failed to exit 'uart4' thread. \n" );
-  if(DEBUG)  printf( "uart4 " );
-  }*/
-
-  // Exit UART2 thread
-  /*if(UART2_ENABLED)  {
-  if( pthread_join ( tmr_uart2.id, NULL ) )
-    printf( "Error (tmr_exit): Failed to exit 'uart2' thread. \n" );
-  if(DEBUG)  printf( "uart2 " );
-  }*/
-
-  // Exit UART1 thread
-  /*if(UART1_ENABLED)  {
-  if( pthread_join ( tmr_uart1.id, NULL ) )
-    printf( "Error (tmr_exit): Failed to exit 'uart1' thread. \n" );
-  if(DEBUG)  printf( "uart1 " );
-  }*/
 
   // Exit control thread
   if( pthread_join ( tmr_ctrl.id, NULL ) )
@@ -317,16 +150,137 @@ void tmr_exit ( void )  {
     printf( "Error (tmr_exit): Failed to exit 'debug' thread. \n" );
     printf( "debug \n" );
   }
+*/
+  return;
+}
+
+
+/**
+ *  tmr_setup
+ *  Assign timing thread parameters to a data structure.
+ */
+/*void tmr_setup ( void )  {
+  if(DEBUG)  printf("  Assign thread structure elements \n");
+
+  // System I/O timer
+  tmr_sio.name   =  "sio";
+  tmr_sio.prio   =  PRIO_SIO;
+  tmr_sio.per    =  1000000 / HZ_SIO;
+
+  // Flags timer
+  tmr_flag.name  =  "flag";
+  tmr_flag.prio  =  PRIO_FLAG;
+  tmr_flag.per   =  1000000 / HZ_FLAG;
+
+  // IMU timer
+  tmr_imu.name   =  "imu";
+  tmr_imu.prio   =  PRIO_IMU;
+  tmr_imu.per    =  1000000 / HZ_IMU_FAST;
+
+  // IMUA timer
+  tmr_imuA.name  =  "imuA";
+  tmr_imuA.prio  =  PRIO_IMU;
+  tmr_imuA.per   =  1000000 / HZ_IMU_FAST;
+
+  // IMUB timer
+  tmr_imuB.name  =  "imuB";
+  tmr_imuB.prio  =  PRIO_IMU;
+  tmr_imuB.per   =  1000000 / HZ_IMU_FAST;
+
+  // AHRS timer
+  tmr_ahrs.name  =  "ahrs";
+  tmr_ahrs.prio  =  PRIO_AHRS;
+  tmr_ahrs.per   =  1000000 / HZ_AHRS;
+
+  // GPS timer
+  tmr_gps.name   =  "gps";
+  tmr_gps.prio   =  PRIO_GPS;
+  tmr_gps.per    =  1000000 / HZ_GPS;
+
+  // GCSTX timer
+  tmr_gcstx.name =  "gcstx";
+  tmr_gcstx.prio =  PRIO_GCSTX;
+  tmr_gcstx.per  =  1000000 / HZ_GCSTX;
+
+  // GCSRX timer
+  tmr_gcsrx.name =  "gcsrx";
+  tmr_gcsrx.prio =  PRIO_GCSRX;
+  tmr_gcsrx.per  =  1000000 / HZ_GCSRX;
+
+  // Control timer
+  tmr_ctrl.name   =  "ctrl";
+  tmr_ctrl.prio   =  PRIO_CTRL;
+  tmr_ctrl.per    =  1000000 / HZ_CTRL;
+
+  // Debugging timer
+  tmr_debug.name  =  "debug";
+  tmr_debug.prio  =  PRIO_DEBUG;
+  tmr_debug.per   =  1000000 / HZ_DEBUG;
 
   return;
 }
+*/
+
+/**
+ *  tmr_attr
+ *  Sets the attributes of the timing threads.
+ */
+/*void tmr_attr ( pthread_attr_t *attr )  {
+  if(DEBUG)  printf("  Set timing thread attributes \n");
+
+  // Initialize attribute variable
+  if( pthread_attr_init(attr) )
+    printf( "Error (thr_attr): Failed to initialize thread attribute. \n" );
+
+  // Set stack size of threads
+  if ( pthread_attr_setstacksize( attr, PTHREAD_STACK_MIN + (100*1024) ) )
+    printf( "Error (thr_attr): Failed to set 'stack size' attribute. \n" );
+
+  // Make threads joinable
+  if ( pthread_attr_setdetachstate( attr, PTHREAD_CREATE_JOINABLE ) )
+    printf( "Error (thr_attr): Failed to set 'joinable' attribute. \n" );
+
+  // Specify inherit schedule
+  if ( pthread_attr_setinheritsched( attr, PTHREAD_EXPLICIT_SCHED ) )
+    printf( "Error (thr_attr): Failed to set 'explicit' attribute. \n" );
+
+  // Set scheduler policy
+  if ( pthread_attr_setschedpolicy( attr, SCHED_FIFO ) )
+    printf( "Error (thr_attr): Failed to set 'FIFO' attribute." );
+
+  return;
+}
+*/
+
+/**
+ *  tmr_thread
+ *  Create a new pthread to run the timer. 
+ */
+/*void tmr_thread ( timer_struct *tmr, pthread_attr_t *attr, void *fcn )  {
+  if(DEBUG)  printf( "%s ", tmr->name );
+
+  // Declare thread priority
+  struct sched_param param;
+  param.sched_priority = tmr->prio;
+
+  // Assign thread priority and attributes
+  if( pthread_attr_setschedparam( attr, &param ) )
+    printf( "Error (thr_create): Failed to set '%s' priority. \n", tmr->name );
+
+  // Create thread
+  if( pthread_create ( &tmr->id, attr, fcn, (void*)NULL ) )
+    printf( "Error (thr_init): Failed to create '%s' thread. \n", tmr->name );
+
+  return;
+}
+*/
 
 
 /**
  *  tmr_create
  *  Creates the timer file descriptor within a thread.
  */
-void tmr_create ( timer_struct *tmr )  {
+/*void tmr_create ( timer_struct *tmr )  {
 
   // Local variables
   uint sec;
@@ -355,13 +309,13 @@ void tmr_create ( timer_struct *tmr )  {
 
   return;
 }
-
+*/
 
 /**
  *  tmr_pause
  *  Implements the pause before starting the next loop.
  */
-void tmr_pause ( timer_struct *tmr )  {
+/*void tmr_pause ( timer_struct *tmr )  {
 
   // Local variables
   unsigned long long missed;
@@ -375,13 +329,13 @@ void tmr_pause ( timer_struct *tmr )  {
 
   return;
 }
-
+*/
 
 /**
  *  tmr_start
  *  Start code for a timer loop.
  */
-void tmr_start ( timer_struct *tmr )  {
+/*void tmr_start ( timer_struct *tmr )  {
 
   // Get current time
   struct timespec timeval;
@@ -393,13 +347,13 @@ void tmr_start ( timer_struct *tmr )  {
 
   return;
 }
-
+*/
 
 /**
  *  tmr_finish
  *  Finish code for a timer loop.
  */
-void tmr_finish ( timer_struct *tmr )  {
+/*void tmr_finish ( timer_struct *tmr )  {
 
   // Get current time
   struct timespec timeval;
@@ -418,13 +372,13 @@ void tmr_finish ( timer_struct *tmr )  {
 
   return;
 }
-
+*/
 
 /**
  *  fcn_sio
  *  Function handler for the system input/output timing thread.
  */
-void *fcn_sio (  )  {
+/*void *fcn_sio (  )  {
   tmr_create(&tmr_sio);
   while (running) {
     tmr_start(&tmr_sio);
@@ -439,13 +393,13 @@ void *fcn_sio (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_flag
  *  Function handler for the program execution flag timing thread.
  */
-void *fcn_flag (  )  {
+/*void *fcn_flag (  )  {
   tmr_create(&tmr_flag);
   while (running) {
     tmr_start(&tmr_flag);
@@ -456,13 +410,13 @@ void *fcn_flag (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_imu
  *  Function handler for dual IMU timing thread.
  */
-void *fcn_imu (  )  {
+/*void *fcn_imu (  )  {
   tmr_create(&tmr_imu);
   while (running) {
     tmr_start(&tmr_imu);
@@ -480,13 +434,13 @@ void *fcn_imu (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_imuA
  *  Function handler for the IMUA timing thread.
  */
-void *fcn_imuA (  )  {
+/*void *fcn_imuA (  )  {
   tmr_create(&tmr_imuA);
   while (running) {
     tmr_start(&tmr_imuA);
@@ -498,13 +452,13 @@ void *fcn_imuA (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_imuB
  *  Function handler for the IMUB timing thread.
  */
-void *fcn_imuB (  )  {
+/*void *fcn_imuB (  )  {
   tmr_create(&tmr_imuB);
   while (running) {
     tmr_start(&tmr_imuB);
@@ -516,13 +470,13 @@ void *fcn_imuB (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_ahrs
  *  Function handler for the AHRS timing thread.
  */
-void *fcn_ahrs (  )  {
+/*void *fcn_ahrs (  )  {
   tmr_create(&tmr_ahrs);
   while (running) {
     tmr_start(&tmr_ahrs);
@@ -534,13 +488,13 @@ void *fcn_ahrs (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_gps
  *  Function handler for the GPS timing thread.
  */
-void *fcn_gps (  )  {
+/*void *fcn_gps (  )  {
   tmr_create(&tmr_gps);
   while (running) {
     tmr_start(&tmr_gps);
@@ -552,13 +506,13 @@ void *fcn_gps (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_gcstx
  *  Function handler for the GCS transmission timing thread.
  */
-void *fcn_gcstx (  )  {
+/*void *fcn_gcstx (  )  {
   tmr_create(&tmr_gcstx);
   while (running) {
     tmr_start(&tmr_gcstx);
@@ -569,13 +523,13 @@ void *fcn_gcstx (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_gcsrx
  *  Function handler for the GCS receiver timing thread.
  */
-void *fcn_gcsrx (  )  {
+/*void *fcn_gcsrx (  )  {
   tmr_create(&tmr_gcsrx);
   while (running) {
     tmr_start(&tmr_gcsrx);
@@ -586,13 +540,13 @@ void *fcn_gcsrx (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_ctrl
  *  Function handler for the control law timing thread.
  */
-void *fcn_ctrl (  )  {
+/*void *fcn_ctrl (  )  {
   tmr_create(&tmr_ctrl);
   while (running) {
     tmr_start(&tmr_ctrl);
@@ -604,13 +558,13 @@ void *fcn_ctrl (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_debug
  *  Function handler for the debugging timing thread.
  */
-void *fcn_debug (  )  {
+/*void *fcn_debug (  )  {
   tmr_create(&tmr_debug);
   while (running) {
     tmr_start(&tmr_debug);
@@ -621,79 +575,6 @@ void *fcn_debug (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
-
-/**
- *  fcn_uart1
- *  Function handler for the UART1 timing thread.
- */
-/*
-void *fcn_uart1 (  )  {
-  tmr_create(&tmr_uart1);
-  while (running) {
-    tmr_start(&tmr_uart1);
-    uart_update(&uart1);
-    tmr_finish(&tmr_uart1);
-    tmr_pause(&tmr_uart1);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
 */
-
-/**
- *  fcn_uart2
- *  Function handler for the UART2 timing thread.
- */
-/*
-void *fcn_uart2 (  )  {
-  tmr_create(&tmr_uart2);
-  while (running) {
-    tmr_start(&tmr_uart2);
-    uart_update(&uart2);
-    tmr_finish(&tmr_uart2);
-    tmr_pause(&tmr_uart2);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
-*/
-
-/**
- *  fcn_uart4
- *  Function handler for the UART4 timing thread.
- */
-/*
-void *fcn_uart4 (  )  {
-  tmr_create(&tmr_uart4);
-  while (running) {
-    tmr_start(&tmr_uart4);
-    uart_update(&uart4);
-    tmr_finish(&tmr_uart4);
-    tmr_pause(&tmr_uart4);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
-*/
-
-/**
- *  fcn_uart5
- *  Function handler for the UART5 timing thread.
- */
-/*
-void *fcn_uart5 (  )  {
-  tmr_create(&tmr_uart5);
-  while (running) {
-    tmr_start(&tmr_uart5);
-    uart_update(&uart5);
-    tmr_finish(&tmr_uart5);
-    tmr_pause(&tmr_uart2);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
-*/
-
 
 

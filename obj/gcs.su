@@ -1,0 +1,2 @@
+gcs.c:10:6:gcs_init	0	static
+gcs.c:92:6:gcs_exit	0	static

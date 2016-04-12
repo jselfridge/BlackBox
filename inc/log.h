@@ -1,15 +1,16 @@
 
 
-#ifndef _LOG_H_
-#define _LOG_H_
-#include <main.h>
+#ifndef LOG_H
+#define LOG_H
 
 
-// Define statements
+#include <stdbool.h>
+#include <sys/types.h>
+
+
 #define MAX_LOG_DUR  (20*60)
 
 
-// Log enumerations
 enum log_index {
   LOG_SIO  = 0,
   LOG_IMUA = 1,
@@ -20,7 +21,6 @@ enum log_index {
 } log_index;
 
 
-// Log system input/output structure
 typedef struct log_sio_struct {
   ulong  count;
   ulong  limit;
@@ -33,7 +33,6 @@ log_sio_struct log_input;
 log_sio_struct log_output;
 
 
-// Log IMU structure
 typedef struct log_imu_struct {
   ulong count;
   ulong limit;
@@ -51,7 +50,6 @@ log_imu_struct log_accB;
 log_imu_struct log_magB;
 
 
-// Log AHRS structure
 typedef struct log_ahrs_struct {
   ulong count;
   ulong limit;
@@ -68,7 +66,6 @@ typedef struct log_ahrs_struct {
 log_ahrs_struct log_ahrs;
 
 
-// Log GPS structure
 typedef struct log_gps_struct {
   ulong count;
   ulong limit;
@@ -79,7 +76,6 @@ typedef struct log_gps_struct {
 log_gps_struct log_gps;
 
 
-// Log controller structure
 typedef struct log_ctrl_struct {
   ulong  count;
   ulong  limit;
@@ -93,7 +89,6 @@ typedef struct log_ctrl_struct {
 log_ctrl_struct log_ctrl;
 
 
-// Log structure
 typedef struct datalog_struct {
   bool   enabled;
   bool   setup;
@@ -106,13 +101,13 @@ typedef struct datalog_struct {
 datalog_struct datalog;
 
 
-// Log functions
 void  log_init   ( void );
-void  log_open   ( void );
-void  log_close  ( void );
 void  log_exit   ( void );
-void  log_record ( enum log_index index );
-void  log_free   ( void );
+
+//void  log_open   ( void );
+//void  log_close  ( void );
+//void  log_record ( enum log_index index );
+//void  log_free   ( void );
 
 
 #endif

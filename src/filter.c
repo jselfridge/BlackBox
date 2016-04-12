@@ -8,7 +8,7 @@
  *  Initializes the system signal filters.
  */
 void filter_init ( void )  {
-
+  /*
   if(DEBUG)  printf( "Initializing filters \n" );
 
   // Calculate time steps
@@ -54,7 +54,7 @@ void filter_init ( void )  {
     printf("  |  MAG  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
        HZ_IMU_SLOW, dt_mag, lpf_hz_mag, tc_mag, gain_mag );
   }
-
+  */
   return;
 }
 
@@ -64,7 +64,7 @@ void filter_init ( void )  {
  *  Terminate the system filters.
  */
 void filter_exit ( void )  {
-  if(DEBUG)  printf("Close filters \n");
+  //if(DEBUG)  printf("Close filters \n");
   // Add code as needed...
   return;
 }
@@ -74,7 +74,7 @@ void filter_exit ( void )  {
  *  filter_lpf
  *  Run a signal through a low pass filter.
  */
-double filter_lpf ( double *data, double sample, double gain, ushort hist )  {
+/*double filter_lpf ( double *data, double sample, double gain, ushort hist )  {
 
   // Local variables
   ushort i;
@@ -96,16 +96,18 @@ double filter_lpf ( double *data, double sample, double gain, ushort hist )  {
   return lpf;
 
 }
-
+*/
 
 /**
  *  filter_gains
  *  Calculates the associated gain for a particular LPF cutoff freq.
  */
-double filter_gains ( double hz )  {
+/*double filter_gains ( double hz )  {
 
   return hz;
 
 }
+*/
+
 
 

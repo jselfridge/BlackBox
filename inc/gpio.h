@@ -4,27 +4,24 @@
 #define GPIO_H
 
 
-// Includes
 #include <sys/types.h>
 
 
-// Definitions
 #define GPIO_PATH  "/sys/class/gpio"
 #define GPIO_BUF     64
 
 
-// Enumerations
 enum PIN_DIR {
   INPUT_PIN  = 0,
   OUTPUT_PIN = 1
 };
+
 enum PIN_VAL {
   LOW  = 0,
   HIGH = 1
 };
 
 
-// GPIO functions
 void  gpio_export    ( uint gpio );
 void  gpio_unexport  ( uint gpio );
 void  gpio_setdir    ( uint gpio, enum PIN_DIR dir );

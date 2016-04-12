@@ -8,6 +8,7 @@
  *  Initializes the control structure.
  */
 void ctrl_init ( void )  {
+  /*
   if (DEBUG)  printf("Initializing controller \n");
 
   // Array index
@@ -49,7 +50,7 @@ void ctrl_init ( void )  {
 
   }
 
-  /*
+  // *
   // Set 'plane' parameters
   if ( !strcmp( SYSTEM, "plane" ) )  {
 
@@ -77,11 +78,11 @@ void ctrl_init ( void )  {
     //ctrl.igain[x] = 0.0;       ctrl.igain[y] = 0.0;       ctrl.igain[z] = 0.0;
 
   }
-  */
+  * //
 
   // Display system
   if (DEBUG)  printf( "  System: %s \n", SYSTEM );
-
+  */
   return;
 }
 
@@ -91,7 +92,7 @@ void ctrl_init ( void )  {
  *  Exits the controller code.
  */
 void ctrl_exit ( void )  {
-  if (DEBUG)  printf("Close controller \n");
+  //if (DEBUG)  printf("Close controller \n");
   // Add exit code as needed...
   return;
 }
@@ -101,7 +102,7 @@ void ctrl_exit ( void )  {
  *  ctrl_update
  *  Executes the top level logic to update each control loop.
  */
-void ctrl_update ( void )  {
+/*void ctrl_update ( void )  {
   if (armed)  {
     if ( !strcmp( SYSTEM, "quad"  ) )  ctrl_quad();
     //if ( !strcmp( SYSTEM, "plane" ) )  ctrl_plane();
@@ -109,13 +110,13 @@ void ctrl_update ( void )  {
   else  ctrl_disarm();
   return;
 }
-
+*/
 
 /**
  *  ctrl_quad
  *  Apply control to quadrotor system.
  */
-void ctrl_quad ( void )  {
+/*void ctrl_quad ( void )  {
 
   // Local variables
   bool reset;
@@ -225,7 +226,7 @@ void ctrl_quad ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  ctrl_plane
@@ -260,6 +261,8 @@ void ctrl_quad ( void )  {
   return;
 }
 */
+
+
 
   /*
   // Local variables
@@ -368,15 +371,17 @@ void ctrl_quad ( void )  {
   */
 
 
+
+
 /**
  *  ctrl_disarm
  *  Set all system outputs to their disarmed state.
  */
-void ctrl_disarm ( void )  {
+/*void ctrl_disarm ( void )  {
   ushort ch;
   for ( ch=0; ch<OUT_CH; ch++ )  sio_setnorm( ch, ctrl.off[ch] );
   return;
 }
-
+*/
 
 

@@ -1,0 +1,2 @@
+log.c:10:6:log_init	0	static
+log.c:36:6:log_exit	0	static

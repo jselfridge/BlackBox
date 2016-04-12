@@ -1,0 +1,2 @@
+ctrl.c:10:6:ctrl_init	0	static
+ctrl.c:94:6:ctrl_exit	0	static

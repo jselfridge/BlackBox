@@ -1,0 +1,2 @@
+i2c.c:10:5:i2c_init	0	static
+i2c.c:35:6:i2c_exit	0	static

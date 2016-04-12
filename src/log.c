@@ -8,6 +8,7 @@
  *  Runs on start up to initalize the datalog attributes.
  */
 void log_init ( void )  {
+  /*
   if(DEBUG)  printf("Initializing log parameters \n");
 
   // Establish datalog limits
@@ -23,7 +24,18 @@ void log_init ( void )  {
   log_ahrs.limit   = MAX_LOG_DUR * HZ_AHRS;
   log_gps.limit    = MAX_LOG_DUR * HZ_GPS;
   log_ctrl.limit   = MAX_LOG_DUR * HZ_CTRL;
+  */
+  return;
+}
 
+
+/**
+ *  log_exit
+ *  Closes the data log files.
+ */
+void log_exit ( void )  {
+  //if(DEBUG)  printf("Close logs \n");
+  // Add code as needed...
   return;
 }
 
@@ -32,7 +44,7 @@ void log_init ( void )  {
  *  log_open
  *  Prepares the system for the next datalog sequence.
  */
-void log_open ( void )  {
+/*void log_open ( void )  {
 
   // Clear counters for new session
   log_input.count  = 0;
@@ -160,13 +172,13 @@ void log_open ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  log_close
  *  Completes a datalog session by writing out collected data.
  */
-void log_close ( void )  {
+/*void log_close ( void )  {
 
   // Inidcate the download is in progress
   datalog.saving = true;
@@ -494,24 +506,14 @@ void log_close ( void )  {
 
   return;
 }
-
-
-/**
- *  log_exit
- *  Closes the data log files.
- */
-void log_exit ( void )  {
-  if(DEBUG)  printf("Close logs \n");
-  // Add code as needed...
-  return;
-}
+*/
 
 
 /**
  *  log_record
  *  Records the data to the log file.
  */
-void log_record ( enum log_index index )  {
+/*void log_record ( enum log_index index )  {
 
   // Local variables
   ushort i;
@@ -735,12 +737,15 @@ void log_record ( enum log_index index )  {
   
   }
 }
-
+*/
 
 /**
  *  log_free
  *  Free the memory used to store the recorded data.
  */
-void log_free ( void )  {
+/*void log_free ( void )  {
+return;
+}
+*/
 
 

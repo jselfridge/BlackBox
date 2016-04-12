@@ -1,0 +1,2 @@
+gps.c:10:6:gps_init	0	static
+gps.c:57:6:gps_exit	0	static

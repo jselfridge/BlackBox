@@ -1,21 +1,12 @@
 
 
 #include "io.h"
-
-
-// Standard includes 
-#include <stdio.h>
-#include <string.h>
-
-
-// Custom includes
-#include <led.h>
-#include <sys.h>
-
-
-// PRU includes
 #include <prussdrv.h>
 #include <pruss_intc_mapping.h>
+#include <stdio.h>
+#include <string.h>
+#include "led.h"
+#include "sys.h"
 
 
 /**

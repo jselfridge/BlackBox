@@ -1,6 +1,10 @@
 
 
 #include "flag.h"
+#include <stdio.h>
+#include "io.h"
+#include "sys.h"
+#include "timer.h"
 
 
 /**
@@ -8,13 +12,14 @@
  *  Initializes the program execution flag structure.
  */
 void flag_init ( void )  {
+
   if(DEBUG)  printf("Initializing program execution flags \n");
 
   // Set boolean values
   if(DEBUG)  printf("  Set run time flags \n");
-  datalog.enabled  = false;
-  datalog.setup    = false;
-  datalog.saving   = false;
+  //datalog.enabled  = false;
+  //datalog.setup    = false;
+  //datalog.saving   = false;
   running          = true;
   armed            = false;
 
@@ -52,7 +57,7 @@ void flag_exit ( void )  {
  *  flag_update
  *  Updates the current status of the program execution flags.
  */
-void flag_update ( void )  {
+/*void flag_update ( void )  {
 
   // Local variables
   ushort ch;
@@ -107,6 +112,6 @@ void flag_update ( void )  {
 
   return;
 }
-
+*/
 
 

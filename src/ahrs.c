@@ -8,6 +8,7 @@
  *  Initializes the attitude and heading reference algorithms.
  */
 void ahrs_init ( void )  {
+  /*
   if(DEBUG)  printf( "Initializing AHRS \n" );
 
   // Loop through entries with known zero values
@@ -46,6 +47,7 @@ void ahrs_init ( void )  {
     for ( i=0; i<3; i++ )  printf(" %6.3f", ahrs.orient[i] );
     printf("\n");
   }
+  */
   return;
 }
 
@@ -55,8 +57,10 @@ void ahrs_init ( void )  {
  *  Terminate the AHR algorithms.
  */
 void ahrs_exit ( void )  {
+  /*
   if(DEBUG)  printf("Close AHRS \n");
   // Insert code if needed...
+  */
   return;
 }
 
@@ -65,20 +69,20 @@ void ahrs_exit ( void )  {
  *  ahrs_update
  *  Run appropriate functions to update the AHR values.
  */
-void ahrs_update ( void )  {
+/*void ahrs_update ( void )  {
 
   ahrs_fusion();
   //ahrs_kalman();  // Future work
 
   return;
 }
-
+*/
 
 /**
  *  ahrs_fusion
  *  Implement 9DOF data fusion algorithm.
  */
-void ahrs_fusion ( void )  {
+/*void ahrs_fusion ( void )  {
 
   // Local variables
   ushort i;
@@ -260,16 +264,16 @@ void ahrs_fusion ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  ahrs_kalman
  *  Implement Kalman filter algorithm.
  */
-void ahrs_kalman ( void )  {
+/*void ahrs_kalman ( void )  {
   // Future work
   return;
 }
-
+*/
 
 

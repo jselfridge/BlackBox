@@ -8,6 +8,7 @@
  *  Initializes the GPS sensor.
  */
 void gps_init ( void )  {
+  /*
   if (DEBUG)  printf("Initializing GPS \n");
 
   strcpy( gps.path, "/dev/ttyO2" );
@@ -44,7 +45,7 @@ void gps_init ( void )  {
   // Assign parameters to device
   if ( tcsetattr( gps.fd, TCSAFLUSH, &newparam ) <0 )
     printf( "Error (gps_init): Failed to assign GPS parameters. \n" );
-
+  */
   return;
 }
 
@@ -55,6 +56,7 @@ void gps_init ( void )  {
  */
 void gps_exit ( void )  {
   // Add code as needed...
+  //if (DEBUG)  printf("Close GPS \n");
   return;
 }
 
@@ -63,7 +65,7 @@ void gps_exit ( void )  {
  *  gps_update
  *  Obtains a new set of GPS data.
  */
-void gps_update ( void)  {
+/*void gps_update ( void)  {
 
   // Local variables
   uint sum = 0;
@@ -112,26 +114,26 @@ void gps_update ( void)  {
 
   return;
 }
-
+*/
 
 /**
  *  gps_hex2dec
  *  Converts a hex character into an integer
  */
-uint gps_hex2dec ( char c )  {
+/*uint gps_hex2dec ( char c )  {
   if ( c <  '0' )  return 0;
   if ( c <= '9' )  return c - '0';
   if ( c <  'A' )  return 0;
   if ( c <= 'F' )  return (c - 'A')+10;
   return 0;
 }
-
+*/
 
 /**
  *  gps_rmc
  *  Parse an RMC GPS message.
  */
-void gps_rmc ( char *msg )  {
+/*void gps_rmc ( char *msg )  {
 
   printf("Start parsing that message... \n");
   printf( "msg:   %s \n", msg );
@@ -274,7 +276,7 @@ void gps_rmc ( char *msg )  {
 
   return;
 }
-
+*/
 
 
 
@@ -282,7 +284,7 @@ void gps_rmc ( char *msg )  {
  *  gps_adafruit
  *  Temp code obtained from Adafruit sample.
  */
-void gps_adafruit ( void )  {
+//void gps_adafruit ( void )  {
   /*
   // Local variables
   uint sum, i;
@@ -454,8 +456,8 @@ void gps_adafruit ( void )  {
 
   }
   */
-  return;
-}
+//  return;
+//}
 
 
 

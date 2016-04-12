@@ -1,9 +1,6 @@
 
 
 #include "sys.h"
-
-
-// Standard includes
 #include <malloc.h>
 #include <sched.h>
 #include <stdio.h>
@@ -11,10 +8,7 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <unistd.h>
-
-
-// Custom includes
-#include <io.h>
+#include "flag.h"
 
 
 /**
@@ -22,15 +16,13 @@
  *  Initializes the system.
  */
 void sys_init ( void )  {
-
   if(DEBUG)  printf("Initializing system \n");
 
   // Establish exit condition
   if(DEBUG)  printf("  Set system exit condition \n");
   struct sigaction sys_run;
-  running = true;
   memset( &sys_run, 0, sizeof(sys_run) );
-  sys_run.sa_handler = &sys_exit;
+  sys_run.sa_handler = &sys_quit;
   if( sigaction( SIGINT, &sys_run, NULL ) == -1 )
     printf( "Error (sys_init): Function 'sigaction' failed. \n" );
 
@@ -64,28 +56,7 @@ void sys_init ( void )  {
  *  sys_exit
  *  Code that runs prior to exiting the system.
  */
-void sys_exit (  )  {
-
-  // Change exit status
-  running = false;
-  usleep(200000);
-
-  // Exit subsystems
-  if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
-  //tmr_exit();
-  //--  DEBUGGING  --//
-  //datalog.enabled = false;
-  //log_close();
-  //-----------------//
-  //log_exit();
-  //filter_exit();
-  //ctrl_exit();
-  //gcs_exit();
-  //gps_exit();
-  //ahrs_exit();
-  //imu_exit();
-  //flag_exit();
-  io_exit();
+void sys_exit ( void )  {
 
   // Shut everything down
   if(DEBUG)  printf("Program complete \n");
@@ -94,6 +65,17 @@ void sys_exit (  )  {
   if(!DEBUG)  system("shutdown -h now");
   kill( 0, SIGINT );
 
+  return;
+}
+
+
+/**
+ *  sys_quit
+ *  Changes the 'running' status flag to begin closing threads. 
+ */
+void sys_quit (  )  {
+  running = false;
+  usleep(200000);
   return;
 }
 

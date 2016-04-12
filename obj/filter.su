@@ -1,0 +1,2 @@
+filter.c:10:6:filter_init	0	static
+filter.c:66:6:filter_exit	0	static

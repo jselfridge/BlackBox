@@ -1,0 +1,2 @@
+timer.c:10:6:tmr_init	0	static
+timer.c:72:6:tmr_exit	0	static

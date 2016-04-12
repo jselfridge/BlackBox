@@ -1,17 +1,16 @@
 
 
-#ifndef _GCS_H_
-#define _GCS_H_
-#include <main.h>
+#ifndef GCS_H
+#define GCS_H
+
+
+#include <stdbool.h>
 #include <common/mavlink.h>
 
 
-// Define statements
 #define MAV_COMP_ID_GAINS    120
 #define PARAM_COUNT   19
 
-
-// Define 
 #define GCS_SYSID  01
 #define GCS_IMU    10
 #define GCS_IMUA   11
@@ -21,8 +20,6 @@
 #define GCS_OUTPUT 40
 #define GCS_GPS    50
 
-
-// Define data transmissions
 #define GCS_INPUT_ENABLED        true
 #define GCS_OUTPUT_ENABLED       true
 #define GCS_IMUA_RAW_ENABLED     true
@@ -36,7 +33,6 @@
 #define GCS_GPS_ENABLED          true
 
 
-// Parameter enumeration
 enum param_index {
 
   // LPF cutoff freq
@@ -73,7 +69,6 @@ enum param_index {
 };
 
 
-// Parameter structure
 typedef struct param_struct {
   float val  [PARAM_COUNT];
   char  name [PARAM_COUNT][MAVLINK_MSG_PARAM_SET_FIELD_PARAM_ID_LEN];
@@ -92,30 +87,28 @@ typedef struct gcs_struct {
 gcs_struct gcs;
 
 
-// GCS functions
 void  gcs_init         ( void );
 void  gcs_exit         ( void );
-void  gcs_tx           ( void );
-void  gcs_rx           ( void );
-void  gcs_paramlist    ( void );
-void  gcs_send_param   ( enum param_index name, float val );
-void  gcs_paramupdate  ( mavlink_message_t *msg );
-void  gcs_missionlist  ( void );
-void  gcs_heartbeat    ( void );
 
+//void  gcs_tx           ( void );
+//void  gcs_rx           ( void );
+//void  gcs_paramlist    ( void );
+//void  gcs_send_param   ( enum param_index name, float val );
+//void  gcs_paramupdate  ( mavlink_message_t *msg );
+//void  gcs_missionlist  ( void );
+//void  gcs_heartbeat    ( void );
 
-// Transmission functions
-void  gcs_input        ( void );
-void  gcs_output       ( void );
-void  gcs_imuA_raw     ( void );
-void  gcs_imuA_scaled  ( void );
-void  gcs_imuA_filter  ( void );
-void  gcs_imuB_raw     ( void );
-void  gcs_imuB_scaled  ( void );
-void  gcs_imuB_filter  ( void );
-void  gcs_ahrs_eul     ( void );
-void  gcs_ahrs_quat    ( void );
-void  gcs_gps          ( void );
+//void  gcs_input        ( void );
+//void  gcs_output       ( void );
+//void  gcs_imuA_raw     ( void );
+//void  gcs_imuA_scaled  ( void );
+//void  gcs_imuA_filter  ( void );
+//void  gcs_imuB_raw     ( void );
+//void  gcs_imuB_scaled  ( void );
+//void  gcs_imuB_filter  ( void );
+//void  gcs_ahrs_eul     ( void );
+//void  gcs_ahrs_quat    ( void );
+//void  gcs_gps          ( void );
 
 
 #endif

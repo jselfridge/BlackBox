@@ -8,6 +8,7 @@
  *  Initializes the GCS communication.
  */
 void gcs_init ( void )  {
+  /*
   if (DEBUG)  printf("Initializing GCS \n");
 
   // Assign UART path
@@ -79,7 +80,7 @@ void gcs_init ( void )  {
   // Send initial parameters
   gcs_paramlist();
   gcs_missionlist();
-
+  */
   return;
 }
 
@@ -89,7 +90,7 @@ void gcs_init ( void )  {
  *  Exits the GCS sensor.
  */
 void gcs_exit ( void )  {
-  close ( gcs.fd );
+  //close ( gcs.fd );
   return;
 }
 
@@ -98,7 +99,7 @@ void gcs_exit ( void )  {
  *  gcs_tx
  *  Transmit to the ground control station.
  */
-void gcs_tx ( void)  {
+/*void gcs_tx ( void)  {
 
   static int count = 0;
   if ( count < 10 )  {  count++;  }
@@ -128,13 +129,13 @@ void gcs_tx ( void)  {
 
   return;
 }
-
+*/
 
 /**
  *  gcs_rx
  *  Receive from the ground control station.
  */
-void gcs_rx ( void)  {
+/*void gcs_rx ( void)  {
 
   bool moredata = true;
 
@@ -213,13 +214,13 @@ void gcs_rx ( void)  {
 
   return;
 }
-
+*/
 
 /**
  *  gcs_paramlist
  *  Sends the onboard parameter list.
  */
-void gcs_paramlist ( void )  {
+/*void gcs_paramlist ( void )  {
 
   // Local variables
   int len, w, i;
@@ -256,14 +257,14 @@ void gcs_paramlist ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  gcs_send_param
  *  Sends a parameter to the GCS.
  */
-void gcs_send_param ( enum param_index name, float val )  {
-  /*
+/*void gcs_send_param ( enum param_index name, float val )  {
+  // *
   // Initialize buffers
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -294,16 +295,16 @@ void gcs_send_param ( enum param_index name, float val )  {
 
   // Pause during transmission
   usleep(w*200);
-  */
+  * //
   return;
 }
-
+*/
 
 /**
  *  gcs_paramupdate
  *  Updates the parameter values as needed.
  */
-void gcs_paramupdate ( mavlink_message_t *msg )  {
+/*void gcs_paramupdate ( mavlink_message_t *msg )  {
 
   // Local variables
   uint i, j;
@@ -418,13 +419,13 @@ void gcs_paramupdate ( mavlink_message_t *msg )  {
 
   return;
 }
-
+*/
 
 /**
  *  gcs_missionlist
  *  Sends the onboard mission list.
  */
-void gcs_missionlist ( void)  {
+/*void gcs_missionlist ( void)  {
 
   // Local variables
   int len, w;
@@ -456,13 +457,13 @@ void gcs_missionlist ( void)  {
 
   return;
 }
-
+*/
 
 /**
  *  gcs_heartbeat
  *  Sends a heartbeat transmission.
  */
-void gcs_heartbeat ( void)  {
+/*void gcs_heartbeat ( void)  {
 
   // Initialize the required buffers
   mavlink_message_t msg;
@@ -491,13 +492,13 @@ void gcs_heartbeat ( void)  {
 
   return;
 }
-
+*/
 
 /**
  *  gcs_input
  *  Sends the radio input commands.
  */
-void gcs_input ( void )  {
+/*void gcs_input ( void )  {
 
   // Initialize the required buffers
   mavlink_message_t msg;
@@ -537,13 +538,13 @@ void gcs_input ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  gcs_output
  *  Sends the system output commands.
  */
-void gcs_output ( void )  {
+/*void gcs_output ( void )  {
 
   // Initialize the required buffers
   mavlink_message_t msg;
@@ -582,13 +583,13 @@ void gcs_output ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  gcs_imuA_raw
  *  Sends the raw IMUA data.
  */
-void gcs_imuA_raw ( void )  {
+/*void gcs_imuA_raw ( void )  {
 
   // Initialize the required buffers
   mavlink_message_t msg;
@@ -632,13 +633,13 @@ void gcs_imuA_raw ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  gcs_imuA_scaled
  *  Sends the scaled IMUA data.
  */
-void gcs_imuA_scaled ( void )  {
+/*void gcs_imuA_scaled ( void )  {
 
   // Initialize the required buffers
   mavlink_message_t msg;
@@ -682,14 +683,14 @@ void gcs_imuA_scaled ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  gcs_imuA_filter
  *  Sends the filtered IMUA data.
  */
-void gcs_imuA_filter ( void )  {
-  /*
+/*void gcs_imuA_filter ( void )  {
+  // *
   // Initialize the required buffers
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -729,16 +730,16 @@ void gcs_imuA_filter ( void )  {
   // Transmit the attitude data
   int w = write( gcs.fd, buf, len );
   usleep(w*300);
-  */
+  * //
   return;
 }
-
+*/
 
 /**
  *  gcs_imuB_raw
  *  Sends the raw IMUB data.
  */
-void gcs_imuB_raw ( void )  {
+/*void gcs_imuB_raw ( void )  {
 
   // Initialize the required buffers
   mavlink_message_t msg;
@@ -783,14 +784,14 @@ void gcs_imuB_raw ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  gcs_imuB_scaled
  *  Sends the scaled IMUB data.
  */
-void gcs_imuB_scaled ( void )  {
-  /*
+/*void gcs_imuB_scaled ( void )  {
+  // *
   // Initialize the required buffers
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -831,17 +832,17 @@ void gcs_imuB_scaled ( void )  {
   // Transmit the attitude data
   int w = write( gcs.fd, buf, len );
   usleep(w*300);
-  */
+  * //
   return;
 }
-
+*/
 
 /**
  *  gcs_imuB_filter
  *  Sends the filtered IMUB data.
  */
-void gcs_imuB_filter ( void )  {
-  /*
+/*void gcs_imuB_filter ( void )  {
+  // *
   // Initialize the required buffers
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -882,16 +883,16 @@ void gcs_imuB_filter ( void )  {
   // Transmit the attitude data
   int w = write( gcs.fd, buf, len );
   usleep(w*300);
-  */
+  * //
   return;
 }
-
+*/
 
 /**
  *  gcs_ahrs_eul
  *  Sends the Euler attitude representation.
  */
-void gcs_ahrs_eul ( void )  {
+/*void gcs_ahrs_eul ( void )  {
 
   // Initialize the required buffers
   mavlink_message_t msg;
@@ -928,14 +929,14 @@ void gcs_ahrs_eul ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  gcs_ahrs_quat
  *  Sends the quaternion attitude representation.
  */
-void gcs_ahrs_quat ( void )  {
-  /*
+/*void gcs_ahrs_quat ( void )  {
+  // *
   // Initialize the required buffers
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -968,16 +969,16 @@ void gcs_ahrs_quat ( void )  {
   // Transmit the attitude data
   int w = write( gcs.fd, buf, len );
   usleep(w*300);
-  */
+  * //
   return;
 }
-
+*/
 
 /**
  *  gcs_gps
  *  Sends the GPS location data.
  */
-void gcs_gps ( void )  {
+/*void gcs_gps ( void )  {
 
   // Initialize the required buffers
   mavlink_message_t msg;
@@ -1017,6 +1018,6 @@ void gcs_gps ( void )  {
 
   return;
 }
-
+*/
 
 

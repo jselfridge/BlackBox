@@ -1,0 +1,2 @@
+ahrs.c:10:6:ahrs_init	0	static
+ahrs.c:59:6:ahrs_exit	0	static

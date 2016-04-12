@@ -1,0 +1,2 @@
+imu.c:14:6:imu_init	8	static
+imu.c:88:6:imu_exit	0	static

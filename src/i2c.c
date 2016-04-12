@@ -8,7 +8,7 @@
  *  Assigns a file descriptor after opening an I2C bus. 
  */
 int i2c_init ( int *fd, ushort bus, ushort slave_addr )  {
-
+  /*
   char buf[32];
   sprintf( buf, "/dev/i2c-%d", bus );
   *fd = open( buf, O_RDWR | O_NONBLOCK );
@@ -23,7 +23,7 @@ int i2c_init ( int *fd, ushort bus, ushort slave_addr )  {
     printf( "Error (i2c_init): Returned negative value from 'ioctl' command. \n" );
     return -1;
   }
-
+  */
   return 0;
 }
 
@@ -33,8 +33,10 @@ int i2c_init ( int *fd, ushort bus, ushort slave_addr )  {
  *  Closes file descriptor and exits I2C channel.
  */
 void i2c_exit ( int *fd )  {
+  /*
   close(*fd);
   *fd=0;
+  */
   return;
 }
 
@@ -43,7 +45,7 @@ void i2c_exit ( int *fd )  {
  *  i2c_slave
  *  Configures 'ioctl' when the slave address is changed.
  */
-int i2c_slave ( int fd, unsigned char slave_addr )  {
+/*int i2c_slave ( int fd, unsigned char slave_addr )  {
 
   // Confirm valid fd value
   if ( ( fd != imuA.fd ) && ( fd != imuB.fd ) )  {
@@ -71,13 +73,13 @@ int i2c_slave ( int fd, unsigned char slave_addr )  {
 
   return 0;
 }
-
+*/
 
 /**
  *  i2c_write
  *  Write data to the I2C bus.
  */
-int i2c_write ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char const *data )  {
+/*int i2c_write ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char const *data )  {
 
   // Confirm valid fd value
   if ( ( fd != imuA.fd ) && ( fd != imuB.fd ) )  {
@@ -158,13 +160,13 @@ int i2c_write ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsign
 
   return 0;
 }
-
+*/
 
 /**
  *  i2c_read
  *  Read data from the I2C.
  */
-int i2c_read ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char *data )  {
+/*int i2c_read ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char *data )  {
 
   // Confirm valid fd value
   if ( ( fd != imuA.fd ) && ( fd != imuB.fd ) )  {
@@ -206,13 +208,13 @@ int i2c_read ( int fd, unsigned char slave_addr, unsigned char reg_addr, unsigne
 
   return 0;
 }
-
+*/
 
 /**
  *  i2c_get_ms
  *  Determines the number of milliseconds since epoch.
  */
-int i2c_get_ms ( unsigned long *ms )  {
+/*int i2c_get_ms ( unsigned long *ms )  {
   struct timeval t;
   if (!ms)  return -1;
   if ( gettimeofday( &t, NULL ) < 0 )  {
@@ -223,6 +225,6 @@ int i2c_get_ms ( unsigned long *ms )  {
   printf( "ms: %ld \n", *ms );
   return 0;
 }
-
+*/
 
 

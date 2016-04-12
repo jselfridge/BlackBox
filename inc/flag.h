@@ -1,19 +1,20 @@
 
 
-#ifndef _FLAG_H_
-#define _FLAG_H_
-#include <main.h>
+#ifndef FLAG_H
+#define FLAG_H
 
 
-// Define stick hold durations
+#include <stdbool.h>
+#include <sys/types.h>
+
+
 #define FLAG_HOLD_R  3.0
 #define FLAG_HOLD_P  3.0
 #define FLAG_HOLD_Y  3.0
 #define FLAG_HOLD_T  0.0
 
 
-// Program execution flag structure
-typedef struct {
+typedef struct flag_struct {
   ushort upper[4];
   ushort lower[4];
   ushort limit[4];
@@ -21,10 +22,13 @@ typedef struct {
 flag_struct flag;
 
 
-// Program execution flag functions
+bool running;
+bool armed;
+
+
 void  flag_init   ( void );
 void  flag_exit   ( void );
-void  flag_update ( void );
+//void  flag_update ( void );
 
 
 #endif
