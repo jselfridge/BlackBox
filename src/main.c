@@ -15,23 +15,23 @@ int main ( void )  {
 
   // Initialize subsystems
   sys_init();
-  sio_init();
-  flag_init();
-  imu_init();
-  ahrs_init();
-  gps_init();
-  gcs_init();
-  ctrl_init();
-  filter_init();
-  log_init();
+  io_init();
+  //flag_init();
+  //imu_init();
+  //ahrs_init();
+  //gps_init();
+  //gcs_init();
+  //ctrl_init();
+  //filter_init();
+  //log_init();
   //---  DEBUGGING  ---//
-  log_open();
-  datalog.enabled = true;
+  //log_open();
+  //datalog.enabled = true;
   //-------------------//
-  tmr_init();
+  //tmr_init();
 
   // Wait for exit condition
-  while(running)  usleep(100000);
+  //while(running)  usleep(100000);
 
   // Exit the program
   sys_exit();

@@ -22,7 +22,6 @@ PNAME := $(patsubst %.p, %, $(PRU) )
 BIN   := $(foreach b, $(PNAME), bin/$(b).bin )
 
 DEFS = -DMPU9250
-# -DAK8975_SECONDARY
 
 
 all : $(EXEC)

@@ -3,11 +3,26 @@
 #include "sys.h"
 
 
+// Standard includes
+#include <malloc.h>
+#include <sched.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/mman.h>
+#include <unistd.h>
+
+
+// Custom includes
+#include <io.h>
+
+
 /**
  *  sys_init
  *  Initializes the system.
  */
 void sys_init ( void )  {
+
   if(DEBUG)  printf("Initializing system \n");
 
   // Establish exit condition
@@ -46,10 +61,48 @@ void sys_init ( void )  {
 
 
 /**
+ *  sys_exit
+ *  Code that runs prior to exiting the system.
+ */
+void sys_exit (  )  {
+
+  // Change exit status
+  running = false;
+  usleep(200000);
+
+  // Exit subsystems
+  if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
+  //tmr_exit();
+  //--  DEBUGGING  --//
+  //datalog.enabled = false;
+  //log_close();
+  //-----------------//
+  //log_exit();
+  //filter_exit();
+  //ctrl_exit();
+  //gcs_exit();
+  //gps_exit();
+  //ahrs_exit();
+  //imu_exit();
+  //flag_exit();
+  io_exit();
+
+  // Shut everything down
+  if(DEBUG)  printf("Program complete \n");
+  if( sigaction( SIGINT, &sys_signal, NULL ) == -1 )
+    printf( "Error (sys_exit): Function 'sigaction' failed. \n" );
+  if(!DEBUG)  system("shutdown -h now");
+  kill( 0, SIGINT );
+
+  return;
+}
+
+
+/**
  *  sys_update
  *  Prints system debugging messages to the terminal.
  */
-void sys_update ( void )  {
+/*void sys_update ( void )  {
 
   // Start debugging display
   printf("\r");  fflush(stdout);
@@ -81,13 +134,13 @@ void sys_update ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  sys_sio
  *  Prints system input/output values to the terminal.
  */
-void sys_sio ( void )  {
+/*void sys_sio ( void )  {
 
   // Loop counter
   ushort i;
@@ -113,13 +166,13 @@ void sys_sio ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  sys_imuA
  *  Prints IMUA debugging messages to the terminal.
  */
-void sys_imuA ( void )  {
+/*void sys_imuA ( void )  {
 
   // Check that IMUA is in use
   if (IMUA_ENABLED) {
@@ -152,13 +205,13 @@ void sys_imuA ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  sys_imuB
  *  Prints IMUB debugging messages to the terminal.
  */
-void sys_imuB ( void )  {
+/*void sys_imuB ( void )  {
 
   // Check that IMUB is in use
   if (IMUB_ENABLED) {
@@ -191,13 +244,13 @@ void sys_imuB ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  sys_ahrs
  *  Prints AHRS debugging messages to the terminal.
  */
-void sys_ahrs ( void )  {
+/*void sys_ahrs ( void )  {
 
   // Loop counter
   ushort i;
@@ -216,34 +269,34 @@ void sys_ahrs ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  sys_gps
  *  Prints GPS debugging messages to the terminal.
  */
-void sys_gps ( void )  {
+/*void sys_gps ( void )  {
 
   pthread_mutex_lock(&mutex_gps);
   //printf("GPS msg:    %s ", gps.msg );  printf("   ");  fflush(stdout);
-  /*  printf("lat: %s    ",     gps.lat     );
-  printf("lon: %s    ",     gps.lon     );
-  printf("alt: %s    ",     gps.alt     );
-  printf("heading: %s    ", gps.heading );
-  printf("speed: %s    ",   gps.speed   );
-  printf("numsat: %s    ",  gps.numsat  );
-  fflush(stdout); */
-  pthread_mutex_unlock(&mutex_gps);
+  //printf("lat: %s    ",     gps.lat     );
+  //printf("lon: %s    ",     gps.lon     );
+  //printf("alt: %s    ",     gps.alt     );
+  //printf("heading: %s    ", gps.heading );
+  //printf("speed: %s    ",   gps.speed   );
+  //printf("numsat: %s    ",  gps.numsat  );
+  //fflush(stdout);
+  //pthread_mutex_unlock(&mutex_gps);
 
   return;
 }
-
+*/
 
 /**
  *  sys_ctrl
  *  Prints controller values to the terminal.
  */
-void sys_ctrl ( void )  {
+/*void sys_ctrl ( void )  {
 
   // Loop counter
   ushort i;
@@ -266,14 +319,13 @@ void sys_ctrl ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  sys_uart1
  *  Prints UART1 debugging messages to the terminal.
  */
-/*
-void sys_uart1 ( void )  {
+/*void sys_uart1 ( void )  {
   if (UART1_ENABLED)  {
   printf( "TX1:  %s    ", uart1.txdata );  fflush(stdout);
   printf( "RX1:  %s    ", uart1.rxdata );  fflush(stdout);
@@ -286,8 +338,7 @@ void sys_uart1 ( void )  {
  *  sys_uart2
  *  Prints UART2 debugging messages to the terminal.
  */
-/*
-void sys_uart2 ( void )  {
+/*void sys_uart2 ( void )  {
   if (UART2_ENABLED)  {
   printf( "TX2: %s    ", uart2.txdata );  fflush(stdout);
   printf( "RX2: %s    ", uart2.rxdata );  fflush(stdout);
@@ -300,8 +351,7 @@ void sys_uart2 ( void )  {
  *  sys_uart4
  *  Prints UART4 debugging messages to the terminal.
  */
-/*
-void sys_uart4 ( void )  {
+/*void sys_uart4 ( void )  {
   if (UART4_ENABLED)  {
   printf( "TX4:  %s    ", uart4.txdata );  fflush(stdout);
   printf( "RX4:  %s    ", uart4.rxdata );  fflush(stdout);
@@ -314,8 +364,7 @@ void sys_uart4 ( void )  {
  *  sys_uart5
  *  Prints UART5 debugging messages to the terminal.
  */
-/*
-void sys_uart5 ( void )  {
+/*void sys_uart5 ( void )  {
   if (UART5_ENABLED)  {
   printf( "TX5: %s    ", uart5.txdata );  fflush(stdout);
   printf( "RX5: %s    ", uart5.rxdata );  fflush(stdout);
@@ -323,43 +372,5 @@ void sys_uart5 ( void )  {
   return;
 }
 */
-
-/**
- *  sys_exit
- *  Code that runs prior to exiting the system.
- */
-void sys_exit (  )  {
-
-  // Change exit status
-  running = false;
-  usleep(200000);
-
-  // Exit subsystems
-  if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
-  tmr_exit();
-  //--  DEBUGGING  --//
-  datalog.enabled = false;
-  log_close();
-  //-----------------//
-  log_exit();
-  filter_exit();
-  ctrl_exit();
-  gcs_exit();
-  gps_exit();
-  ahrs_exit();
-  imu_exit();
-  flag_exit();
-  sio_exit();
-
-  // Shut everything down
-  if(DEBUG)  printf("Program complete \n");
-  if( sigaction( SIGINT, &sys_signal, NULL ) == -1 )
-    printf( "Error (sys_exit): Function 'sigaction' failed. \n" );
-  if(!DEBUG)  system("shutdown -h now");
-  kill( 0, SIGINT );
-
-  return;
-}
-
 
 

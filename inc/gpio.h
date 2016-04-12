@@ -1,11 +1,14 @@
 
 
-#ifndef _GPIO_H_
-#define _GPIO_H_
-#include <main.h>
+#ifndef GPIO_H
+#define GPIO_H
 
 
-// Local definitions
+// Includes
+#include <sys/types.h>
+
+
+// Definitions
 #define GPIO_PATH  "/sys/class/gpio"
 #define GPIO_BUF     64
 

@@ -1,14 +1,30 @@
 
 
-#include "sio.h"
+#include "io.h"
+
+
+// Standard includes 
+#include <stdio.h>
+#include <string.h>
+
+
+// Custom includes
+#include <led.h>
+#include <sys.h>
+
+
+// PRU includes
+#include <prussdrv.h>
+#include <pruss_intc_mapping.h>
 
 
 /**
- *  sio_init
+ *  io_init
  *  Initializes the system input/output PRU subcomponents.
  */
-void sio_init ( void )  {
-  if(DEBUG)  printf("Initializing system inputs/outputs \n");
+void io_init ( void )  {
+
+  if(DEBUG)  printf("Initializing inputs/outputs \n");
 
   // Set LED indicator
   led_blink( LED_SIO, 200, 200 );
@@ -51,11 +67,11 @@ void sio_init ( void )  {
 
 
 /**
- *  sio_exit
- *  Exits the system input/output PRU subcomponents.
+ *  io_exit
+ *  Exits the input/output PRU subcomponents.
  */
-void sio_exit ( void )  {
-  if(DEBUG)  printf("Close system input/output \n");
+void io_exit ( void )  {
+  if(DEBUG)  printf("Close input/output \n");
   prussdrv_pru_disable(0);
   prussdrv_pru_disable(1);
   prussdrv_exit(); 
@@ -65,10 +81,10 @@ void sio_exit ( void )  {
 
 
 /**
- *  sio_update
+ *  io_update
  *  Obtains input values and assigns output values.
  */
-void sio_update ( void )  {
+/*void io_update ( void )  {
 
   // Channel index
   ushort ch;
@@ -89,13 +105,13 @@ void sio_update ( void )  {
 
   return;
 }
-
+*/
 
 /**
- *  sio_setreg
+ *  io_setreg
  *  Assign register value output, and sync data structure.
  */
-void sio_setreg ( ushort ch, ushort reg )  {
+/*void io_setreg ( ushort ch, ushort reg )  {
 
   // Check function inputs
   if( ch<0 || ch>=OUT_CH )
@@ -110,13 +126,13 @@ void sio_setreg ( ushort ch, ushort reg )  {
 
   return;
 }
-
+*/
 
 /**
- *  sio_setpwm
+ *  io_setpwm
  *  Assign PWM value output, and sync data structure.
  */
-void sio_setpwm ( ushort ch, ushort pwm )  {
+/*void io_setpwm ( ushort ch, ushort pwm )  {
 
   // Check function inputs
   if( ch<0 || ch>=OUT_CH )
@@ -131,13 +147,13 @@ void sio_setpwm ( ushort ch, ushort pwm )  {
 
   return;
 }
-
+*/
 
 /**
- *  sio_setnorm
+ *  io_setnorm
  *  Assign normalized value output, and sync data structure.
  */
-void sio_setnorm ( ushort ch, double norm )  {
+/*void io_setnorm ( ushort ch, double norm )  {
 
   // Check function inputs
   if( ch<0 || ch>=OUT_CH )
@@ -157,13 +173,13 @@ void sio_setnorm ( ushort ch, double norm )  {
 
   return;
 }
-
+*/
 
 /**
- *  sio_norm
+ *  io_norm
  *  Converts a register value into a normalized range.
  */
-double sio_norm ( ushort reg, char dir )  {
+/*double io_norm ( ushort reg, char dir )  {
 
   // Local variables
   double num, den, norm;
@@ -196,6 +212,6 @@ double sio_norm ( ushort reg, char dir )  {
 
   return norm;
 }
-
+*/
 
 

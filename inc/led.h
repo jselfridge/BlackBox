@@ -1,11 +1,14 @@
 
 
-#ifndef _LED_H_
-#define _LED_H_
-#include <main.h>
+#ifndef LED_H
+#define LED_H
 
 
-// Custom definitions
+// Includes
+#include <sys/types.h>
+
+
+// Definitions
 #define LED_PATH   "/sys/class/leds/beaglebone:green:usr"
 #define LED_BUF    64
 
@@ -20,10 +23,10 @@ enum LED {
 
 
 // LED functions
-int   led_trig   ( uint index );
-int   led_on     ( uint index );
-int   led_off    ( uint index );
-int   led_blink  ( uint index, uint on, uint off );
+int  led_trig   ( uint index );
+int  led_on     ( uint index );
+int  led_off    ( uint index );
+int  led_blink  ( uint index, uint on, uint off );
 
 
 #endif

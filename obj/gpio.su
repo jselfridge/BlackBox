@@ -1,8 +1,8 @@
-gpio.c:10:6:gpio_export	96	dynamic,bounded
-gpio.c:32:6:gpio_unexport	96	dynamic,bounded
-gpio.c:54:6:gpio_setdir	96	dynamic,bounded
-gpio.c:77:6:gpio_setval	96	dynamic,bounded
-gpio.c:100:6:gpio_getval	104	dynamic,bounded
-gpio.c:125:6:gpio_setedge	96	dynamic,bounded
-gpio.c:147:5:gpio_fdopen	96	dynamic,bounded
-gpio.c:166:6:gpio_fdclose	0	static
+gpio.c:14:6:gpio_export	96	dynamic,bounded
+gpio.c:36:6:gpio_unexport	96	dynamic,bounded
+gpio.c:58:6:gpio_setdir	96	dynamic,bounded
+gpio.c:81:6:gpio_setval	96	dynamic,bounded
+gpio.c:104:6:gpio_getval	104	dynamic,bounded
+gpio.c:129:6:gpio_setedge	96	dynamic,bounded
+gpio.c:151:5:gpio_fdopen	96	dynamic,bounded
+gpio.c:170:6:gpio_fdclose	0	static

@@ -1,8 +1,11 @@
 
 
-#ifndef _SIO_H_
-#define _SIO_H_
-#include <main.h>
+#ifndef IO_H
+#define IO_H
+
+
+// Includes
+#include <sys/types.h>
 
 
 // Input signal defines
@@ -50,28 +53,28 @@ enum radio_index {
 } radio_index;
 
 
-// Signal structure
-typedef struct sio_struct {
+// Input/Output structure
+typedef struct io_struct {
   ushort reg  [10];
   ushort pwm  [10];
   double norm [10];
-} sio_struct;
-sio_struct input;
-sio_struct output;
+} io_struct;
+io_struct input;
+io_struct output;
 
 
-// Global variables (remove as quickly as possible)
-uint* memoryPtr;
+// Global variables
+uint *memoryPtr;
 
 
-// System input/output functions
-void    sio_init    ( void );
-void    sio_exit    ( void );
-void    sio_update  ( void );
-void    sio_setreg  ( ushort ch, ushort reg  );
-void    sio_setpwm  ( ushort ch, ushort pwm  );
-void    sio_setnorm ( ushort ch, double norm );
-double  sio_norm    ( ushort reg, char dir   );
+// Input/Output functions
+void    io_init    ( void );
+void    io_exit    ( void );
+//void    io_update  ( void );
+//void    io_setreg  ( ushort ch, ushort reg  );
+//void    io_setpwm  ( ushort ch, ushort pwm  );
+//void    io_setnorm ( ushort ch, double norm );
+//double  io_norm    ( ushort reg, char dir   );
 
 
 #endif
