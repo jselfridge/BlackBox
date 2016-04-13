@@ -1,5 +1,5 @@
 filter.c:15:6:filter_init	96	static
 filter.c:70:6:filter_exit	0	static
 filter.c:81:6:filter_freq	0	static
-filter.c:107:6:filter_hist	16	static
+filter.c:105:6:filter_hist	16	static
 filter.c:133:6:filter_lpf	56	dynamic

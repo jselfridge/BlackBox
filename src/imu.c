@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include "filter.h"
 #include "i2c.h"
 #include "led.h"
 #include "mpu.h"
@@ -267,19 +268,30 @@ void imu_update ( imu_struct *imu )  {
   Ms[z] =   ( Mr[z] - imu->mag->bias[z] ) / (double) (imu->mag->range[z]);
   }
 
-  // Low pass filter
+  /* // Low pass filter stand in (debugging)
   for ( i=0; i<3; i++ ) {
-
     Gf[i] = Gs[i];
     Af[i] = As[i];
     if (imu->getmag)   
     Mf[i] = Ms[i];
+  }
+  */
+  // IMUA low pass filter
+  if ( imu->id == 'A' )  {
+    filter_lpf ( &filter_gyrA, Gs, Gf );
+    filter_lpf ( &filter_accA, As, Af );
+    if (imu->getmag)  {
+    filter_lpf ( &filter_magA, Ms, Mf );
+    }
+  }
 
-    //Gf[i] = filter_lpf ( filter_gyrA[i], Gs[i], imu->gyr->gain, HIST_GYR );
-    //Af[i] = filter_lpf ( filter_accA[i], As[i], imu->acc->gain, HIST_ACC );
-    //if (imu->getmag)   
-    //Mf[i] = filter_lpf ( filter_magA[i], Ms[i], imu->mag->gain, HIST_MAG );
-
+  // IMUB low pass filter
+  if ( imu->id == 'B' )  {
+    filter_lpf ( &filter_gyrB, Gs, Gf );
+    filter_lpf ( &filter_accB, As, Af );
+    if (imu->getmag)  {
+    filter_lpf ( &filter_magB, Ms, Mf );
+    }
   }
 
   // Push gyroscope values to data structure

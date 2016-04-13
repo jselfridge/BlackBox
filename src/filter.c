@@ -23,9 +23,9 @@ void filter_init ( void )  {
 
   // Assign array dimensions
   if(DEBUG)  printf( "  Assign array dimensions \n" );
-  filter_gyrA.dim = 1;  filter_gyrB.dim = 1;
-  filter_accA.dim = 1;  filter_accB.dim = 1;
-  filter_magA.dim = 1;  filter_magB.dim = 1;
+  filter_gyrA.dim = 3;  filter_gyrB.dim = 3;
+  filter_accA.dim = 3;  filter_accB.dim = 3;
+  filter_magA.dim = 3;  filter_magB.dim = 3;
 
   // Store cutoff frequencies
   if(DEBUG)  printf( "  Store cutoff frequencies \n" );
@@ -84,10 +84,8 @@ void filter_freq ( filter_struct *filter, double freq )  {
   double tc, gain;
 
   // Determine time constant
-  if ( freq != 0.0 )
-    tc = 1.0 / ( 2.0 * M_PI * freq );
-  else
-    tc = 0.0;
+  if (freq)  tc = 1.0 / ( 2.0 * M_PI * freq );
+  else       tc = 0.0;
 
   // Calculate gain
   gain = filter->dt / ( tc + filter->dt );
@@ -106,6 +104,9 @@ void filter_freq ( filter_struct *filter, double freq )  {
  */
 void filter_hist ( filter_struct *filter, uint hist )  {
 
+  // Local variables
+  ushort i, size;
+
   // Assign new value
   filter->hist = hist;
 
@@ -113,13 +114,12 @@ void filter_hist ( filter_struct *filter, uint hist )  {
   free(filter->data);
 
   // Determine new stroage size
-  ushort size = filter->dim * hist;
+  size = filter->dim * hist;
 
   // Allocate new storage
   filter->data = malloc( sizeof(double) * size );
 
   // Zero out values
-  ushort i;
   for ( i=0; i<size; i++ )  filter->data[i] = 0.0;
 
   return;
@@ -134,43 +134,34 @@ void filter_lpf ( filter_struct *filter, double *input, double *output )  {
 
   // Local variables
   ushort i, j;
-  ushort h     = filter->hist;
-  ushort d     = filter->dim;
+  ushort row   = filter->hist;
+  ushort col   = filter->dim;
   double gain  = filter->gain;
   double *data = filter->data;
-  double lpf[d];
-
-  //for ( i=0; i<h; i++ )  printf("%f ", data[i] );  printf("\n");  //DEBUG
+  double lpf[col];
 
   // Shift stored data
-  for ( i=1; i<h; i++ ) {
-    for ( j=0; j<d; j++ ) {
-      data[d*i+j-d] = data[d*i+j ];
-     //data[i-1] = data[i];
+  for ( i=1; i<row; i++ ) {
+    for ( j=0; j<col; j++ ) {
+      data[ col*i+j-row ] = data[ col*i+j ];
     }
   }
-  //for ( i=0; i<h; i++ )  printf("%f ", data[i] );  printf("\n");  //DEBUG
 
   // Assign newest data value
-  for ( j=0; j<d; j++ )  data[(h-1)*d+j] = input[j];
-  //data[h-1] = *input;
-  //for ( i=0; i<h; i++ )  printf("%f ", data[i] );  printf("\n");  //DEBUG
+  for ( j=0; j<col; j++ )  data[(row-1)*col+j] = input[j];
 
   // Initialize starting value
-  for ( j=0; j<d; j++ )  lpf[j] = data[j];
-  //lpf = data[0];
-  //printf("%f \n", lpf);  // DEBUG
+  for ( j=0; j<col; j++ )  lpf[j] = data[j];
 
   // Loop through sequence
-  for ( i=1; i<h; i++ ) {
-    for ( j=0; j<d; j++ ) {
-      lpf[j] = lpf[j] + gain * ( data[i*d+j] - lpf[j] );
+  for ( i=1; i<row; i++ ) {
+    for ( j=0; j<col; j++ ) {
+      lpf[j] = lpf[j] + gain * ( data[i*col+j] - lpf[j] );
     }
   }
-  //printf("%f \n", lpf);  // DEBUG
 
   // Return filtered result
-  for ( j=0; j<d; j++ )  output[j] = lpf[j];
+  for ( j=0; j<col; j++ )  output[j] = lpf[j];
 
   return;
 }

@@ -15,9 +15,9 @@
 #define LPF_ANG   0.0
 
 // Put these into parameter file...
-#define HIST_GYR   1
-#define HIST_ACC   1
-#define HIST_MAG   1
+#define HIST_GYR   2
+#define HIST_ACC   2
+#define HIST_MAG   2
 #define HIST_EUL   1
 #define HIST_ANG   1
 
