@@ -34,28 +34,6 @@ int main ( void )  {
   // Run program
   //while(running)  usleep(100000);
 
-
-
-
-  //---  DEBUGGING  ---//
-  printf("\n\nFilter debugging...\n");
-
-  //printf("%5.3f %5.1f %f \n", filter_gyrA.dt, filter_gyrA.freq, filter_gyrA.gain );
-  //filter_freq( &filter_gyrA, 100.0 );
-  //printf("%5.3f %5.1f %f \n", filter_gyrA.dt, filter_gyrA.freq, filter_gyrA.gain );
-
-  filter_gyrA.data = malloc( 2 );
-  //free(filter_gyrA.data);
-  //filter_gyrA.data[0] = 4.0;
-  //filter_gyrA.data[1] = 3.0;
-  //printf("%f %f \n", filter_gyrA.data[0], filter_gyrA.data[1] );
-  printf("%d \n", sizeof(filter_gyrA.data[3]) );
-
-  //-------------------//
-
-
-
-
   // Exit program
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   //tmr_exit();
