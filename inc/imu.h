@@ -4,17 +4,18 @@
 #define IMU_H
 
 
+#include <math.h>
 #include <stdbool.h>
 #include <sys/types.h>
 
 
-//#define IMUA_ENABLED   true
-//#define IMUB_ENABLED   false
+#define IMUA_ENABLED   true
+#define IMUB_ENABLED   false
 
-//#define GYR_FSR    500
-//#define ACC_FSR    4
-//#define GYR_SCALE  ( 500.0 / 32768.0 ) * ( PI / 180.0 )
-//#define PI         M_PI
+#define GYR_FSR    500
+#define ACC_FSR    4
+#define GYR_SCALE  ( 500.0 / 32768.0 ) * ( PI / 180.0 )
+#define PI         M_PI
 
 
 typedef struct imu_data_struct {

@@ -185,6 +185,7 @@ The following list outlines some proposed upcoming change.
   <li> Transistor power distribution kill switch </li> 
   <li> Add health/status monitoring thread </li>
   <li> Add warning for missed timing on thread </li>
+  <li> Revise certain functions to have int error return values </li>
 </ul>
 <li><b> Modularity </b></li>
 <ul>
@@ -193,6 +194,7 @@ The following list outlines some proposed upcoming change.
   <li> Define statements to enable specific datalogs </li>
   <li> Log generation within a function </li>
   <li> Modular structure to allow for differnet vehicles </li>
+  <li> Incorporate doxygen into code development </li>
 </ul>
 <li><b> IMU and I2C Improvements </b></li>
 <ul>

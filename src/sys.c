@@ -8,17 +8,19 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#include "ahrs.h"
 #include "flag.h"
+#include "imu.h"
 #include "io.h"
 #include "timer.h"
 
 
 void sys_io    ( void );
-//void sys_imuA  ( void );
-//void sys_imuB  ( void );
-//void sys_ahrs  ( void );
-//void sys_gps   ( void );
-//void sys_ctrl  ( void );
+void sys_imuA  ( void );
+void sys_imuB  ( void );
+void sys_ahrs  ( void );
+void sys_gps   ( void );
+void sys_ctrl  ( void );
 
 
 /**
@@ -106,7 +108,7 @@ void sys_update ( void )  {
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
-  sys_io();
+  //sys_io();
   //sys_imuA();
   //sys_imuB();
   //sys_ahrs();
@@ -141,12 +143,17 @@ void sys_io ( void )  {
   //for ( i=0; i<4; i++ )  printf("%5d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%4d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
   for ( i=0; i<6; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
-  //printf("%5.2f ", output.norm[0] );
-  //printf("%5.2f ", output.norm[1] );
-  //printf("%5.2f ", output.norm[4] );
-  //printf("%5.2f ", output.norm[5] );
-  //printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_output);
+
+  /*
+  pthread_mutex_lock(&mutex_output);
+  printf("%5.2f ", output.norm[0] );
+  printf("%5.2f ", output.norm[1] );
+  printf("%5.2f ", output.norm[4] );
+  printf("%5.2f ", output.norm[5] );
+  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&mutex_output);
+  */
 
   return;
 }
@@ -156,7 +163,7 @@ void sys_io ( void )  {
  *  sys_imuA
  *  Prints IMUA debugging messages to the terminal.
  */
-/*void sys_imuA ( void )  {
+void sys_imuA ( void )  {
 
   // Check that IMUA is in use
   if (IMUA_ENABLED) {
@@ -167,35 +174,35 @@ void sys_io ( void )  {
   // Gyroscope data
   pthread_mutex_lock(&mutex_gyrA);
   //for ( i=0; i<3; i++ )  printf("%6d ",   gyrA.raw[i]    );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.scaled[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.scaled[i] );  printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_gyrA);
 
   // Accelerometer data
   pthread_mutex_lock(&mutex_accA);
   //for ( i=0; i<3; i++ )  printf("%6d ",   accA.raw[i]    );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", accA.scaled[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", accA.filter[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", accA.scaled[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", accA.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_accA);
 
   // Magnetometer data
   pthread_mutex_lock(&mutex_magA);
   //for ( i=0; i<3; i++ )  printf("%4d ",   magA.raw[i]    );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", magA.scaled[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", magA.filter[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", magA.scaled[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", magA.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_magA);
 
   }
 
   return;
 }
-*/
+
 
 /**
  *  sys_imuB
  *  Prints IMUB debugging messages to the terminal.
  */
-/*void sys_imuB ( void )  {
+void sys_imuB ( void )  {
 
   // Check that IMUB is in use
   if (IMUB_ENABLED) {
@@ -214,54 +221,54 @@ void sys_io ( void )  {
   pthread_mutex_lock(&mutex_accB);
   //for ( i=0; i<3; i++ )  printf("%6d ",   accB.raw[i]    );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", accB.scaled[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", accB.filter[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", accB.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_accB);
 
   // Magnetometer data
   pthread_mutex_lock(&mutex_magB);
   //for ( i=0; i<3; i++ )  printf("%4d ",   magB.raw[i]    );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", magB.scaled[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", magB.filter[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", magB.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_magB);
 
   }
 
   return;
 }
-*/
+
 
 /**
  *  sys_ahrs
  *  Prints AHRS debugging messages to the terminal.
  */
-/*void sys_ahrs ( void )  {
+void sys_ahrs ( void )  {
 
   // Loop counter
   ushort i;
 
   // Quaternion data
   pthread_mutex_lock(&mutex_quat);
-  for ( i=0; i<4; i++ )  printf("%7.4f ", ahrs.quat[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<4; i++ )  printf("%7.4f ", ahrs.dquat[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%7.4f ", ahrs.quat[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%7.4f ", ahrs.dquat[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_quat);
 
   // Euler data
   pthread_mutex_lock(&mutex_eul);
   for ( i=0; i<3; i++ )  printf("%7.2f ", ahrs.eul[i]  * (180.0/PI) );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%7.2f ", ahrs.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%7.2f ", ahrs.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_eul); 
 
   return;
 }
-*/
+
 
 /**
  *  sys_gps
  *  Prints GPS debugging messages to the terminal.
  */
-/*void sys_gps ( void )  {
+void sys_gps ( void )  {
 
-  pthread_mutex_lock(&mutex_gps);
+  //pthread_mutex_lock(&mutex_gps);
   //printf("GPS msg:    %s ", gps.msg );  printf("   ");  fflush(stdout);
   //printf("lat: %s    ",     gps.lat     );
   //printf("lon: %s    ",     gps.lon     );
@@ -274,24 +281,24 @@ void sys_io ( void )  {
 
   return;
 }
-*/
+
 
 /**
  *  sys_ctrl
  *  Prints controller values to the terminal.
  */
-/*void sys_ctrl ( void )  {
+void sys_ctrl ( void )  {
 
   // Loop counter
-  ushort i;
+  //ushort i;
 
   // Control signals
   pthread_mutex_lock(&mutex_ctrl);
-  for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.pgain[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.igain[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.dgain[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.thrl[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.scale[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.pgain[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.igain[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.dgain[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.thrl[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.scale[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.perr[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.ierr[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.derr[i] );  printf("   ");  fflush(stdout);
@@ -303,7 +310,6 @@ void sys_io ( void )  {
 
   return;
 }
-*/
 
 
 
