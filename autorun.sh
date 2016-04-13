@@ -31,8 +31,8 @@ echo 1 > /sys/class/leds/beaglebone\:green\:usr2/brightness
 echo 1 > /sys/class/leds/beaglebone\:green\:usr3/brightness
 
 sleep 3
-cd /root/BlackBox/
-./RunBlackBox
+#cd /root/BlackBox/
+#./RunBlackBox
 
 exit 0
 

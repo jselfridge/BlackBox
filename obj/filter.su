@@ -1,2 +1,5 @@
-filter.c:10:6:filter_init	0	static
-filter.c:66:6:filter_exit	0	static
+filter.c:15:6:filter_init	104	static
+filter.c:64:6:filter_exit	0	static
+filter.c:75:6:filter_freq	0	static
+filter.c:97:6:filter_hist	0	static
+filter.c:108:6:filter_lpf	0	static

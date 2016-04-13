@@ -168,6 +168,7 @@ The following list outlines some proposed upcoming change.
   <li> Butterworth filter function </li>
   <li> Selectable filter from compiler settings <li>
   <li> Tunable filter gains from GCS </li>
+  <li> Pull filter settings from parameter file </li>
   <li> Add Kalman filter </li>
 </ul>
 <li><b> Controls </b></li>

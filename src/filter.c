@@ -1,6 +1,11 @@
 
 
 #include "filter.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include "sys.h"
+#include "timer.h"
 
 
 /**
@@ -8,53 +13,46 @@
  *  Initializes the system signal filters.
  */
 void filter_init ( void )  {
-  /*
   if(DEBUG)  printf( "Initializing filters \n" );
 
   // Calculate time steps
-  double dt_gyr, dt_acc, dt_mag;
-  dt_gyr = 1.0 / HZ_IMU_FAST;
-  dt_acc = 1.0 / HZ_IMU_FAST;
-  dt_mag = 1.0 / HZ_IMU_SLOW;
+  if(DEBUG)  printf( "  Calculate time steps \n" );
+  filter_gyrA.dt = 1.0 / HZ_IMU_FAST;  filter_gyrB.dt = 1.0 / HZ_IMU_FAST;
+  filter_accA.dt = 1.0 / HZ_IMU_FAST;  filter_accB.dt = 1.0 / HZ_IMU_FAST;
+  filter_magA.dt = 1.0 / HZ_IMU_SLOW;  filter_magB.dt = 1.0 / HZ_IMU_SLOW;
 
-  // Determine time constants
-  double tc_gyr, tc_acc, tc_mag;
-  if ( lpf_hz_gyr != 0.0 )  tc_gyr = 1.0 / ( 2.0 * PI * lpf_hz_gyr );  else  tc_gyr = 0.0;
-  if ( lpf_hz_acc != 0.0 )  tc_acc = 1.0 / ( 2.0 * PI * lpf_hz_acc );  else  tc_acc = 0.0;
-  if ( lpf_hz_mag != 0.0 )  tc_mag = 1.0 / ( 2.0 * PI * lpf_hz_mag );  else  tc_mag = 0.0;
+  // Assign array dimension
+  if(DEBUG)  printf( "  Assign array dimensions \n" );
+  filter_gyrA.dim = 3;  filter_gyrB.dim = 3;
+  filter_accA.dim = 3;  filter_accB.dim = 3;
+  filter_magA.dim = 3;  filter_magB.dim = 3;
 
-  // Determine gains values
-  double gain_gyr, gain_acc, gain_mag;
-  gain_gyr = dt_gyr / ( tc_gyr + dt_gyr );
-  gain_acc = dt_acc / ( tc_acc + dt_acc );
-  gain_mag = dt_mag / ( tc_mag + dt_mag );
+  // Store cutoff frequencies
+  if(DEBUG)  printf( "  Store cutoff frequencies \n" );
+  filter_freq( &filter_gyrA, LPF_GYR );  filter_freq( &filter_gyrB, LPF_GYR );
+  filter_freq( &filter_accA, LPF_ACC );  filter_freq( &filter_accB, LPF_ACC );
+  filter_freq( &filter_magA, LPF_MAG );  filter_freq( &filter_magB, LPF_MAG );
 
-  // Assign filter parameters
-  gyrA.dt = dt_gyr;  gyrA.gain = gain_gyr;
-  accA.dt = dt_acc;  accA.gain = gain_acc;
-  magA.dt = dt_mag;  magA.gain = gain_mag;
-  gyrB.dt = dt_gyr;  gyrB.gain = gain_gyr;
-  accB.dt = dt_acc;  accB.gain = gain_acc;
-  magB.dt = dt_mag;  magB.gain = gain_mag;
+  // Generate memory pointer
+  //if(DEBUG)  printf( "  Generate memory pointer \n" );
+  //filter_gyrA.data = malloc(0);
 
-  // Zero out data values
-  ushort i, j;
-  for ( i=0; i<3; i++ )  {
-    for ( j=0; j<HIST_GYR; j++ )  {  filter_gyrA[i][j] = 0.0;  filter_gyrB[i][j] = 0.0;  }
-    for ( j=0; j<HIST_ACC; j++ )  {  filter_accA[i][j] = 0.0;  filter_accB[i][j] = 0.0;  }
-    for ( j=0; j<HIST_MAG; j++ )  {  filter_magA[i][j] = 0.0;  filter_magB[i][j] = 0.0;  }
-  }
+  // Allocate storage memory
+  //if(DEBUG)  printf( "  Allocate storage memory \n" );
+  //filter_hist( &filter_gyrA, HIST_GYR );  filter_hist( &filter_gyrB, HIST_GYR );
+  //filter_hist( &filter_accA, HIST_ACC );  filter_hist( &filter_accB, HIST_ACC );
+  //filter_hist( &filter_magA, HIST_MAG );  filter_hist( &filter_magB, HIST_MAG );
 
   // Display settings
   if (DEBUG) {
-    printf("  |  GYR  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
-       HZ_IMU_FAST, dt_gyr, lpf_hz_gyr, tc_gyr, gain_gyr );
-    printf("  |  ACC  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
-       HZ_IMU_FAST, dt_acc, lpf_hz_acc, tc_acc, gain_acc );
-    printf("  |  MAG  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  TC %5.2f  |  gain %7.4f  |\n", \
-       HZ_IMU_SLOW, dt_mag, lpf_hz_mag, tc_mag, gain_mag );
+    printf("  |  GYR  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  gain %7.4f  |\n", \
+       HZ_IMU_FAST, filter_gyrA.dt, LPF_GYR, filter_gyrA.gain );
+    printf("  |  ACC  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  gain %7.4f  |\n", \
+       HZ_IMU_FAST, filter_accA.dt, LPF_ACC, filter_accA.gain );
+    printf("  |  MAG  |  HZ %4d  |  DT %5.3f  |  LPF %6.2f  |  gain %7.4f  |\n", \
+       HZ_IMU_SLOW, filter_magA.dt, LPF_MAG, filter_magA.gain );
   }
-  */
+
   return;
 }
 
@@ -64,8 +62,41 @@ void filter_init ( void )  {
  *  Terminate the system filters.
  */
 void filter_exit ( void )  {
-  //if(DEBUG)  printf("Close filters \n");
+  if(DEBUG)  printf("Close filters \n");
   // Add code as needed...
+  return;
+}
+
+
+/**
+ *  filter_freq
+ *  
+ */
+void filter_freq ( filter_struct *filter, double freq )  {
+
+  double tc, gain;
+
+  if ( freq != 0.0 )
+    tc = 1.0 / ( 2.0 * M_PI * freq );
+  else
+    tc = 0.0;
+
+  gain = filter->dt / ( tc + filter->dt );
+
+  filter->freq = freq;
+  filter->gain = gain;
+
+  return;
+}
+
+
+/**
+ *  filter_hist
+ *  
+ */
+void filter_hist ( filter_struct *filter, uint hist )  {
+
+  free(filter->data);
   return;
 }
 
@@ -74,8 +105,9 @@ void filter_exit ( void )  {
  *  filter_lpf
  *  Run a signal through a low pass filter.
  */
-/*double filter_lpf ( double *data, double sample, double gain, ushort hist )  {
+void filter_lpf ( filter_struct *filter, double *input, double *output )  {
 
+  /*
   // Local variables
   ushort i;
   double lpf;
@@ -94,20 +126,10 @@ void filter_exit ( void )  {
 
   // Return filtered result
   return lpf;
+  */
 
+  return;
 }
-*/
-
-/**
- *  filter_gains
- *  Calculates the associated gain for a particular LPF cutoff freq.
- */
-/*double filter_gains ( double hz )  {
-
-  return hz;
-
-}
-*/
 
 
 

@@ -4,38 +4,48 @@
 #define FILTER_H
 
 
-//#define LPF_GYR   20.0
-//#define LPF_ACC   20.0
-//#define LPF_MAG    2.0
-//#define LPF_EUL    0.0
-//#define LPF_ANG    0.0
-
-//#define lpf_hz_gyr (20.0)
-//#define lpf_hz_acc (20.0)
-//#define lpf_hz_mag  (2.0)
-
-//#define HIST_GYR   2
-//#define HIST_ACC   2
-//#define HIST_MAG   2
-//#define HIST_EUL   1
-//#define HIST_ANG   1
+#include <sys/types.h>
 
 
-//double filter_gyrA [3][HIST_GYR];
-//double filter_accA [3][HIST_ACC];
-//double filter_magA [3][HIST_MAG];
-//double filter_gyrB [3][HIST_GYR];
-//double filter_accB [3][HIST_ACC];
-//double filter_magB [3][HIST_MAG];
-//double filter_eul  [3][HIST_EUL];
-//double filter_ang  [3][HIST_ANG];
+// Put this into parameter file...
+#define LPF_GYR 200.0
+#define LPF_ACC  20.0
+#define LPF_MAG   2.0
+#define LPF_EUL   0.0
+#define LPF_ANG   0.0
+
+// Put these into parameter file...
+#define HIST_GYR   2
+#define HIST_ACC   2
+#define HIST_MAG   2
+#define HIST_EUL   1
+#define HIST_ANG   1
+
+typedef struct filter_struct {
+  uint   dim;
+  uint   hist;
+  double dt;
+  double freq;
+  double gain;
+  double *data;
+} filter_struct;
 
 
-void    filter_init    ( void );
-void    filter_exit    ( void );
+filter_struct filter_gyrA;
+filter_struct filter_accA;
+filter_struct filter_magA;
+filter_struct filter_gyrB;
+filter_struct filter_accB;
+filter_struct filter_magB;
+filter_struct filter_eul;
+filter_struct filter_ang;
 
-//double  filter_lpf     ( double *data, double sample, double gain, ushort hist );
-//double  filter_gains   ( double hz );
+
+void  filter_init  ( void );
+void  filter_exit  ( void );
+void  filter_freq  ( filter_struct *filter, double freq );
+void  filter_hist  ( filter_struct *filter, uint hist );
+void  filter_lpf   ( filter_struct *filter, double *input, double *output );
 
 
 #endif
