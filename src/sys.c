@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include "ahrs.h"
 #include "flag.h"
+#include "gps.h"
 #include "imu.h"
 #include "io.h"
 #include "timer.h"
@@ -111,8 +112,8 @@ void sys_update ( void )  {
   //sys_io();
   //if(IMUA_ENABLED)  sys_imuA();
   //if(IMUB_ENABLED)  sys_imuB();
-  sys_ahrs();
-  //sys_gps();
+  //sys_ahrs();
+  sys_gps();
   //sys_ctrl();
 
   // Complete debugging display 
@@ -268,8 +269,8 @@ void sys_ahrs ( void )  {
  */
 void sys_gps ( void )  {
 
-  //pthread_mutex_lock(&mutex_gps);
-  //printf("GPS msg:    %s ", gps.msg );  printf("   ");  fflush(stdout);
+  pthread_mutex_lock(&mutex_gps);
+  printf("GPS msg:    %s ", gps.msg );  printf("   ");  fflush(stdout);
   //printf("lat: %s    ",     gps.lat     );
   //printf("lon: %s    ",     gps.lon     );
   //printf("alt: %s    ",     gps.alt     );
@@ -277,7 +278,7 @@ void sys_gps ( void )  {
   //printf("speed: %s    ",   gps.speed   );
   //printf("numsat: %s    ",  gps.numsat  );
   //fflush(stdout);
-  //pthread_mutex_unlock(&mutex_gps);
+  pthread_mutex_unlock(&mutex_gps);
 
   return;
 }

@@ -4,6 +4,9 @@
 #define GPS_H
 
 
+#include <sys/types.h>
+
+
 #define GPS_RMC_ENABLED  true
 #define GPS_GGA_ENABLED  false
 
@@ -21,7 +24,7 @@
 #define GPS_RMCGGA          "$PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*28\r\n"
 
 
-/*typedef struct gps_struct {
+typedef struct gps_struct {
   int     fd;
   char    path [16];
   char    msg  [96];
@@ -33,16 +36,11 @@
   uint    numsat;
 } gps_struct;
 gps_struct gps;
-*/
 
 
 void  gps_init     ( void );
 void  gps_exit     ( void );
-
-//void  gps_update   ( void );
-//uint  gps_hex2dec  ( char c );
-//void  gps_rmc      ( char *msg );
-//void  gps_adafruit ( void );
+void  gps_update   ( void );
 
 
 #endif

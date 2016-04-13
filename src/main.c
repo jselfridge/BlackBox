@@ -3,9 +3,6 @@
 #include "main.h"
 
 
-//temp
-#include <stdlib.h>
-
 /**
  *  main
  *  Primary code that runs the UAV avionics.
@@ -21,7 +18,7 @@ int main ( void )  {
   filter_init();
   imu_init();
   ahrs_init();
-  //gps_init();
+  gps_init();
   //gcs_init();
   //ctrl_init();
   //log_init();
@@ -44,7 +41,7 @@ int main ( void )  {
   //log_exit();
   //ctrl_exit();
   //gcs_exit();
-  //gps_exit();
+  gps_exit();
   ahrs_exit();
   imu_exit();
   filter_exit();
