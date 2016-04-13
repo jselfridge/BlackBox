@@ -6,6 +6,7 @@
 #include <sys/timerfd.h>
 #include <unistd.h>
 #include "flag.h"
+#include "imu.h"
 #include "io.h"
 #include "sys.h"
 
@@ -158,9 +159,9 @@ void tmr_begin ( pthread_attr_t *attr )  {
   tmr_thread( &tmr_io,    attr, fcn_io    );  usleep(100000);
   tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(100000);
 
-  //if( IMUA_ENABLED &&  IMUB_ENABLED ) {  tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);  }
-  //if( IMUA_ENABLED && !IMUB_ENABLED ) {  tmr_thread( &tmr_imuA,  attr, fcn_imuA  );  usleep(100000);  }
-  //if( IMUB_ENABLED && !IMUA_ENABLED ) {  tmr_thread( &tmr_imuB,  attr, fcn_imuB  );  usleep(100000);  }
+  if( IMUA_ENABLED &&  IMUB_ENABLED ) {  tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);  }
+  if( IMUA_ENABLED && !IMUB_ENABLED ) {  tmr_thread( &tmr_imuA,  attr, fcn_imuA  );  usleep(100000);  }
+  if( IMUB_ENABLED && !IMUA_ENABLED ) {  tmr_thread( &tmr_imuB,  attr, fcn_imuB  );  usleep(100000);  }
 
   //tmr_thread( &tmr_ahrs,  attr, fcn_ahrs  );  usleep(100000);
   //tmr_thread( &tmr_gps,   attr, fcn_gps   );  usleep(100000);
@@ -228,7 +229,7 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_ahrs.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ahrs' thread. \n" );
   if(DEBUG)  printf( "ahrs " );
-
+  */
   // Exit IMUB thread
   if( IMUB_ENABLED && !IMUA_ENABLED )  {
   if( pthread_join ( tmr_imuB.id, NULL ) )
@@ -246,7 +247,7 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_imu.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'imu' thread. \n" );
   if(DEBUG)  printf( "imu " );  }
-  */
+
   // Exit program execution flags thread
   if( pthread_join ( tmr_flag.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'flag' thread. \n" );
@@ -436,8 +437,8 @@ void *fcn_imu (  )  {
   while (running) {
     tmr_start(&tmr_imu);
     //if (!datalog.saving) {  
-      //imu_update(&imuA);
-      //imu_update(&imuB);
+      imu_update(&imuA);
+      imu_update(&imuB);
     //}
     tmr_finish(&tmr_imu);
     //if (datalog.enabled) {
@@ -459,7 +460,8 @@ void *fcn_imuA (  )  {
   tmr_create(&tmr_imuA);
   while (running) {
     tmr_start(&tmr_imuA);
-    //if (!datalog.saving)  imu_update(&imuA);
+    //if (!datalog.saving)
+      imu_update(&imuA);
     tmr_finish(&tmr_imuA);
     //if (datalog.enabled)  log_record(LOG_IMUA);
     tmr_pause(&tmr_imuA);
@@ -477,7 +479,8 @@ void *fcn_imuB (  )  {
   tmr_create(&tmr_imuB);
   while (running) {
     tmr_start(&tmr_imuB);
-    //if (!datalog.saving)  imu_update(&imuB);
+    //if (!datalog.saving)
+      imu_update(&imuB);
     tmr_finish(&tmr_imuB);
     //if (datalog.enabled)  log_record(LOG_IMUB);
     tmr_pause(&tmr_imuB);

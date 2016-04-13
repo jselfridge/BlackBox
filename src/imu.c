@@ -2,9 +2,14 @@
 
 #include "imu.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
+#include "i2c.h"
 #include "led.h"
+#include "mpu.h"
 #include "sys.h"
+#include "timer.h"
 
 
 /**
@@ -12,12 +17,11 @@
  *  Initializes an MPU sensor.
  */
 void imu_init (  )  {
-
   if(DEBUG)  printf( "Initializing IMU \n" );
 
   // Start initialization
   led_blink( LED_IMU, 200, 200 );
-  /*
+
   // Check timing conditions
   if ( HZ_IMU_FAST % HZ_IMU_SLOW != 0 )
     printf( "  *** WARNING ***  Slow loop must divide evenly into fast loop. \n" );
@@ -72,7 +76,7 @@ void imu_init (  )  {
     imu_getcal(&imuB);
 
   }
-  */
+
   // IMU warmup period
   usleep(500000);
   led_on(LED_IMU);
@@ -86,12 +90,10 @@ void imu_init (  )  {
  *  Terminate an MPU sensor.
  */
 void imu_exit ( void )  {
-  /*
   if(DEBUG)  printf("Close IMU \n");
   if(IMUA_ENABLED)  i2c_exit( &(imuA.fd) );
   if(IMUB_ENABLED)  i2c_exit( &(imuB.fd) );
   led_off(LED_IMU);
-  */
   return;
 }
 
@@ -100,8 +102,7 @@ void imu_exit ( void )  {
  *  imu_param
  *  Assign parameters to an MPU sensor.
  */
-/*void imu_param ( imu_struct *imu )  {
-
+void imu_param ( imu_struct *imu )  {
   if(DEBUG) {  printf("  Assign IMU%c parameters ", imu->id );  fflush(stdout);  }
 
   if(DEBUG) {  printf(".");  fflush(stdout);  }
@@ -129,15 +130,16 @@ void imu_exit ( void )  {
     printf( "Error (imu_param): 'mpu_set_accel_fsr' failed. \n" );
 
   if(DEBUG)  printf(" complete \n");
+
   return;
 }
-*/
+
 
 /**
  *  imu_getcal
  *  Gets the calibration parameters for the MPU sensor.
  */
-/*void imu_getcal ( imu_struct *imu )  {
+void imu_getcal ( imu_struct *imu )  {
   if(DEBUG)  printf( "  IMU%c calibration values: \n", imu->id );
 
   // Local variables
@@ -211,13 +213,13 @@ void imu_exit ( void )  {
 
   return;
 }
-*/
+
 
 /**
  *  imu_update
  *  Update system with new IMU sensor data.
  */
-/*void imu_update ( imu_struct *imu )  {
+void imu_update ( imu_struct *imu )  {
 
   // Loop counter
   ushort i;
@@ -268,10 +270,16 @@ void imu_exit ( void )  {
   // Low pass filter
   for ( i=0; i<3; i++ ) {
 
-    Gf[i] = filter_lpf ( filter_gyrA[i], Gs[i], imu->gyr->gain, HIST_GYR );
-    Af[i] = filter_lpf ( filter_accA[i], As[i], imu->acc->gain, HIST_ACC );
+    Gf[i] = Gs[i];
+    Af[i] = As[i];
     if (imu->getmag)   
-    Mf[i] = filter_lpf ( filter_magA[i], Ms[i], imu->mag->gain, HIST_MAG );
+    Mf[i] = Ms[i];
+
+    //Gf[i] = filter_lpf ( filter_gyrA[i], Gs[i], imu->gyr->gain, HIST_GYR );
+    //Af[i] = filter_lpf ( filter_accA[i], As[i], imu->acc->gain, HIST_ACC );
+    //if (imu->getmag)   
+    //Mf[i] = filter_lpf ( filter_magA[i], Ms[i], imu->mag->gain, HIST_MAG );
+
   }
 
   // Push gyroscope values to data structure
@@ -311,6 +319,6 @@ void imu_exit ( void )  {
 
   return;
 }
-*/
+
 
 

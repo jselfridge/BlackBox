@@ -10,7 +10,7 @@
 
 
 #define IMUA_ENABLED   true
-#define IMUB_ENABLED   false
+#define IMUB_ENABLED   true
 
 #define GYR_FSR    500
 #define ACC_FSR    4
@@ -53,9 +53,9 @@ imu_struct imuB;
 
 void  imu_init    ( void );
 void  imu_exit    ( void );
-//void  imu_param   ( imu_struct *imu );
-//void  imu_getcal  ( imu_struct *imu );
-//void  imu_update  ( imu_struct *imu );
+void  imu_param   ( imu_struct *imu );
+void  imu_getcal  ( imu_struct *imu );
+void  imu_update  ( imu_struct *imu );
 
 
 #endif
