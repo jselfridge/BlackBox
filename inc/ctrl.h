@@ -88,7 +88,7 @@
 
 */
 
-
+/*
 typedef struct ctrl_struct {
   double  dt;
   double  off   [10];
@@ -106,12 +106,12 @@ typedef struct ctrl_struct {
   double  heading;
 } ctrl_struct;
 ctrl_struct ctrl;
-
+*/
 
 void    ctrl_init    ( void );
 void    ctrl_exit    ( void );
+void    ctrl_update  ( void );
 
-//void    ctrl_update  ( void );
 //void    ctrl_quad    ( void );
 //void    ctrl_plane   ( void );
 //void    ctrl_disarm  ( void );

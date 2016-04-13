@@ -1,6 +1,9 @@
 
 
 #include "ctrl.h"
+#include <stdio.h>
+#include "io.h"
+#include "sys.h"
 
 
 /**
@@ -8,8 +11,8 @@
  *  Initializes the control structure.
  */
 void ctrl_init ( void )  {
-  /*
   if (DEBUG)  printf("Initializing controller \n");
+  /*
 
   // Array index
   ushort x=0, y=1, z=2;
@@ -92,7 +95,7 @@ void ctrl_init ( void )  {
  *  Exits the controller code.
  */
 void ctrl_exit ( void )  {
-  //if (DEBUG)  printf("Close controller \n");
+  if (DEBUG)  printf("Close controller \n");
   // Add exit code as needed...
   return;
 }
@@ -102,15 +105,18 @@ void ctrl_exit ( void )  {
  *  ctrl_update
  *  Executes the top level logic to update each control loop.
  */
-/*void ctrl_update ( void )  {
+void ctrl_update ( void )  {
+  int i; for (i=0; i<10; i++)  io_setnorm( i, input.norm[i] );  //DEBUG
+  /*
   if (armed)  {
     if ( !strcmp( SYSTEM, "quad"  ) )  ctrl_quad();
     //if ( !strcmp( SYSTEM, "plane" ) )  ctrl_plane();
   }
   else  ctrl_disarm();
+  */
   return;
 }
-*/
+
 
 /**
  *  ctrl_quad

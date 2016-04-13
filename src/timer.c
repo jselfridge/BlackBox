@@ -6,6 +6,7 @@
 #include <sys/timerfd.h>
 #include <unistd.h>
 #include "ahrs.h"
+#include "ctrl.h"
 #include "flag.h"
 #include "gps.h"
 #include "imu.h"
@@ -171,7 +172,7 @@ void tmr_begin ( pthread_attr_t *attr )  {
   //tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
   //tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(100000);
 
-  //tmr_thread( &tmr_ctrl,  attr, fcn_ctrl  );  usleep(100000);
+  tmr_thread( &tmr_ctrl,  attr, fcn_ctrl  );  usleep(100000);
 
   if(DEBUG) {
     tmr_thread( &tmr_debug, attr, fcn_debug );
@@ -206,12 +207,12 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&mutex_gps);
   pthread_mutex_destroy(&mutex_gcs);
   pthread_mutex_destroy(&mutex_ctrl);
-  /*
+
   // Exit control thread
   if( pthread_join ( tmr_ctrl.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ctrl' thread. \n" );
   if(DEBUG)  printf( "ctrl " );
-
+  /*
   // Exit GCSRX thread
   if( pthread_join ( tmr_gcsrx.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gcsrx' thread. \n" );
@@ -401,9 +402,6 @@ void *fcn_io (  )  {
   while (running) {
     tmr_start(&tmr_io);
     io_update();
-    //--- DEBUGGING ---//
-    int i; for (i=0; i<10; i++)  io_setnorm( i, input.norm[i] );
-    //--- DEBUGGING ---//
     tmr_finish(&tmr_io);
     //if (datalog.enabled)  log_record(LOG_SIO);
     tmr_pause(&tmr_io);
@@ -570,7 +568,7 @@ void *fcn_ctrl (  )  {
   tmr_create(&tmr_ctrl);
   while (running) {
     tmr_start(&tmr_ctrl);
-    //ctrl_update();
+    ctrl_update();
     tmr_finish(&tmr_ctrl);
     //if (datalog.enabled)  log_record(LOG_CTRL);
     tmr_pause(&tmr_ctrl);

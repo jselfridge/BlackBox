@@ -20,7 +20,7 @@ int main ( void )  {
   ahrs_init();
   gps_init();
   //gcs_init();
-  //ctrl_init();
+  ctrl_init();
   //log_init();
   //---  DEBUGGING  ---//
   //log_open();
@@ -39,7 +39,7 @@ int main ( void )  {
   //log_close();
   //-----------------//
   //log_exit();
-  //ctrl_exit();
+  ctrl_exit();
   //gcs_exit();
   gps_exit();
   ahrs_exit();
