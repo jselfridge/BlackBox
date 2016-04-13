@@ -13,6 +13,7 @@
 #include "gps.h"
 #include "imu.h"
 #include "io.h"
+#include "log.h"
 #include "timer.h"
 
 
@@ -100,20 +101,20 @@ void sys_update ( void )  {
   printf("\r");  fflush(stdout);
 
   // Datalog status
-  //if (datalog.enabled)  printf(" Log %s: ", datalog.dir );
-  //else                  printf(" - - - -  ");
-  //fflush(stdout);
+  if (datalog.enabled)  printf(" Log %s: ", datalog.dir );
+  else                  printf(" - - - -  ");
+  fflush(stdout);
 
   // Time values
-  float timestamp = (float) ( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f ) ); // - datalog.offset );
+  float timestamp = (float) ( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f ) - datalog.offset );
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
-  //sys_io();
+  sys_io();
   //if(IMUA_ENABLED)  sys_imuA();
   //if(IMUB_ENABLED)  sys_imuB();
   //sys_ahrs();
-  sys_gps();
+  //sys_gps();
   //sys_ctrl();
 
   // Complete debugging display 
@@ -143,7 +144,7 @@ void sys_io ( void )  {
   pthread_mutex_lock(&mutex_output);
   //for ( i=0; i<4; i++ )  printf("%5d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%4d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<6; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<6; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_output);
 
   /*

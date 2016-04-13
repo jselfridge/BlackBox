@@ -16,17 +16,9 @@ navigation capabilities.
 <ul>
   <li> Incorporated second IMU into the system. </li>
   <li> Configured tunable control gains for quadrotor vehicle. </li>
+  <li> Revised source code and header file structure. <li>
+  <li> Developed module for filter functionality.  </li>
   <li> (WIP) Log changes to the system parameters. </li>
-  <li> (WIP) </li>
-  <li> (WIP) </li>
-  <li> (WIP) </li>
-  <li> (WIP) </li>
-  <li> (WIP) </li>
-  <li> (WIP) </li>
-  <li> (WIP) </li>
-  <li> (WIP) </li>
-  <li> (WIP) </li>
-  <li> (WIP) </li>
   <li> (WIP) </li>
   <li> (WIP) </li>
 </ul>

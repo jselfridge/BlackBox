@@ -1,6 +1,17 @@
 
 
 #include "log.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include "ahrs.h"
+#include "gps.h"
+#include "imu.h"
+#include "io.h"
+#include "led.h"
+#include "sys.h"
+#include "timer.h"
 
 
 /**
@@ -8,13 +19,9 @@
  *  Runs on start up to initalize the datalog attributes.
  */
 void log_init ( void )  {
-  /*
-  if(DEBUG)  printf("Initializing log parameters \n");
-
-  // Establish datalog limits
-  if(DEBUG)  printf("  Establish datalog limits \n");
-  log_input.limit  = MAX_LOG_DUR * HZ_SIO;
-  log_output.limit = MAX_LOG_DUR * HZ_SIO;
+  if(DEBUG)  printf("Initializing data logging \n");
+  log_input.limit  = MAX_LOG_DUR * HZ_IO;
+  log_output.limit = MAX_LOG_DUR * HZ_IO;
   log_gyrA.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
   log_accA.limit   = MAX_LOG_DUR * HZ_IMU_FAST;
   log_magA.limit   = MAX_LOG_DUR * HZ_IMU_SLOW;
@@ -23,8 +30,7 @@ void log_init ( void )  {
   log_magB.limit   = MAX_LOG_DUR * HZ_IMU_SLOW;
   log_ahrs.limit   = MAX_LOG_DUR * HZ_AHRS;
   log_gps.limit    = MAX_LOG_DUR * HZ_GPS;
-  log_ctrl.limit   = MAX_LOG_DUR * HZ_CTRL;
-  */
+  //log_ctrl.limit   = MAX_LOG_DUR * HZ_CTRL;
   return;
 }
 
@@ -34,7 +40,7 @@ void log_init ( void )  {
  *  Closes the data log files.
  */
 void log_exit ( void )  {
-  //if(DEBUG)  printf("Close logs \n");
+  if(DEBUG)  printf("Close logs \n");
   // Add code as needed...
   return;
 }
@@ -44,7 +50,7 @@ void log_exit ( void )  {
  *  log_open
  *  Prepares the system for the next datalog sequence.
  */
-/*void log_open ( void )  {
+void log_open ( void )  {
 
   // Clear counters for new session
   log_input.count  = 0;
@@ -57,7 +63,7 @@ void log_exit ( void )  {
   log_magB.count   = 0;
   log_ahrs.count   = 0;
   log_gps.count    = 0;
-  log_ctrl.count   = 0;
+  //log_ctrl.count   = 0;
 
   // Input signal storage
   log_input.time =  malloc( sizeof(float)  * log_input.limit      );
@@ -139,13 +145,14 @@ void log_exit ( void )  {
   log_gps.dur    =  malloc( sizeof(ulong) * log_gps.limit );
   log_gps.msg    =  malloc( sizeof(char)  * log_gps.limit * 96 );
 
-  // Controller parameter storage
+  /*// Controller parameter storage
   log_ctrl.time =  malloc( sizeof(float) * log_ctrl.limit     );
   log_ctrl.dur  =  malloc( sizeof(ulong) * log_ctrl.limit     );
   log_ctrl.perr =  malloc( sizeof(float) * log_ctrl.limit * 3 );
   log_ctrl.ierr =  malloc( sizeof(float) * log_ctrl.limit * 3 );
   log_ctrl.derr =  malloc( sizeof(float) * log_ctrl.limit * 3 );
   log_ctrl.cmd  =  malloc( sizeof(float) * log_ctrl.limit * 4 );
+  */
 
   // Allocate dir/path/file memory
   datalog.dir  = malloc(16);
@@ -172,13 +179,13 @@ void log_exit ( void )  {
 
   return;
 }
-*/
+
 
 /**
  *  log_close
  *  Completes a datalog session by writing out collected data.
  */
-/*void log_close ( void )  {
+void log_close ( void )  {
 
   // Inidcate the download is in progress
   datalog.saving = true;
@@ -186,8 +193,8 @@ void log_exit ( void )  {
   usleep(200000);
 
   // Local variables
-  //char *file = malloc(64);
-  //FILE *fnote, *fin, *fout, *fgyrA, *faccA, *fmagA, *fgyrB, *faccB, *fmagB, *fahrs, *fgps, *fctrl;
+  char *file = malloc(64);
+  FILE *fnote, *fin, *fout, *fgyrA, *faccA, *fmagA, *fgyrB, *faccB, *fmagB, *fahrs, *fgps;//, *fctrl;
   ushort i;
   ulong row;
 
@@ -246,15 +253,15 @@ void log_exit ( void )  {
   if( fgyrA == NULL )  printf( "Error (log_close): Cannot generate 'gyrA' file. \n" );
   fprintf( fgyrA,
     "     GyrTime  GyrDur   \
-    Grx     Gry     Grz       \
-    Gsx        Gsy        Gsz     \
+    Grx     Gry     Grz     \
+    Gsx      Gsy      Gsz     \
     Gfx      Gfy      Gfz");
 
   // Loop through gyroscope A data
   for ( row = 0; row < log_gyrA.count; row++ ) {
     fprintf( fgyrA, "\n %011.6f  %06ld    ", log_gyrA.time[row], log_gyrA.dur[row] );
     for ( i=0; i<3; i++ )  fprintf( fgyrA, "%06d  ",   log_gyrA.raw    [ row*3 +i ] );   fprintf( fgyrA, "   " );
-    for ( i=0; i<3; i++ )  fprintf( fgyrA, "%09.2f  ", log_gyrA.scaled [ row*3 +i ] );   fprintf( fgyrA, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fgyrA, "%07.4f  ", log_gyrA.scaled [ row*3 +i ] );   fprintf( fgyrA, "   " );
     for ( i=0; i<3; i++ )  fprintf( fgyrA, "%07.4f  ", log_gyrA.filter [ row*3 +i ] );   fprintf( fgyrA, "   " );
   }
 
@@ -271,15 +278,15 @@ void log_exit ( void )  {
   if( faccA == NULL )  printf( "Error (log_close): Cannot generate 'accA' file. \n" );
   fprintf( faccA, 
     "     AccTime  AccDur   \
-    Arx     Ary     Arz       \
-    Asx        Asy        Asz     \
+    Arx     Ary     Arz     \
+    Asx      Asy      Asz     \
     Afx      Afy      Afz");
 
   // Loop through accelerometer A data
   for ( row = 0; row < log_accA.count; row++ ) {
     fprintf( faccA, "\n %011.6f  %06ld    ", log_accA.time[row], log_accA.dur[row] );
     for ( i=0; i<3; i++ )  fprintf( faccA, "%06d  ",   log_accA.raw    [ row*3 +i ] );   fprintf( faccA, "   " );
-    for ( i=0; i<3; i++ )  fprintf( faccA, "%09.2f  ", log_accA.scaled [ row*3 +i ] );   fprintf( faccA, "   " );
+    for ( i=0; i<3; i++ )  fprintf( faccA, "%07.4f  ", log_accA.scaled [ row*3 +i ] );   fprintf( faccA, "   " );
     for ( i=0; i<3; i++ )  fprintf( faccA, "%07.4f  ", log_accA.filter [ row*3 +i ] );   fprintf( faccA, "   " );
   }
 
@@ -296,15 +303,15 @@ void log_exit ( void )  {
   if( fmagA == NULL )  printf( "Error (log_close): Cannot generate 'magA' file. \n" );
   fprintf( fmagA,
     "     MagTime  MagDur   \
-    Mrx     Mry     Mrz       \
-    Msx        Msy        Msz     \
+    Mrx     Mry     Mrz     \
+    Msx      Msy      Msz     \
     Mfx      Mfy      Mfz");
 
   // Loop through magnetometer A data
   for ( row = 0; row < log_magA.count; row++ ) {
     fprintf( fmagA, "\n %011.6f  %06ld    ", log_magA.time[row], log_magA.dur[row] );
     for ( i=0; i<3; i++ )  fprintf( fmagA, "%06d  ",   log_magA.raw    [ row*3 +i ] );   fprintf( fmagA, "   " );
-    for ( i=0; i<3; i++ )  fprintf( fmagA, "%09.2f  ", log_magA.scaled [ row*3 +i ] );   fprintf( fmagA, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fmagA, "%07.4f  ", log_magA.scaled [ row*3 +i ] );   fprintf( fmagA, "   " );
     for ( i=0; i<3; i++ )  fprintf( fmagA, "%07.4f  ", log_magA.filter [ row*3 +i ] );   fprintf( fmagA, "   " );
   }
 
@@ -326,15 +333,15 @@ void log_exit ( void )  {
   if( fgyrB == NULL )  printf( "Error (log_close): Cannot generate 'gyrB' file. \n" );
   fprintf( fgyrB,
     "       Gtime    Gdur   \
-    Grx     Gry     Grz       \
-    Gsx        Gsy        Gsz     \
+    Grx     Gry     Grz     \
+    Gsx      Gsy      Gsz     \
     Gfx      Gfy      Gfz");
 
   // Loop through gyroscope B data
   for ( row = 0; row < log_gyrB.count; row++ ) {
     fprintf( fgyrB, "\n %011.6f  %06ld    ", log_gyrB.time[row], log_gyrB.dur[row] );
     for ( i=0; i<3; i++ )  fprintf( fgyrB, "%06d  ",   log_gyrB.raw    [ row*3 +i ] );   fprintf( fgyrB, "   " );
-    for ( i=0; i<3; i++ )  fprintf( fgyrB, "%09.2f  ", log_gyrB.scaled [ row*3 +i ] );   fprintf( fgyrB, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fgyrB, "%07.4f  ", log_gyrB.scaled [ row*3 +i ] );   fprintf( fgyrB, "   " );
     for ( i=0; i<3; i++ )  fprintf( fgyrB, "%07.4f  ", log_gyrB.filter [ row*3 +i ] );   fprintf( fgyrB, "   " );
   }
 
@@ -351,15 +358,15 @@ void log_exit ( void )  {
   if( faccB == NULL )  printf( "Error (log_close): Cannot generate 'accB' file. \n" );
   fprintf( faccB, 
     "       Atime    Adur   \
-    Arx     Ary     Arz       \
-    Asx        Asy        Asz     \
+    Arx     Ary     Arz     \
+    Asx      Asy      Asz     \
     Afx      Afy      Afz");
 
   // Loop through accelerometer B data
   for ( row = 0; row < log_accB.count; row++ ) {
     fprintf( faccB, "\n %011.6f  %06ld    ", log_accB.time[row], log_accB.dur[row] );
     for ( i=0; i<3; i++ )  fprintf( faccB, "%06d  ",   log_accB.raw    [ row*3 +i ] );   fprintf( faccB, "   " );
-    for ( i=0; i<3; i++ )  fprintf( faccB, "%09.2f  ", log_accB.scaled [ row*3 +i ] );   fprintf( faccB, "   " );
+    for ( i=0; i<3; i++ )  fprintf( faccB, "%07.4f  ", log_accB.scaled [ row*3 +i ] );   fprintf( faccB, "   " );
     for ( i=0; i<3; i++ )  fprintf( faccB, "%07.4f  ", log_accB.filter [ row*3 +i ] );   fprintf( faccB, "   " );
   }
 
@@ -376,15 +383,15 @@ void log_exit ( void )  {
   if( fmagB == NULL )  printf( "Error (log_close): Cannot generate 'magB' file. \n" );
   fprintf( fmagB,
     "       Mtime    Mdur   \
-    Mrx     Mry     Mrz       \
-    Msx        Msy        Msz     \
+    Mrx     Mry     Mrz     \
+    Msx      Msy      Msz     \
     Mfx      Mfy      Mfz");
 
   // Loop through magnetometer B data
   for ( row = 0; row < log_magB.count; row++ ) {
     fprintf( fmagB, "\n %011.6f  %06ld    ", log_magB.time[row], log_magB.dur[row] );
     for ( i=0; i<3; i++ )  fprintf( fmagB, "%06d  ",   log_magB.raw    [ row*3 +i ] );   fprintf( fmagB, "   " );
-    for ( i=0; i<3; i++ )  fprintf( fmagB, "%09.2f  ", log_magB.scaled [ row*3 +i ] );   fprintf( fmagB, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fmagB, "%07.4f  ", log_magB.scaled [ row*3 +i ] );   fprintf( fmagB, "   " );
     for ( i=0; i<3; i++ )  fprintf( fmagB, "%07.4f  ", log_magB.filter [ row*3 +i ] );   fprintf( fmagB, "   " );
   }
 
@@ -453,6 +460,7 @@ void log_exit ( void )  {
   free(log_gps.dur);
   free(log_gps.msg);
 
+  /*
   // Create controller datalog file
   sprintf( file, "%sctrl.txt", datalog.path );
   fctrl = fopen( file, "w" );
@@ -480,6 +488,7 @@ void log_exit ( void )  {
   free(log_ctrl.ierr);
   free(log_ctrl.derr);
   free(log_ctrl.cmd);
+  */
 
   // Close files
   fclose(fnote);
@@ -497,7 +506,7 @@ void log_exit ( void )  {
   }
   fclose(fahrs);
   fclose(fgps);
-  fclose(fctrl);
+  //fclose(fctrl);
 
   // Switch datalog setup flag
   datalog.setup = false;
@@ -506,14 +515,13 @@ void log_exit ( void )  {
 
   return;
 }
-*/
 
 
 /**
  *  log_record
  *  Records the data to the log file.
  */
-/*void log_record ( enum log_index index )  {
+void log_record ( enum log_index index )  {
 
   // Local variables
   ushort i;
@@ -526,9 +534,9 @@ void log_exit ( void )  {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record system input/output data
-  case LOG_SIO :
+  case LOG_IO :
 
-    timestamp = (float) ( tmr_sio.start_sec + ( tmr_sio.start_usec / 1000000.0f ) ) - datalog.offset;
+    timestamp = (float) ( tmr_io.start_sec + ( tmr_io.start_usec / 1000000.0f ) ) - datalog.offset;
 
     // Input data
     pthread_mutex_lock(&mutex_input);
@@ -714,6 +722,7 @@ void log_exit ( void )  {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record CTRL data
+    /*
   case LOG_CTRL :
 
     timestamp = (float) ( tmr_ctrl.start_sec + ( tmr_ctrl.start_usec / 1000000.0f ) ) - datalog.offset;
@@ -730,22 +739,13 @@ void log_exit ( void )  {
     }
 
     return;
-
+    */
 
   default :
     return;
   
   }
 }
-*/
 
-/**
- *  log_free
- *  Free the memory used to store the recorded data.
- */
-/*void log_free ( void )  {
-return;
-}
-*/
 
 

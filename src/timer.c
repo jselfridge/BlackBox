@@ -11,6 +11,7 @@
 #include "gps.h"
 #include "imu.h"
 #include "io.h"
+#include "log.h"
 #include "sys.h"
 
 
@@ -403,7 +404,7 @@ void *fcn_io (  )  {
     tmr_start(&tmr_io);
     io_update();
     tmr_finish(&tmr_io);
-    //if (datalog.enabled)  log_record(LOG_SIO);
+    if (datalog.enabled)  log_record(LOG_IO);
     tmr_pause(&tmr_io);
   }
   pthread_exit(NULL);
@@ -436,15 +437,15 @@ void *fcn_imu (  )  {
   tmr_create(&tmr_imu);
   while (running) {
     tmr_start(&tmr_imu);
-    //if (!datalog.saving) {  
+    if (!datalog.saving) {  
       imu_update(&imuA);
       imu_update(&imuB);
-    //}
+    }
     tmr_finish(&tmr_imu);
-    //if (datalog.enabled) {
-      //log_record(LOG_IMUA);
-      //log_record(LOG_IMUB);
-    //}
+    if (datalog.enabled) {
+      log_record(LOG_IMUA);
+      log_record(LOG_IMUB);
+    }
     tmr_pause(&tmr_imu);
   }
   pthread_exit(NULL);
@@ -460,10 +461,9 @@ void *fcn_imuA (  )  {
   tmr_create(&tmr_imuA);
   while (running) {
     tmr_start(&tmr_imuA);
-    //if (!datalog.saving)
-      imu_update(&imuA);
+    if (!datalog.saving)  imu_update(&imuA);
     tmr_finish(&tmr_imuA);
-    //if (datalog.enabled)  log_record(LOG_IMUA);
+    if (datalog.enabled)  log_record(LOG_IMUA);
     tmr_pause(&tmr_imuA);
   }
   pthread_exit(NULL);
@@ -479,10 +479,9 @@ void *fcn_imuB (  )  {
   tmr_create(&tmr_imuB);
   while (running) {
     tmr_start(&tmr_imuB);
-    //if (!datalog.saving)
-      imu_update(&imuB);
+    if (!datalog.saving)  imu_update(&imuB);
     tmr_finish(&tmr_imuB);
-    //if (datalog.enabled)  log_record(LOG_IMUB);
+    if (datalog.enabled)  log_record(LOG_IMUB);
     tmr_pause(&tmr_imuB);
   }
   pthread_exit(NULL);
@@ -500,7 +499,7 @@ void *fcn_ahrs (  )  {
     tmr_start(&tmr_ahrs);
     ahrs_update();
     tmr_finish(&tmr_ahrs);
-    //if (datalog.enabled)  log_record(LOG_AHRS);
+    if (datalog.enabled)  log_record(LOG_AHRS);
     tmr_pause(&tmr_ahrs);
   }
   pthread_exit(NULL);
@@ -518,7 +517,7 @@ void *fcn_gps (  )  {
     tmr_start(&tmr_gps);
     gps_update();
     tmr_finish(&tmr_gps);
-    //if (datalog.enabled)  log_record(LOG_GPS);
+    if (datalog.enabled)  log_record(LOG_GPS);
     tmr_pause(&tmr_gps);
   }
   pthread_exit(NULL);

@@ -12,7 +12,7 @@
 
 
 enum log_index {
-  LOG_SIO  = 0,
+  LOG_IO   = 0,
   LOG_IMUA = 1,
   LOG_IMUB = 2,
   LOG_AHRS = 3,
@@ -21,16 +21,16 @@ enum log_index {
 } log_index;
 
 
-typedef struct log_sio_struct {
+typedef struct log_io_struct {
   ulong  count;
   ulong  limit;
   float  *time;
   ushort *reg;
   ushort *pwm;
   float  *norm;
-} log_sio_struct;
-log_sio_struct log_input;
-log_sio_struct log_output;
+} log_io_struct;
+log_io_struct log_input;
+log_io_struct log_output;
 
 
 typedef struct log_imu_struct {
@@ -75,7 +75,7 @@ typedef struct log_gps_struct {
 } log_gps_struct;
 log_gps_struct log_gps;
 
-
+/*
 typedef struct log_ctrl_struct {
   ulong  count;
   ulong  limit;
@@ -87,7 +87,7 @@ typedef struct log_ctrl_struct {
   float  *cmd;
 } log_ctrl_struct;
 log_ctrl_struct log_ctrl;
-
+*/
 
 typedef struct datalog_struct {
   bool   enabled;
@@ -103,11 +103,9 @@ datalog_struct datalog;
 
 void  log_init   ( void );
 void  log_exit   ( void );
-
-//void  log_open   ( void );
-//void  log_close  ( void );
-//void  log_record ( enum log_index index );
-//void  log_free   ( void );
+void  log_open   ( void );
+void  log_close  ( void );
+void  log_record ( enum log_index index );
 
 
 #endif
