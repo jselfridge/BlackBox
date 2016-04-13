@@ -20,7 +20,7 @@ int main ( void )  {
   io_init();
   filter_init();
   imu_init();
-  //ahrs_init();
+  ahrs_init();
   //gps_init();
   //gcs_init();
   //ctrl_init();
@@ -45,7 +45,7 @@ int main ( void )  {
   //ctrl_exit();
   //gcs_exit();
   //gps_exit();
-  //ahrs_exit();
+  ahrs_exit();
   imu_exit();
   filter_exit();
   io_exit();

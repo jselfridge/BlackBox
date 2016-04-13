@@ -4,7 +4,7 @@ sys.c:71:6:sys_exit	8	static
 sys.c:129:6:sys_io	32	static
 sys.c:166:6:sys_imuA	32	static
 sys.c:205:6:sys_imuB	32	static
+sys.c:244:6:sys_ahrs	40	static
 sys.c:96:6:sys_update	8	static
-sys.c:244:6:sys_ahrs	24	static
 sys.c:269:6:sys_gps	0	static
 sys.c:290:6:sys_ctrl	8	static

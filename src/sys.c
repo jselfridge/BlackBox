@@ -109,9 +109,9 @@ void sys_update ( void )  {
 
   // Select data for display
   //sys_io();
-  if(IMUA_ENABLED)  sys_imuA();
-  if(IMUB_ENABLED)  sys_imuB();
-  //sys_ahrs();
+  //if(IMUA_ENABLED)  sys_imuA();
+  //if(IMUB_ENABLED)  sys_imuB();
+  sys_ahrs();
   //sys_gps();
   //sys_ctrl();
 
@@ -248,14 +248,14 @@ void sys_ahrs ( void )  {
 
   // Quaternion data
   pthread_mutex_lock(&mutex_quat);
-  //for ( i=0; i<4; i++ )  printf("%7.4f ", ahrs.quat[i]  );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<4; i++ )  printf("%7.4f ", ahrs.dquat[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<4; i++ )  printf("%7.4f ", ahrs.quat[i]  );  printf("   ");  fflush(stdout);
+  for ( i=0; i<4; i++ )  printf("%7.4f ", ahrs.dquat[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_quat);
 
   // Euler data
   pthread_mutex_lock(&mutex_eul);
   for ( i=0; i<3; i++ )  printf("%7.2f ", ahrs.eul[i]  * (180.0/PI) );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%7.2f ", ahrs.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%7.2f ", ahrs.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_eul); 
 
   return;

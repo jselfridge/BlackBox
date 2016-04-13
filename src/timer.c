@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <sys/timerfd.h>
 #include <unistd.h>
+#include "ahrs.h"
 #include "flag.h"
 #include "imu.h"
 #include "io.h"
@@ -163,7 +164,7 @@ void tmr_begin ( pthread_attr_t *attr )  {
   if( IMUA_ENABLED && !IMUB_ENABLED ) {  tmr_thread( &tmr_imuA,  attr, fcn_imuA  );  usleep(100000);  }
   if( IMUB_ENABLED && !IMUA_ENABLED ) {  tmr_thread( &tmr_imuB,  attr, fcn_imuB  );  usleep(100000);  }
 
-  //tmr_thread( &tmr_ahrs,  attr, fcn_ahrs  );  usleep(100000);
+  tmr_thread( &tmr_ahrs,  attr, fcn_ahrs  );  usleep(100000);
   //tmr_thread( &tmr_gps,   attr, fcn_gps   );  usleep(100000);
 
   //tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
@@ -224,12 +225,12 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_gps.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gps' thread. \n" );
   if(DEBUG)  printf( "gps " );
-
+  */
   // Exit AHRS thread
   if( pthread_join ( tmr_ahrs.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ahrs' thread. \n" );
   if(DEBUG)  printf( "ahrs " );
-  */
+
   // Exit IMUB thread
   if( IMUB_ENABLED && !IMUA_ENABLED )  {
   if( pthread_join ( tmr_imuB.id, NULL ) )
@@ -498,7 +499,7 @@ void *fcn_ahrs (  )  {
   tmr_create(&tmr_ahrs);
   while (running) {
     tmr_start(&tmr_ahrs);
-    //ahrs_update();
+    ahrs_update();
     tmr_finish(&tmr_ahrs);
     //if (datalog.enabled)  log_record(LOG_AHRS);
     tmr_pause(&tmr_ahrs);
