@@ -19,7 +19,7 @@ int main ( void )  {
   imu_init();
   ahrs_init();
   gps_init();
-  //gcs_init();
+  gcs_init();
   ctrl_init();
   log_init();
   //---  DEBUGGING  ---//
@@ -40,7 +40,7 @@ int main ( void )  {
   //-----------------//
   log_exit();
   ctrl_exit();
-  //gcs_exit();
+  gcs_exit();
   gps_exit();
   ahrs_exit();
   imu_exit();

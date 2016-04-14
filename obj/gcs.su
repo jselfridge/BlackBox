@@ -1,2 +1,7 @@
-gcs.c:10:6:gcs_init	0	static
-gcs.c:92:6:gcs_exit	0	static
+gcs.c:283:13:gcs_paramupdate	704	dynamic,bounded
+gcs.c:241:13:gcs_paramlist	640	dynamic,bounded
+gcs.c:407:13:gcs_missionlist	624	dynamic,bounded
+gcs.c:24:6:gcs_init	120	dynamic,bounded
+gcs.c:110:6:gcs_exit	8	static
+gcs.c:121:6:gcs_tx	0	static
+gcs.c:157:6:gcs_rx	336	dynamic,bounded

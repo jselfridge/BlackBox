@@ -8,6 +8,7 @@
 #include "ahrs.h"
 #include "ctrl.h"
 #include "flag.h"
+#include "gcs.h"
 #include "gps.h"
 #include "imu.h"
 #include "io.h"
@@ -170,8 +171,8 @@ void tmr_begin ( pthread_attr_t *attr )  {
   tmr_thread( &tmr_ahrs,  attr, fcn_ahrs  );  usleep(100000);
   tmr_thread( &tmr_gps,   attr, fcn_gps   );  usleep(100000);
 
-  //tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
-  //tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(100000);
+  tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
+  tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(100000);
 
   tmr_thread( &tmr_ctrl,  attr, fcn_ctrl  );  usleep(100000);
 
@@ -213,7 +214,7 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_ctrl.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ctrl' thread. \n" );
   if(DEBUG)  printf( "ctrl " );
-  /*
+
   // Exit GCSRX thread
   if( pthread_join ( tmr_gcsrx.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gcsrx' thread. \n" );
@@ -223,7 +224,7 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_gcstx.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gcstx' thread. \n" );
   if(DEBUG)  printf( "gcstx " );
-  */
+
   // Exit GPS thread
   if( pthread_join ( tmr_gps.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gps' thread. \n" );
@@ -533,7 +534,7 @@ void *fcn_gcstx (  )  {
   tmr_create(&tmr_gcstx);
   while (running) {
     tmr_start(&tmr_gcstx);
-    //gcs_tx();
+    gcs_tx();
     tmr_finish(&tmr_gcstx);
     tmr_pause(&tmr_gcstx);
   }
@@ -550,7 +551,7 @@ void *fcn_gcsrx (  )  {
   tmr_create(&tmr_gcsrx);
   while (running) {
     tmr_start(&tmr_gcsrx);
-    //gcs_rx();
+    gcs_rx();
     tmr_finish(&tmr_gcsrx);
     tmr_pause(&tmr_gcsrx);
   }

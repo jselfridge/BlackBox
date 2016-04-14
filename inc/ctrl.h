@@ -8,8 +8,6 @@
 #define SYSTEM    "quad"
 
 
-/*
-
 #define QUAD_OFF0  -1.0
 #define QUAD_OFF1  -1.0
 #define QUAD_OFF2   0.0
@@ -44,8 +42,6 @@
 #define QUAD_DX    0.10
 #define QUAD_DY    0.10
 #define QUAD_DZ    0.00
-
-*/
 
 /*
 
@@ -88,7 +84,7 @@
 
 */
 
-/*
+
 typedef struct ctrl_struct {
   double  dt;
   double  off   [10];
@@ -106,7 +102,7 @@ typedef struct ctrl_struct {
   double  heading;
 } ctrl_struct;
 ctrl_struct ctrl;
-*/
+
 
 void    ctrl_init    ( void );
 void    ctrl_exit    ( void );
