@@ -8,16 +8,16 @@
 
 
 // Put this into parameter file...
-#define LPF_GYR   0.0
-#define LPF_ACC   0.0
-#define LPF_MAG   0.0
+#define LPF_GYR  20.0
+#define LPF_ACC  20.0
+#define LPF_MAG   2.0
 #define LPF_EUL   0.0
 #define LPF_ANG   0.0
 
 // Put these into parameter file...
-#define HIST_GYR   2
-#define HIST_ACC   2
-#define HIST_MAG   2
+#define HIST_GYR   10
+#define HIST_ACC   10
+#define HIST_MAG   10
 #define HIST_EUL   1
 #define HIST_ANG   1
 

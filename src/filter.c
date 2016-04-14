@@ -111,7 +111,7 @@ void filter_hist ( filter_struct *filter, uint hist )  {
   filter->hist = hist;
 
   // Free current memory
-  free(filter->data);
+  filter->data = realloc( filter->data, sizeof(double) * hist );
 
   // Determine new stroage size
   size = filter->dim * hist;
@@ -143,7 +143,7 @@ void filter_lpf ( filter_struct *filter, double *input, double *output )  {
   // Shift stored data
   for ( i=1; i<row; i++ ) {
     for ( j=0; j<col; j++ ) {
-      data[ col*i+j-row ] = data[ col*i+j ];
+      data[ col*i+j-col ] = data[ col*i+j ];
     }
   }
 

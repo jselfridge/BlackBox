@@ -268,14 +268,6 @@ void imu_update ( imu_struct *imu )  {
   Ms[z] =   ( Mr[z] - imu->mag->bias[z] ) / (double) (imu->mag->range[z]);
   }
 
-  /* // Low pass filter stand in (debugging)
-  for ( i=0; i<3; i++ ) {
-    Gf[i] = Gs[i];
-    Af[i] = As[i];
-    if (imu->getmag)   
-    Mf[i] = Ms[i];
-  }
-  */
   // IMUA low pass filter
   if ( imu->id == 'A' )  {
     filter_lpf ( &filter_gyrA, Gs, Gf );
