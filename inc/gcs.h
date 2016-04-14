@@ -10,42 +10,49 @@
 
 #define GCS_PARAM_COUNT   22
 
-#define GCS_SYSID  01
-#define GCS_IMU    10
-#define GCS_IMUA   11
-#define GCS_IMUB   12
-#define GCS_ATT    20
-#define GCS_INPUT  30
-#define GCS_OUTPUT 40
-#define GCS_GPS    50
-#define GCS_GAINS  120
+#define GCS_SYSID        01
 
-#define GCS_INPUT_ENABLED        true
-#define GCS_OUTPUT_ENABLED       true
+#define GCS_IMUA_RAW     11
+#define GCS_IMUA_SCALED  12
+#define GCS_IMUA_FILTER  13
+
+#define GCS_IMUB_RAW     21
+#define GCS_IMUB_SCALED  22
+#define GCS_IMUB_FILTER  23
+
+#define GCS_IMU          30
+#define GCS_ATT          40
+#define GCS_INPUT        50
+#define GCS_OUTPUT       60
+#define GCS_GPS          70
+#define GCS_GAINS       120
+
+#define GCS_INPUT_ENABLED        false
+#define GCS_OUTPUT_ENABLED       false
 #define GCS_IMUA_RAW_ENABLED     true
 #define GCS_IMUA_SCALED_ENABLED  true
 #define GCS_IMUA_FILTER_ENABLED  true
 #define GCS_IMUB_RAW_ENABLED     true
 #define GCS_IMUB_SCALED_ENABLED  true
 #define GCS_IMUB_FILTER_ENABLED  true
-#define GCS_AHRS_EUL_ENABLED     true
-#define GCS_AHRS_QUAT_ENABLED    true
-#define GCS_GPS_ENABLED          true
+#define GCS_AHRS_EUL_ENABLED     false
+#define GCS_AHRS_QUAT_ENABLED    false
+#define GCS_GPS_ENABLED          false
 
 
 enum param_index {
 
   // LPF cutoff freq
-  lpf_cut_gyr = 0,
-  lpf_cut_acc,
-  lpf_cut_mag,
+  lpf_hz_gyr = 0,
+  lpf_hz_acc,
+  lpf_hz_mag,
 
   // LPF sample history
   lpf_hist_gyr,
   lpf_hist_acc,
-  lpf_hist_mag,
+  lpf_hist_mag
 
-  // Roll gains
+  /*  // Roll gains
   X_Kp,
   X_Ki,
   X_Kd,
@@ -70,6 +77,7 @@ enum param_index {
   Y_R,
   Z_R,
   T_R
+  */
 
 };
 
@@ -99,19 +107,7 @@ void  gcs_rx           ( void );
 
 //void  gcs_send_param   ( enum param_index name, float val );
 //void  gcs_paramupdate  ( mavlink_message_t *msg );
-//void  gcs_heartbeat    ( void );
 
-//void  gcs_input        ( void );
-//void  gcs_output       ( void );
-//void  gcs_imuA_raw     ( void );
-//void  gcs_imuA_scaled  ( void );
-//void  gcs_imuA_filter  ( void );
-//void  gcs_imuB_raw     ( void );
-//void  gcs_imuB_scaled  ( void );
-//void  gcs_imuB_filter  ( void );
-//void  gcs_ahrs_eul     ( void );
-//void  gcs_ahrs_quat    ( void );
-//void  gcs_gps          ( void );
 
 
 #endif

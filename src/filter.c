@@ -29,9 +29,9 @@ void filter_init ( void )  {
 
   // Store cutoff frequencies
   if(DEBUG)  printf( "  Store cutoff frequencies \n" );
-  filter_freq( &filter_gyrA, LPF_GYR );  filter_freq( &filter_gyrB, LPF_GYR );
-  filter_freq( &filter_accA, LPF_ACC );  filter_freq( &filter_accB, LPF_ACC );
-  filter_freq( &filter_magA, LPF_MAG );  filter_freq( &filter_magB, LPF_MAG );
+  filter_freq( &filter_gyrA, LPF_HZ_GYR );  filter_freq( &filter_gyrB, LPF_HZ_GYR );
+  filter_freq( &filter_accA, LPF_HZ_ACC );  filter_freq( &filter_accB, LPF_HZ_ACC );
+  filter_freq( &filter_magA, LPF_HZ_MAG );  filter_freq( &filter_magB, LPF_HZ_MAG );
 
   // Generate memory pointer
   if(DEBUG)  printf( "  Generate memory pointer \n" );
@@ -41,9 +41,9 @@ void filter_init ( void )  {
 
   // Allocate storage memory
   if(DEBUG)  printf( "  Allocate storage memory \n" );
-  filter_hist( &filter_gyrA, HIST_GYR );  filter_hist( &filter_gyrB, HIST_GYR );
-  filter_hist( &filter_accA, HIST_ACC );  filter_hist( &filter_accB, HIST_ACC );
-  filter_hist( &filter_magA, HIST_MAG );  filter_hist( &filter_magB, HIST_MAG );
+  filter_hist( &filter_gyrA, LPF_HIST_GYR );  filter_hist( &filter_gyrB, LPF_HIST_GYR );
+  filter_hist( &filter_accA, LPF_HIST_ACC );  filter_hist( &filter_accB, LPF_HIST_ACC );
+  filter_hist( &filter_magA, LPF_HIST_MAG );  filter_hist( &filter_magB, LPF_HIST_MAG );
 
   // Display settings
   if (DEBUG) {
@@ -51,11 +51,11 @@ void filter_init ( void )  {
     printf("  -------------------------------------------------\n" );
     printf("  |       |   HZ  |     DT  |     LPF  |    Gain  |\n" );
     printf("  |  GYR  |  %3d  |  %5.3f  |  %6.2f  |  %6.4f  |\n", \
-       HZ_IMU_FAST, filter_gyrA.dt, LPF_GYR, filter_gyrA.gain );
+       HZ_IMU_FAST, filter_gyrA.dt, LPF_HZ_GYR, filter_gyrA.gain );
     printf("  |  ACC  |  %3d  |  %5.3f  |  %6.2f  |  %6.4f  |\n", \
-       HZ_IMU_FAST, filter_accA.dt, LPF_ACC, filter_accA.gain );
+       HZ_IMU_FAST, filter_accA.dt, LPF_HZ_ACC, filter_accA.gain );
     printf("  |  MAG  |  %3d  |  %5.3f  |  %6.2f  |  %6.4f  |\n", \
-       HZ_IMU_SLOW, filter_magA.dt, LPF_MAG, filter_magA.gain );
+       HZ_IMU_SLOW, filter_magA.dt, LPF_HZ_MAG, filter_magA.gain );
     printf("  -------------------------------------------------\n" );
   }
 
