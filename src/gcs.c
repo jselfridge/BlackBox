@@ -207,7 +207,7 @@ void gcs_rx ( void)  {
     if ( mavlink_parse_char( 0, c, &msg, &status ) )  {
 
       // Debugging
-      printf( "\n  Received message with ID %d, sequence: %d from component %d of system %d \n", msg.msgid, msg.seq, msg.compid, msg.sysid );
+      //printf( "\n  Received message with ID %d, sequence: %d from component %d of system %d \n", msg.msgid, msg.seq, msg.compid, msg.sysid );
 
       // Handle message
       switch(msg.msgid)  {
@@ -401,7 +401,7 @@ static void gcs_param_value ( mavlink_message_t *msg )  {
 
   // Check if this message is for this system
   if (  (uint8_t) set.target_system    == GCS_SYSID  && 
-        (uint8_t) set.target_component == GCS_GAINS )  {
+        (uint8_t) set.target_component == GCS_PARAM )  {
 
     char* key = (char*) set.param_id;
 
@@ -470,9 +470,6 @@ static void gcs_param_value ( mavlink_message_t *msg )  {
   //uint x=0, y=1, z=2, t=3;
 
   // Update LPF cutoff frequency
-
-  printf("\n\n param val: %f \n", param.val[lpf_freq_gyr] );
-
   filter_freq( &filter_gyrA, param.val[lpf_freq_gyr] );  filter_freq( &filter_gyrB, param.val[lpf_freq_gyr] );
   filter_freq( &filter_accA, param.val[lpf_freq_acc] );  filter_freq( &filter_accB, param.val[lpf_freq_acc] );
   filter_freq( &filter_magA, param.val[lpf_freq_mag] );  filter_freq( &filter_magB, param.val[lpf_freq_mag] );
