@@ -54,7 +54,6 @@ enum param_index {
   lpf_hist_acc,
   lpf_hist_mag,
 
-  /*
   // Roll gains
   X_Kp,
   X_Ki,
@@ -80,7 +79,6 @@ enum param_index {
   Y_R,
   Z_R,
   T_R,
-  */
 
   // Number of elements
   param_count

@@ -84,7 +84,6 @@ void gcs_init ( void )  {
   strcpy( param.name[lpf_hist_acc], "lpf_hist_acc" );  param.val[lpf_hist_acc] = LPF_HIST_ACC;
   strcpy( param.name[lpf_hist_mag], "lpf_hist_mag" );  param.val[lpf_hist_mag] = LPF_HIST_MAG;
 
-  /*
   // Roll gains
   strcpy( param.name[X_Kp], "X_Kp" );  param.val[X_Kp] = QUAD_PX;
   strcpy( param.name[X_Ki], "X_Ki" );  param.val[X_Ki] = QUAD_IX;
@@ -110,17 +109,11 @@ void gcs_init ( void )  {
   strcpy( param.name[Y_R], "Y_R" );  param.val[Y_R] = QUAD_Y_RANGE;
   strcpy( param.name[Z_R], "Z_R" );  param.val[Z_R] = QUAD_Z_RANGE;
   strcpy( param.name[T_R], "T_R" );  param.val[T_R] = QUAD_T_RANGE;
-  */
 
   // Assign conditional values
   gcs.sendhb      = false;
   gcs.sendparam   = false;
   gcs.sendmission = false;
-
-  // Send initial parameters
-  //gcs_heartbeat();    //usleep(100000);
-  //gcs_paramlist();    //usleep(100000);
-  //gcs_missionlist();  //usleep(100000);
 
   return;
 }
@@ -255,7 +248,7 @@ void gcs_rx ( void)  {
         // ID: #???
         default:
           // Add unknown ID code...
-          printf( "\nNew code: %d \n", msg.msgid );
+          printf( "\n\n  *** New GCS code: %d ***\n", msg.msgid );
         break;
 
       }
@@ -429,11 +422,9 @@ static void gcs_param_value ( mavlink_message_t *msg )  {
         // AND only write if new value is NOT "not-a-number"
         // AND is NOT infinity
 
-        if ( 
-          param.val[i] != set.param_value && 
-          !isnan(set.param_value) && 
-          !isinf(set.param_value) && set.param_type == MAVLINK_TYPE_FLOAT 
-        )  {
+        if ( param.val[i] != set.param_value && 
+             !isnan(set.param_value) && 
+             !isinf(set.param_value) && set.param_type == MAVLINK_TYPE_FLOAT )  {
 
           param.val[i] = set.param_value;
 
@@ -467,7 +458,7 @@ static void gcs_param_value ( mavlink_message_t *msg )  {
     }
   }
 
-  //uint x=0, y=1, z=2, t=3;
+  ushort x=0, y=1, z=2, t=3;
 
   // Update LPF cutoff frequency
   filter_freq( &filter_gyrA, param.val[lpf_freq_gyr] );  filter_freq( &filter_gyrB, param.val[lpf_freq_gyr] );
@@ -479,7 +470,6 @@ static void gcs_param_value ( mavlink_message_t *msg )  {
   filter_hist( &filter_accA, param.val[lpf_hist_acc] );  filter_hist( &filter_accB, param.val[lpf_hist_acc] );
   filter_hist( &filter_magA, param.val[lpf_hist_mag] );  filter_hist( &filter_magB, param.val[lpf_hist_mag] );
 
-  /*
   // Update roll gains
   ctrl.pgain[x] = param.val[X_Kp];
   ctrl.igain[x] = param.val[X_Ki];
@@ -505,21 +495,11 @@ static void gcs_param_value ( mavlink_message_t *msg )  {
   ctrl.scale[y] = param.val[Y_R];
   ctrl.scale[z] = param.val[Z_R];
   ctrl.scale[t] = param.val[T_R];
-  */
 
   // Update notes log file
   
   return;
 }
-
-
-
-
-
-
-
-
-
 
 
 /**
