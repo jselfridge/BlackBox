@@ -9,6 +9,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #include "ahrs.h"
+#include "filter.h"
 #include "flag.h"
 #include "gps.h"
 #include "imu.h"
@@ -17,12 +18,13 @@
 #include "timer.h"
 
 
-void sys_io    ( void );
-void sys_imuA  ( void );
-void sys_imuB  ( void );
-void sys_ahrs  ( void );
-void sys_gps   ( void );
-void sys_ctrl  ( void );
+static void sys_io      ( void );
+static void sys_filter  ( void );
+static void sys_imuA    ( void );
+static void sys_imuB    ( void );
+static void sys_ahrs    ( void );
+static void sys_gps     ( void );
+static void sys_ctrl    ( void );
 
 
 /**
@@ -110,12 +112,13 @@ void sys_update ( void )  {
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
-  //sys_io();
-  if(IMUA_ENABLED)  sys_imuA();
-  //if(IMUB_ENABLED)  sys_imuB();
-  //sys_ahrs();
-  //sys_gps();
-  //sys_ctrl();
+  if(0) sys_io();
+  if(1) sys_filter();
+  if(0) if(IMUA_ENABLED)  sys_imuA();
+  if(0) if(IMUB_ENABLED)  sys_imuB();
+  if(0) sys_ahrs();
+  if(0) sys_gps();
+  if(0) sys_ctrl();
 
   // Complete debugging display 
   printf("  "); fflush(stdout);
@@ -128,7 +131,7 @@ void sys_update ( void )  {
  *  sys_io
  *  Prints input/output values to the terminal.
  */
-void sys_io ( void )  {
+static void sys_io ( void )  {
 
   // Loop counter
   ushort i;
@@ -162,10 +165,32 @@ void sys_io ( void )  {
 
 
 /**
+ *  sys_filter
+ *  Prints filter parameter values to the terminal.
+ */
+static void sys_filter ( void )  {
+
+  // IMUA filters
+  if (IMUA_ENABLED) {
+    printf("%6.1f ", filter_gyrA.freq );  printf("%6.1f ", filter_accA.freq );  printf("%6.1f ", filter_magA.freq );  printf("   ");  fflush(stdout);  
+    //printf("%5d ",   filter_gyrA.hist );  printf("%5d ",   filter_accA.hist );  printf("%5d ",   filter_magA.hist );  printf("   ");  fflush(stdout);  
+  }
+
+  // IMUB filters
+  if (IMUB_ENABLED) {
+    //printf("%6.1f ", filter_gyrB.freq );  printf("%6.1f ", filter_accB.freq );  printf("%6.1f ", filter_magB.freq );  printf("   ");  fflush(stdout);  
+    //printf("%5d ",   filter_gyrB.hist );  printf("%5d ",   filter_accB.hist );  printf("%5d ",   filter_magB.hist );  printf("   ");  fflush(stdout);  
+  }
+
+  return;
+}
+
+
+/**
  *  sys_imuA
  *  Prints IMUA debugging messages to the terminal.
  */
-void sys_imuA ( void )  {
+static void sys_imuA ( void )  {
 
   // Check that IMUA is in use
   if (IMUA_ENABLED) {
@@ -204,7 +229,7 @@ void sys_imuA ( void )  {
  *  sys_imuB
  *  Prints IMUB debugging messages to the terminal.
  */
-void sys_imuB ( void )  {
+static void sys_imuB ( void )  {
 
   // Check that IMUB is in use
   if (IMUB_ENABLED) {
@@ -243,7 +268,7 @@ void sys_imuB ( void )  {
  *  sys_ahrs
  *  Prints AHRS debugging messages to the terminal.
  */
-void sys_ahrs ( void )  {
+static void sys_ahrs ( void )  {
 
   // Loop counter
   ushort i;
@@ -268,7 +293,7 @@ void sys_ahrs ( void )  {
  *  sys_gps
  *  Prints GPS debugging messages to the terminal.
  */
-void sys_gps ( void )  {
+static void sys_gps ( void )  {
 
   pthread_mutex_lock(&mutex_gps);
   printf("GPS msg:    %s ", gps.msg );  printf("   ");  fflush(stdout);
@@ -289,7 +314,7 @@ void sys_gps ( void )  {
  *  sys_ctrl
  *  Prints controller values to the terminal.
  */
-void sys_ctrl ( void )  {
+static void sys_ctrl ( void )  {
 
   // Loop counter
   //ushort i;

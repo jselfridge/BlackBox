@@ -15,10 +15,11 @@
 #include "timer.h"
 
 
-static void  gcs_paramlist    ( void );
-static void  gcs_paramupdate  ( mavlink_message_t *msg );
-static void  gcs_missionlist  ( void );
 static void  gcs_heartbeat    ( void );
+static void  gcs_paramlist    ( void );
+static void  gcs_missionlist  ( void );
+
+static void  gcs_param_value  ( mavlink_message_t *msg );
 
 static void  gcs_input        ( void );
 static void  gcs_output       ( void );
@@ -41,14 +42,14 @@ void gcs_init ( void )  {
   if (DEBUG)  printf("Initializing GCS \n");
 
   // Assign UART path
+  if (DEBUG)  printf("  Open UART channel \n");
   memset( gcs.path, 0, sizeof(gcs.path) );
   strcpy( gcs.path, "/dev/ttyO1" );
-
-  // Open the file descriptor
   gcs.fd = open ( gcs.path, O_RDWR | O_NOCTTY );
   if ( gcs.fd <0 )  printf( "Error (gcs_init): Couldn't open GCS file descriptor. \n" );
 
   // Assign UART settings
+  if (DEBUG)  printf("  Assign UART settings \n");
   struct termios settings;
   memset( &settings, 0, sizeof( &settings ) );
   settings.c_iflag     = 0;
@@ -70,15 +71,13 @@ void gcs_init ( void )  {
   if ( tcsetattr( gcs.fd, TCSAFLUSH, &settings ) <0 )
     printf( "Error (gcs_init): Failed to assign GCS UART parameters. \n" );
 
-  // Set transmission flags
-  gcs.sendhb      = true;
-  gcs.sendparam   = false;
-  gcs.sendmission = false;
+  // Load parameters
+  if (DEBUG)  printf( "  Loading %d parameters \n", param_count );
 
   // LPF cutoff frequency
-  strcpy( param.name[lpf_hz_gyr], "lpf_hz_gyr" );  param.val[lpf_hz_gyr] = LPF_HZ_GYR;
-  strcpy( param.name[lpf_hz_acc], "lpf_hz_acc" );  param.val[lpf_hz_acc] = LPF_HZ_ACC;
-  strcpy( param.name[lpf_hz_mag], "lpf_hz_mag" );  param.val[lpf_hz_mag] = LPF_HZ_MAG;
+  strcpy( param.name[lpf_freq_gyr], "lpf_freq_gyr" );  param.val[lpf_freq_gyr] = LPF_FREQ_GYR;
+  strcpy( param.name[lpf_freq_acc], "lpf_freq_acc" );  param.val[lpf_freq_acc] = LPF_FREQ_ACC;
+  strcpy( param.name[lpf_freq_mag], "lpf_freq_mag" );  param.val[lpf_freq_mag] = LPF_FREQ_MAG;
 
   // LPF sample history
   strcpy( param.name[lpf_hist_gyr], "lpf_hist_gyr" );  param.val[lpf_hist_gyr] = LPF_HIST_GYR;
@@ -113,9 +112,15 @@ void gcs_init ( void )  {
   strcpy( param.name[T_R], "T_R" );  param.val[T_R] = QUAD_T_RANGE;
   */
 
+  // Assign conditional values
+  gcs.sendhb      = false;
+  gcs.sendparam   = false;
+  gcs.sendmission = false;
+
   // Send initial parameters
-  gcs_paramlist();
-  gcs_missionlist();
+  //gcs_heartbeat();    //usleep(100000);
+  //gcs_paramlist();    //usleep(100000);
+  //gcs_missionlist();  //usleep(100000);
 
   return;
 }
@@ -142,26 +147,34 @@ void gcs_tx ( void)  {
   if ( count < 10 )  {  count++;  }
   else               {  count = 0;  gcs.sendhb = true;  }
 
-  // Send as needed  
-  if (gcs.sendhb)       gcs_heartbeat();    gcs.sendhb = false;
-  if (gcs.sendparam)    gcs_paramlist();    gcs.sendparam = false;
-  if (gcs.sendmission)  gcs_missionlist();  gcs.sendmission = false;
+  // Send GCS updates
+  if (gcs.sendhb)                 gcs_heartbeat();
+  if (gcs.sendparam)              gcs_paramlist();
+  if (gcs.sendmission)            gcs_missionlist();
 
-  // Send always if enabled
+  // Send input/output values
   if (GCS_INPUT_ENABLED)          gcs_input();
   if (GCS_OUTPUT_ENABLED)         gcs_output();
+
+  // Send IMUA data
   if (IMUA_ENABLED)  {
     if (GCS_IMUA_RAW_ENABLED)     gcs_imuA_raw();
     if (GCS_IMUA_SCALED_ENABLED)  gcs_imuA_scaled();
     if (GCS_IMUA_FILTER_ENABLED)  gcs_imuA_filter();
   }
+
+  // Send IMUB data
   if (IMUB_ENABLED)  {
     if (GCS_IMUB_RAW_ENABLED)     gcs_imuB_raw();
     if (GCS_IMUB_SCALED_ENABLED)  gcs_imuB_scaled();
     if (GCS_IMUB_FILTER_ENABLED)  gcs_imuB_filter();
   }
+
+  // Send attitude/heading data
   if (GCS_AHRS_EUL_ENABLED)       gcs_ahrs_eul();
   if (GCS_AHRS_QUAT_ENABLED)      gcs_ahrs_quat();
+
+  // Send GPS data
   if (GCS_GPS_ENABLED)            gcs_gps();
 
   return;
@@ -193,12 +206,15 @@ void gcs_rx ( void)  {
     // Try to get a new message
     if ( mavlink_parse_char( 0, c, &msg, &status ) )  {
 
+      // Debugging
+      printf( "\n  Received message with ID %d, sequence: %d from component %d of system %d \n", msg.msgid, msg.seq, msg.compid, msg.sysid );
+
       // Handle message
       switch(msg.msgid)  {
 
         // ID: #0
         case MAVLINK_MSG_ID_HEARTBEAT:
-          // Add fail safe code here
+          // Reset fail safe timer
         break;
 
         // ID: #20
@@ -213,7 +229,7 @@ void gcs_rx ( void)  {
 
         // ID: #23
         case MAVLINK_MSG_ID_PARAM_SET:
-          gcs_paramupdate(&msg);
+          gcs_param_value(&msg);
         break;
 
         // ID: #43
@@ -239,6 +255,7 @@ void gcs_rx ( void)  {
         // ID: #???
         default:
           // Add unknown ID code...
+          printf( "\nNew code: %d \n", msg.msgid );
         break;
 
       }
@@ -247,6 +264,43 @@ void gcs_rx ( void)  {
 
   // Update global packet drops counter
   //packet_drops += status.packet_rx_drop_count;
+
+  return;
+}
+
+
+/**
+ *  gcs_heartbeat
+ *  Sends a heartbeat transmission.
+ */
+static void gcs_heartbeat ( void )  {
+
+  // Initialize the required buffers
+  mavlink_message_t msg;
+  uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+ 
+  // Pack the heartbeat message
+  mavlink_msg_heartbeat_pack ( 
+    GCS_SYSID, 
+    GCS_HEARTBEAT,
+    &msg, 
+    MAV_TYPE_GENERIC,
+    MAV_AUTOPILOT_GENERIC,
+    MAV_MODE_PREFLIGHT,
+    0,
+    MAV_STATE_STANDBY
+  );
+
+  // Copy the heartbeat message to the send buffer
+  uint len = mavlink_msg_to_send_buffer( buf, &msg );
+
+  // Send the message 
+  pthread_mutex_lock(&mutex_gcs);
+  int w = write( gcs.fd, buf, len );
+  pthread_mutex_unlock(&mutex_gcs);
+  usleep(w*300);
+
+  gcs.sendhb = false;
 
   return;
 }
@@ -264,18 +318,18 @@ static void gcs_paramlist ( void )  {
   mavlink_message_t msg;
 
   // Loop through all parameters
-  for ( i=0; i < GCS_PARAM_COUNT; i++ )  {
+  for ( i=0; i < param_count; i++ )  {
 
     // Pack parameter message
     memset( &msg, 0, sizeof(&msg) );
     mavlink_msg_param_value_pack(
       GCS_SYSID,
-      100,
+      GCS_PARAM,
       &msg, 
       param.name[i], 
       param.val[i],
       MAVLINK_TYPE_FLOAT,
-      GCS_PARAM_COUNT, 
+      param_count, 
       i
     );
 
@@ -290,15 +344,54 @@ static void gcs_paramlist ( void )  {
 
   }
 
+  gcs.sendparam = false;
+
   return;
 }
 
 
 /**
- *  gcs_paramupdate
+ *  gcs_missionlist
+ *  Sends the onboard mission list.
+ */
+static void gcs_missionlist ( void)  {
+
+  // Local variables
+  int len, w;
+  uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+  mavlink_message_t msg;
+
+  // Pack parameter message
+  memset( &msg, 0, sizeof(&msg) );
+  mavlink_msg_mission_count_pack (
+    GCS_SYSID, 
+    GCS_MISSION,
+    &msg,
+    0, 
+    0, 
+    0
+  );
+
+  // Send parameter to GCS
+  memset( buf, 0, sizeof(buf) );
+  len = mavlink_msg_to_send_buffer( buf, &msg );
+
+  pthread_mutex_lock(&mutex_gcs);
+  w = write( gcs.fd, buf, len );
+  pthread_mutex_unlock(&mutex_gcs);
+  usleep(w*300);
+
+  gcs.sendmission = false;
+
+  return;
+}
+
+
+/**
+ *  gcs_param_value
  *  Updates the parameter values as needed.
  */
-static void gcs_paramupdate ( mavlink_message_t *msg )  {
+static void gcs_param_value ( mavlink_message_t *msg )  {
 
   // Local variables
   uint i, j;
@@ -312,7 +405,7 @@ static void gcs_paramupdate ( mavlink_message_t *msg )  {
 
     char* key = (char*) set.param_id;
 
-    for ( i=0; i < GCS_PARAM_COUNT; i++ )  {
+    for ( i=0; i < param_count; i++ )  {
 
       match = true;
 
@@ -349,12 +442,12 @@ static void gcs_paramupdate ( mavlink_message_t *msg )  {
           memset( &confirm_msg, 0, sizeof(&confirm_msg) );
           mavlink_msg_param_value_pack(
             GCS_SYSID,
-            100,
+            GCS_PARAM,
             &confirm_msg, 
             param.name[i], 
             param.val[i],
             MAVLINK_TYPE_FLOAT,
-            GCS_PARAM_COUNT, 
+            param_count, 
             i
           );
 
@@ -377,14 +470,17 @@ static void gcs_paramupdate ( mavlink_message_t *msg )  {
   //uint x=0, y=1, z=2, t=3;
 
   // Update LPF cutoff frequency
-  //lpf_cut_gyr = param.val[lpf_gyr];
-  //lpf_cut_acc = param.val[lpf_acc];
-  //lpf_cut_mag = param.val[lpf_mag];
+
+  printf("\n\n param val: %f \n", param.val[lpf_freq_gyr] );
+
+  filter_freq( &filter_gyrA, param.val[lpf_freq_gyr] );  filter_freq( &filter_gyrB, param.val[lpf_freq_gyr] );
+  filter_freq( &filter_accA, param.val[lpf_freq_acc] );  filter_freq( &filter_accB, param.val[lpf_freq_acc] );
+  filter_freq( &filter_magA, param.val[lpf_freq_mag] );  filter_freq( &filter_magB, param.val[lpf_freq_mag] );
 
   // Update LPF sample history
-  //lpf_hist_gyr = param.val[lpf_gyr];
-  //lpf_hist_acc = param.val[lpf_acc];
-  //lpf_hist_mag = param.val[lpf_mag];
+  filter_hist( &filter_gyrA, param.val[lpf_hist_gyr] );  filter_hist( &filter_gyrB, param.val[lpf_hist_gyr] );
+  filter_hist( &filter_accA, param.val[lpf_hist_acc] );  filter_hist( &filter_accB, param.val[lpf_hist_acc] );
+  filter_hist( &filter_magA, param.val[lpf_hist_mag] );  filter_hist( &filter_magB, param.val[lpf_hist_mag] );
 
   /*
   // Update roll gains
@@ -420,125 +516,12 @@ static void gcs_paramupdate ( mavlink_message_t *msg )  {
 }
 
 
-/**
- *  gcs_missionlist
- *  Sends the onboard mission list.
- */
-static void gcs_missionlist ( void)  {
-
-  // Local variables
-  int len, w;
-  uint8_t buf[MAVLINK_MAX_PACKET_LEN];
-  mavlink_message_t msg;
-
-  // Pack parameter message
-  memset( &msg, 0, sizeof(&msg) );
-  mavlink_msg_mission_count_pack (
-    GCS_SYSID, 
-    MAV_COMP_ID_IMU, 
-    &msg,
-    0, 
-    0, 
-    0
-  );
-
-  // Send parameter to GCS
-  memset( buf, 0, sizeof(buf) );
-  len = mavlink_msg_to_send_buffer( buf, &msg );
-
-  pthread_mutex_lock(&mutex_gcs);
-  w = write( gcs.fd, buf, len );
-  pthread_mutex_unlock(&mutex_gcs);
-  usleep(w*300);
-
-  return;
-}
-
-
-/**
- *  gcs_heartbeat
- *  Sends a heartbeat transmission.
- */
-void gcs_heartbeat ( void)  {
-
-  // Initialize the required buffers
-  mavlink_message_t msg;
-  uint8_t buf[MAVLINK_MAX_PACKET_LEN];
- 
-  // Pack the heartbeat message
-  mavlink_msg_heartbeat_pack ( 
-    GCS_SYSID, 
-    MAV_COMP_ID_IMU,
-    &msg, 
-    MAV_TYPE_FIXED_WING,
-    MAV_AUTOPILOT_GENERIC,
-    MAV_MODE_PREFLIGHT,
-    0,
-    MAV_STATE_STANDBY
-  );
- 
-  // Copy the heartbeat message to the send buffer
-  uint len = mavlink_msg_to_send_buffer( buf, &msg );
-
-  // Send the message 
-  pthread_mutex_lock(&mutex_gcs);
-  int w = write( gcs.fd, buf, len );
-  pthread_mutex_unlock(&mutex_gcs);
-  usleep(w*300);
-
-  return;
-}
 
 
 
 
 
 
-
-
-
-
-
-/**
- *  gcs_send_param
- *  Sends a parameter to the GCS.
- */
-/*void gcs_send_param ( enum param_index name, float val )  {
-  // *
-  // Initialize buffers
-  mavlink_message_t msg;
-  uint8_t buf[MAVLINK_MAX_PACKET_LEN];
-
-  // Allocate memory
-  memset( &msg, 0, sizeof(&msg) );
-  memset( buf,  0, sizeof(buf)  );
-
-  // Pack parameter message
-  mavlink_msg_param_value_pack(
-    VEHICLE_ID, 
-    MAV_COMP_ID_GAINS,
-    &msg, 
-    param.name[i], 
-    param.val[i],
-    MAVLINK_TYPE_FLOAT,
-    PARAM_COUNT, 
-    i
-  );
-
-  // Send parameter to GCS
-  int len = mavlink_msg_to_send_buffer( buf, &msg );
-
-  // Write to UART
-  pthread_mutex_lock(&mutex_gcs);
-  int w = write( gcs.fd, buf, len );
-  pthread_mutex_unlock(&mutex_gcs);
-
-  // Pause during transmission
-  usleep(w*200);
-  * //
-  return;
-}
-*/
 
 
 
@@ -546,7 +529,7 @@ void gcs_heartbeat ( void)  {
  *  gcs_input
  *  Sends the radio input commands.
  */
-void gcs_input ( void )  {
+static void gcs_input ( void )  {
 
   // Initialize the required buffers
   mavlink_message_t msg;
@@ -592,7 +575,7 @@ void gcs_input ( void )  {
  *  gcs_output
  *  Sends the system output commands.
  */
-void gcs_output ( void )  {
+static void gcs_output ( void )  {
 
   // Initialize the required buffers
   mavlink_message_t msg;
@@ -637,7 +620,7 @@ void gcs_output ( void )  {
  *  gcs_imuA_raw
  *  Sends the raw IMUA data.
  */
-void gcs_imuA_raw ( void )  {
+static void gcs_imuA_raw ( void )  {
 
   // Initialize the required buffers
   mavlink_message_t msg;
@@ -687,7 +670,7 @@ void gcs_imuA_raw ( void )  {
  *  gcs_imuA_scaled
  *  Sends the scaled IMUA data.
  */
-void gcs_imuA_scaled ( void )  {
+static void gcs_imuA_scaled ( void )  {
 
   // Initialize the required buffers
   mavlink_message_t msg;
@@ -737,7 +720,7 @@ void gcs_imuA_scaled ( void )  {
  *  gcs_imuA_filter
  *  Sends the filtered IMUA data.
  */
-void gcs_imuA_filter ( void )  {
+static void gcs_imuA_filter ( void )  {
 
   // Initialize the required buffers
   mavlink_message_t msg;
@@ -787,7 +770,7 @@ void gcs_imuA_filter ( void )  {
  *  gcs_imuB_raw
  *  Sends the raw IMUB data.
  */
-void gcs_imuB_raw ( void )  {
+static void gcs_imuB_raw ( void )  {
 
   // Initialize the required buffers
   mavlink_message_t msg;
@@ -838,7 +821,7 @@ void gcs_imuB_raw ( void )  {
  *  gcs_imuB_scaled
  *  Sends the scaled IMUB data.
  */
-void gcs_imuB_scaled ( void )  {
+static void gcs_imuB_scaled ( void )  {
 
   // Initialize the required buffers
   mavlink_message_t msg;
@@ -889,7 +872,7 @@ void gcs_imuB_scaled ( void )  {
  *  gcs_imuB_filter
  *  Sends the filtered IMUB data.
  */
-void gcs_imuB_filter ( void )  {
+static void gcs_imuB_filter ( void )  {
 
   // Initialize the required buffers
   mavlink_message_t msg;
@@ -940,7 +923,7 @@ void gcs_imuB_filter ( void )  {
  *  gcs_ahrs_eul
  *  Sends the Euler attitude representation.
  */
-void gcs_ahrs_eul ( void )  {
+static void gcs_ahrs_eul ( void )  {
 
   // Initialize the required buffers
   mavlink_message_t msg;
@@ -983,7 +966,7 @@ void gcs_ahrs_eul ( void )  {
  *  gcs_ahrs_quat
  *  Sends the quaternion attitude representation.
  */
-void gcs_ahrs_quat ( void )  {
+static void gcs_ahrs_quat ( void )  {
   /*
   // Initialize the required buffers
   mavlink_message_t msg;
@@ -1026,7 +1009,7 @@ void gcs_ahrs_quat ( void )  {
  *  gcs_gps
  *  Sends the GPS location data.
  */
-void gcs_gps ( void )  {
+static void gcs_gps ( void )  {
 
   // Initialize the required buffers
   mavlink_message_t msg;

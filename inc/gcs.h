@@ -8,9 +8,11 @@
 #include <common/mavlink.h>
 
 
-#define GCS_PARAM_COUNT   22
-
 #define GCS_SYSID        01
+
+#define GCS_HEARTBEAT    01
+#define GCS_PARAM        02
+#define GCS_MISSION      03
 
 #define GCS_IMUA_RAW     11
 #define GCS_IMUA_SCALED  12
@@ -27,32 +29,33 @@
 #define GCS_GPS          70
 #define GCS_GAINS       120
 
-#define GCS_INPUT_ENABLED        false
-#define GCS_OUTPUT_ENABLED       false
+#define GCS_INPUT_ENABLED        true
+#define GCS_OUTPUT_ENABLED       true
 #define GCS_IMUA_RAW_ENABLED     true
 #define GCS_IMUA_SCALED_ENABLED  true
 #define GCS_IMUA_FILTER_ENABLED  true
 #define GCS_IMUB_RAW_ENABLED     true
 #define GCS_IMUB_SCALED_ENABLED  true
 #define GCS_IMUB_FILTER_ENABLED  true
-#define GCS_AHRS_EUL_ENABLED     false
-#define GCS_AHRS_QUAT_ENABLED    false
-#define GCS_GPS_ENABLED          false
+#define GCS_AHRS_EUL_ENABLED     true
+#define GCS_AHRS_QUAT_ENABLED    true
+#define GCS_GPS_ENABLED          true
 
 
 enum param_index {
 
   // LPF cutoff freq
-  lpf_hz_gyr = 0,
-  lpf_hz_acc,
-  lpf_hz_mag,
+  lpf_freq_gyr = 0,
+  lpf_freq_acc,
+  lpf_freq_mag,
 
   // LPF sample history
   lpf_hist_gyr,
   lpf_hist_acc,
-  lpf_hist_mag
+  lpf_hist_mag,
 
-  /*  // Roll gains
+  /*
+  // Roll gains
   X_Kp,
   X_Ki,
   X_Kd,
@@ -76,15 +79,18 @@ enum param_index {
   X_R,
   Y_R,
   Z_R,
-  T_R
+  T_R,
   */
+
+  // Number of elements
+  param_count
 
 };
 
 
 typedef struct param_struct {
-  float val  [GCS_PARAM_COUNT];
-  char  name [GCS_PARAM_COUNT][MAVLINK_MSG_PARAM_SET_FIELD_PARAM_ID_LEN];
+  float val  [param_count];
+  char  name [param_count][MAVLINK_MSG_PARAM_SET_FIELD_PARAM_ID_LEN];
 } param_struct;
 param_struct param;
 
@@ -104,10 +110,6 @@ void  gcs_init         ( void );
 void  gcs_exit         ( void );
 void  gcs_tx           ( void );
 void  gcs_rx           ( void );
-
-//void  gcs_send_param   ( enum param_index name, float val );
-//void  gcs_paramupdate  ( mavlink_message_t *msg );
-
 
 
 #endif
