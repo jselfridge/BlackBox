@@ -8,8 +8,8 @@
 #include <stdbool.h>
 
 
-#define DEBUG           true
-#define SYS_STACK       ( 100 * 1024 * 1024 )
+#define DEBUG       true
+#define SYS_STACK  ( 100 * 1024 * 1024 )
 
 
 struct sigaction sys_signal;

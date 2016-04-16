@@ -120,6 +120,15 @@ void ahrs_fusion ( void )  {
   }
   if ( IMUA_ENABLED && IMUB_ENABLED )  {  for ( i=0; i<3; i++ )  {  g[i] /= 2.0;  a[i] /= 2.0;  m[i] /= 2.0;  }  }
 
+  // Store averaged values to AHRS data structure
+  pthread_mutex_lock(&mutex_ahrs);
+  for ( i=0; i<3; i++ )  {
+    ahrs.gyr[i] = g[i];
+    ahrs.acc[i] = a[i];
+    ahrs.mag[i] = m[i];
+  }
+  pthread_mutex_unlock(&mutex_ahrs);
+
   // Normalize magnetometer
   norm = 0.0;
   for ( i=0; i<3; i++ )  norm += m[i] * m[i];

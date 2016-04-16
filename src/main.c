@@ -11,7 +11,6 @@ int main ( void )  {
 
   // Begin program
   if(DEBUG)  printf("\n--- Begin BlackBox program ---\n");
-  led_off(LED_SIO);  led_off(LED_IMU);  led_off(LED_LOG);  led_off(LED_MOT);
   sys_init();
   flag_init();
   io_init();
@@ -22,22 +21,24 @@ int main ( void )  {
   gcs_init();
   ctrl_init();
   log_init();
-  //---  DEBUGGING  ---//
-  //log_open();
-  //datalog.enabled = true;
-  //-------------------//
   tmr_init();
+
+  //---  DEBUGGING  ---//
+  log_open();
+  datalog.enabled = true;
+  //-------------------//
 
   // Run program
   while(running)  usleep(100000);
 
+  //--  DEBUGGING  --//
+  datalog.enabled = false;
+  log_close();
+  //-----------------//
+
   // Exit program
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   tmr_exit();
-  //--  DEBUGGING  --//
-  //datalog.enabled = false;
-  //log_close();
-  //-----------------//
   log_exit();
   ctrl_exit();
   gcs_exit();

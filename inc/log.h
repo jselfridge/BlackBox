@@ -55,6 +55,9 @@ typedef struct log_ahrs_struct {
   ulong limit;
   float *time;
   ulong *dur;
+  float *gyr;
+  float *acc;
+  float *mag;
   float *quat;
   float *dquat;
   float *eul;

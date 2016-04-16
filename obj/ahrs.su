@@ -1,5 +1,5 @@
 ahrs.c:16:6:ahrs_init	104	static
 ahrs.c:64:6:ahrs_exit	0	static
-ahrs.c:88:6:ahrs_fusion	776	static
+ahrs.c:88:6:ahrs_fusion	760	static
 ahrs.c:75:6:ahrs_update	0	static
-ahrs.c:276:6:ahrs_kalman	0	static
+ahrs.c:285:6:ahrs_kalman	0	static

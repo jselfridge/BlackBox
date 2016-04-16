@@ -18,7 +18,6 @@ double io_norm ( ushort reg, char dir );
  *  Initializes the system input/output PRU subcomponents.
  */
 void io_init ( void )  {
-
   if(DEBUG)  printf("Initializing inputs/outputs \n");
 
   // Set LED indicator

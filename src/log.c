@@ -132,6 +132,9 @@ void log_open ( void )  {
   // Attitude and Heading Reference System storage
   log_ahrs.time  =  malloc( sizeof(float) * log_ahrs.limit     );
   log_ahrs.dur   =  malloc( sizeof(ulong) * log_ahrs.limit     );
+  log_ahrs.gyr   =  malloc( sizeof(float) * log_ahrs.limit * 3 );
+  log_ahrs.acc   =  malloc( sizeof(float) * log_ahrs.limit * 3 );
+  log_ahrs.mag   =  malloc( sizeof(float) * log_ahrs.limit * 3 );
   log_ahrs.quat  =  malloc( sizeof(float) * log_ahrs.limit * 4 );
   log_ahrs.dquat =  malloc( sizeof(float) * log_ahrs.limit * 4 );
   log_ahrs.eul   =  malloc( sizeof(float) * log_ahrs.limit * 3 );
@@ -410,6 +413,9 @@ void log_close ( void )  {
   if( fahrs == NULL )  printf( "Error (log_close): Cannot generate 'ahrs' file. \n" );
   fprintf( fahrs,
     "       Rtime    Rdur     \
+    Gx       Gy       Gz   \
+    Ax       Ay       Az   \
+    Mx       My       Mz   \
     Qw       Qx       Qy       Qz     \
     dQw      dQx      dQy      dQz      \
     Ex       Ey       Ez     \
@@ -420,6 +426,9 @@ void log_close ( void )  {
   // Loop through attitude and heading reference system data
   for ( row = 0; row < log_ahrs.count; row++ ) {
     fprintf( fahrs, "\n %011.6f  %06ld    ", log_ahrs.time[row], log_ahrs.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( fahrs, "%07.4f  ", log_ahrs.gyr   [ row*3 +i ] );  fprintf( fahrs, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fahrs, "%07.4f  ", log_ahrs.acc   [ row*3 +i ] );  fprintf( fahrs, "   " );
+    for ( i=0; i<3; i++ )  fprintf( fahrs, "%07.4f  ", log_ahrs.mag   [ row*3 +i ] );  fprintf( fahrs, "   " );
     for ( i=0; i<4; i++ )  fprintf( fahrs, "%07.4f  ", log_ahrs.quat  [ row*4 +i ] );  fprintf( fahrs, "   " );
     for ( i=0; i<4; i++ )  fprintf( fahrs, "%07.4f  ", log_ahrs.dquat [ row*4 +i ] );  fprintf( fahrs, "   " );
     for ( i=0; i<3; i++ )  fprintf( fahrs, "%07.4f  ", log_ahrs.eul   [ row*3 +i ] );  fprintf( fahrs, "   " );
@@ -433,6 +442,9 @@ void log_close ( void )  {
   // Free attitude/heading memory
   free(log_ahrs.time);
   free(log_ahrs.dur);
+  free(log_ahrs.gyr);
+  free(log_ahrs.acc);
+  free(log_ahrs.mag);
   free(log_ahrs.quat);
   free(log_ahrs.dquat);
   free(log_ahrs.eul);

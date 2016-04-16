@@ -2,6 +2,8 @@
 
 #include "flag.h"
 #include <stdio.h>
+#include "ahrs.h"
+#include "ctrl.h"
 #include "io.h"
 #include "led.h"
 #include "log.h"
@@ -14,7 +16,6 @@
  *  Initializes the program execution flag structure.
  */
 void flag_init ( void )  {
-
   if(DEBUG)  printf("Initializing program execution flags \n");
 
   // Set boolean values
@@ -91,13 +92,13 @@ void flag_update ( void )  {
   // Motor arming: yaw stick only, no roll command
   if ( !energized && !flag.lower[CH_R] && !flag.upper[CH_R] )  {
     if ( flag.upper[CH_Y] >= flag.limit[CH_Y] ) {
-      //pthread_mutex_lock(&mutex_ctrl);
-      //pthread_mutex_lock(&mutex_eul);
-      //ctrl.bank    = ahr.eul[0];
-      //ctrl.climb   = ahr.eul[1];
-      //ctrl.heading = ahr.eul[2];
-      //pthread_mutex_unlock(&mutex_eul);
-      //pthread_mutex_unlock(&mutex_ctrl);
+      pthread_mutex_lock(&mutex_ctrl);
+      pthread_mutex_lock(&mutex_eul);
+      ctrl.bank    = ahrs.eul[0];
+      ctrl.climb   = ahrs.eul[1];
+      ctrl.heading = ahrs.eul[2];
+      pthread_mutex_unlock(&mutex_eul);
+      pthread_mutex_unlock(&mutex_ctrl);
       armed = true;
       led_on(LED_MOT);
     }

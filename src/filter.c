@@ -76,7 +76,7 @@ void filter_exit ( void )  {
 
 /**
  *  filter_freq
- *  
+ *  Assign a new cutoff frequency to a filtered signal.
  */
 void filter_freq ( filter_struct *filter, double freq )  {
 
@@ -100,7 +100,7 @@ void filter_freq ( filter_struct *filter, double freq )  {
 
 /**
  *  filter_hist
- *  Change the data sample size of a filter.
+ *  Change the data sample history length of a filtered signal.
  */
 void filter_hist ( filter_struct *filter, uint hist )  {
 
@@ -110,16 +110,13 @@ void filter_hist ( filter_struct *filter, uint hist )  {
   // Assign new value
   filter->hist = hist;
 
-  // Free current memory
-  filter->data = realloc( filter->data, sizeof(double) * hist );
-
   // Determine new stroage size
   size = filter->dim * hist;
 
-  // Allocate new storage
-  filter->data = malloc( sizeof(double) * size );
+  // Reallocate memory for storage
+  filter->data = realloc( filter->data, sizeof(double) * size );
 
-  // Zero out values
+  // Zero out element values
   for ( i=0; i<size; i++ )  filter->data[i] = 0.0;
 
   return;
@@ -133,35 +130,32 @@ void filter_hist ( filter_struct *filter, uint hist )  {
 void filter_lpf ( filter_struct *filter, double *input, double *output )  {
 
   // Local variables
-  ushort i, j;
+  ushort r, c;
   ushort row   = filter->hist;
   ushort col   = filter->dim;
   double gain  = filter->gain;
   double *data = filter->data;
   double lpf[col];
 
-  // Shift stored data
-  for ( i=1; i<row; i++ ) {
-    for ( j=0; j<col; j++ ) {
-      data[ col*i+j-col ] = data[ col*i+j ];
-    }
+  // Loop through dimensions
+  for ( c=0; c<col; c++ )  {
+
+    // Shift stored data
+    for ( r=1; r<row; r++ )  data[ col * r + c - col ] = data[ col * r + c ];
+
+    // Assign newest data value
+    data[ (row-1) * col + c ] = input[c];
+
+    // Initialize starting value
+    lpf[c] = data[c];
+
+    // Loop through sequence
+    for ( r=1; r<row; r++ )  lpf[c] = lpf[c] + gain * ( data[ r * col + c ] - lpf[c] );
+
+    // Return filtered result
+    output[c] = lpf[c];
+
   }
-
-  // Assign newest data value
-  for ( j=0; j<col; j++ )  data[(row-1)*col+j] = input[j];
-
-  // Initialize starting value
-  for ( j=0; j<col; j++ )  lpf[j] = data[j];
-
-  // Loop through sequence
-  for ( i=1; i<row; i++ ) {
-    for ( j=0; j<col; j++ ) {
-      lpf[j] = lpf[j] + gain * ( data[i*col+j] - lpf[j] );
-    }
-  }
-
-  // Return filtered result
-  for ( j=0; j<col; j++ )  output[j] = lpf[j];
 
   return;
 }
