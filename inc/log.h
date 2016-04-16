@@ -9,7 +9,8 @@
 #include <sys/types.h>
 
 
-#define MAX_LOG_DUR  (20*60)
+#define LOG_MAX_DUR    (20*60)
+#define LOG_MAX_PARAM  256
 
 
 enum log_index {
@@ -20,6 +21,15 @@ enum log_index {
   LOG_GPS  = 4,
   LOG_CTRL = 5
 } log_index;
+
+
+typedef struct log_param_struct {
+  ulong  count;
+  ulong  limit;
+  float  *time;
+  float  *values;
+} log_param_struct;
+log_param_struct log_param;
 
 
 typedef struct log_io_struct {
@@ -100,20 +110,18 @@ typedef struct datalog_struct {
   float  offset;
   char   *dir;
   char   *path;
-
-  FILE   *fnote;
-  FILE   *fin;
-  FILE   *fout;
-  FILE   *fgyrA;
-  FILE   *faccA;
-  FILE   *fmagA;
-  FILE   *fgyrB;
-  FILE   *faccB;
-  FILE   *fmagB;
-  FILE   *fahrs;
-  FILE   *fgps;
-  FILE   *fctrl;
-
+  FILE   *param;
+  FILE   *in;
+  FILE   *out;
+  FILE   *gyrA;
+  FILE   *accA;
+  FILE   *magA;
+  FILE   *gyrB;
+  FILE   *accB;
+  FILE   *magB;
+  FILE   *ahrs;
+  FILE   *gps;
+  FILE   *ctrl;
 } datalog_struct;
 datalog_struct datalog;
 

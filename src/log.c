@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include "ahrs.h"
+#include "gcs.h"
 #include "gps.h"
 #include "imu.h"
 #include "io.h"
@@ -25,22 +26,27 @@ static void  log_close ( void );
 void log_init ( void )  {
   if(DEBUG)  printf("Initializing data logging \n");
 
+  // Parameter value setup
+  log_param.limit   =  LOG_MAX_PARAM;  
+  log_param.time    =  malloc( sizeof(float) * log_param.limit               );
+  log_param.values  =  malloc( sizeof(float) * log_param.limit * param_count );
+
   // Input signal setup
-  log_input.limit   =  MAX_LOG_DUR * HZ_IO;
-  log_input.time    =  malloc( sizeof(float)  * log_input.limit      );
-  log_input.reg     =  malloc( sizeof(ushort) * log_input.limit * 10 );
-  log_input.pwm     =  malloc( sizeof(ushort) * log_input.limit * 10 );
-  log_input.norm    =  malloc( sizeof(float)  * log_input.limit * 10 );
+  log_input.limit   =  LOG_MAX_DUR * HZ_IO;
+  log_input.time    =  malloc( sizeof(float)  * log_input.limit         );
+  log_input.reg     =  malloc( sizeof(ushort) * log_input.limit * IN_CH );
+  log_input.pwm     =  malloc( sizeof(ushort) * log_input.limit * IN_CH );
+  log_input.norm    =  malloc( sizeof(float)  * log_input.limit * IN_CH );
 
   // Output signal setup
-  log_output.limit  =  MAX_LOG_DUR * HZ_IO;
-  log_output.time   =  malloc( sizeof(float)  * log_output.limit      );
-  log_output.reg    =  malloc( sizeof(ushort) * log_output.limit * 10 );
-  log_output.pwm    =  malloc( sizeof(ushort) * log_output.limit * 10 );
-  log_output.norm   =  malloc( sizeof(float)  * log_output.limit * 10 );
+  log_output.limit  =  LOG_MAX_DUR * HZ_IO;
+  log_output.time   =  malloc( sizeof(float)  * log_output.limit          );
+  log_output.reg    =  malloc( sizeof(ushort) * log_output.limit * OUT_CH );
+  log_output.pwm    =  malloc( sizeof(ushort) * log_output.limit * OUT_CH );
+  log_output.norm   =  malloc( sizeof(float)  * log_output.limit * OUT_CH );
 
   // Gyroscope A setup
-  log_gyrA.limit    =  MAX_LOG_DUR * HZ_IMU_FAST;
+  log_gyrA.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_gyrA.time     =  malloc( sizeof(float) * log_gyrA.limit     );
   log_gyrA.dur      =  malloc( sizeof(ulong) * log_gyrA.limit     );
   log_gyrA.raw      =  malloc( sizeof(short) * log_gyrA.limit * 3 );
@@ -48,7 +54,7 @@ void log_init ( void )  {
   log_gyrA.filter   =  malloc( sizeof(float) * log_gyrA.limit * 3 );
 
   // Accelerometer A setup
-  log_accA.limit    =  MAX_LOG_DUR * HZ_IMU_FAST;
+  log_accA.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_accA.time     =  malloc( sizeof(float) * log_accA.limit     );
   log_accA.dur      =  malloc( sizeof(ulong) * log_accA.limit     );
   log_accA.raw      =  malloc( sizeof(short) * log_accA.limit * 3 );
@@ -56,7 +62,7 @@ void log_init ( void )  {
   log_accA.filter   =  malloc( sizeof(float) * log_accA.limit * 3 );
 
   // Magnetometer A setup
-  log_magA.limit    =  MAX_LOG_DUR * HZ_IMU_SLOW;
+  log_magA.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
   log_magA.time     =  malloc( sizeof(float) * log_magA.limit     );
   log_magA.dur      =  malloc( sizeof(ulong) * log_magA.limit     );
   log_magA.raw      =  malloc( sizeof(short) * log_magA.limit * 3 );
@@ -64,7 +70,7 @@ void log_init ( void )  {
   log_magA.filter   =  malloc( sizeof(float) * log_magA.limit * 3 );
 
   // Gyroscope B setup
-  log_gyrB.limit    =  MAX_LOG_DUR * HZ_IMU_FAST;
+  log_gyrB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_gyrB.time     =  malloc( sizeof(float) * log_gyrB.limit     );
   log_gyrB.dur      =  malloc( sizeof(ulong) * log_gyrB.limit     );
   log_gyrB.raw      =  malloc( sizeof(short) * log_gyrB.limit * 3 );
@@ -72,7 +78,7 @@ void log_init ( void )  {
   log_gyrB.filter   =  malloc( sizeof(float) * log_gyrB.limit * 3 );
 
   // Accelerometer B setup
-  log_accB.limit    =  MAX_LOG_DUR * HZ_IMU_FAST;
+  log_accB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_accB.time     =  malloc( sizeof(float) * log_accB.limit     );
   log_accB.dur      =  malloc( sizeof(ulong) * log_accB.limit     );
   log_accB.raw      =  malloc( sizeof(short) * log_accB.limit * 3 );
@@ -80,7 +86,7 @@ void log_init ( void )  {
   log_accB.filter   =  malloc( sizeof(float) * log_accB.limit * 3 );
 
   // Magnetometer B setup
-  log_magB.limit    =  MAX_LOG_DUR * HZ_IMU_SLOW;
+  log_magB.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
   log_magB.time     =  malloc( sizeof(float) * log_magB.limit     );
   log_magB.dur      =  malloc( sizeof(ulong) * log_magB.limit     );
   log_magB.raw      =  malloc( sizeof(short) * log_magB.limit * 3 );
@@ -88,7 +94,7 @@ void log_init ( void )  {
   log_magB.filter   =  malloc( sizeof(float) * log_magB.limit * 3 );
 
   // Attitude and Heading Reference System setup
-  log_ahrs.limit    =  MAX_LOG_DUR * HZ_AHRS;
+  log_ahrs.limit    =  LOG_MAX_DUR * HZ_AHRS;
   log_ahrs.time     =  malloc( sizeof(float) * log_ahrs.limit     );
   log_ahrs.dur      =  malloc( sizeof(ulong) * log_ahrs.limit     );
   log_ahrs.gyr      =  malloc( sizeof(float) * log_ahrs.limit * 3 );
@@ -103,13 +109,13 @@ void log_init ( void )  {
   log_ahrs.fz       =  malloc( sizeof(float) * log_ahrs.limit     );
 
   // Global Positioning System setup
-  log_gps.limit     =  MAX_LOG_DUR * HZ_GPS;
+  log_gps.limit     =  LOG_MAX_DUR * HZ_GPS;
   log_gps.time      =  malloc( sizeof(float) * log_gps.limit );
   log_gps.dur       =  malloc( sizeof(ulong) * log_gps.limit );
   log_gps.msg       =  malloc( sizeof(char)  * log_gps.limit * 96 );
 
   /* // Controller parameter setup
-  log_ctrl.limit    =  MAX_LOG_DUR * HZ_CTRL;
+  log_ctrl.limit    =  LOG_MAX_DUR * HZ_CTRL;
   log_ctrl.time     =  malloc( sizeof(float) * log_ctrl.limit     );
   log_ctrl.dur      =  malloc( sizeof(ulong) * log_ctrl.limit     );
   log_ctrl.perr     =  malloc( sizeof(float) * log_ctrl.limit * 3 );
@@ -140,6 +146,7 @@ void log_exit ( void )  {
 void log_start ( void )  {
 
   // Clear counters for the new session
+  log_param.count  = 0;
   log_input.count  = 0;
   log_output.count = 0;
   log_gyrA.count   = 0;
@@ -164,7 +171,7 @@ void log_start ( void )  {
     if      ( i<10   )  sprintf( datalog.dir, "00%d", i );
     else if ( i<100  )  sprintf( datalog.dir, "0%d",  i );
     else if ( i<1000 )  sprintf( datalog.dir, "%d",   i );
-    else    printf( "Error (log_XX): Exceeded maximum number of log directories. \n" );
+    else    printf( "Error (log_start): Exceeded maximum number of log directories. \n" );
     sprintf( file, "../Log/%s/notes.txt", datalog.dir );
     if ( access( file , F_OK ) == -1 )  break;
   }
@@ -173,32 +180,32 @@ void log_start ( void )  {
   sprintf( datalog.path, "../Log/%s/", datalog.dir );
   mkdir( datalog.path, 222 );
 
-  // Notes datalog file
-  sprintf( file, "%snotes.txt", datalog.path );
-  datalog.fnote = fopen( file, "w" );
-  if( datalog.fnote == NULL )  printf( "Error (log_close): Cannot generate 'notes' file. \n" );
-  fprintf( datalog.fnote, " Assign some system parameteres like gains, or telemetry waypoint updates... " );
+  // Parameter datalog file
+  sprintf( file, "%sparam.txt", datalog.path );
+  datalog.param = fopen( file, "w" );
+  if( datalog.param == NULL )  printf( "Error (log_start): Cannot generate 'param' file. \n" );
+  fprintf( datalog.param, "   ParamTime " );
 
   // Input datalog file
   sprintf( file, "%sinput.txt", datalog.path );
-  datalog.fin = fopen( file, "w" );
-  if( datalog.fin == NULL )  printf( "Error (log_close): Cannot generate 'input' file. \n" );
-  fprintf( datalog.fin,  "      InTime       In01     In02     In03     In04     In05     In06     In07     In08     In09     In10" );
+  datalog.in = fopen( file, "w" );
+  if( datalog.in == NULL )  printf( "Error (log_start): Cannot generate 'input' file. \n" );
+  fprintf( datalog.in,  "      InTime       In01     In02     In03     In04     In05     In06     In07     In08     In09     In10" );
 
   // Output datalog file
   sprintf( file, "%soutput.txt", datalog.path );
-  datalog.fout = fopen( file, "w" );
-  if( datalog.fout == NULL )  printf( "Error (log_close): Cannot generate 'output' file. \n" );
-  fprintf( datalog.fout, "     OutTime      Out01    Out02    Out03    Out04    Out05    Out06    Out07    Out08    Out09    Out10" );
+  datalog.out = fopen( file, "w" );
+  if( datalog.out == NULL )  printf( "Error (log_start): Cannot generate 'output' file. \n" );
+  fprintf( datalog.out, "     OutTime      Out01    Out02    Out03    Out04    Out05    Out06    Out07    Out08    Out09    Out10" );
 
   // IMUA datalogs
   if (IMUA_ENABLED)  {
 
   // Gyroscope A datalog file
   sprintf( file, "%sgyrA.txt", datalog.path );
-  datalog.fgyrA = fopen( file, "w" );
-  if( datalog.fgyrA == NULL )  printf( "Error (log_close): Cannot generate 'gyrA' file. \n" );
-  fprintf( datalog.fgyrA,
+  datalog.gyrA = fopen( file, "w" );
+  if( datalog.gyrA == NULL )  printf( "Error (log_start): Cannot generate 'gyrA' file. \n" );
+  fprintf( datalog.gyrA,
     "     GyrTime  GyrDur   \
     Grx     Gry     Grz     \
     Gsx      Gsy      Gsz     \
@@ -206,9 +213,9 @@ void log_start ( void )  {
 
   // Accelerometer A datalog file
   sprintf( file, "%saccA.txt", datalog.path );
-  datalog.faccA = fopen( file, "w" );
-  if( datalog.faccA == NULL )  printf( "Error (log_close): Cannot generate 'accA' file. \n" );
-  fprintf( datalog.faccA, 
+  datalog.accA = fopen( file, "w" );
+  if( datalog.accA == NULL )  printf( "Error (log_start): Cannot generate 'accA' file. \n" );
+  fprintf( datalog.accA, 
     "     AccTime  AccDur   \
     Arx     Ary     Arz     \
     Asx      Asy      Asz     \
@@ -216,9 +223,9 @@ void log_start ( void )  {
 
   // Magnetometer A datalog file
   sprintf( file, "%smagA.txt", datalog.path );
-  datalog.fmagA = fopen( file, "w" );
-  if( datalog.fmagA == NULL )  printf( "Error (log_close): Cannot generate 'magA' file. \n" );
-  fprintf( datalog.fmagA,
+  datalog.magA = fopen( file, "w" );
+  if( datalog.magA == NULL )  printf( "Error (log_start): Cannot generate 'magA' file. \n" );
+  fprintf( datalog.magA,
     "     MagTime  MagDur   \
     Mrx     Mry     Mrz     \
     Msx      Msy      Msz     \
@@ -231,9 +238,9 @@ void log_start ( void )  {
 
   // Gyroscope B datalog file
   sprintf( file, "%sgyrB.txt", datalog.path );
-  datalog.fgyrB = fopen( file, "w" );
-  if( datalog.fgyrB == NULL )  printf( "Error (log_close): Cannot generate 'gyrB' file. \n" );
-  fprintf( datalog.fgyrB,
+  datalog.gyrB = fopen( file, "w" );
+  if( datalog.gyrB == NULL )  printf( "Error (log_start): Cannot generate 'gyrB' file. \n" );
+  fprintf( datalog.gyrB,
     "       Gtime    Gdur   \
     Grx     Gry     Grz     \
     Gsx      Gsy      Gsz     \
@@ -241,9 +248,9 @@ void log_start ( void )  {
 
   // Accelerometer B datalog file
   sprintf( file, "%saccB.txt", datalog.path );
-  datalog.faccB = fopen( file, "w" );
-  if( datalog.faccB == NULL )  printf( "Error (log_close): Cannot generate 'accB' file. \n" );
-  fprintf( datalog.faccB, 
+  datalog.accB = fopen( file, "w" );
+  if( datalog.accB == NULL )  printf( "Error (log_start): Cannot generate 'accB' file. \n" );
+  fprintf( datalog.accB, 
     "       Atime    Adur   \
     Arx     Ary     Arz     \
     Asx      Asy      Asz     \
@@ -251,9 +258,9 @@ void log_start ( void )  {
 
   // Magnetometer B datalog file
   sprintf( file, "%smagB.txt", datalog.path );
-  datalog.fmagB = fopen( file, "w" );
-  if( datalog.fmagB == NULL )  printf( "Error (log_close): Cannot generate 'magB' file. \n" );
-  fprintf( datalog.fmagB,
+  datalog.magB = fopen( file, "w" );
+  if( datalog.magB == NULL )  printf( "Error (log_start): Cannot generate 'magB' file. \n" );
+  fprintf( datalog.magB,
     "       Mtime    Mdur   \
     Mrx     Mry     Mrz     \
     Msx      Msy      Msz     \
@@ -263,9 +270,9 @@ void log_start ( void )  {
 
   // Attitude and heading reference system datalog file
   sprintf( file, "%sahrs.txt", datalog.path );
-  datalog.fahrs = fopen( file, "w" );
-  if( datalog.fahrs == NULL )  printf( "Error (log_close): Cannot generate 'ahrs' file. \n" );
-  fprintf( datalog.fahrs,
+  datalog.ahrs = fopen( file, "w" );
+  if( datalog.ahrs == NULL )  printf( "Error (log_start): Cannot generate 'ahrs' file. \n" );
+  fprintf( datalog.ahrs,
     "       Rtime    Rdur     \
     Gx       Gy       Gz      \
     Ax       Ay       Az      \
@@ -279,16 +286,15 @@ void log_start ( void )  {
 
   // GPS datalog file
   sprintf( file, "%sgps.txt", datalog.path );
-  datalog.fgps = fopen( file, "w" );
-  if( datalog.fgps == NULL )  printf( "Error (log_close): Cannot generate 'gps' file. \n" );
-  fprintf( datalog.fgps,
-    "       Gtime    Gdur    Data    ");
+  datalog.gps = fopen( file, "w" );
+  if( datalog.gps == NULL )  printf( "Error (log_start): Cannot generate 'gps' file. \n" );
+  fprintf( datalog.gps, "       Gtime    Gdur    Data    ");
 
   /* // Controller datalog file
   sprintf( file, "%sctrl.txt", datalog.path );
-  datalog.fctrl = fopen( file, "w" );
-  if( datalog.fctrl == NULL )  printf( "Error (log_close): Cannot generate 'ctrl' file. \n" );
-  fprintf( datalog.fctrl,
+  datalog.ctrl = fopen( file, "w" );
+  if( datalog.ctrl == NULL )  printf( "Error (log_start): Cannot generate 'ctrl' file. \n" );
+  fprintf( datalog.ctrl,
     "       Ctime    Cdur    \
     EPX      EPY      EPZ     \
     EIX      EIY      EIZ     \
@@ -340,16 +346,22 @@ static void log_save ( void )  {
   ushort i;
   ulong row;
 
+  // Parameter data
+  for ( row = 0; row < log_param.count; row++ ) {
+    fprintf( datalog.param, "\n %011.6f    ", log_param.time[row] );
+    //for ( i=0; i<param_count; i++ )  fprintf( datalog.param, "%data  ", log_param.value [ row* param_count +i ] );   fprintf( datalog.param, "   " );
+  }
+
   // Input data
   for ( row = 0; row < log_input.count; row++ ) {
-    fprintf( datalog.fin, "\n %011.6f    ", log_input.time[row] );
-    for ( i=0; i<10; i++ )  fprintf( datalog.fin, "%7.4f  ", log_input.norm [ row*10 +i ] );   fprintf( datalog.fin, "   " );
+    fprintf( datalog.in, "\n %011.6f    ", log_input.time[row] );
+    for ( i=0; i<10; i++ )  fprintf( datalog.in, "%7.4f  ", log_input.norm [ row*10 +i ] );   fprintf( datalog.in, "   " );
   }
 
   // Output data
   for ( row = 0; row < log_output.count; row++ ) {
-    fprintf( datalog.fout, "\n %011.6f    ", log_output.time[row] );
-    for ( i=0; i<10; i++ )  fprintf( datalog.fout, "%7.4f  ", log_output.norm [ row*10 +i ] );   fprintf( datalog.fout, "   " );
+    fprintf( datalog.out, "\n %011.6f    ", log_output.time[row] );
+    for ( i=0; i<10; i++ )  fprintf( datalog.out, "%7.4f  ", log_output.norm [ row*10 +i ] );   fprintf( datalog.out, "   " );
   }
 
   // IMU A datalogs
@@ -357,26 +369,26 @@ static void log_save ( void )  {
 
   // Gyroscope A data
   for ( row = 0; row < log_gyrA.count; row++ ) {
-    fprintf( datalog.fgyrA, "\n %011.6f  %06ld    ", log_gyrA.time[row], log_gyrA.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fgyrA, "%06d  ",   log_gyrA.raw    [ row*3 +i ] );   fprintf( datalog.fgyrA, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fgyrA, "%07.4f  ", log_gyrA.scaled [ row*3 +i ] );   fprintf( datalog.fgyrA, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fgyrA, "%07.4f  ", log_gyrA.filter [ row*3 +i ] );   fprintf( datalog.fgyrA, "   " );
+    fprintf( datalog.gyrA, "\n %011.6f  %06ld    ", log_gyrA.time[row], log_gyrA.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( datalog.gyrA, "%06d  ",   log_gyrA.raw    [ row*3 +i ] );   fprintf( datalog.gyrA, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.gyrA, "%07.4f  ", log_gyrA.scaled [ row*3 +i ] );   fprintf( datalog.gyrA, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.gyrA, "%07.4f  ", log_gyrA.filter [ row*3 +i ] );   fprintf( datalog.gyrA, "   " );
   }
 
   // Accelerometer A data
   for ( row = 0; row < log_accA.count; row++ ) {
-    fprintf( datalog.faccA, "\n %011.6f  %06ld    ", log_accA.time[row], log_accA.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( datalog.faccA, "%06d  ",   log_accA.raw    [ row*3 +i ] );   fprintf( datalog.faccA, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.faccA, "%07.4f  ", log_accA.scaled [ row*3 +i ] );   fprintf( datalog.faccA, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.faccA, "%07.4f  ", log_accA.filter [ row*3 +i ] );   fprintf( datalog.faccA, "   " );
+    fprintf( datalog.accA, "\n %011.6f  %06ld    ", log_accA.time[row], log_accA.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( datalog.accA, "%06d  ",   log_accA.raw    [ row*3 +i ] );   fprintf( datalog.accA, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.accA, "%07.4f  ", log_accA.scaled [ row*3 +i ] );   fprintf( datalog.accA, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.accA, "%07.4f  ", log_accA.filter [ row*3 +i ] );   fprintf( datalog.accA, "   " );
   }
 
   // Magnetometer A data
   for ( row = 0; row < log_magA.count; row++ ) {
-    fprintf( datalog.fmagA, "\n %011.6f  %06ld    ", log_magA.time[row], log_magA.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fmagA, "%06d  ",   log_magA.raw    [ row*3 +i ] );   fprintf( datalog.fmagA, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fmagA, "%07.4f  ", log_magA.scaled [ row*3 +i ] );   fprintf( datalog.fmagA, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fmagA, "%07.4f  ", log_magA.filter [ row*3 +i ] );   fprintf( datalog.fmagA, "   " );
+    fprintf( datalog.magA, "\n %011.6f  %06ld    ", log_magA.time[row], log_magA.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( datalog.magA, "%06d  ",   log_magA.raw    [ row*3 +i ] );   fprintf( datalog.magA, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.magA, "%07.4f  ", log_magA.scaled [ row*3 +i ] );   fprintf( datalog.magA, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.magA, "%07.4f  ", log_magA.filter [ row*3 +i ] );   fprintf( datalog.magA, "   " );
   }
 
   }
@@ -386,60 +398,60 @@ static void log_save ( void )  {
 
   // Gyroscope B data
   for ( row = 0; row < log_gyrB.count; row++ ) {
-    fprintf( datalog.fgyrB, "\n %011.6f  %06ld    ", log_gyrB.time[row], log_gyrB.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fgyrB, "%06d  ",   log_gyrB.raw    [ row*3 +i ] );   fprintf( datalog.fgyrB, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fgyrB, "%07.4f  ", log_gyrB.scaled [ row*3 +i ] );   fprintf( datalog.fgyrB, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fgyrB, "%07.4f  ", log_gyrB.filter [ row*3 +i ] );   fprintf( datalog.fgyrB, "   " );
+    fprintf( datalog.gyrB, "\n %011.6f  %06ld    ", log_gyrB.time[row], log_gyrB.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( datalog.gyrB, "%06d  ",   log_gyrB.raw    [ row*3 +i ] );   fprintf( datalog.gyrB, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.gyrB, "%07.4f  ", log_gyrB.scaled [ row*3 +i ] );   fprintf( datalog.gyrB, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.gyrB, "%07.4f  ", log_gyrB.filter [ row*3 +i ] );   fprintf( datalog.gyrB, "   " );
   }
 
   // Accelerometer B data
   for ( row = 0; row < log_accB.count; row++ ) {
-    fprintf( datalog.faccB, "\n %011.6f  %06ld    ", log_accB.time[row], log_accB.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( datalog.faccB, "%06d  ",   log_accB.raw    [ row*3 +i ] );   fprintf( datalog.faccB, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.faccB, "%07.4f  ", log_accB.scaled [ row*3 +i ] );   fprintf( datalog.faccB, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.faccB, "%07.4f  ", log_accB.filter [ row*3 +i ] );   fprintf( datalog.faccB, "   " );
+    fprintf( datalog.accB, "\n %011.6f  %06ld    ", log_accB.time[row], log_accB.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( datalog.accB, "%06d  ",   log_accB.raw    [ row*3 +i ] );   fprintf( datalog.accB, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.accB, "%07.4f  ", log_accB.scaled [ row*3 +i ] );   fprintf( datalog.accB, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.accB, "%07.4f  ", log_accB.filter [ row*3 +i ] );   fprintf( datalog.accB, "   " );
   }
 
   // Magnetometer B data
   for ( row = 0; row < log_magB.count; row++ ) {
-    fprintf( datalog.fmagB, "\n %011.6f  %06ld    ", log_magB.time[row], log_magB.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fmagB, "%06d  ",   log_magB.raw    [ row*3 +i ] );   fprintf( datalog.fmagB, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fmagB, "%07.4f  ", log_magB.scaled [ row*3 +i ] );   fprintf( datalog.fmagB, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fmagB, "%07.4f  ", log_magB.filter [ row*3 +i ] );   fprintf( datalog.fmagB, "   " );
+    fprintf( datalog.magB, "\n %011.6f  %06ld    ", log_magB.time[row], log_magB.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( datalog.magB, "%06d  ",   log_magB.raw    [ row*3 +i ] );   fprintf( datalog.magB, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.magB, "%07.4f  ", log_magB.scaled [ row*3 +i ] );   fprintf( datalog.magB, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.magB, "%07.4f  ", log_magB.filter [ row*3 +i ] );   fprintf( datalog.magB, "   " );
   }
 
   }
 
   // Attitude/Heading Reference System data
   for ( row = 0; row < log_ahrs.count; row++ ) {
-    fprintf( datalog.fahrs, "\n %011.6f  %06ld    ", log_ahrs.time[row], log_ahrs.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fahrs, "%07.4f  ", log_ahrs.gyr   [ row*3 +i ] );  fprintf( datalog.fahrs, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fahrs, "%07.4f  ", log_ahrs.acc   [ row*3 +i ] );  fprintf( datalog.fahrs, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fahrs, "%07.4f  ", log_ahrs.mag   [ row*3 +i ] );  fprintf( datalog.fahrs, "   " );
-    for ( i=0; i<4; i++ )  fprintf( datalog.fahrs, "%07.4f  ", log_ahrs.quat  [ row*4 +i ] );  fprintf( datalog.fahrs, "   " );
-    for ( i=0; i<4; i++ )  fprintf( datalog.fahrs, "%07.4f  ", log_ahrs.dquat [ row*4 +i ] );  fprintf( datalog.fahrs, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fahrs, "%07.4f  ", log_ahrs.eul   [ row*3 +i ] );  fprintf( datalog.fahrs, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fahrs, "%07.4f  ", log_ahrs.deul  [ row*3 +i ] );  fprintf( datalog.fahrs, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fahrs, "%07.4f  ", log_ahrs.bias  [ row*3 +i ] );  fprintf( datalog.fahrs, "   " );
-    fprintf( datalog.fahrs, "%07.4f  ", log_ahrs.fx[ row +i ] );
-    fprintf( datalog.fahrs, "%07.4f  ", log_ahrs.fz[ row +i ] );
-    fprintf( datalog.fahrs, "   " );
+    fprintf( datalog.ahrs, "\n %011.6f  %06ld    ", log_ahrs.time[row], log_ahrs.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.gyr   [ row*3 +i ] );  fprintf( datalog.ahrs, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.acc   [ row*3 +i ] );  fprintf( datalog.ahrs, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.mag   [ row*3 +i ] );  fprintf( datalog.ahrs, "   " );
+    for ( i=0; i<4; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.quat  [ row*4 +i ] );  fprintf( datalog.ahrs, "   " );
+    for ( i=0; i<4; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.dquat [ row*4 +i ] );  fprintf( datalog.ahrs, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.eul   [ row*3 +i ] );  fprintf( datalog.ahrs, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.deul  [ row*3 +i ] );  fprintf( datalog.ahrs, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.bias  [ row*3 +i ] );  fprintf( datalog.ahrs, "   " );
+    fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.fx[ row +i ] );
+    fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.fz[ row +i ] );
+    fprintf( datalog.ahrs, "   " );
   }
 
   // GPS data
   for ( row = 0; row < log_gps.count; row++ ) {
-    fprintf( datalog.fgps, "\n %011.6f  %06ld    ", log_gps.time[row], log_gps.dur[row] );
-    fprintf( datalog.fgps, "%s ", &log_gps.msg[row*96] );//  fprintf( fgps, "   " );
-    fprintf( datalog.fgps, "   " );
+    fprintf( datalog.gps, "\n %011.6f  %06ld    ", log_gps.time[row], log_gps.dur[row] );
+    fprintf( datalog.gps, "%s ", &log_gps.msg[row*96] );//  fprintf( fgps, "   " );
+    fprintf( datalog.gps, "   " );
   }
   /*
   // Controller data
   for ( row = 0; row < log_ctrl.count; row++ ) {
-    fprintf( datalog.fctrl, "\n %011.6f  %06ld    ", log_ctrl.time[row], log_ctrl.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fctrl, "%07.4f  ",  log_ctrl.perr[ row*3 +i ] );   fprintf( datalog.fctrl, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fctrl, "%07.4f  ",  log_ctrl.ierr[ row*3 +i ] );   fprintf( datalog.fctrl, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.fctrl, "%07.4f  ",  log_ctrl.derr[ row*3 +i ] );   fprintf( datalog.fctrl, "   " );
-    for ( i=0; i<4; i++ )  fprintf( datalog.fctrl, "%07.4f  ",  log_ctrl.cmd [ row*4 +i ] );   fprintf( datalog.fctrl, "   " );
+    fprintf( datalog.ctrl, "\n %011.6f  %06ld    ", log_ctrl.time[row], log_ctrl.dur[row] );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ctrl, "%07.4f  ",  log_ctrl.perr[ row*3 +i ] );   fprintf( datalog.ctrl, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ctrl, "%07.4f  ",  log_ctrl.ierr[ row*3 +i ] );   fprintf( datalog.ctrl, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ctrl, "%07.4f  ",  log_ctrl.derr[ row*3 +i ] );   fprintf( datalog.ctrl, "   " );
+    for ( i=0; i<4; i++ )  fprintf( datalog.ctrl, "%07.4f  ",  log_ctrl.cmd [ row*4 +i ] );   fprintf( datalog.ctrl, "   " );
   }
   */
 
@@ -545,25 +557,25 @@ static void log_free ( void )  {
  */
 static void log_close ( void )  {
 
-  fclose(datalog.fnote);
-  fclose(datalog.fin);
-  fclose(datalog.fout);
+  fclose(datalog.param);
+  fclose(datalog.in);
+  fclose(datalog.out);
 
   if (IMUA_ENABLED)  {
-    fclose(datalog.fgyrA);
-    fclose(datalog.faccA);
-    fclose(datalog.fmagA);
+    fclose(datalog.gyrA);
+    fclose(datalog.accA);
+    fclose(datalog.magA);
   }
 
   if (IMUB_ENABLED)  {
-    fclose(datalog.fgyrB);
-    fclose(datalog.faccB);
-    fclose(datalog.fmagB);
+    fclose(datalog.gyrB);
+    fclose(datalog.accB);
+    fclose(datalog.magB);
   }
 
-  fclose(datalog.fahrs);
-  fclose(datalog.fgps);
-  //fclose(datalog.fctrl);
+  fclose(datalog.ahrs);
+  fclose(datalog.gps);
+  //fclose(datalog.ctrl);
 
   return;
 }
