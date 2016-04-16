@@ -570,7 +570,7 @@ void *fcn_ctrl (  )  {
     tmr_start(&tmr_ctrl);
     ctrl_update();
     tmr_finish(&tmr_ctrl);
-    //if (datalog.enabled)  log_record(LOG_CTRL);
+    if (datalog.enabled)  log_record(LOG_CTRL);
     tmr_pause(&tmr_ctrl);
   }
   pthread_exit(NULL);

@@ -118,9 +118,9 @@ void sys_update ( void )  {
   // Select data for display
   if(0)  sys_io();
   if(0)  sys_filter();
-  if(1)  if(IMUA_ENABLED)  sys_imuA();
-  if(1)  if(IMUB_ENABLED)  sys_imuB();
-  if(1)  sys_ahrs();
+  if(0)  if(IMUA_ENABLED)  sys_imuA();
+  if(0)  if(IMUB_ENABLED)  sys_imuB();
+  if(0)  sys_ahrs();
   if(0)  sys_gps();
   if(0)  sys_ctrl();
 
