@@ -14,12 +14,13 @@
 
 
 enum log_index {
-  LOG_IO   = 0,
-  LOG_IMUA = 1,
-  LOG_IMUB = 2,
-  LOG_AHRS = 3,
-  LOG_GPS  = 4,
-  LOG_CTRL = 5
+  LOG_PARAM = 0,
+  LOG_IO,
+  LOG_IMUA,
+  LOG_IMUB,
+  LOG_AHRS,
+  LOG_GPS,
+  LOG_CTRL
 } log_index;
 
 

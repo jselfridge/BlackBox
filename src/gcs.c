@@ -11,6 +11,7 @@
 #include "filter.h"
 #include "imu.h"
 #include "io.h"
+#include "log.h"
 #include "sys.h"
 #include "timer.h"
 
@@ -213,6 +214,7 @@ void gcs_rx ( void)  {
         // ID: #20
         case MAVLINK_MSG_ID_PARAM_REQUEST_READ:
 	  gcs.sendparam = true;
+          //if (datalog.enabled)  log_record(LOG_PARAM);
         break;
 
         // ID: #21
@@ -223,6 +225,8 @@ void gcs_rx ( void)  {
         // ID: #23
         case MAVLINK_MSG_ID_PARAM_SET:
           gcs_param_value(&msg);
+          if (datalog.enabled)  log_record(LOG_PARAM);
+	  printf("\n---DEBUG---\n");
         break;
 
         // ID: #43

@@ -172,7 +172,7 @@ void log_start ( void )  {
     else if ( i<100  )  sprintf( datalog.dir, "0%d",  i );
     else if ( i<1000 )  sprintf( datalog.dir, "%d",   i );
     else    printf( "Error (log_start): Exceeded maximum number of log directories. \n" );
-    sprintf( file, "../Log/%s/notes.txt", datalog.dir );
+    sprintf( file, "../Log/%s/param.txt", datalog.dir );
     if ( access( file , F_OK ) == -1 )  break;
   }
 
@@ -184,7 +184,8 @@ void log_start ( void )  {
   sprintf( file, "%sparam.txt", datalog.path );
   datalog.param = fopen( file, "w" );
   if( datalog.param == NULL )  printf( "Error (log_start): Cannot generate 'param' file. \n" );
-  fprintf( datalog.param, "   ParamTime " );
+  fprintf( datalog.param, "   ParamTime  " );
+  for ( i=1; i <= param_count; i++ )  fprintf( datalog.param, "   param_%02d", i );
 
   // Input datalog file
   sprintf( file, "%sinput.txt", datalog.path );
@@ -305,6 +306,11 @@ void log_start ( void )  {
   struct timespec timeval;
   clock_gettime( CLOCK_MONOTONIC, &timeval );
   datalog.offset = timeval.tv_sec;
+
+  // Record initial parameter values
+  log_record(LOG_PARAM);
+
+  // Update status flag
   datalog.setup = true;
 
   return;
@@ -349,7 +355,7 @@ static void log_save ( void )  {
   // Parameter data
   for ( row = 0; row < log_param.count; row++ ) {
     fprintf( datalog.param, "\n %011.6f    ", log_param.time[row] );
-    //for ( i=0; i<param_count; i++ )  fprintf( datalog.param, "%data  ", log_param.value [ row* param_count +i ] );   fprintf( datalog.param, "   " );
+    for ( i=0; i < param_count; i++ )  fprintf( datalog.param, "%9.4f  ", log_param.values [ row * param_count + i ] );   fprintf( datalog.param, "   " );
   }
 
   // Input data
@@ -464,6 +470,9 @@ static void log_save ( void )  {
  *  Frees the allocated memory reserved for the datalogs.
  */
 static void log_free ( void )  {
+
+  // Parameter memory
+
 
   // Input memory
   free(log_input.time);
@@ -591,9 +600,30 @@ void log_record ( enum log_index index )  {
   ushort i;
   ulong  row;
   float  timestamp;
+  struct timespec t;
 
   // Jump to appropriate log 
   switch(index) {
+
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Record parameter values
+  case LOG_PARAM :
+
+    // Determine timestamp
+    clock_gettime( CLOCK_MONOTONIC, &t );
+    timestamp = (float) ( t.tv_sec + ( t.tv_nsec / 1000000000.0f ) ) - datalog.offset;
+
+    pthread_mutex_lock(&mutex_gcs);
+    if ( log_param.count < log_param.limit )  {
+      row = log_param.count;
+      log_param.time[row] = timestamp;
+      for ( i=0; i < param_count; i++ )  log_param.values [ row * param_count + i ] = param.val[i];
+      log_param.count++;
+    }
+    pthread_mutex_unlock(&mutex_gcs);
+
+    return;
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
