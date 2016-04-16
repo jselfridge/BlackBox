@@ -78,13 +78,13 @@ void flag_update ( void )  {
   // Data log: roll stick only, no yaw command
   if ( !energized && !flag.lower[CH_Y] && !flag.upper[CH_Y] )  {
     if ( flag.lower[CH_R] >= flag.limit[CH_R] ) {
-      if (!datalog.setup)  log_open();
+      if (!datalog.setup)  log_start();
       datalog.enabled = true;
       led_on(LED_LOG);
     }
     if ( flag.upper[CH_R] >= flag.limit[CH_R] ) {
       datalog.enabled = false;
-      if (datalog.setup)  log_close();
+      if (datalog.setup)  log_finish();
       led_off(LED_LOG);
     }
   }

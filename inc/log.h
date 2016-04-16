@@ -5,6 +5,7 @@
 
 
 #include <stdbool.h>
+#include <stdio.h>
 #include <sys/types.h>
 
 
@@ -99,15 +100,28 @@ typedef struct datalog_struct {
   float  offset;
   char   *dir;
   char   *path;
-  //FILE *fnote, *fin, *fout, *fgyrA, *faccA, *fmagA, *fgyrB, *faccB, *fmagB, *fahrs, *fgps, *fctrl;
+
+  FILE   *fnote;
+  FILE   *fin;
+  FILE   *fout;
+  FILE   *fgyrA;
+  FILE   *faccA;
+  FILE   *fmagA;
+  FILE   *fgyrB;
+  FILE   *faccB;
+  FILE   *fmagB;
+  FILE   *fahrs;
+  FILE   *fgps;
+  FILE   *fctrl;
+
 } datalog_struct;
 datalog_struct datalog;
 
 
 void  log_init   ( void );
 void  log_exit   ( void );
-void  log_open   ( void );
-void  log_close  ( void );
+void  log_start  ( void );
+void  log_finish ( void );
 void  log_record ( enum log_index index );
 
 
