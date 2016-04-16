@@ -282,7 +282,7 @@ static void sys_ahrs ( void )  {
   for ( i=0; i<3; i++ )  printf("%7.4f ", ahrs.gyr[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%7.4f ", ahrs.acc[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%7.4f ", ahrs.mag[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_lock(&mutex_ahrs);
+  pthread_mutex_unlock(&mutex_ahrs);
 
   // Quaternion data
   pthread_mutex_lock(&mutex_quat);

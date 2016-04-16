@@ -24,16 +24,16 @@ int main ( void )  {
   tmr_init();
 
   //---  DEBUGGING  ---//
-  log_open();
-  datalog.enabled = true;
+  //log_open();
+  //datalog.enabled = true;
   //-------------------//
 
   // Run program
   while(running)  usleep(100000);
 
   //--  DEBUGGING  --//
-  datalog.enabled = false;
-  log_close();
+  //datalog.enabled = false;
+  //log_close();
   //-----------------//
 
   // Exit program
