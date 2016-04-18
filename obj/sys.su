@@ -1,4 +1,4 @@
-sys.c:93:6:sys_quit	0	static
-sys.c:35:6:sys_init	184	dynamic,bounded
-sys.c:79:6:sys_exit	8	static
-sys.c:104:6:sys_update	16	static
+sys.c:94:6:sys_quit	0	static
+sys.c:36:6:sys_init	184	dynamic,bounded
+sys.c:80:6:sys_exit	8	static
+sys.c:105:6:sys_update	24	static

@@ -22,7 +22,7 @@
 #define HZ_IMU_SLOW    100
 #define HZ_IO          100
 #define HZ_AHRS        100
-#define HZ_CTRL         50
+#define HZ_CTRL        100
 #define HZ_FLAG         10
 #define HZ_GPS          10
 #define HZ_GCSTX        10

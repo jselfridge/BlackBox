@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include "ahrs.h"
+#include "ctrl.h"
 #include "gcs.h"
 #include "gps.h"
 #include "imu.h"
@@ -114,7 +115,7 @@ void log_init ( void )  {
   log_gps.dur       =  malloc( sizeof(ulong) * log_gps.limit );
   log_gps.msg       =  malloc( sizeof(char)  * log_gps.limit * 96 );
 
-  /* // Controller parameter setup
+  // Controller parameter setup
   log_ctrl.limit    =  LOG_MAX_DUR * HZ_CTRL;
   log_ctrl.time     =  malloc( sizeof(float) * log_ctrl.limit     );
   log_ctrl.dur      =  malloc( sizeof(ulong) * log_ctrl.limit     );
@@ -122,7 +123,6 @@ void log_init ( void )  {
   log_ctrl.ierr     =  malloc( sizeof(float) * log_ctrl.limit * 3 );
   log_ctrl.derr     =  malloc( sizeof(float) * log_ctrl.limit * 3 );
   log_ctrl.cmd      =  malloc( sizeof(float) * log_ctrl.limit * 4 );
-  */
 
   return;
 }
@@ -157,7 +157,7 @@ void log_start ( void )  {
   log_magB.count   = 0;
   log_ahrs.count   = 0;
   log_gps.count    = 0;
-  //log_ctrl.count   = 0;
+  log_ctrl.count   = 0;
 
   // Allocate dir/path/file memory
   datalog.dir  = malloc(16);
@@ -291,7 +291,7 @@ void log_start ( void )  {
   if( datalog.gps == NULL )  printf( "Error (log_start): Cannot generate 'gps' file. \n" );
   fprintf( datalog.gps, "       Gtime    Gdur    Data    ");
 
-  /* // Controller datalog file
+  // Controller datalog file
   sprintf( file, "%sctrl.txt", datalog.path );
   datalog.ctrl = fopen( file, "w" );
   if( datalog.ctrl == NULL )  printf( "Error (log_start): Cannot generate 'ctrl' file. \n" );
@@ -300,7 +300,7 @@ void log_start ( void )  {
     EPX      EPY      EPZ     \
     EIX      EIY      EIZ     \
     EDX      EDY      EDZ      \
-    CX       CY       CZ       CT" );*/
+    CX       CY       CZ       CT" );
 
   // Determine start second
   struct timespec timeval;
@@ -450,7 +450,7 @@ static void log_save ( void )  {
     fprintf( datalog.gps, "%s ", &log_gps.msg[row*96] );//  fprintf( fgps, "   " );
     fprintf( datalog.gps, "   " );
   }
-  /*
+
   // Controller data
   for ( row = 0; row < log_ctrl.count; row++ ) {
     fprintf( datalog.ctrl, "\n %011.6f  %06ld    ", log_ctrl.time[row], log_ctrl.dur[row] );
@@ -459,7 +459,6 @@ static void log_save ( void )  {
     for ( i=0; i<3; i++ )  fprintf( datalog.ctrl, "%07.4f  ",  log_ctrl.derr[ row*3 +i ] );   fprintf( datalog.ctrl, "   " );
     for ( i=0; i<4; i++ )  fprintf( datalog.ctrl, "%07.4f  ",  log_ctrl.cmd [ row*4 +i ] );   fprintf( datalog.ctrl, "   " );
   }
-  */
 
   return;
 }
@@ -472,7 +471,8 @@ static void log_save ( void )  {
 static void log_free ( void )  {
 
   // Parameter memory
-
+  free(log_param.time);
+  free(log_param.values);
 
   // Input memory
   free(log_input.time);
@@ -546,7 +546,7 @@ static void log_free ( void )  {
   free(log_gps.time);
   free(log_gps.dur);
   free(log_gps.msg);
-  /*
+
   // Controller memory
   free(log_ctrl.time);
   free(log_ctrl.dur);
@@ -554,7 +554,6 @@ static void log_free ( void )  {
   free(log_ctrl.ierr);
   free(log_ctrl.derr);
   free(log_ctrl.cmd);
-  */
 
   return;
 }
@@ -584,7 +583,7 @@ static void log_close ( void )  {
 
   fclose(datalog.ahrs);
   fclose(datalog.gps);
-  //fclose(datalog.ctrl);
+  fclose(datalog.ctrl);
 
   return;
 }
@@ -822,7 +821,7 @@ void log_record ( enum log_index index )  {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record CTRL data
-    /*
+
   case LOG_CTRL :
 
     timestamp = (float) ( tmr_ctrl.start_sec + ( tmr_ctrl.start_usec / 1000000.0f ) ) - datalog.offset;
@@ -839,7 +838,7 @@ void log_record ( enum log_index index )  {
     }
 
     return;
-    */
+
 
   default :
     return;

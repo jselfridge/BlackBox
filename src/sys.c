@@ -9,6 +9,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #include "ahrs.h"
+#include "ctrl.h"
 #include "filter.h"
 #include "flag.h"
 #include "gps.h"
@@ -116,13 +117,13 @@ void sys_update ( void )  {
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
-  if(0)  sys_io();
+  if(1)  sys_io();
   if(0)  sys_filter();
   if(0)  if(IMUA_ENABLED)  sys_imuA();
   if(0)  if(IMUB_ENABLED)  sys_imuB();
   if(0)  sys_ahrs();
   if(0)  sys_gps();
-  if(0)  sys_ctrl();
+  if(1)  sys_ctrl();
 
   // Complete debugging display 
   printf("  "); fflush(stdout);
@@ -144,7 +145,7 @@ static void sys_io ( void )  {
   pthread_mutex_lock(&mutex_input);
   //for ( i=0; i<6; i++ )  printf("%5d ",   input.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<6; i++ )  printf("%4d ",   input.pwm[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<6; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<4; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_input);
 
   // Output signals
@@ -154,7 +155,6 @@ static void sys_io ( void )  {
   //for ( i=0; i<6; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_output);
 
-  /*
   pthread_mutex_lock(&mutex_output);
   printf("%5.2f ", output.norm[0] );
   printf("%5.2f ", output.norm[1] );
@@ -162,7 +162,6 @@ static void sys_io ( void )  {
   printf("%5.2f ", output.norm[5] );
   printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_output);
-  */
 
   return;
 }
@@ -176,14 +175,26 @@ static void sys_filter ( void )  {
 
   // IMUA filters
   if (IMUA_ENABLED) {
-    //printf("%6.1f ", filter_gyrA.freq );  printf("%6.1f ", filter_accA.freq );  printf("%6.1f ", filter_magA.freq );  printf("   ");  fflush(stdout);  
-    //printf("%5d ",   filter_gyrA.hist );  printf("%5d ",   filter_accA.hist );  printf("%5d ",   filter_magA.hist );  printf("   ");  fflush(stdout);  
+    //printf("%6.1f ", filter_gyrA.freq );
+    //printf("%6.1f ", filter_accA.freq );
+    //printf("%6.1f ", filter_magA.freq );
+    //printf("   ");  fflush(stdout);  
+    //printf("%5d ",   filter_gyrA.hist );
+    //printf("%5d ",   filter_accA.hist );
+    //printf("%5d ",   filter_magA.hist );
+    //printf("   ");  fflush(stdout);  
   }
 
   // IMUB filters
   if (IMUB_ENABLED) {
-    //printf("%6.1f ", filter_gyrB.freq );  printf("%6.1f ", filter_accB.freq );  printf("%6.1f ", filter_magB.freq );  printf("   ");  fflush(stdout);  
-    //printf("%5d ",   filter_gyrB.hist );  printf("%5d ",   filter_accB.hist );  printf("%5d ",   filter_magB.hist );  printf("   ");  fflush(stdout);  
+    //printf("%6.1f ", filter_gyrB.freq );
+    //printf("%6.1f ", filter_accB.freq );
+    //printf("%6.1f ", filter_magB.freq );
+    //printf("   ");  fflush(stdout);  
+    //printf("%5d ",   filter_gyrB.hist );
+    //printf("%5d ",   filter_accB.hist );
+    //printf("%5d ",   filter_magB.hist );
+    //printf("   ");  fflush(stdout);  
   }
 
   return;
@@ -328,7 +339,7 @@ static void sys_gps ( void )  {
 static void sys_ctrl ( void )  {
 
   // Loop counter
-  //ushort i;
+  ushort i;
 
   // Control signals
   pthread_mutex_lock(&mutex_ctrl);
@@ -337,13 +348,13 @@ static void sys_ctrl ( void )  {
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.dgain[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.thrl[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.scale[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.perr[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.perr[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.ierr[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.derr[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.cmd[i]  );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", ctrl.bank    *(180.0/PI) );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", ctrl.climb   *(180.0/PI) );  printf("   ");  fflush(stdout);
-  //printf("%5.2f ", ctrl.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
+  printf("%5.2f ", ctrl.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_ctrl);
 
   return;

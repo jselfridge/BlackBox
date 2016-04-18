@@ -90,7 +90,7 @@ typedef struct log_gps_struct {
 } log_gps_struct;
 log_gps_struct log_gps;
 
-/*
+
 typedef struct log_ctrl_struct {
   ulong  count;
   ulong  limit;
@@ -102,7 +102,7 @@ typedef struct log_ctrl_struct {
   float  *cmd;
 } log_ctrl_struct;
 log_ctrl_struct log_ctrl;
-*/
+
 
 typedef struct datalog_struct {
   bool   enabled;
