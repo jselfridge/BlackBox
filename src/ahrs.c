@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "filter.h"
 #include "imu.h"
 #include "sys.h"
 #include "timer.h"
@@ -19,11 +20,13 @@ void ahrs_init ( void )  {
   // Loop through entries with known zero values
   ushort i;
   for ( i=0; i<3; i++ ) {
-    ahrs.quat  [i+1] = 0.0;
-    ahrs.dquat [i+1] = 0.0;
-    ahrs.eul   [i]   = 0.0;
-    ahrs.deul  [i]   = 0.0;
-    ahrs.bias  [i]   = 0.0;
+    ahrs.quat   [i+1] = 0.0;
+    ahrs.dquat  [i+1] = 0.0;
+    ahrs.eul    [i]   = 0.0;
+    ahrs.ang    [i]   = 0.0;
+    ahrs.lpfeul [i]   = 0.0;
+    ahrs.lpfang [i]   = 0.0;
+    ahrs.bias   [i]   = 0.0;
   }
 
   // Populate remaining values
@@ -107,18 +110,48 @@ void ahrs_fusion ( void )  {
 
   // Get values from IMU data structure
   double g[3], a[3], m[3];
+
   for ( i=0; i<3; i++ )  {  g[i] = 0.0;  a[i] = 0.0;  m[i] = 0.0;  }
+
   if (IMUA_ENABLED) {
-    pthread_mutex_lock(&mutex_gyrA);  for ( i=0; i<3; i++ )  g[i] +=  gyrA.filter[i];  pthread_mutex_unlock(&mutex_gyrA);
-    pthread_mutex_lock(&mutex_accA);  for ( i=0; i<3; i++ )  a[i] += -accA.filter[i];  pthread_mutex_unlock(&mutex_accA);
-    pthread_mutex_lock(&mutex_magA);  for ( i=0; i<3; i++ )  m[i] +=  magA.filter[i];  pthread_mutex_unlock(&mutex_magA);
+
+    pthread_mutex_lock(&mutex_gyrA);
+    for ( i=0; i<3; i++ )  g[i] +=  gyrA.filter[i];
+    pthread_mutex_unlock(&mutex_gyrA);
+
+    pthread_mutex_lock(&mutex_accA);
+    for ( i=0; i<3; i++ )  a[i] += -accA.filter[i];
+    pthread_mutex_unlock(&mutex_accA);
+
+    pthread_mutex_lock(&mutex_magA);
+    for ( i=0; i<3; i++ )  m[i] +=  magA.filter[i];
+    pthread_mutex_unlock(&mutex_magA);
+
   }
+
   if (IMUB_ENABLED) {
-    pthread_mutex_lock(&mutex_gyrB);  for ( i=0; i<3; i++ )  g[i] +=  gyrB.filter[i];  pthread_mutex_unlock(&mutex_gyrB);
-    pthread_mutex_lock(&mutex_accB);  for ( i=0; i<3; i++ )  a[i] += -accB.filter[i];  pthread_mutex_unlock(&mutex_accB);
-    pthread_mutex_lock(&mutex_magB);  for ( i=0; i<3; i++ )  m[i] +=  magB.filter[i];  pthread_mutex_unlock(&mutex_magB);
+
+    pthread_mutex_lock(&mutex_gyrB);
+    for ( i=0; i<3; i++ )  g[i] +=  gyrB.filter[i];
+    pthread_mutex_unlock(&mutex_gyrB);
+
+    pthread_mutex_lock(&mutex_accB);
+    for ( i=0; i<3; i++ )  a[i] += -accB.filter[i];
+    pthread_mutex_unlock(&mutex_accB);
+
+    pthread_mutex_lock(&mutex_magB);
+    for ( i=0; i<3; i++ )  m[i] +=  magB.filter[i];
+    pthread_mutex_unlock(&mutex_magB);
+
   }
-  if ( IMUA_ENABLED && IMUB_ENABLED )  {  for ( i=0; i<3; i++ )  {  g[i] /= 2.0;  a[i] /= 2.0;  m[i] /= 2.0;  }  }
+
+  if ( IMUA_ENABLED && IMUB_ENABLED )  {
+    for ( i=0; i<3; i++ )  {
+      g[i] /= 2.0;
+      a[i] /= 2.0;
+      m[i] /= 2.0;
+    }
+  }
 
   // Store averaged values to AHRS data structure
   pthread_mutex_lock(&mutex_ahrs);
@@ -252,6 +285,17 @@ void ahrs_fusion ( void )  {
   e[Y] = asin  (   2.0 * ( qwy - qxz ) )                                  - ahrs.orient[Y];
   e[Z] = atan2 ( ( 2.0 * ( qwz + qxy ) ), ( 1.0 - 2.0 * ( qyy + qzz ) ) ) - ahrs.orient[Z];
 
+  // Apply low pass filters
+  //---  DEBUG  ---//
+  double lpfe[3], lpfg[3];
+  filter_lpf ( &filter_eul, e, lpfe );
+  filter_lpf ( &filter_ang, g, lpfg );
+  //for ( i=0; i<3; i++ ) {
+    //lpfe[i] = e[i];
+    //lpfg[i] = g[i];
+  //}
+  //--------------//
+
   // Push quaternion data to struct
   pthread_mutex_lock(&mutex_quat);
   for ( i=0; i<4; i++ )  {
@@ -263,10 +307,18 @@ void ahrs_fusion ( void )  {
   // Push Euler data to struct
   pthread_mutex_lock(&mutex_eul);
   for ( i=0; i<3; i++ ) {
-    ahrs.eul[i]  = e[i];
-    ahrs.deul[i] = g[i];
+    ahrs.eul[i] = e[i];
+    ahrs.ang[i] = g[i];
   }
   pthread_mutex_unlock(&mutex_eul);
+
+  // Push LPF Euler data to struct
+  pthread_mutex_lock(&mutex_lpfeul);
+  for ( i=0; i<3; i++ ) {
+    ahrs.lpfeul[i] = lpfe[i];
+    ahrs.lpfang[i] = lpfg[i];
+  }
+  pthread_mutex_unlock(&mutex_lpfeul);
 
   // Push AHRS data to struct
   pthread_mutex_lock(&mutex_ahrs);

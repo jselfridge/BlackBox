@@ -29,12 +29,12 @@
 #define QUAD_T_RANGE  0.50
 
 #define QUAD_TMIN     0.00
-#define QUAD_TMAX     0.00
+#define QUAD_TMAX     0.30
 #define QUAD_TILT     0.00
 
-#define QUAD_PX       0.00
-#define QUAD_PY       0.00
-#define QUAD_PZ       0.00
+#define QUAD_PX       0.30
+#define QUAD_PY       0.30
+#define QUAD_PZ       0.30
 #define QUAD_IX       0.00
 #define QUAD_IY       0.00
 #define QUAD_IZ       0.00

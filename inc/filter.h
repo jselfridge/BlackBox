@@ -7,15 +7,16 @@
 #include <sys/types.h>
 
 
-#define LPF_FREQ_GYR   0.0
-#define LPF_FREQ_ACC   0.0
-#define LPF_FREQ_MAG   0.0
+// 15.915494
+#define LPF_FREQ_GYR  20.0
+#define LPF_FREQ_ACC  20.0
+#define LPF_FREQ_MAG   2.0
 #define LPF_FREQ_EUL   0.0
 #define LPF_FREQ_ANG   0.0
 
-#define LPF_HIST_GYR    1
-#define LPF_HIST_ACC    1
-#define LPF_HIST_MAG    1
+#define LPF_HIST_GYR   20
+#define LPF_HIST_ACC   20
+#define LPF_HIST_MAG   20
 #define LPF_HIST_EUL    1
 #define LPF_HIST_ANG    1
 

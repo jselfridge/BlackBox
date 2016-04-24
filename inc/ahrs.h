@@ -21,7 +21,9 @@ typedef struct ahrs_data_struct {
   double  quat   [4];
   double  dquat  [4];
   double  eul    [3];
-  double  deul   [3];
+  double  ang    [3];
+  double  lpfeul [3];
+  double  lpfang [3];
   double  bias   [3];
   double  orient [3];
   double  fx;

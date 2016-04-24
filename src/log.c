@@ -15,6 +15,7 @@
 #include "timer.h"
 
 
+static void  log_mem   ( void );
 static void  log_save  ( void );
 static void  log_free  ( void );
 static void  log_close ( void );
@@ -26,104 +27,7 @@ static void  log_close ( void );
  */
 void log_init ( void )  {
   if(DEBUG)  printf("Initializing data logging \n");
-
-  // Parameter value setup
-  log_param.limit   =  LOG_MAX_PARAM;  
-  log_param.time    =  malloc( sizeof(float) * log_param.limit               );
-  log_param.values  =  malloc( sizeof(float) * log_param.limit * param_count );
-
-  // Input signal setup
-  log_input.limit   =  LOG_MAX_DUR * HZ_IO;
-  log_input.time    =  malloc( sizeof(float)  * log_input.limit         );
-  log_input.reg     =  malloc( sizeof(ushort) * log_input.limit * IN_CH );
-  log_input.pwm     =  malloc( sizeof(ushort) * log_input.limit * IN_CH );
-  log_input.norm    =  malloc( sizeof(float)  * log_input.limit * IN_CH );
-
-  // Output signal setup
-  log_output.limit  =  LOG_MAX_DUR * HZ_IO;
-  log_output.time   =  malloc( sizeof(float)  * log_output.limit          );
-  log_output.reg    =  malloc( sizeof(ushort) * log_output.limit * OUT_CH );
-  log_output.pwm    =  malloc( sizeof(ushort) * log_output.limit * OUT_CH );
-  log_output.norm   =  malloc( sizeof(float)  * log_output.limit * OUT_CH );
-
-  // Gyroscope A setup
-  log_gyrA.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
-  log_gyrA.time     =  malloc( sizeof(float) * log_gyrA.limit     );
-  log_gyrA.dur      =  malloc( sizeof(ulong) * log_gyrA.limit     );
-  log_gyrA.raw      =  malloc( sizeof(short) * log_gyrA.limit * 3 );
-  log_gyrA.scaled   =  malloc( sizeof(float) * log_gyrA.limit * 3 );
-  log_gyrA.filter   =  malloc( sizeof(float) * log_gyrA.limit * 3 );
-
-  // Accelerometer A setup
-  log_accA.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
-  log_accA.time     =  malloc( sizeof(float) * log_accA.limit     );
-  log_accA.dur      =  malloc( sizeof(ulong) * log_accA.limit     );
-  log_accA.raw      =  malloc( sizeof(short) * log_accA.limit * 3 );
-  log_accA.scaled   =  malloc( sizeof(float) * log_accA.limit * 3 );
-  log_accA.filter   =  malloc( sizeof(float) * log_accA.limit * 3 );
-
-  // Magnetometer A setup
-  log_magA.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
-  log_magA.time     =  malloc( sizeof(float) * log_magA.limit     );
-  log_magA.dur      =  malloc( sizeof(ulong) * log_magA.limit     );
-  log_magA.raw      =  malloc( sizeof(short) * log_magA.limit * 3 );
-  log_magA.scaled   =  malloc( sizeof(float) * log_magA.limit * 3 );
-  log_magA.filter   =  malloc( sizeof(float) * log_magA.limit * 3 );
-
-  // Gyroscope B setup
-  log_gyrB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
-  log_gyrB.time     =  malloc( sizeof(float) * log_gyrB.limit     );
-  log_gyrB.dur      =  malloc( sizeof(ulong) * log_gyrB.limit     );
-  log_gyrB.raw      =  malloc( sizeof(short) * log_gyrB.limit * 3 );
-  log_gyrB.scaled   =  malloc( sizeof(float) * log_gyrB.limit * 3 );
-  log_gyrB.filter   =  malloc( sizeof(float) * log_gyrB.limit * 3 );
-
-  // Accelerometer B setup
-  log_accB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
-  log_accB.time     =  malloc( sizeof(float) * log_accB.limit     );
-  log_accB.dur      =  malloc( sizeof(ulong) * log_accB.limit     );
-  log_accB.raw      =  malloc( sizeof(short) * log_accB.limit * 3 );
-  log_accB.scaled   =  malloc( sizeof(float) * log_accB.limit * 3 );
-  log_accB.filter   =  malloc( sizeof(float) * log_accB.limit * 3 );
-
-  // Magnetometer B setup
-  log_magB.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
-  log_magB.time     =  malloc( sizeof(float) * log_magB.limit     );
-  log_magB.dur      =  malloc( sizeof(ulong) * log_magB.limit     );
-  log_magB.raw      =  malloc( sizeof(short) * log_magB.limit * 3 );
-  log_magB.scaled   =  malloc( sizeof(float) * log_magB.limit * 3 );
-  log_magB.filter   =  malloc( sizeof(float) * log_magB.limit * 3 );
-
-  // Attitude and Heading Reference System setup
-  log_ahrs.limit    =  LOG_MAX_DUR * HZ_AHRS;
-  log_ahrs.time     =  malloc( sizeof(float) * log_ahrs.limit     );
-  log_ahrs.dur      =  malloc( sizeof(ulong) * log_ahrs.limit     );
-  log_ahrs.gyr      =  malloc( sizeof(float) * log_ahrs.limit * 3 );
-  log_ahrs.acc      =  malloc( sizeof(float) * log_ahrs.limit * 3 );
-  log_ahrs.mag      =  malloc( sizeof(float) * log_ahrs.limit * 3 );
-  log_ahrs.quat     =  malloc( sizeof(float) * log_ahrs.limit * 4 );
-  log_ahrs.dquat    =  malloc( sizeof(float) * log_ahrs.limit * 4 );
-  log_ahrs.eul      =  malloc( sizeof(float) * log_ahrs.limit * 3 );
-  log_ahrs.deul     =  malloc( sizeof(float) * log_ahrs.limit * 3 );
-  log_ahrs.bias     =  malloc( sizeof(float) * log_ahrs.limit * 3 );
-  log_ahrs.fx       =  malloc( sizeof(float) * log_ahrs.limit     );
-  log_ahrs.fz       =  malloc( sizeof(float) * log_ahrs.limit     );
-
-  // Global Positioning System setup
-  log_gps.limit     =  LOG_MAX_DUR * HZ_GPS;
-  log_gps.time      =  malloc( sizeof(float) * log_gps.limit );
-  log_gps.dur       =  malloc( sizeof(ulong) * log_gps.limit );
-  log_gps.msg       =  malloc( sizeof(char)  * log_gps.limit * 96 );
-
-  // Controller parameter setup
-  log_ctrl.limit    =  LOG_MAX_DUR * HZ_CTRL;
-  log_ctrl.time     =  malloc( sizeof(float) * log_ctrl.limit     );
-  log_ctrl.dur      =  malloc( sizeof(ulong) * log_ctrl.limit     );
-  log_ctrl.perr     =  malloc( sizeof(float) * log_ctrl.limit * 3 );
-  log_ctrl.ierr     =  malloc( sizeof(float) * log_ctrl.limit * 3 );
-  log_ctrl.derr     =  malloc( sizeof(float) * log_ctrl.limit * 3 );
-  log_ctrl.cmd      =  malloc( sizeof(float) * log_ctrl.limit * 4 );
-
+  log_mem();
   return;
 }
 
@@ -164,6 +68,9 @@ void log_start ( void )  {
   datalog.path = malloc(32);
   char *file   = malloc(64);
 
+  // Allocate storage memory
+  log_mem();
+
   // Find next available log directory
   ushort i = 0;
   while (true) {
@@ -191,13 +98,19 @@ void log_start ( void )  {
   sprintf( file, "%sinput.txt", datalog.path );
   datalog.in = fopen( file, "w" );
   if( datalog.in == NULL )  printf( "Error (log_start): Cannot generate 'input' file. \n" );
-  fprintf( datalog.in,  "      InTime       In01     In02     In03     In04     In05     In06     In07     In08     In09     In10" );
+  fprintf( datalog.in,
+    "      InTime   \
+    In01     In02     In03     In04     In05 \
+    In06     In07     In08     In09     In10" );
 
   // Output datalog file
   sprintf( file, "%soutput.txt", datalog.path );
   datalog.out = fopen( file, "w" );
   if( datalog.out == NULL )  printf( "Error (log_start): Cannot generate 'output' file. \n" );
-  fprintf( datalog.out, "     OutTime      Out01    Out02    Out03    Out04    Out05    Out06    Out07    Out08    Out09    Out10" );
+  fprintf( datalog.out, 
+    "     OutTime  \
+    Out01    Out02    Out03    Out04    Out05\
+    Out06    Out07    Out08    Out09    Out10" );
 
   // IMUA datalogs
   if (IMUA_ENABLED)  {
@@ -281,7 +194,9 @@ void log_start ( void )  {
     Qw       Qx       Qy       Qz     \
     dQw      dQx      dQy      dQz      \
     Ex       Ey       Ez     \
-    dEx      dEy      dEz      \
+    dEx      dEy      dEz     \
+    fEx      fEy      fEz    \
+    fdEx     fdEy     fdEz      \
     bx       by       bz      \
     fx       fz");
 
@@ -343,6 +258,125 @@ void log_finish ( void )  {
 
 
 /**
+ *  log_mem
+ *  Allocate memory for the data log.
+ */
+static void log_mem ( void )  {
+
+  // Parameter value setup
+  log_param.limit   =  LOG_MAX_PARAM;  
+  log_param.time    =  malloc( sizeof(float) * log_param.limit               );
+  log_param.values  =  malloc( sizeof(float) * log_param.limit * param_count );
+
+  // Input signal setup
+  log_input.limit   =  LOG_MAX_DUR * HZ_IO;
+  log_input.time    =  malloc( sizeof(float)  * log_input.limit         );
+  log_input.reg     =  malloc( sizeof(ushort) * log_input.limit * IN_CH );
+  log_input.pwm     =  malloc( sizeof(ushort) * log_input.limit * IN_CH );
+  log_input.norm    =  malloc( sizeof(float)  * log_input.limit * IN_CH );
+
+  // Output signal setup
+  log_output.limit  =  LOG_MAX_DUR * HZ_IO;
+  log_output.time   =  malloc( sizeof(float)  * log_output.limit          );
+  log_output.reg    =  malloc( sizeof(ushort) * log_output.limit * OUT_CH );
+  log_output.pwm    =  malloc( sizeof(ushort) * log_output.limit * OUT_CH );
+  log_output.norm   =  malloc( sizeof(float)  * log_output.limit * OUT_CH );
+
+  // IMU A setup
+  if (IMUA_ENABLED) {
+
+  // Gyroscope A setup
+  log_gyrA.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
+  log_gyrA.time     =  malloc( sizeof(float) * log_gyrA.limit     );
+  log_gyrA.dur      =  malloc( sizeof(ulong) * log_gyrA.limit     );
+  log_gyrA.raw      =  malloc( sizeof(short) * log_gyrA.limit * 3 );
+  log_gyrA.scaled   =  malloc( sizeof(float) * log_gyrA.limit * 3 );
+  log_gyrA.filter   =  malloc( sizeof(float) * log_gyrA.limit * 3 );
+
+  // Accelerometer A setup
+  log_accA.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
+  log_accA.time     =  malloc( sizeof(float) * log_accA.limit     );
+  log_accA.dur      =  malloc( sizeof(ulong) * log_accA.limit     );
+  log_accA.raw      =  malloc( sizeof(short) * log_accA.limit * 3 );
+  log_accA.scaled   =  malloc( sizeof(float) * log_accA.limit * 3 );
+  log_accA.filter   =  malloc( sizeof(float) * log_accA.limit * 3 );
+
+  // Magnetometer A setup
+  log_magA.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
+  log_magA.time     =  malloc( sizeof(float) * log_magA.limit     );
+  log_magA.dur      =  malloc( sizeof(ulong) * log_magA.limit     );
+  log_magA.raw      =  malloc( sizeof(short) * log_magA.limit * 3 );
+  log_magA.scaled   =  malloc( sizeof(float) * log_magA.limit * 3 );
+  log_magA.filter   =  malloc( sizeof(float) * log_magA.limit * 3 );
+
+  }
+
+  // IMU B setup
+  if (IMUB_ENABLED) {
+
+  // Gyroscope B setup
+  log_gyrB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
+  log_gyrB.time     =  malloc( sizeof(float) * log_gyrB.limit     );
+  log_gyrB.dur      =  malloc( sizeof(ulong) * log_gyrB.limit     );
+  log_gyrB.raw      =  malloc( sizeof(short) * log_gyrB.limit * 3 );
+  log_gyrB.scaled   =  malloc( sizeof(float) * log_gyrB.limit * 3 );
+  log_gyrB.filter   =  malloc( sizeof(float) * log_gyrB.limit * 3 );
+
+  // Accelerometer B setup
+  log_accB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
+  log_accB.time     =  malloc( sizeof(float) * log_accB.limit     );
+  log_accB.dur      =  malloc( sizeof(ulong) * log_accB.limit     );
+  log_accB.raw      =  malloc( sizeof(short) * log_accB.limit * 3 );
+  log_accB.scaled   =  malloc( sizeof(float) * log_accB.limit * 3 );
+  log_accB.filter   =  malloc( sizeof(float) * log_accB.limit * 3 );
+
+  // Magnetometer B setup
+  log_magB.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
+  log_magB.time     =  malloc( sizeof(float) * log_magB.limit     );
+  log_magB.dur      =  malloc( sizeof(ulong) * log_magB.limit     );
+  log_magB.raw      =  malloc( sizeof(short) * log_magB.limit * 3 );
+  log_magB.scaled   =  malloc( sizeof(float) * log_magB.limit * 3 );
+  log_magB.filter   =  malloc( sizeof(float) * log_magB.limit * 3 );
+
+  }
+
+  // Attitude and Heading Reference System setup
+  log_ahrs.limit    =  LOG_MAX_DUR * HZ_AHRS;
+  log_ahrs.time     =  malloc( sizeof(float) * log_ahrs.limit     );
+  log_ahrs.dur      =  malloc( sizeof(ulong) * log_ahrs.limit     );
+  log_ahrs.gyr      =  malloc( sizeof(float) * log_ahrs.limit * 3 );
+  log_ahrs.acc      =  malloc( sizeof(float) * log_ahrs.limit * 3 );
+  log_ahrs.mag      =  malloc( sizeof(float) * log_ahrs.limit * 3 );
+  log_ahrs.quat     =  malloc( sizeof(float) * log_ahrs.limit * 4 );
+  log_ahrs.dquat    =  malloc( sizeof(float) * log_ahrs.limit * 4 );
+  log_ahrs.eul      =  malloc( sizeof(float) * log_ahrs.limit * 3 );
+  log_ahrs.ang      =  malloc( sizeof(float) * log_ahrs.limit * 3 );
+  log_ahrs.lpfeul   =  malloc( sizeof(float) * log_ahrs.limit * 3 );
+  log_ahrs.lpfang   =  malloc( sizeof(float) * log_ahrs.limit * 3 );
+  log_ahrs.bias     =  malloc( sizeof(float) * log_ahrs.limit * 3 );
+  log_ahrs.fx       =  malloc( sizeof(float) * log_ahrs.limit     );
+  log_ahrs.fz       =  malloc( sizeof(float) * log_ahrs.limit     );
+
+  // Global Positioning System setup
+  log_gps.limit     =  LOG_MAX_DUR * HZ_GPS;
+  log_gps.time      =  malloc( sizeof(float) * log_gps.limit );
+  log_gps.dur       =  malloc( sizeof(ulong) * log_gps.limit );
+  log_gps.msg       =  malloc( sizeof(char)  * log_gps.limit * 96 );
+
+  // Controller parameter setup
+  log_ctrl.limit    =  LOG_MAX_DUR * HZ_CTRL;
+  log_ctrl.time     =  malloc( sizeof(float) * log_ctrl.limit     );
+  log_ctrl.dur      =  malloc( sizeof(ulong) * log_ctrl.limit     );
+  log_ctrl.perr     =  malloc( sizeof(float) * log_ctrl.limit * 3 );
+  log_ctrl.ierr     =  malloc( sizeof(float) * log_ctrl.limit * 3 );
+  log_ctrl.derr     =  malloc( sizeof(float) * log_ctrl.limit * 3 );
+  log_ctrl.cmd      =  malloc( sizeof(float) * log_ctrl.limit * 4 );
+
+  return;
+}
+
+
+/**
  *  log_save
  *  Saves each datalog to file.
  */
@@ -355,7 +389,10 @@ static void log_save ( void )  {
   // Parameter data
   for ( row = 0; row < log_param.count; row++ ) {
     fprintf( datalog.param, "\n %011.6f    ", log_param.time[row] );
-    for ( i=0; i < param_count; i++ )  fprintf( datalog.param, "%9.4f  ", log_param.values [ row * param_count + i ] );   fprintf( datalog.param, "   " );
+    for ( i=0; i < param_count; i++ )
+    fprintf( datalog.param, "%9.4f  ",
+     log_param.values [ row * param_count + i ] );
+     fprintf( datalog.param, "   " );
   }
 
   // Input data
@@ -431,14 +468,16 @@ static void log_save ( void )  {
   // Attitude/Heading Reference System data
   for ( row = 0; row < log_ahrs.count; row++ ) {
     fprintf( datalog.ahrs, "\n %011.6f  %06ld    ", log_ahrs.time[row], log_ahrs.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.gyr   [ row*3 +i ] );  fprintf( datalog.ahrs, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.acc   [ row*3 +i ] );  fprintf( datalog.ahrs, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.mag   [ row*3 +i ] );  fprintf( datalog.ahrs, "   " );
-    for ( i=0; i<4; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.quat  [ row*4 +i ] );  fprintf( datalog.ahrs, "   " );
-    for ( i=0; i<4; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.dquat [ row*4 +i ] );  fprintf( datalog.ahrs, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.eul   [ row*3 +i ] );  fprintf( datalog.ahrs, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.deul  [ row*3 +i ] );  fprintf( datalog.ahrs, "   " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.bias  [ row*3 +i ] );  fprintf( datalog.ahrs, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.gyr    [ row*3 +i ] );  fprintf( datalog.ahrs, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.acc    [ row*3 +i ] );  fprintf( datalog.ahrs, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.mag    [ row*3 +i ] );  fprintf( datalog.ahrs, "   " );
+    for ( i=0; i<4; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.quat   [ row*4 +i ] );  fprintf( datalog.ahrs, "   " );
+    for ( i=0; i<4; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.dquat  [ row*4 +i ] );  fprintf( datalog.ahrs, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.eul    [ row*3 +i ] );  fprintf( datalog.ahrs, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.ang    [ row*3 +i ] );  fprintf( datalog.ahrs, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.lpfeul [ row*3 +i ] );  fprintf( datalog.ahrs, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.lpfang [ row*3 +i ] );  fprintf( datalog.ahrs, "   " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.bias   [ row*3 +i ] );  fprintf( datalog.ahrs, "   " );
     fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.fx[ row +i ] );
     fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.fz[ row +i ] );
     fprintf( datalog.ahrs, "   " );
@@ -486,6 +525,9 @@ static void log_free ( void )  {
   free(log_output.pwm);
   free(log_output.norm);
 
+  // IMU A memory
+  if (IMUA_ENABLED) {
+
   // Gyroscope A memory
   free(log_gyrA.time);
   free(log_gyrA.dur);
@@ -506,6 +548,11 @@ static void log_free ( void )  {
   free(log_magA.raw);
   free(log_magA.scaled);
   free(log_magA.filter);
+
+  }
+
+  // IMU B memory
+  if (IMUB_ENABLED) {
 
   // Gyroscope B memory
   free(log_gyrB.time);
@@ -528,6 +575,8 @@ static void log_free ( void )  {
   free(log_magB.scaled);
   free(log_magB.filter);
 
+  }
+
   // Attitude/Heading memory
   free(log_ahrs.time);
   free(log_ahrs.dur);
@@ -537,7 +586,9 @@ static void log_free ( void )  {
   free(log_ahrs.quat);
   free(log_ahrs.dquat);
   free(log_ahrs.eul);
-  free(log_ahrs.deul);
+  free(log_ahrs.ang);
+  free(log_ahrs.lpfeul);
+  free(log_ahrs.lpfang);
   free(log_ahrs.bias);
   free(log_ahrs.fx);
   free(log_ahrs.fz);
@@ -782,8 +833,13 @@ void log_record ( enum log_index index )  {
 
       pthread_mutex_lock(&mutex_eul);
       for ( i=0; i<3; i++ )  log_ahrs.eul   [ row*3 +i ] = ahrs.eul   [i];
-      for ( i=0; i<3; i++ )  log_ahrs.deul  [ row*3 +i ] = ahrs.deul  [i];
+      for ( i=0; i<3; i++ )  log_ahrs.ang   [ row*3 +i ] = ahrs.ang  [i];
       pthread_mutex_unlock(&mutex_eul);
+
+      pthread_mutex_lock(&mutex_lpfeul);
+      for ( i=0; i<3; i++ )  log_ahrs.lpfeul [ row*3 +i ] = ahrs.lpfeul  [i];
+      for ( i=0; i<3; i++ )  log_ahrs.lpfang [ row*3 +i ] = ahrs.lpfang  [i];
+      pthread_mutex_unlock(&mutex_lpfeul);
 
       pthread_mutex_lock(&mutex_ahrs);
       for ( i=0; i<3; i++ )  log_ahrs.bias  [ row*3 +i ] = ahrs.bias  [i];
@@ -821,7 +877,6 @@ void log_record ( enum log_index index )  {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Record CTRL data
-
   case LOG_CTRL :
 
     timestamp = (float) ( tmr_ctrl.start_sec + ( tmr_ctrl.start_usec / 1000000.0f ) ) - datalog.offset;

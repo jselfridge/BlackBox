@@ -49,6 +49,7 @@ void tmr_mutex ( void )  {
   pthread_mutex_init( &mutex_magB,   NULL );
   pthread_mutex_init( &mutex_ahrs,   NULL );
   pthread_mutex_init( &mutex_eul,    NULL );
+  pthread_mutex_init( &mutex_lpfeul, NULL );
   pthread_mutex_init( &mutex_quat,   NULL );
   pthread_mutex_init( &mutex_gps,    NULL );
   pthread_mutex_init( &mutex_gcs,    NULL );
@@ -205,6 +206,7 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&mutex_magB);
   pthread_mutex_destroy(&mutex_ahrs);
   pthread_mutex_destroy(&mutex_eul);
+  pthread_mutex_destroy(&mutex_lpfeul);
   pthread_mutex_destroy(&mutex_quat);
   pthread_mutex_destroy(&mutex_gps);
   pthread_mutex_destroy(&mutex_gcs);

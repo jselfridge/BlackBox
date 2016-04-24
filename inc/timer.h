@@ -42,6 +42,7 @@ pthread_mutex_t mutex_accB;
 pthread_mutex_t mutex_magB;
 pthread_mutex_t mutex_ahrs;
 pthread_mutex_t mutex_eul;
+pthread_mutex_t mutex_lpfeul;
 pthread_mutex_t mutex_quat;
 pthread_mutex_t mutex_gps;
 pthread_mutex_t mutex_gcs;

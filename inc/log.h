@@ -73,7 +73,9 @@ typedef struct log_ahrs_struct {
   float *quat;
   float *dquat;
   float *eul;
-  float *deul;
+  float *ang;
+  float *lpfeul;
+  float *lpfang;
   float *bias;
   float *fx;
   float *fz;

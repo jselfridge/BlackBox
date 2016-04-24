@@ -225,8 +225,8 @@ void gcs_rx ( void)  {
         // ID: #23
         case MAVLINK_MSG_ID_PARAM_SET:
           gcs_param_value(&msg);
-          if (datalog.enabled)  log_record(LOG_PARAM);
-	  printf("\n---DEBUG---\n");
+          //if (datalog.enabled)  log_record(LOG_PARAM);
+	  //printf("\n---DEBUG---\n");
         break;
 
         // ID: #43
@@ -920,9 +920,9 @@ static void gcs_ahrs_eul ( void )  {
   float roll       = (float) ahrs.eul[0];
   float pitch      = (float) ahrs.eul[1];
   float yaw        = (float) ahrs.eul[2];
-  float rollspeed  = (float) ahrs.deul[0];
-  float pitchspeed = (float) ahrs.deul[1];
-  float yawspeed   = (float) ahrs.deul[2];
+  float rollspeed  = (float) ahrs.ang[0];
+  float pitchspeed = (float) ahrs.ang[1];
+  float yawspeed   = (float) ahrs.ang[2];
   pthread_mutex_unlock(&mutex_ahrs);
 
   // Pack the attitude message 

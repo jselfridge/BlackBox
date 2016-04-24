@@ -142,7 +142,7 @@ void ctrl_quad ( void )  {
 
   // Obtain states
   pthread_mutex_lock(&mutex_eul);
-  for ( ch=0; ch<3; ch++ )  {  eul[ch] = ahrs.eul[ch];  ang[ch] = ahrs.deul[ch];  }
+  for ( ch=0; ch<3; ch++ )  {  eul[ch] = ahrs.eul[ch];  ang[ch] = ahrs.ang[ch];  }
   pthread_mutex_unlock(&mutex_eul);
 
   // Obtain inputs
