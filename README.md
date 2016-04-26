@@ -18,9 +18,9 @@ navigation capabilities.
   <li> Configured tunable control gains for quadrotor vehicle. </li>
   <li> Revised source code and header file structure. <li>
   <li> Developed module for filter functionality.  </li>
+  <li> (WIP) Developed module for PID control. </li>
   <li> (WIP) Log parameter changes made by GCS. </li>
   <li> (WIP) Revise log function structure. </li>
-  <li> (WIP) </li>
 </ul>
 
 
