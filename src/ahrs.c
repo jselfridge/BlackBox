@@ -286,15 +286,9 @@ void ahrs_fusion ( void )  {
   e[Z] = atan2 ( ( 2.0 * ( qwz + qxy ) ), ( 1.0 - 2.0 * ( qyy + qzz ) ) ) - ahrs.orient[Z];
 
   // Apply low pass filters
-  //---  DEBUG  ---//
   double lpfe[3], lpfg[3];
   filter_lpf ( &filter_eul, e, lpfe );
   filter_lpf ( &filter_ang, g, lpfg );
-  //for ( i=0; i<3; i++ ) {
-    //lpfe[i] = e[i];
-    //lpfg[i] = g[i];
-  //}
-  //--------------//
 
   // Push quaternion data to struct
   pthread_mutex_lock(&mutex_quat);

@@ -8,7 +8,7 @@
 #include <stdbool.h>
 
 
-#define DEBUG       true
+#define DEBUG       false
 #define SYS_IO      false
 #define SYS_FILTER  false
 #define SYS_IMUA    false

@@ -9,18 +9,21 @@ Box" functionality for research and development.
 Current Tasks
 -------------
 This software version focuses on expanding the minimum working 
-software set, to include features that are needed for autonomous 
-navigation capabilities.
+software set, to include features that are needed for inner loop 
+stabilization, outer loop navigation, and autonomous capabilities.
 
-<b> Component Integration and Bench Testing </b>
+v0.1.5 - Signal filtering and parameter tuning
+---------------------------------------------
 <ul>
   <li> Incorporated second IMU into the system. </li>
+  <li> Set I2C bus to 100kHz until replacement resistors are available. </li>
   <li> Configured tunable control gains for quadrotor vehicle. </li>
   <li> Revised source code and header file structure. <li>
   <li> Developed module for filter functionality.  </li>
-  <li> (WIP) Developed module for PID control. </li>
-  <li> (WIP) Log parameter changes made by GCS. </li>
-  <li> (WIP) Revise log function structure. </li>
+  <li> Configured tunable filter settings from GCS. </li>
+  <li> Log parameter changes made by GCS. </li>
+  <li> (WIP) Tuned LPF settings for small quad. </li>
+  <li> (WIP) Tuned AHRS gains for small quad. </li>
 </ul>
 
 
@@ -147,21 +150,8 @@ The following list outlines some proposed upcoming change.
 <ul>
 <li><b> Top Priority </b></li>
 <ul>
-  <li> Revise source/header code structure </li>
-  <li> Add notes section to document parameter changes from GCS </li>
-  <li> Add filtering to signals </li>
   <li> Develop more sophisticated quad controllers </li>
   <li> Add safety features </li>
-</ul>
-<li><b> Filtering </b></li>
-<ul>
-  <li> Dedicated filter source code </li>
-  <li> Low pass filter function <li>
-  <li> Butterworth filter function </li>
-  <li> Selectable filter from compiler settings <li>
-  <li> Tunable filter gains from GCS </li>
-  <li> Pull filter settings from parameter file </li>
-  <li> Add Kalman filter </li>
 </ul>
 <li><b> Controls </b></li>
 <ul>
@@ -172,6 +162,7 @@ The following list outlines some proposed upcoming change.
   <li> System ID quad </li>
   <li> SISO MRAC quad </li>
   <li> MIMO MRAC quad </li>
+  <li> Add Kalman filter </li>
 </ul>
 <li><b> Safety Features </b></li>
 <ul>

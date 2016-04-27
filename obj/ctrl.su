@@ -1,3 +1,3 @@
-ctrl.c:23:6:ctrl_init	40	static
+ctrl.c:23:6:ctrl_init	24	static
 ctrl.c:104:6:ctrl_exit	0	static
 ctrl.c:115:6:ctrl_update	264	static

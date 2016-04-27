@@ -14,9 +14,9 @@
 #define LPF_FREQ_EUL   0.0
 #define LPF_FREQ_ANG   0.0
 
-#define LPF_HIST_GYR   20
-#define LPF_HIST_ACC   20
-#define LPF_HIST_MAG   20
+#define LPF_HIST_GYR   10
+#define LPF_HIST_ACC   10
+#define LPF_HIST_MAG   10
 #define LPF_HIST_EUL    1
 #define LPF_HIST_ANG    1
 

@@ -1,4 +1,4 @@
-filter.c:15:6:filter_init	136	static
+filter.c:15:6:filter_init	48	static
 filter.c:99:6:filter_exit	0	static
 filter.c:110:6:filter_freq	0	static
 filter.c:134:6:filter_hist	16	static
