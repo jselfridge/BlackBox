@@ -209,53 +209,63 @@ void gcs_rx ( void)  {
         // ID: #0
         case MAVLINK_MSG_ID_HEARTBEAT:
           // Reset fail safe timer
+	  if (DEBUG)  { printf("(--) Heartbeat    ");  fflush(stdout); }
         break;
 
         // ID: #20
         case MAVLINK_MSG_ID_PARAM_REQUEST_READ:
 	  gcs.sendparam = true;
-          //if (datalog.enabled)  log_record(LOG_PARAM);
+          if (datalog.enabled)  log_record(LOG_PARAM);
+	  if (DEBUG)  { printf("(20) ParamReqRead    ");  fflush(stdout); }
         break;
 
         // ID: #21
         case MAVLINK_MSG_ID_PARAM_REQUEST_LIST:
 	  gcs.sendparam = true;
+	  if (DEBUG)  { printf("(21) ParamReqList    ");  fflush(stdout); }
         break;
 
         // ID: #23
         case MAVLINK_MSG_ID_PARAM_SET:
           gcs_param_value(&msg);
-          //if (datalog.enabled)  log_record(LOG_PARAM);
-	  //printf("\n---DEBUG---\n");
+          if (datalog.enabled)  log_record(LOG_PARAM);
+	  if (DEBUG)  { printf("(23) ParamSet    ");  fflush(stdout); }
         break;
 
         // ID: #43
         case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
 	  gcs.sendmission = true;
+	  if (DEBUG)  { printf("(43) MisReqList    ");  fflush(stdout); }
         break;
 
         // ID: #47
         case MAVLINK_MSG_ID_MISSION_ACK:
 	  // Add "Mission Acknowledge" code...
+	  if (DEBUG)  { printf("(47) MisAck    ");  fflush(stdout); }
         break;
 
         // ID: #75
         case MAVLINK_MSG_ID_COMMAND_INT:
 	  // Add "Command Int" code...
+	  if (DEBUG)  { printf("(75) CmdInt    ");  fflush(stdout); }
         break;
 
         // ID: #76
         case MAVLINK_MSG_ID_COMMAND_LONG:
 	  // Add "Command Long" code...
+	  if (DEBUG)  { printf("(76) CmdLong    ");  fflush(stdout); }
         break;
 
         // ID: #???
         default:
           // Add unknown ID code...
-          printf( "\n\n  *** New GCS code: %d ***\n", msg.msgid );
+	  if (DEBUG)  { printf("(?\?) Unknown    ");  fflush(stdout); }
         break;
 
       }
+
+      if (DEBUG)  { printf("\n");  fflush(stdout); }
+
     }
   }
 

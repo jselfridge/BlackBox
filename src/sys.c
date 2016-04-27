@@ -26,6 +26,7 @@ static void sys_imuA    ( void );
 static void sys_imuB    ( void );
 static void sys_ahrs    ( void );
 static void sys_gps     ( void );
+static void sys_gcs     ( void );
 static void sys_ctrl    ( void );
 
 
@@ -117,13 +118,14 @@ void sys_update ( void )  {
   printf("%6.1f    ", timestamp );  fflush(stdout);
 
   // Select data for display
-  if(1)  sys_io();
-  if(0)  sys_filter();
-  if(0)  if(IMUA_ENABLED)  sys_imuA();
-  if(0)  if(IMUB_ENABLED)  sys_imuB();
-  if(0)  sys_ahrs();
-  if(0)  sys_gps();
-  if(1)  sys_ctrl();
+  if(SYS_IO)     sys_io();
+  if(SYS_FILTER) sys_filter();
+  if(SYS_IMUA)   if(IMUA_ENABLED)  sys_imuA();
+  if(SYS_IMUB)   if(IMUB_ENABLED)  sys_imuB();
+  if(SYS_AHRS)   sys_ahrs();
+  if(SYS_GPS)    sys_gps();
+  if(SYS_GCS)    sys_gcs();
+  if(SYS_CTRL)   sys_ctrl();
 
   // Complete debugging display 
   printf("  "); fflush(stdout);
@@ -328,6 +330,15 @@ static void sys_gps ( void )  {
   //fflush(stdout);
   pthread_mutex_unlock(&mutex_gps);
 
+  return;
+}
+
+
+/**
+ *  sys_gcs
+ *  Prints ground control debugging messages to the terminal.
+ */
+static void sys_gcs ( void )  {
   return;
 }
 

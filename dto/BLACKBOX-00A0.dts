@@ -246,8 +246,7 @@
             status = "okay";
             pinctrl-names = "default";
             pinctrl-0 = <&i2c1_pins>;
-            //clock-frequency = <0x61a80>;
-            clock-frequency = <400000>;
+            clock-frequency = <100000>;  // 400000 
             #address-cells = <1>;
             #size-cells = <0>;
         };
@@ -260,8 +259,7 @@
             status = "okay";
             pinctrl-names = "default";
             pinctrl-0 = <&i2c2_pins>;
-            //clock-frequency = <0x61a80>;
-            clock-frequency = <400000>;
+            clock-frequency = <100000>;  // 400000
             #address-cells = <1>;
             #size-cells = <0>;
         };

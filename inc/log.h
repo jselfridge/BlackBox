@@ -132,8 +132,8 @@ datalog_struct datalog;
 void  log_init   ( void );
 void  log_exit   ( void );
 void  log_start  ( void );
-void  log_finish ( void );
 void  log_record ( enum log_index index );
+void  log_finish ( void );
 
 
 #endif

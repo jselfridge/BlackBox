@@ -31,14 +31,14 @@
 
 #define GCS_INPUT_ENABLED        true
 #define GCS_OUTPUT_ENABLED       true
-#define GCS_IMUA_RAW_ENABLED     true
-#define GCS_IMUA_SCALED_ENABLED  true
-#define GCS_IMUA_FILTER_ENABLED  true
-#define GCS_IMUB_RAW_ENABLED     true
-#define GCS_IMUB_SCALED_ENABLED  true
-#define GCS_IMUB_FILTER_ENABLED  true
+#define GCS_IMUA_RAW_ENABLED     false
+#define GCS_IMUA_SCALED_ENABLED  false
+#define GCS_IMUA_FILTER_ENABLED  false
+#define GCS_IMUB_RAW_ENABLED     false
+#define GCS_IMUB_SCALED_ENABLED  false
+#define GCS_IMUB_FILTER_ENABLED  false
 #define GCS_AHRS_EUL_ENABLED     true
-#define GCS_AHRS_QUAT_ENABLED    true
+#define GCS_AHRS_QUAT_ENABLED    false
 #define GCS_GPS_ENABLED          true
 
 

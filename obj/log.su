@@ -1,6 +1,5 @@
-log.c:264:13:log_mem	48	static
-log.c:28:6:log_init	8	static
-log.c:39:6:log_exit	0	static
-log.c:50:6:log_start	56	static
-log.c:239:6:log_finish	80	static
-log.c:647:6:log_record	136	static
+log.c:26:6:log_init	80	static
+log.c:148:6:log_exit	56	static
+log.c:256:6:log_start	56	static
+log.c:442:6:log_record	136	static
+log.c:689:6:log_finish	64	static

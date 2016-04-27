@@ -9,6 +9,14 @@
 
 
 #define DEBUG       true
+#define SYS_IO      false
+#define SYS_FILTER  false
+#define SYS_IMUA    false
+#define SYS_IMUB    false
+#define SYS_AHRS    false
+#define SYS_GPS     false
+#define SYS_GCS     false
+#define SYS_CTRL    false
 #define SYS_STACK  ( 100 * 1024 * 1024 )
 
 
