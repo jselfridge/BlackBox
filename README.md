@@ -12,7 +12,8 @@ This software version focuses on expanding the minimum working
 software set, to include features that are needed for inner loop 
 stabilization, outer loop navigation, and autonomous capabilities.
 
-<b> Signal filtering and parameter tuning </b>
+v0.1.5 - Signal filtering and parameter tuning
+----------------------------------------------
 <ul>
   <li> Revised source code and header file structure. </li>
   <li> Incorporated second IMU into the system. </li>
