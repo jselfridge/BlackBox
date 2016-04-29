@@ -25,9 +25,9 @@ typedef struct ekf_struct {
 } ekf_struct;
 
 
-//void ekf_init ( void *ekf, int n, int m );
-//void ekf_exit ( void );
-//int ekf_update ( void *ekf, double *z );
+void ekf_init   ( void *ekf, int n, int m );
+void ekf_exit   ( void );
+int  ekf_update ( void *ekf, double *z );
 
 
 #endif

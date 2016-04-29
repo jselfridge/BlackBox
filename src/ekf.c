@@ -1,15 +1,41 @@
 
 
 #include "ekf.h"
-//#include <math.h>
-//#include <stdio.h>
+#include <math.h>
+#include <stdio.h>
 //#include <stdlib.h>
+#include "sys.h"
 
 
-//static void unpack ( void *v, ekf_t *ekf, int n, int m );
-//static int choldc1 ( double *a, double *p, int n );
-//static int choldcsl ( double *A, double *a, double *p, int n );
-//static int cholsl ( double *A, double *a, double *p, int n );
+static void unpack    ( void *v, ekf_struct *ekf, int n, int m );
+static int  choldc1   ( double *a, double *p, int n );
+static int  choldcsl  ( double *A, double *a, double *p, int n );
+static int  cholsl    ( double *A, double *a, double *p, int n );
+static void zeros     ( double *a, int m, int n );
+static void mulmat    ( double *a, double *b, double *c, int arows, int acols, int bcols );
+static void mulvec    ( double *a, double *x, double *y, int m, int n );
+static void transpose ( double *a, double *at, int m, int n );
+static void accum     ( double *a, double *b, int m, int n );
+static void add       ( double *a, double *b, double *c, int n );
+static void sub       ( double *a, double *b, double *c, int n );
+static void negate    ( double *a, int m, int n );
+static void addeye    ( double *a, int n );
+
+
+#if 0
+static void dump ( double *a, int m, int n, const char *fmt )  {
+  int i, j;
+  char f[100];
+  sprintf( f, "%s ", fmt );
+  for( i=0; i<m; ++i )  {
+    for( j=0; j<n; ++j )  {
+      printf( f, a[i*n+j] );
+    }
+    printf("\n");
+  }
+  return;
+}
+#endif
 
 
 /**
@@ -42,7 +68,6 @@
       double tmp5[M];
  * </pre>
  */
-/*
 void ekf_init ( void *v, int n, int m )  {
   if (DEBUG)  printf( "Initializing EKF \n" );
 
@@ -53,7 +78,7 @@ void ekf_init ( void *v, int n, int m )  {
   *ptr = m;
 
   // Unpack rest of incoming structure for initlization
-  ekf_t ekf;  // NOTE: Why is this declared here?
+  ekf_struct ekf;  // NOTE: Why is this declared here?
   unpack(v, &ekf, n, m);  // NOTE: Do I really need this?
 
   // Zero out matrices
@@ -66,18 +91,17 @@ void ekf_init ( void *v, int n, int m )  {
 
   return;
 }
-*/
+
 
 /**
  * Exits the EKF routine
  */
-/*
 void ekf_exit ( void )  {
   if(DEBUG)  printf( "Close EKF \n" );
   // Add code as needed...
   return;
 }
-*/
+
 
 /**
  * Runs one step of EKF prediction and update. Your code should first build
@@ -87,7 +111,6 @@ void ekf_exit ( void )  {
  * @param z array of measurement (observation) values
  * @return 0 on success, 1 on failure caused by non-positive-definite matrix.
  */
-/*
 int ekf_update ( void *v, double *z )  {
 
   // Unpack incoming structure
@@ -98,7 +121,7 @@ int ekf_update ( void *v, double *z )  {
   int m = *ptr;
 
   // NOTE: Why unpack again?
-  ekf_t ekf;
+  ekf_struct ekf;
   unpack( v, &ekf, n, m );
 
   // P_k = F_{k-1} P_{k-1} F^T_{k-1} + Q_{k-1}
@@ -124,18 +147,17 @@ int ekf_update ( void *v, double *z )  {
   // P_k = (I - G_k H_k) P_k
   mulmat( ekf.G, ekf.H, ekf.tmp1, n, m, n );
   negate( ekf.tmp1, n, n );
-  mat_addeye( ekf.tmp1, n );
+  addeye( ekf.tmp1, n );
   mulmat( ekf.tmp1, ekf.Pp, ekf.P, n, n, n );
 
   return 0;
 }
-*/
+
 
 /**
  *
  */
-/*
-static void unpack ( void *v, ekf_t *ekf, int n, int m )  {
+static void unpack ( void *v, ekf_struct *ekf, int n, int m )  {
 
   // Skip over n, m in data structure
   // NOTE: Find a better way...
@@ -179,13 +201,12 @@ static void unpack ( void *v, ekf_t *ekf, int n, int m )  {
 
   return;
 }
-*/
+
 
 /**
  * Cholesky-decomposition matrix-inversion code, adapated from
  * http://jean-pierre.moreau.pagesperso-orange.fr/Cplus/choles_cpp.txt
  */
-/*
 static int choldc1 ( double *a, double *p, int n )  {
 
   // Local variables
@@ -206,12 +227,11 @@ static int choldc1 ( double *a, double *p, int n )  {
 
   return 0;
 }
-*/
+
 
 /**
  * 
  */
-/*
 static int choldcsl ( double *A, double *a, double *p, int n )  {
 
   // Local variables
@@ -239,13 +259,12 @@ static int choldcsl ( double *A, double *a, double *p, int n )  {
   }
 
   return 0;    
-}*/
+}
 
 
 /**
  *
  */
-/*
 static int cholsl ( double *A, double *a, double *p, int n )  {
 
   // Local variables
@@ -287,128 +306,119 @@ static int cholsl ( double *A, double *a, double *p, int n )  {
 
   return 0;
 }
-*/
 
 
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// START HERE
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-/*static void zeros(double * a, int m, int n)
-{
-    int j;
-    for (j=0; j<m*n; ++j)
-        a[j] = 0;
-}
-*/
-
-/*
-#ifdef DEBUG
-static void dump(double * a, int m, int n, const char * fmt)
-{
-    int i,j;
-
-    char f[100];
-    sprintf(f, "%s ", fmt);
-    for(i=0; i<m; ++i) {
-        for(j=0; j<n; ++j)
-            printf(f, a[i*n+j]);
-        printf("\n");
-    }
-}
-#endif
-*/
-
-
-
-/* C <- A * B */
- /*static void mulmat(double * a, double * b, double * c, int arows, int acols, int bcols)
-{
-    int i, j,l;
-
-    for(i=0; i<arows; ++i)
-        for(j=0; j<bcols; ++j) {
-            c[i*bcols+j] = 0;
-            for(l=0; l<acols; ++l)
-                c[i*bcols+j] += a[i*acols+l] * b[l*bcols+j];
-        }
-}
+/**
+ *
  */
+static void zeros ( double *a, int m, int n )  {
+  int j;
+  for ( j=0; j<m*n; ++j )  a[j] = 0;
+}
 
-/*static void mulvec(double * a, double * x, double * y, int m, int n)
-{
-    int i, j;
 
-    for(i=0; i<m; ++i) {
-        y[i] = 0;
-        for(j=0; j<n; ++j)
-            y[i] += x[j] * a[i*n+j];
+/**
+ *
+ */
+// C <- A * B
+static void mulmat ( double *a, double *b, double *c, int arows, int acols, int bcols )  {
+  int i, j, l;
+  for( i=0; i<arows; ++i )  {
+    for( j=0; j<bcols; ++j )  {
+      c[i*bcols+j] = 0;
+      for( l=0; l<acols; ++l )  c[i*bcols+j] += a[i*acols+l] * b[l*bcols+j];
     }
+  }
+  return;
 }
-*/
 
-/*static void transpose(double * a, double * at, int m, int n)
-{
-    int i,j;
 
-    for(i=0; i<m; ++i)
-        for(j=0; j<n; ++j) {
-            at[j*m+i] = a[i*n+j];
-        }
+/**
+ *
+ */
+static void mulvec ( double *a, double *x, double *y, int m, int n )  {
+  int i, j;
+  for( i=0; i<m; ++i )  {
+    y[i] = 0;
+    for( j=0; j<n; ++j )  y[i] += x[j] * a[i*n+j];
+  }
+  return;
 }
-*/
 
-/* A <- A + B */
-/*static void accum(double * a, double * b, int m, int n)
-{        
-    int i,j;
 
-    for(i=0; i<m; ++i)
-        for(j=0; j<n; ++j)
-            a[i*n+j] += b[i*n+j];
+/**
+ *
+ */
+static void transpose ( double *a, double *at, int m, int n )  {
+  int i, j;
+  for( i=0; i<m; ++i )  {
+    for( j=0; j<n; ++j )  {
+      at[j*m+i] = a[i*n+j];
+    }
+  }
+  return;
 }
-*/
 
-/* C <- A + B */
-/*static void add(double * a, double * b, double * c, int n)
-{
-    int j;
 
-    for(j=0; j<n; ++j)
-        c[j] = a[j] + b[j];
+/**
+ *
+ */
+// A <- A + B
+static void accum ( double *a, double *b, int m, int n )  {
+  int i, j;
+  for( i=0; i<m; ++i )  {
+    for( j=0; j<n; ++j )  {
+      a[i*n+j] += b[i*n+j];
+    }
+  }
+  return;
 }
-*/
 
-/* C <- A - B */
-/*static void sub(double * a, double * b, double * c, int n)
-{
-    int j;
 
-    for(j=0; j<n; ++j)
-        c[j] = a[j] - b[j];
+/**
+ *
+ */
+// C <- A + B
+static void add ( double *a, double *b, double *c, int n )  {
+  int j;
+  for( j=0; j<n; ++j )  c[j] = a[j] + b[j];
+  return;
 }
-*/
 
-/*static void negate(double * a, int m, int n)
-{        
-    int i, j;
 
-    for(i=0; i<m; ++i)
-        for(j=0; j<n; ++j)
-            a[i*n+j] = -a[i*n+j];
+/**
+ *
+ */
+// C <- A - B
+static void sub ( double *a, double *b, double *c, int n )  {
+  int j;
+  for( j=0; j<n; ++j )  c[j] = a[j] - b[j];
+  return;
 }
-*/
 
-/*static void mat_addeye(double * a, int n)
-{
-    int i;
-    for (i=0; i<n; ++i)
-        a[i*n+i] += 1;
+
+/**
+ *
+ */
+static void negate ( double *a, int m, int n )  {        
+  int i, j;
+  for( i=0; i<m; ++i )  {
+    for( j=0; j<n; ++j )  {
+      a[i*n+j] = -a[i*n+j];
+    }
+  }
+  return;
 }
-*/
+
+
+/**
+ *
+ */
+static void addeye ( double *a, int n )  {
+  int i;
+  for( i=0; i<n; ++i )  a[i*n+i] += 1;
+  return;
+}
 
 
 
