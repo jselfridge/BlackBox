@@ -6,6 +6,185 @@
 //#include <stdlib.h>
 
 
+//static void unpack ( void *v, ekf_t *ekf, int n, int m );
+
+
+/**
+ * Initializes the EKF structure.
+ * @param ekf pointer to and EKF structure to be initialized
+ * @param n number of system states
+ * @param m number of measurements
+ *
+ * <tt>ekf</tt> should be a pointer to a structure defined as follows, 
+ * where <tt>N</tt> and </tt>M</tt> are constants:
+ * <pre>
+      int n;           // number of state values
+      int m;           // number of observables
+      double x[N];     // state vector
+      double P[N][N];  // prediction error covariance
+      double Q[N][N];  // process noise covariance
+      double R[M][M];  // measurement error covariance
+      double G[N][M];  // Kalman gain; a.k.a. K
+      double F[N][N];  // Jacobian of process model
+      double H[M][N];  // Jacobian of measurement model
+      double Ht[N][M]; // transpose of measurement Jacobian
+      double Ft[N][N]; // transpose of process Jacobian
+      double Pp[N][N]; // P, post-prediction, pre-update
+      double fx[N];    // output of user defined f() state-transition function
+      double hx[N];    // output of user defined h() measurement function
+      double tmp1[N][N];
+      double tmp2[M][N];
+      double tmp3[M][M];
+      double tmp4[M][M];
+      double tmp5[M];
+ * </pre>
+ */
+/*
+void ekf_init ( void *v, int n, int m )  {
+  if (DEBUG)  printf( "Initializing EKF \n" );
+
+  // Assign dimensions to incoming data structure
+  int *ptr = (int *)v;
+  *ptr = n;
+  ptr++;
+  *ptr = m;
+
+  // Unpack rest of incoming structure for initlization
+  ekf_t ekf;  // NOTE: Why is this declared here?
+  unpack(v, &ekf, n, m);  // NOTE: Do I really need this?
+
+  // Zero out matrices
+  zeros( ekf.P, n, n );
+  zeros( ekf.Q, n, n );
+  zeros( ekf.R, m, m );
+  zeros( ekf.G, n, m );
+  zeros( ekf.F, n, n );
+  zeros( ekf.H, m, n );
+
+  return;
+}
+*/
+
+/**
+ * Exits the EKF routine
+ */
+/*
+void ekf_exit ( void )  {
+  if(DEBUG)  printf( "Close EKF \n" );
+  // Add code as needed...
+  return;
+}
+*/
+
+/**
+ * Runs one step of EKF prediction and update. Your code should first build
+ * a model, setting the contents of <tt>ekf.fx</tt>, <tt>ekf.F</tt>,
+ * <tt>ekf.hx</tt>, and <tt>ekf.H</tt> to appropriate values.
+ * @param ekf pointer to structure EKF
+ * @param z array of measurement (observation) values
+ * @return 0 on success, 1 on failure caused by non-positive-definite matrix.
+ */
+/*
+int ekf_update ( void *v, double *z )  {
+
+  // Unpack incoming structure
+  // NOTE: Look for a better way...
+  int *ptr = (int *)v;
+  int n = *ptr;
+  ptr++;
+  int m = *ptr;
+
+  // NOTE: Why unpack again?
+  ekf_t ekf;
+  unpack( v, &ekf, n, m );
+
+  // P_k = F_{k-1} P_{k-1} F^T_{k-1} + Q_{k-1}
+  mulmat( ekf.F, ekf.P, ekf.tmp1, n, n, n );
+  transpose( ekf.F, ekf.Ft, n, n );
+  mulmat( ekf.tmp1, ekf.Ft, ekf.Pp, n, n, n );
+  accum( ekf.Pp, ekf.Q, n, n );
+
+  // G_k = P_k H^T_k (H_k P_k H^T_k + R)^{-1}
+  transpose( ekf.H, ekf.Ht, m, n );
+  mulmat( ekf.Pp, ekf.Ht, ekf.tmp1, n, n, m );
+  mulmat( ekf.H, ekf.Pp, ekf.tmp2, m, n, n );
+  mulmat( ekf.tmp2, ekf.Ht, ekf.tmp3, m, n, m );
+  accum( ekf.tmp3, ekf.R, m, m );
+  if ( cholsl( ekf.tmp3, ekf.tmp4, ekf.tmp5, m ) )  return 1;
+  mulmat( ekf.tmp1, ekf.tmp4, ekf.G, n, m, m );
+
+  // \hat{x}_k = \hat{x_k} + G_k(z_k - h(\hat{x}_k))
+  sub( z, ekf.hx, ekf.tmp5, m );
+  mulvec( ekf.G, ekf.tmp5, ekf.tmp2, n, m );
+  add( ekf.fx, ekf.tmp2, ekf.x, n );
+
+  // P_k = (I - G_k H_k) P_k
+  mulmat( ekf.G, ekf.H, ekf.tmp1, n, m, n );
+  negate( ekf.tmp1, n, n );
+  mat_addeye( ekf.tmp1, n );
+  mulmat( ekf.tmp1, ekf.Pp, ekf.P, n, n, n );
+
+  return 0;
+}
+*/
+
+/**
+ *
+ */
+/*
+static void unpack ( void *v, ekf_t *ekf, int n, int m )  {
+
+  // Skip over n, m in data structure
+  // NOTE: Find a better way...
+  char *cptr = (char *)v;
+  cptr += 2*sizeof(int);
+
+  double *dptr = (double *)cptr;
+  ekf->x = dptr;
+  dptr += n;
+  ekf->P = dptr;
+  dptr += n*n;
+  ekf->Q = dptr;
+  dptr += n*n;
+  ekf->R = dptr;
+  dptr += m*m;
+  ekf->G = dptr;
+  dptr += n*m;
+  ekf->F = dptr;
+  dptr += n*n;
+  ekf->H = dptr;
+  dptr += m*n;
+  ekf->Ht = dptr;
+  dptr += n*m;
+  ekf->Ft = dptr;
+  dptr += n*n;
+  ekf->Pp = dptr;
+  dptr += n*n;
+  ekf->fx = dptr;
+  dptr += n;
+  ekf->hx = dptr;
+  dptr += m;
+  ekf->tmp1 = dptr;
+  dptr += n*m;
+  ekf->tmp2 = dptr;
+  dptr += m*n;
+  ekf->tmp3 = dptr;
+  dptr += m*m;
+  ekf->tmp4 = dptr;
+  dptr += m*m;
+  ekf->tmp5 = dptr;
+
+  return;
+}
+*/
+
+
+
+//------------------------------------
+// START HERE!!!!
+//------------------------------------
+
+
 /* Cholesky-decomposition matrix-inversion code, adapated from
    http://jean-pierre.moreau.pagesperso-orange.fr/Cplus/choles_cpp.txt */
 /*static int choldc1(double * a, double * p, int n) {
@@ -109,6 +288,8 @@ static void dump(double * a, int m, int n, const char * fmt)
 #endif
 */
 
+
+
 /* C <- A * B */
  /*static void mulmat(double * a, double * b, double * c, int arows, int acols, int bcols)
 {
@@ -192,121 +373,6 @@ static void dump(double * a, int m, int n, const char * fmt)
     int i;
     for (i=0; i<n; ++i)
         a[i*n+i] += 1;
-}
-*/
-
-
-
-
-
-
-
-
-
-/*static void unpack(void * v, ekf_t * ekf, int n, int m)
-{
-    // skip over n, m in data structure
-    char * cptr = (char *)v;
-    cptr += 2*sizeof(int);
-
-    double * dptr = (double *)cptr;
-    ekf->x = dptr;
-    dptr += n;
-    ekf->P = dptr;
-    dptr += n*n;
-    ekf->Q = dptr;
-    dptr += n*n;
-    ekf->R = dptr;
-    dptr += m*m;
-    ekf->G = dptr;
-    dptr += n*m;
-    ekf->F = dptr;
-    dptr += n*n;
-    ekf->H = dptr;
-    dptr += m*n;
-    ekf->Ht = dptr;
-    dptr += n*m;
-    ekf->Ft = dptr;
-    dptr += n*n;
-    ekf->Pp = dptr;
-    dptr += n*n;
-    ekf->fx = dptr;
-    dptr += n;
-    ekf->hx = dptr;
-    dptr += m;
-    ekf->tmp1 = dptr;
-    dptr += n*m;
-    ekf->tmp2 = dptr;
-    dptr += m*n;
-    ekf->tmp3 = dptr;
-    dptr += m*m;
-    ekf->tmp4 = dptr;
-    dptr += m*m;
-    ekf->tmp5 = dptr;
-  }
-  */
-
-/*void ekf_init(void * v, int n, int m)
-{
-    // retrieve n, m and set them in incoming data structure
-    int * ptr = (int *)v;
-    *ptr = n;
-    ptr++;
-    *ptr = m;
-
-    // unpack rest of incoming structure for initlization
-    ekf_t ekf;
-    unpack(v, &ekf, n, m);
-
-    // zero-out matrices
-    zeros(ekf.P, n, n);
-    zeros(ekf.Q, n, n);
-    zeros(ekf.R, m, m);
-    zeros(ekf.G, n, m);
-    zeros(ekf.F, n, n);
-    zeros(ekf.H, m, n);
-}
-*/
-
-/*int ekf_step(void * v, double * z)
-{        
-    // unpack incoming structure
-    int * ptr = (int *)v;
-    int n = *ptr;
-    ptr++;
-    int m = *ptr;
-
-    ekf_t ekf;
-    unpack(v, &ekf, n, m); 
- 
-    // P_k = F_{k-1} P_{k-1} F^T_{k-1} + Q_{k-1}
-    mulmat(ekf.F, ekf.P, ekf.tmp1, n, n, n);
-    transpose(ekf.F, ekf.Ft, n, n);
-    mulmat(ekf.tmp1, ekf.Ft, ekf.Pp, n, n, n);
-    accum(ekf.Pp, ekf.Q, n, n);
-
-    // G_k = P_k H^T_k (H_k P_k H^T_k + R)^{-1}
-    transpose(ekf.H, ekf.Ht, m, n);
-    mulmat(ekf.Pp, ekf.Ht, ekf.tmp1, n, n, m);
-    mulmat(ekf.H, ekf.Pp, ekf.tmp2, m, n, n);
-    mulmat(ekf.tmp2, ekf.Ht, ekf.tmp3, m, n, m);
-    accum(ekf.tmp3, ekf.R, m, m);
-    if (cholsl(ekf.tmp3, ekf.tmp4, ekf.tmp5, m)) return 1;
-    mulmat(ekf.tmp1, ekf.tmp4, ekf.G, n, m, m);
-
-    // \hat{x}_k = \hat{x_k} + G_k(z_k - h(\hat{x}_k))
-    sub(z, ekf.hx, ekf.tmp5, m);
-    mulvec(ekf.G, ekf.tmp5, ekf.tmp2, n, m);
-    add(ekf.fx, ekf.tmp2, ekf.x, n);
-
-    // P_k = (I - G_k H_k) P_k
-    mulmat(ekf.G, ekf.H, ekf.tmp1, n, m, n);
-    negate(ekf.tmp1, n, n);
-    mat_addeye(ekf.tmp1, n);
-    mulmat(ekf.tmp1, ekf.Pp, ekf.P, n, n, n);
-
-    // success
-    return 0;
 }
 */
 
