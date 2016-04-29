@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include "ahrs.h"
 #include "ctrl.h"
+#include "ekf.h"
 #include "flag.h"
 #include "gcs.h"
 #include "gps.h"
@@ -51,6 +52,7 @@ void tmr_mutex ( void )  {
   pthread_mutex_init( &mutex_eul,    NULL );
   pthread_mutex_init( &mutex_lpfeul, NULL );
   pthread_mutex_init( &mutex_quat,   NULL );
+  pthread_mutex_init( &mutex_ekf,    NULL );
   pthread_mutex_init( &mutex_gps,    NULL );
   pthread_mutex_init( &mutex_gcs,    NULL );
   pthread_mutex_init( &mutex_ctrl,   NULL );
@@ -94,6 +96,11 @@ void tmr_setup ( void )  {
   tmr_ahrs.name = "ahrs";
   tmr_ahrs.prio = PRIO_AHRS;
   tmr_ahrs.per  = 1000000 / HZ_AHRS;
+
+  // EKF timer
+  tmr_ekf.name  = "ekf";
+  tmr_ekf.prio  = PRIO_EKF;
+  tmr_ekf.per   = 1000000 / HZ_EKF;
 
   // GPS timer
   tmr_gps.name = "gps";
@@ -170,6 +177,7 @@ void tmr_begin ( pthread_attr_t *attr )  {
   if( IMUB_ENABLED && !IMUA_ENABLED ) {  tmr_thread( &tmr_imuB,  attr, fcn_imuB  );  usleep(100000);  }
 
   tmr_thread( &tmr_ahrs,  attr, fcn_ahrs  );  usleep(100000);
+  tmr_thread( &tmr_ekf,   attr, fcn_ekf   );  usleep(100000);
   tmr_thread( &tmr_gps,   attr, fcn_gps   );  usleep(100000);
 
   tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
@@ -208,6 +216,7 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&mutex_eul);
   pthread_mutex_destroy(&mutex_lpfeul);
   pthread_mutex_destroy(&mutex_quat);
+  pthread_mutex_destroy(&mutex_ekf);
   pthread_mutex_destroy(&mutex_gps);
   pthread_mutex_destroy(&mutex_gcs);
   pthread_mutex_destroy(&mutex_ctrl);
@@ -231,6 +240,11 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_gps.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gps' thread. \n" );
   if(DEBUG)  printf( "gps " );
+
+  // Exit EKF thread
+  if( pthread_join ( tmr_ekf.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'ekf' thread. \n" );
+  if(DEBUG)  printf( "ekf " );
 
   // Exit AHRS thread
   if( pthread_join ( tmr_ahrs.id, NULL ) )
@@ -500,10 +514,28 @@ void *fcn_ahrs (  )  {
   tmr_create(&tmr_ahrs);
   while (running) {
     tmr_start(&tmr_ahrs);
-    ahrs_update();
+    if (!datalog.saving)  ahrs_update();
     tmr_finish(&tmr_ahrs);
     if (datalog.enabled)  log_record(LOG_AHRS);
     tmr_pause(&tmr_ahrs);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+
+/**
+ *  fcn_ekf
+ *  Function handler for the Extended Kalman Filter timing thread.
+ */
+void *fcn_ekf (  )  {
+  tmr_create(&tmr_ekf);
+  while (running) {
+    tmr_start(&tmr_ekf);
+    if (!datalog.saving)  ekf_update();
+    tmr_finish(&tmr_ekf);
+    //if (datalog.enabled)  log_record(LOG_EKF);
+    tmr_pause(&tmr_ekf);
   }
   pthread_exit(NULL);
   return NULL;

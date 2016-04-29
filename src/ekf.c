@@ -2,16 +2,18 @@
 
 #include "ekf.h"
 #include <math.h>
+#include <pthread.h>
 #include <stdio.h>
-//#include <stdlib.h>
+#include <stdlib.h>
 #include "sys.h"
+#include "timer.h"
 
 
-static void unpack    ( void *v, ekf_struct *ekf, int n, int m );
+//static void unpack    ( void *v, ekf_struct *ekf, int n, int m );
 static int  choldc1   ( double *a, double *p, int n );
 static int  choldcsl  ( double *A, double *a, double *p, int n );
 static int  cholsl    ( double *A, double *a, double *p, int n );
-static void zeros     ( double *a, int m, int n );
+//static void zeros     ( double *a, int m, int n );
 static void mulmat    ( double *a, double *b, double *c, int arows, int acols, int bcols );
 static void mulvec    ( double *a, double *x, double *y, int m, int n );
 static void transpose ( double *a, double *at, int m, int n );
@@ -22,7 +24,7 @@ static void negate    ( double *a, int m, int n );
 static void addeye    ( double *a, int n );
 
 
-#if 0
+/*
 static void dump ( double *a, int m, int n, const char *fmt )  {
   int i, j;
   char f[100];
@@ -35,12 +37,12 @@ static void dump ( double *a, int m, int n, const char *fmt )  {
   }
   return;
 }
-#endif
+*/
 
 
 /**
  * Initializes the EKF structure.
- * @param ekf pointer to and EKF structure to be initialized
+ * @param ekf pointer to an EKF structure to be initialized
  * @param n number of system states
  * @param m number of measurements
  *
@@ -68,26 +70,34 @@ static void dump ( double *a, int m, int n, const char *fmt )  {
       double tmp5[M];
  * </pre>
  */
-void ekf_init ( void *v, int n, int m )  {
+void ekf_init ( void )  {
   if (DEBUG)  printf( "Initializing EKF \n" );
 
-  // Assign dimensions to incoming data structure
-  int *ptr = (int *)v;
-  *ptr = n;
-  ptr++;
-  *ptr = m;
+  // Local variables
+  int n  = EKF_N;
+  int m  = EKF_M;
+  int nn = n*n;
+  int nm = n*m;
+  int mm = m*m;
+  int i;
 
-  // Unpack rest of incoming structure for initlization
-  ekf_struct ekf;  // NOTE: Why is this declared here?
-  unpack(v, &ekf, n, m);  // NOTE: Do I really need this?
+  // Allocate memory for storage arrays
+  ekf.x = malloc( sizeof(double) * n  );
+  ekf.F = malloc( sizeof(double) * nn );
+  ekf.H = malloc( sizeof(double) * nm );
+  ekf.Q = malloc( sizeof(double) * nn );
+  ekf.R = malloc( sizeof(double) * mm );
+  ekf.P = malloc( sizeof(double) * nn );
+  ekf.K = malloc( sizeof(double) * nm );
 
-  // Zero out matrices
-  zeros( ekf.P, n, n );
-  zeros( ekf.Q, n, n );
-  zeros( ekf.R, m, m );
-  zeros( ekf.G, n, m );
-  zeros( ekf.F, n, n );
-  zeros( ekf.H, m, n );
+  // Zero out initial values
+  for ( i=0; i<n;  i++ )  ekf.x[i] = 0.0;
+  for ( i=0; i<nn; i++ )  ekf.F[i] = 0.0;
+  for ( i=0; i<nm; i++ )  ekf.H[i] = 0.0;
+  for ( i=0; i<nn; i++ )  ekf.Q[i] = 0.0;
+  for ( i=0; i<mm; i++ )  ekf.R[i] = 0.0;
+  for ( i=0; i<nn; i++ )  ekf.P[i] = 0.0;
+  for ( i=0; i<nm; i++ )  ekf.K[i] = 0.0;
 
   return;
 }
@@ -97,8 +107,14 @@ void ekf_init ( void *v, int n, int m )  {
  * Exits the EKF routine
  */
 void ekf_exit ( void )  {
-  if(DEBUG)  printf( "Close EKF \n" );
-  // Add code as needed...
+  if(DEBUG)  printf( "Close EKF \n" );  
+  free(ekf.x);
+  free(ekf.F);
+  free(ekf.H);
+  free(ekf.Q);
+  free(ekf.R);
+  free(ekf.P);
+  free(ekf.K);
   return;
 }
 
@@ -109,46 +125,62 @@ void ekf_exit ( void )  {
  * <tt>ekf.hx</tt>, and <tt>ekf.H</tt> to appropriate values.
  * @param ekf pointer to structure EKF
  * @param z array of measurement (observation) values
- * @return 0 on success, 1 on failure caused by non-positive-definite matrix.
+ * @return 0 on success, -1 on failure caused by non-positive-definite matrix.
  */
-int ekf_update ( void *v, double *z )  {
+int ekf_update ( void )  {
 
-  // Unpack incoming structure
-  // NOTE: Look for a better way...
-  int *ptr = (int *)v;
-  int n = *ptr;
-  ptr++;
-  int m = *ptr;
+  // Local variables
+  int n  = EKF_N;
+  int m  = EKF_M;
+  //int nn = n*n;
+  //int nm = n*m;
+  //int mm = m*m;
+  //int i;
 
-  // NOTE: Why unpack again?
-  ekf_struct ekf;
-  unpack( v, &ekf, n, m );
+  // Local storage arrays
+
+  // Pull data from structure
+  pthread_mutex_lock(&mutex_ekf);
+  double *x = ekf.x;
+  double *F = ekf.F;
+  double *H = ekf.H;
+  double *Q = ekf.Q;
+  double *R = ekf.R;
+  double *P = ekf.P;
+  double *K = ekf.K;
+  pthread_mutex_unlock(&mutex_ekf);
+
+  // Define intermediate storage arrays
+  double Ft, Ht, fx, hx, Pp, z;
+
+  // Define temp storage arrays
+  double tmp1, tmp2, tmp3, tmp4, tmp5;
 
   // P_k = F_{k-1} P_{k-1} F^T_{k-1} + Q_{k-1}
-  mulmat( ekf.F, ekf.P, ekf.tmp1, n, n, n );
-  transpose( ekf.F, ekf.Ft, n, n );
-  mulmat( ekf.tmp1, ekf.Ft, ekf.Pp, n, n, n );
-  accum( ekf.Pp, ekf.Q, n, n );
+  mulmat( F, P, &tmp1, n, n, n );
+  transpose( F, &Ft, n, n );
+  mulmat( &tmp1, &Ft, &Pp, n, n, n );
+  accum( &Pp, Q, n, n );
 
   // G_k = P_k H^T_k (H_k P_k H^T_k + R)^{-1}
-  transpose( ekf.H, ekf.Ht, m, n );
-  mulmat( ekf.Pp, ekf.Ht, ekf.tmp1, n, n, m );
-  mulmat( ekf.H, ekf.Pp, ekf.tmp2, m, n, n );
-  mulmat( ekf.tmp2, ekf.Ht, ekf.tmp3, m, n, m );
-  accum( ekf.tmp3, ekf.R, m, m );
-  if ( cholsl( ekf.tmp3, ekf.tmp4, ekf.tmp5, m ) )  return 1;
-  mulmat( ekf.tmp1, ekf.tmp4, ekf.G, n, m, m );
+  transpose( H, &Ht, m, n );
+  mulmat( &Pp, &Ht, &tmp1, n, n, m );
+  mulmat( H, &Pp, &tmp2, m, n, n );
+  mulmat( &tmp2, &Ht, &tmp3, m, n, m );
+  accum( &tmp3, R, m, m );
+  if ( cholsl( &tmp3, &tmp4, &tmp5, m ) )  return 1;
+  mulmat( &tmp1, &tmp4, K, n, m, m );
 
   // \hat{x}_k = \hat{x_k} + G_k(z_k - h(\hat{x}_k))
-  sub( z, ekf.hx, ekf.tmp5, m );
-  mulvec( ekf.G, ekf.tmp5, ekf.tmp2, n, m );
-  add( ekf.fx, ekf.tmp2, ekf.x, n );
+  sub( &z, &hx, &tmp5, m );
+  mulvec( K, &tmp5, &tmp2, n, m );
+  add( &fx, &tmp2, x, n );
 
   // P_k = (I - G_k H_k) P_k
-  mulmat( ekf.G, ekf.H, ekf.tmp1, n, m, n );
-  negate( ekf.tmp1, n, n );
-  addeye( ekf.tmp1, n );
-  mulmat( ekf.tmp1, ekf.Pp, ekf.P, n, n, n );
+  mulmat( K, H, &tmp1, n, m, n );
+  negate( &tmp1, n, n );
+  addeye( &tmp1, n );
+  mulmat( &tmp1, &Pp, P, n, n, n );
 
   return 0;
 }
@@ -157,6 +189,7 @@ int ekf_update ( void *v, double *z )  {
 /**
  *
  */
+/*
 static void unpack ( void *v, ekf_struct *ekf, int n, int m )  {
 
   // Skip over n, m in data structure
@@ -201,7 +234,7 @@ static void unpack ( void *v, ekf_struct *ekf, int n, int m )  {
 
   return;
 }
-
+*/
 
 /**
  * Cholesky-decomposition matrix-inversion code, adapated from
@@ -311,11 +344,11 @@ static int cholsl ( double *A, double *a, double *p, int n )  {
 /**
  *
  */
-static void zeros ( double *a, int m, int n )  {
+/*static void zeros ( double *a, int m, int n )  {
   int j;
   for ( j=0; j<m*n; ++j )  a[j] = 0;
 }
-
+*/
 
 /**
  *
