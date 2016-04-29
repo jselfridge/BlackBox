@@ -12,6 +12,19 @@ This software version focuses on expanding the minimum working
 software set, to include features that are needed for inner loop 
 stabilization, outer loop navigation, and autonomous capabilities.
 
+<b> Extended Kalman Filter </b>
+<ul>
+  <li> (WIP) Created module for Extended Kalman Filter (EKF) .</li>
+  <li> (WIP) Setup timing thread for the EKF. </li>
+  <li> (WIP) </li>
+  <li> (WIP) </li>
+  <li> (WIP) </li>
+  <li> (WIP) </li>
+  <li> (WIP) </li>
+  <li> (WIP) </li>
+</ul>
+
+
 v0.1.5 - Signal filtering and parameter tuning
 ----------------------------------------------
 <ul>
