@@ -12,8 +12,7 @@ This software version focuses on expanding the minimum working
 software set, to include features that are needed for inner loop 
 stabilization, outer loop navigation, and autonomous capabilities.
 
-v0.1.5 - Signal filtering and parameter tuning
----------------------------------------------
+<b> Signal filtering and parameter tuning </b>
 <ul>
   <li> Incorporated second IMU into the system. </li>
   <li> Set I2C bus to 100kHz until replacement resistors are available. </li>
