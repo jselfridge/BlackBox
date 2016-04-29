@@ -6,7 +6,7 @@ gcs.c:917:13:gcs_ahrs_eul	664	dynamic,bounded
 gcs.c:569:13:gcs_output	656	dynamic,bounded
 gcs.c:523:13:gcs_input	680	dynamic,bounded
 gcs.c:364:13:gcs_missionlist	616	dynamic,bounded
-gcs.c:42:6:gcs_init	136	dynamic,bounded
-gcs.c:127:6:gcs_exit	0	static
+gcs.c:42:6:gcs_init	128	dynamic,bounded
+gcs.c:127:6:gcs_exit	8	static
 gcs.c:138:6:gcs_tx	8	static
 gcs.c:182:6:gcs_rx	336	dynamic,bounded
