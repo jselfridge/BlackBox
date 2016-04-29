@@ -7,6 +7,9 @@
 
 
 //static void unpack ( void *v, ekf_t *ekf, int n, int m );
+//static int choldc1 ( double *a, double *p, int n );
+//static int choldcsl ( double *A, double *a, double *p, int n );
+//static int cholsl ( double *A, double *a, double *p, int n );
 
 
 /**
@@ -178,90 +181,121 @@ static void unpack ( void *v, ekf_t *ekf, int n, int m )  {
 }
 */
 
+/**
+ * Cholesky-decomposition matrix-inversion code, adapated from
+ * http://jean-pierre.moreau.pagesperso-orange.fr/Cplus/choles_cpp.txt
+ */
+/*
+static int choldc1 ( double *a, double *p, int n )  {
 
+  // Local variables
+  int i, j, k;
+  double sum;
 
-//------------------------------------
-// START HERE!!!!
-//------------------------------------
-
-
-/* Cholesky-decomposition matrix-inversion code, adapated from
-   http://jean-pierre.moreau.pagesperso-orange.fr/Cplus/choles_cpp.txt */
-/*static int choldc1(double * a, double * p, int n) {
-    int i,j,k;
-    double sum;
-
-    for (i = 0; i < n; i++) {
-        for (j = i; j < n; j++) {
-            sum = a[i*n+j];
-            for (k = i - 1; k >= 0; k--) {
-                sum -= a[i*n+k] * a[j*n+k];
-            }
-            if (i == j) {
-                if (sum <= 0) {
-                    return 1; // error
-                }
-                p[i] = sqrt(sum);
-            }
-            else {
-                a[j*n+i] = sum / p[i];
-            }
-        }
+  for ( i=0; i<n; i++ )  {
+    for ( j=i; j<n; j++ )  {
+      sum = a[i*n+j];
+      for ( k=i-1; k>=0; k-- )  sum -= a[i*n+k] * a[j*n+k];
+      if (i==j)  {
+        if (sum<=0)  return -1;
+        p[i] = sqrt(sum);
+      }
+      else  a[j*n+i] = sum / p[i];
     }
+  }
 
-  return 0; // success
+  return 0;
+}
+*/
+
+/**
+ * 
+ */
+/*
+static int choldcsl ( double *A, double *a, double *p, int n )  {
+
+  // Local variables
+  int i, j, k;
+  double sum;
+
+  // Assign A to a
+  for ( i=0; i<n; i++ )  {
+    for ( j=0; j<n; j++ )  {
+      a[i*n+j] = A[i*n+j];
+    }
+  }
+
+  // Check error condition
+  if ( choldc1( a, p, n ) )  return -1;
+
+  // Apply algorithm
+  for ( i=0; i<n; i++ )  {
+    a[i*n+i] = 1 / p[i];
+    for ( j=i+1; j<n; j++ )  {
+      sum = 0;
+      for ( k=i; k<j; k++ )  sum -= a[j*n+k] * a[k*n+i];
+      a[j*n+i] = sum / p[j];
+    }
+  }
+
+  return 0;    
 }*/
 
-/*static int choldcsl(double * A, double * a, double * p, int n) 
-{
-    int i,j,k; double sum;
-    for (i = 0; i < n; i++) 
-        for (j = 0; j < n; j++) 
-            a[i*n+j] = A[i*n+j];
-    if (choldc1(a, p, n)) return 1;
-    for (i = 0; i < n; i++) {
-        a[i*n+i] = 1 / p[i];
-        for (j = i + 1; j < n; j++) {
-            sum = 0;
-            for (k = i; k < j; k++) {
-                sum -= a[j*n+k] * a[k*n+i];
-            }
-            a[j*n+i] = sum / p[j];
-        }
+
+/**
+ *
+ */
+/*
+static int cholsl ( double *A, double *a, double *p, int n )  {
+
+  // Local variables
+  int i, j, k;
+
+  // Check error condition
+  if ( choldcsl( A, a, p, n ) )  return -1;
+
+  // Zeros for upper triangular elements
+  for ( i=0; i<n; i++ )  {
+    for ( j=i+1; j<n; j++ )  {
+      a[i*n+j] = 0.0;
+    }
+  }
+
+  for ( i=0; i<n; i++ )  {
+
+    // Square diagonal elements
+    a[i*n+i] *= a[i*n+i];
+
+    // Sum square of non diagonal entries
+    for ( k=i+1; k<n; k++ )  a[i*n+i] += a[k*n+i] * a[k*n+i];
+
+    // Populate lower diagonal elements 
+    for ( j=i+1; j<n; j++ )  {
+      for ( k=j; k<n; k++ )  {
+        a[i*n+j] += a[k*n+i] * a[k*n+j];
+      }
     }
 
-    return 0; // success
-    
-}*/
+  }
 
-/*static int cholsl(double * A, double * a, double * p, int n) 
-{
-    int i,j,k;
-    if (choldcsl(A,a,p,n)) return 1;
-    for (i = 0; i < n; i++) {
-        for (j = i + 1; j < n; j++) {
-            a[i*n+j] = 0.0;
-        }
+  // Pseudo transpose
+  for ( i=0; i<n; i++ )  {
+    for ( j=0; j<i; j++ )  {
+      a[i*n+j] = a[j*n+i];
     }
-    for (i = 0; i < n; i++) {
-        a[i*n+i] *= a[i*n+i];
-        for (k = i + 1; k < n; k++) {
-            a[i*n+i] += a[k*n+i] * a[k*n+i];
-        }
-        for (j = i + 1; j < n; j++) {
-            for (k = j; k < n; k++) {
-                a[i*n+j] += a[k*n+i] * a[k*n+j];
-            }
-        }
-    }
-    for (i = 0; i < n; i++) {
-        for (j = 0; j < i; j++) {
-            a[i*n+j] = a[j*n+i];
-        }
-    }
+  }
 
-    return 0; // success
-}*/
+  return 0;
+}
+*/
+
+
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// START HERE
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 /*static void zeros(double * a, int m, int n)
 {
