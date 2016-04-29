@@ -14,15 +14,14 @@ stabilization, outer loop navigation, and autonomous capabilities.
 
 <b> Signal filtering and parameter tuning </b>
 <ul>
+  <li> Revised source code and header file structure. </li>
   <li> Incorporated second IMU into the system. </li>
   <li> Set I2C bus to 100kHz until replacement resistors are available. </li>
   <li> Configured tunable control gains for quadrotor vehicle. </li>
-  <li> Revised source code and header file structure. <li>
   <li> Developed module for filter functionality.  </li>
   <li> Configured tunable filter settings from GCS. </li>
   <li> Log parameter changes made by GCS. </li>
-  <li> (WIP) Tuned LPF settings for small quad. </li>
-  <li> (WIP) Tuned AHRS gains for small quad. </li>
+  <li> Tuned LPF settings for small quad. </li>
 </ul>
 
 
