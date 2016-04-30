@@ -24,22 +24,6 @@ static void negate    ( double *a, int m, int n );
 static void addeye    ( double *a, int n );
 
 
-/*
-static void dump ( double *a, int m, int n, const char *fmt )  {
-  int i, j;
-  char f[100];
-  sprintf( f, "%s ", fmt );
-  for( i=0; i<m; ++i )  {
-    for( j=0; j<n; ++j )  {
-      printf( f, a[i*n+j] );
-    }
-    printf("\n");
-  }
-  return;
-}
-*/
-
-
 /**
  * Initializes the EKF structure.
  * @param ekf pointer to an EKF structure to be initialized
@@ -62,7 +46,7 @@ static void dump ( double *a, int m, int n, const char *fmt )  {
       double Ft[N][N]; // transpose of process Jacobian
       double Pp[N][N]; // P, post-prediction, pre-update
       double fx[N];    // output of user defined f() state-transition function
-      double hx[N];    // output of user defined h() measurement function
+      double hx[M];    // output of user defined h() measurement function
       double tmp1[N][N];
       double tmp2[M][N];
       double tmp3[M][M];
@@ -83,6 +67,9 @@ void ekf_init ( void )  {
 
   // Allocate memory for storage arrays
   ekf.x = malloc( sizeof(double) * n  );
+  ekf.z = malloc( sizeof(double) * m  );
+  ekf.f = malloc( sizeof(double) * n  );
+  ekf.h = malloc( sizeof(double) * m  );
   ekf.F = malloc( sizeof(double) * nn );
   ekf.H = malloc( sizeof(double) * nm );
   ekf.Q = malloc( sizeof(double) * nn );
@@ -92,12 +79,41 @@ void ekf_init ( void )  {
 
   // Zero out initial values
   for ( i=0; i<n;  i++ )  ekf.x[i] = 0.0;
+  for ( i=0; i<m;  i++ )  ekf.z[i] = 0.0;
+  for ( i=0; i<n;  i++ )  ekf.f[i] = 0.0;
+  for ( i=0; i<n;  i++ )  ekf.h[i] = 0.0;
   for ( i=0; i<nn; i++ )  ekf.F[i] = 0.0;
   for ( i=0; i<nm; i++ )  ekf.H[i] = 0.0;
   for ( i=0; i<nn; i++ )  ekf.Q[i] = 0.0;
   for ( i=0; i<mm; i++ )  ekf.R[i] = 0.0;
   for ( i=0; i<nn; i++ )  ekf.P[i] = 0.0;
   for ( i=0; i<nm; i++ )  ekf.K[i] = 0.0;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Debugging values
+
+  ekf.x[0] =  1.7;    ekf.x[1] =  1.3;
+  ekf.z[0] =  2.7;    ekf.z[1] =  4.7;    ekf.z[2] =  2.1;
+
+  ekf.f[0] =  3.2;    ekf.f[1] =  9.1;
+  ekf.h[0] = -4.3;    ekf.h[1] = -2.2;    ekf.h[2] =  3.8;
+
+  ekf.F[0] =  2.5;    ekf.F[1] =  0.0;
+  ekf.F[2] =  0.0;    ekf.F[3] =  1.4;
+
+  ekf.H[0] =  4.4;    ekf.H[1] =  5.2;
+  ekf.H[2] =  2.1;    ekf.H[3] =  2.7;
+  ekf.H[4] =  2.6;    ekf.H[5] =  2.3;
+
+  ekf.Q[0] =  0.0;    ekf.Q[1] =  0.0;
+  ekf.Q[2] =  0.0;    ekf.Q[3] =  0.0;
+
+  ekf.R[0] =  2.4;    ekf.R[1] =  0.0;    ekf.R[2] =  0.0;
+  ekf.R[3] =  0.0;    ekf.R[4] =  6.2;    ekf.R[5] =  0.0;
+  ekf.R[6] =  0.0;    ekf.R[7] =  0.0;    ekf.R[8] =  3.7;
+
+  ekf.P[0] =  5.2;    ekf.P[1] =  3.1;
+  ekf.P[2] =  2.1;    ekf.P[3] =  8.2;
 
   return;
 }
@@ -109,6 +125,9 @@ void ekf_init ( void )  {
 void ekf_exit ( void )  {
   if(DEBUG)  printf( "Close EKF \n" );  
   free(ekf.x);
+  free(ekf.z);
+  free(ekf.f);
+  free(ekf.h);
   free(ekf.F);
   free(ekf.H);
   free(ekf.Q);
@@ -120,6 +139,7 @@ void ekf_exit ( void )  {
 
 
 /**
+ *
  * Runs one step of EKF prediction and update. Your code should first build
  * a model, setting the contents of <tt>ekf.fx</tt>, <tt>ekf.F</tt>,
  * <tt>ekf.hx</tt>, and <tt>ekf.H</tt> to appropriate values.
@@ -132,16 +152,17 @@ int ekf_update ( void )  {
   // Local variables
   int n  = EKF_N;
   int m  = EKF_M;
-  //int nn = n*n;
-  //int nm = n*m;
-  //int mm = m*m;
-  //int i;
-
-  // Local storage arrays
+  int nn = n*n;
+  int nm = n*m;
+  int mm = m*m;
+  int i;
 
   // Pull data from structure
   pthread_mutex_lock(&mutex_ekf);
   double *x = ekf.x;
+  double *z = ekf.z;
+  double *h = ekf.h;
+  double *f = ekf.f;
   double *F = ekf.F;
   double *H = ekf.H;
   double *Q = ekf.Q;
@@ -150,37 +171,59 @@ int ekf_update ( void )  {
   double *K = ekf.K;
   pthread_mutex_unlock(&mutex_ekf);
 
+  // Obtain new measurement
+  //double  z[EKF_M] = { 0.0, 0.0, 0.0 };
+  //double fx[EKF_N] = { 0.0, 0.0 };
+  //double hx[EKF_M] = { 0.0, 0.0, 0.0 };
+
+  // Debugging statements
+  printf("\n");
+  printf("x: ");  for ( i=0; i<n;  i++ )  printf( "%4.1f ", x[i] );  printf("\n");
+  printf("z: ");  for ( i=0; i<m;  i++ )  printf( "%4.1f ", z[i] );  printf("\n");
+  printf("f: ");  for ( i=0; i<n;  i++ )  printf( "%4.1f ", f[i] );  printf("\n");
+  printf("h: ");  for ( i=0; i<m;  i++ )  printf( "%4.1f ", h[i] );  printf("\n");
+  printf("F: ");  for ( i=0; i<nn; i++ )  printf( "%4.1f ", F[i] );  printf("\n");
+  printf("H: ");  for ( i=0; i<nm; i++ )  printf( "%4.1f ", H[i] );  printf("\n");
+  printf("Q: ");  for ( i=0; i<nn; i++ )  printf( "%4.1f ", Q[i] );  printf("\n");
+  printf("R: ");  for ( i=0; i<mm; i++ )  printf( "%4.1f ", R[i] );  printf("\n");
+  printf("P: ");  for ( i=0; i<nn; i++ )  printf( "%4.1f ", P[i] );  printf("\n");
+
   // Define intermediate storage arrays
-  double Ft, Ht, fx, hx, Pp, z;
+  double Ft[nn], Ht[nm], Pp[nn];
 
   // Define temp storage arrays
-  double tmp1, tmp2, tmp3, tmp4, tmp5;
+  double tmpNN[nn], tmpNM[nm], tmpMN[nm], tmpMM[mm], tmpinv[mm], tmpN[n], tmpM[m];
 
   // P_k = F_{k-1} P_{k-1} F^T_{k-1} + Q_{k-1}
-  mulmat( F, P, &tmp1, n, n, n );
-  transpose( F, &Ft, n, n );
-  mulmat( &tmp1, &Ft, &Pp, n, n, n );
-  accum( &Pp, Q, n, n );
+  mulmat( F, P, tmpNN, n, n, n );
+  transpose( F, Ft, n, n );
+  mulmat( tmpNN, Ft, Pp, n, n, n );
+  accum( Pp, Q, n, n );
+  printf("\n\nPp: ");  for ( i=0; i<nn; i++ )  printf( "%f ", Pp[i] );  printf("\n");
 
-  // G_k = P_k H^T_k (H_k P_k H^T_k + R)^{-1}
-  transpose( H, &Ht, m, n );
-  mulmat( &Pp, &Ht, &tmp1, n, n, m );
-  mulmat( H, &Pp, &tmp2, m, n, n );
-  mulmat( &tmp2, &Ht, &tmp3, m, n, m );
-  accum( &tmp3, R, m, m );
-  if ( cholsl( &tmp3, &tmp4, &tmp5, m ) )  return 1;
-  mulmat( &tmp1, &tmp4, K, n, m, m );
+  // K_k = P_k H^T_k (H_k P_k H^T_k + R)^{-1}
+  transpose( H, Ht, m, n );
+  mulmat( Pp, Ht, tmpNM, n, n, m );
+  mulmat( H, Pp, tmpMN, m, n, n );
+  mulmat( tmpMN, Ht, tmpMM, m, n, m );
+  accum( tmpMM, R, m, m );
+  if ( cholsl( tmpMM, tmpinv, tmpM, m ) )  return -1;
+  mulmat( tmpNM, tmpinv, K, n, m, m );
+  printf("I: ");  for ( i=0; i<mm; i++ )  printf( "%f ", tmpinv[i] );  printf("\n");
+  printf("K: ");  for ( i=0; i<nm; i++ )  printf( "%f ", K[i] );  printf("\n");
 
-  // \hat{x}_k = \hat{x_k} + G_k(z_k - h(\hat{x}_k))
-  sub( &z, &hx, &tmp5, m );
-  mulvec( K, &tmp5, &tmp2, n, m );
-  add( &fx, &tmp2, x, n );
+  // \hat{x}_k = \hat{f}_k + K_k ( z_k - h(\hat{x}_k) )
+  sub( z, h, tmpM, m );
+  mulvec( K, tmpM, tmpN, n, m );
+  add( f, tmpN, x, n );
+  printf("x: ");  for ( i=0; i<n; i++ )  printf( "%f ", x[i] );  printf("\n");
 
-  // P_k = (I - G_k H_k) P_k
-  mulmat( K, H, &tmp1, n, m, n );
-  negate( &tmp1, n, n );
-  addeye( &tmp1, n );
-  mulmat( &tmp1, &Pp, P, n, n, n );
+  // P_k = (I - K_k H_k) P_k
+  mulmat( K, H, tmpNN, n, m, n );
+  negate( tmpNN, n, n );
+  addeye( tmpNN, n );
+  mulmat( tmpNN, Pp, P, n, n, n );
+  printf("P: ");  for ( i=0; i<nn; i++ )  printf( "%f ", P[i] );  printf("\n");
 
   return 0;
 }
