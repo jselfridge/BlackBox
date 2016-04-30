@@ -98,22 +98,22 @@ void ekf_init ( void )  {
   ekf.f[0] =  3.2;    ekf.f[1] =  9.1;
   ekf.h[0] = -4.3;    ekf.h[1] = -2.2;    ekf.h[2] =  3.8;
 
-  ekf.F[0] =  2.5;    ekf.F[1] =  0.0;
-  ekf.F[2] =  0.0;    ekf.F[3] =  1.4;
+  ekf.F[0] =  2.5;    ekf.F[1] =  3.4;
+  ekf.F[2] =  7.2;    ekf.F[3] =  1.4;
 
-  ekf.H[0] =  4.4;    ekf.H[1] =  5.2;
-  ekf.H[2] =  2.1;    ekf.H[3] =  2.7;
-  ekf.H[4] =  2.6;    ekf.H[5] =  2.3;
+  ekf.H[0] =  4.3;    ekf.H[1] =  5.1;
+  ekf.H[2] =  2.0;    ekf.H[3] =  2.6;
+  ekf.H[4] =  2.5;    ekf.H[5] =  2.4;
 
-  ekf.Q[0] =  0.0;    ekf.Q[1] =  0.0;
-  ekf.Q[2] =  0.0;    ekf.Q[3] =  0.0;
+  ekf.Q[0] = -1.3;    ekf.Q[1] =  0.0;
+  ekf.Q[2] =  0.0;    ekf.Q[3] =  1.9;
 
   ekf.R[0] =  2.4;    ekf.R[1] =  0.0;    ekf.R[2] =  0.0;
   ekf.R[3] =  0.0;    ekf.R[4] =  6.2;    ekf.R[5] =  0.0;
   ekf.R[6] =  0.0;    ekf.R[7] =  0.0;    ekf.R[8] =  3.7;
 
   ekf.P[0] =  5.2;    ekf.P[1] =  3.1;
-  ekf.P[2] =  2.1;    ekf.P[3] =  8.2;
+  ekf.P[2] =  3.1;    ekf.P[3] =  8.2;
 
   return;
 }
@@ -205,12 +205,14 @@ int ekf_update ( void )  {
   transpose( H, Ht, m, n );
   mulmat( Pp, Ht, tmpNM, n, n, m );
   mulmat( H, Pp, tmpMN, m, n, n );
+  printf("HP: ");  for ( i=0; i<nm; i++ )  printf( "%f ", tmpMN[i]  );  printf("\n");
   mulmat( tmpMN, Ht, tmpMM, m, n, m );
   accum( tmpMM, R, m, m );
+  printf("S: ");  for ( i=0; i<mm; i++ )  printf( "%f ", tmpMM[i]  );  printf("\n");
   if ( cholsl( tmpMM, tmpinv, tmpM, m ) )  return -1;
   mulmat( tmpNM, tmpinv, K, n, m, m );
   printf("I: ");  for ( i=0; i<mm; i++ )  printf( "%f ", tmpinv[i] );  printf("\n");
-  printf("K: ");  for ( i=0; i<nm; i++ )  printf( "%f ", K[i] );  printf("\n");
+  printf("K: ");  for ( i=0; i<nm; i++ )  printf( "%f ", K[i]      );  printf("\n");
 
   // \hat{x}_k = \hat{f}_k + K_k ( z_k - h(\hat{x}_k) )
   sub( z, h, tmpM, m );
