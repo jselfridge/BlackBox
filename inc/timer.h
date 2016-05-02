@@ -19,10 +19,10 @@
 #define PRIO_FLAG   82
 #define PRIO_DEBUG  80
 
-#define HZ_IMU_FAST    250
-#define HZ_IMU_SLOW     50
-#define HZ_AHRS         50
-#define HZ_EKF          50
+#define HZ_IMU_FAST    200
+#define HZ_IMU_SLOW    100
+#define HZ_AHRS        100
+#define HZ_EKF         100
 #define HZ_IO           50
 #define HZ_CTRL         50
 #define HZ_FLAG         10

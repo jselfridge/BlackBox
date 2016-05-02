@@ -9,11 +9,9 @@
 #include "timer.h"
 
 
-//static void unpack    ( void *v, ekf_struct *ekf, int n, int m );
 static int  choldc1   ( double *a, double *p, int n );
 static int  choldcsl  ( double *A, double *a, double *p, int n );
 static int  cholsl    ( double *A, double *a, double *p, int n );
-//static void zeros     ( double *a, int m, int n );
 static void mulmat    ( double *a, double *b, double *c, int arows, int acols, int bcols );
 static void mulvec    ( double *a, double *x, double *y, int m, int n );
 static void transpose ( double *a, double *at, int m, int n );
@@ -105,12 +103,12 @@ void ekf_init ( void )  {
   ekf.H[2] =  2.0;    ekf.H[3] =  2.6;
   ekf.H[4] =  2.5;    ekf.H[5] =  2.4;
 
-  ekf.Q[0] = -1.3;    ekf.Q[1] =  0.0;
-  ekf.Q[2] =  0.0;    ekf.Q[3] =  1.9;
+  ekf.Q[0] = -1.3;    ekf.Q[1] =  0.2;
+  ekf.Q[2] =  0.2;    ekf.Q[3] =  1.9;
 
-  ekf.R[0] =  2.4;    ekf.R[1] =  0.0;    ekf.R[2] =  0.0;
-  ekf.R[3] =  0.0;    ekf.R[4] =  6.2;    ekf.R[5] =  0.0;
-  ekf.R[6] =  0.0;    ekf.R[7] =  0.0;    ekf.R[8] =  3.7;
+  ekf.R[0] =  2.4;    ekf.R[1] =  0.3;    ekf.R[2] =  1.5;
+  ekf.R[3] =  0.3;    ekf.R[4] =  6.2;    ekf.R[5] =  0.0;
+  ekf.R[6] =  1.5;    ekf.R[7] =  0.0;    ekf.R[8] =  3.7;
 
   ekf.P[0] =  5.2;    ekf.P[1] =  3.1;
   ekf.P[2] =  3.1;    ekf.P[3] =  8.2;
@@ -171,11 +169,6 @@ int ekf_update ( void )  {
   double *K = ekf.K;
   pthread_mutex_unlock(&mutex_ekf);
 
-  // Obtain new measurement
-  //double  z[EKF_M] = { 0.0, 0.0, 0.0 };
-  //double fx[EKF_N] = { 0.0, 0.0 };
-  //double hx[EKF_M] = { 0.0, 0.0, 0.0 };
-
   // Debugging statements
   printf("\n");
   printf("x: ");  for ( i=0; i<n;  i++ )  printf( "%4.1f ", x[i] );  printf("\n");
@@ -205,7 +198,6 @@ int ekf_update ( void )  {
   transpose( H, Ht, m, n );
   mulmat( Pp, Ht, tmpNM, n, n, m );
   mulmat( H, Pp, tmpMN, m, n, n );
-  printf("HP: ");  for ( i=0; i<nm; i++ )  printf( "%f ", tmpMN[i]  );  printf("\n");
   mulmat( tmpMN, Ht, tmpMM, m, n, m );
   accum( tmpMM, R, m, m );
   printf("S: ");  for ( i=0; i<mm; i++ )  printf( "%f ", tmpMM[i]  );  printf("\n");
@@ -230,56 +222,6 @@ int ekf_update ( void )  {
   return 0;
 }
 
-
-/**
- *
- */
-/*
-static void unpack ( void *v, ekf_struct *ekf, int n, int m )  {
-
-  // Skip over n, m in data structure
-  // NOTE: Find a better way...
-  char *cptr = (char *)v;
-  cptr += 2*sizeof(int);
-
-  double *dptr = (double *)cptr;
-  ekf->x = dptr;
-  dptr += n;
-  ekf->P = dptr;
-  dptr += n*n;
-  ekf->Q = dptr;
-  dptr += n*n;
-  ekf->R = dptr;
-  dptr += m*m;
-  ekf->G = dptr;
-  dptr += n*m;
-  ekf->F = dptr;
-  dptr += n*n;
-  ekf->H = dptr;
-  dptr += m*n;
-  ekf->Ht = dptr;
-  dptr += n*m;
-  ekf->Ft = dptr;
-  dptr += n*n;
-  ekf->Pp = dptr;
-  dptr += n*n;
-  ekf->fx = dptr;
-  dptr += n;
-  ekf->hx = dptr;
-  dptr += m;
-  ekf->tmp1 = dptr;
-  dptr += n*m;
-  ekf->tmp2 = dptr;
-  dptr += m*n;
-  ekf->tmp3 = dptr;
-  dptr += m*m;
-  ekf->tmp4 = dptr;
-  dptr += m*m;
-  ekf->tmp5 = dptr;
-
-  return;
-}
-*/
 
 /**
  * Cholesky-decomposition matrix-inversion code, adapated from
@@ -385,15 +327,6 @@ static int cholsl ( double *A, double *a, double *p, int n )  {
   return 0;
 }
 
-
-/**
- *
- */
-/*static void zeros ( double *a, int m, int n )  {
-  int j;
-  for ( j=0; j<m*n; ++j )  a[j] = 0;
-}
-*/
 
 /**
  *
