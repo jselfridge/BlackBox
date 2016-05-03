@@ -60,8 +60,8 @@ void ekf_init ( void )  {
   int n  = EKF_N;
   int m  = EKF_M;
   int nn = n*n;
-  int nm = n*m;
   int mm = m*m;
+  int nm = n*m;
   int i;
 
   // Allocate memory for storage arrays
@@ -81,7 +81,7 @@ void ekf_init ( void )  {
   for ( i=0; i<n;  i++ )  ekf.x[i] = 0.0;
   for ( i=0; i<m;  i++ )  ekf.z[i] = 0.0;
   for ( i=0; i<n;  i++ )  ekf.f[i] = 0.0;
-  for ( i=0; i<n;  i++ )  ekf.h[i] = 0.0;
+  for ( i=0; i<m;  i++ )  ekf.h[i] = 0.0;
   for ( i=0; i<nn; i++ )  ekf.F[i] = 0.0;
   for ( i=0; i<nm; i++ )  ekf.H[i] = 0.0;
   for ( i=0; i<nn; i++ )  ekf.Q[i] = 0.0;
@@ -91,41 +91,21 @@ void ekf_init ( void )  {
   for ( i=0; i<nm; i++ )  ekf.K[i] = 0.0;
 
   // Assign plant covariance values (WIP: pull from file with error checking)
-  ekf.Q[0] = 0.001;
-  /*
-  ekf.Q[ 0] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;
-  ekf.Q[ 6] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;
-  ekf.Q[12] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;
-  ekf.Q[18] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;
-  ekf.Q[24] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;
-  ekf.Q[30] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;
-  */
+  ekf.Q[0] = 0.01;    // pitch angle
+  ekf.Q[3] = 0.1;     // pitch rate
 
   // Assign measurement covariance values (WIP: pull from file with error checking)
-  ekf.R[0] = 0.001;
-  /*
-  ekf.R[0] = 0.0;  ekf.R[1] = 0.0;  ekf.R[2] = 0.0;
-  ekf.R[3] = 0.0;  ekf.R[4] = 0.0;  ekf.R[5] = 0.0;
-  ekf.R[6] = 0.0;  ekf.R[7] = 0.0;  ekf.R[8] = 0.0;
-  */
+  ekf.R[0] = 0.01;    // pitch gyro error
 
   // Static F matrix
   // WIP: Adaptively updated from MRAC or L1
   // WIP: Add acceleration state?
   // Unity diagonal, time step block diagonal in upper right
-  ekf.F[0] = 1.0;
-  /*
-  double dt = 1.0/HZ_EKF;
-  ekf.F[ 0] = 1.0;  ekf.F[ 3] = dt;
-  ekf.F[ 7] = 1.0;  ekf.F[10] = dt;
-  ekf.F[14] = 1.0;  ekf.F[17] = dt;
-  ekf.F[21] = 1.0;
-  ekf.F[28] = 1.0;
-  ekf.F[35] = 1.0;
-  */
+  ekf.F[0] = 1.0;  ekf.F[1] = 1.0/HZ_EKF;
+  ekf.F[2] = 0.0;  ekf.F[3] = 1.0;
 
   // Static H matrix (WIP: adaptively updated from MRAC or L1)
-  ekf.H[0] = 1.0;
+  ekf.H[0] = 0.0;  ekf.H[1] = 1.0;
 
   return;
 }
@@ -136,17 +116,7 @@ void ekf_init ( void )  {
  */
 void ekf_exit ( void )  {
   if(DEBUG)  printf( "Close EKF \n" );  
-  free(ekf.x);
-  free(ekf.z);
-  free(ekf.f);
-  free(ekf.h);
-  free(ekf.F);
-  free(ekf.H);
-  free(ekf.Q);
-  free(ekf.R);
-  free(ekf.P);
-  free(ekf.S);
-  free(ekf.K);
+  // Add code as needed...
   return;
 }
 
@@ -163,12 +133,12 @@ void ekf_exit ( void )  {
 int ekf_update ( void )  {
 
   // Define local dimension sizes and counters
-  int n  = EKF_N;
-  int m  = EKF_M;
-  int nn = n*n;
-  int nm = n*m;
-  int mm = m*m;
-  //int i;
+  uint n, m, nn, nm, mm, i;
+  n  = EKF_N;
+  m  = EKF_M;
+  nn = n*n;
+  mm = m*m;
+  nm = n*m;
 
   // Define local EKF arrays
   double x[n], z[m], f[n], h[m];
@@ -184,9 +154,11 @@ int ekf_update ( void )  {
 
   // Obtain EKF values
   pthread_mutex_lock(&mutex_ekf);
-  x[0] = ekf.x[0];
-  Q[0] = ekf.Q[0];
-  R[0] = ekf.R[0];
+  for ( i=0; i<n;  i++ )  x[i] = ekf.x[i];
+  for ( i=0; i<nn; i++ )  F[i] = ekf.F[i];
+  for ( i=0; i<nm; i++ )  H[i] = ekf.H[i];
+  for ( i=0; i<nn; i++ )  Q[i] = ekf.Q[i];
+  for ( i=0; i<mm; i++ )  R[i] = ekf.R[i];
   pthread_mutex_unlock(&mutex_ekf);
 
   // Obtain measurements
@@ -194,39 +166,35 @@ int ekf_update ( void )  {
   z[0] = imuA.gyr->filter[1];
   pthread_mutex_unlock(&mutex_gyrA);
 
-  // Obtain Jacobians
-  F[0] = 1.0; 
-  H[0] = 1.0;
-
   // Evaluate derivatives
-  mulmat( F, x, f, n, n, 1 );
-  mulmat( H, x, h, m, n, 1 );
+  mulvec( F, x, f, n, n );
+  mulvec( H, x, h, m, n );
 
   // Find transpose matrices
   transpose( F, Ft, n, n );
   transpose( H, Ht, m, n );
 
-  // P_k = F_{k-1} P_{k-1} F^T_{k-1} + Q_{k-1}
+  // Pt = F P Ft + Q
   mulmat( F, P, tmpNN, n, n, n );
   mulmat( tmpNN, Ft, Pt, n, n, n );
   accum( Pt, Q, n, n );
 
-  // S_k = H_k P_k H^T_k + R
+  // S = H Pt Ht + R
   mulmat( H, Pt, tmpMN, m, n, n );
   mulmat( tmpMN, Ht, S, m, n, m );
   accum( S, R, m, m );
 
-  // K_k = P_k H^T_k (S_k)^{-1}
+  // K = Pt Ht S^{-1}
   mulmat( Pt, Ht, tmpNM, n, n, m );
   if ( cholsl( S, Inv, tmpM, m ) )  {  printf("Too bad... \n");  return -1;  }
   mulmat( tmpNM, Inv, K, n, m, m );
 
-  // \hat{x}_k = \hat{f}_k + K_k ( z_k - h(\hat{x}_k) )
+  // x = f + K ( z - h )
   sub( z, h, tmpM, m );
   mulvec( K, tmpM, tmpN, n, m );
   add( f, tmpN, x, n );
 
-  // P_k = (I - K_k H_k) P_k
+  // P = ( I - K H ) Pt
   mulmat( K, H, tmpNN, n, m, n );
   negate( tmpNN, n, n );
   addeye( tmpNN, n );
@@ -234,20 +202,14 @@ int ekf_update ( void )  {
 
   // Push data to structure
   pthread_mutex_lock(&mutex_ekf);
-  ekf.x[0] = x[0];
-  ekf.z[0] = z[0];
-  ekf.f = f;
-  ekf.h = h;
-  ekf.F = F;
-  ekf.H = H;
-  ekf.Q = Q;
-  ekf.R = R;
-  ekf.P = P;
-  ekf.P = S;
-  ekf.K = K;
+  for ( i=0; i<n;  i++ )  ekf.x[i] = x[i];
+  for ( i=0; i<m;  i++ )  ekf.z[i] = z[i];
+  for ( i=0; i<n;  i++ )  ekf.f[i] = f[i];
+  for ( i=0; i<m;  i++ )  ekf.h[i] = h[i];
+  for ( i=0; i<nn; i++ )  ekf.P[i] = P[i];
+  for ( i=0; i<mm; i++ )  ekf.S[i] = S[i];
+  for ( i=0; i<nm; i++ )  ekf.K[i] = K[i];
   pthread_mutex_unlock(&mutex_ekf);
-
-  printf("\n Z: %f", z[0] ); fflush(stdout);
 
   return 0;
 }

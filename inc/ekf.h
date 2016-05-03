@@ -5,7 +5,7 @@
 
 
 #define EKF_ENABLED true
-#define EKF_N   1
+#define EKF_N   2
 #define EKF_M   1
 
 

@@ -91,6 +91,11 @@ typedef struct log_ekf_struct {
   ulong *dur;
   float *x;
   float *z;
+  float *f;
+  float *h;
+  float *P;
+  float *S;
+  float *K;
 } log_ekf_struct;
 log_ekf_struct log_ekf;
 
