@@ -5,8 +5,8 @@
 
 
 #define EKF_ENABLED true
-#define EKF_N   2
-#define EKF_M   3
+#define EKF_N   1
+#define EKF_M   1
 
 
 typedef struct ekf_struct {
@@ -18,7 +18,8 @@ typedef struct ekf_struct {
   double *H;   // Measurement Jacobian
   double *Q;   // Plant error covariance
   double *R;   // Measurement error covariance
-  double *P;   // prediction error covariance
+  double *P;   // Prediction error covariance
+  double *S;   // Update error covariance
   double *K;   // Kalman gain
 } ekf_struct;
 ekf_struct ekf;
