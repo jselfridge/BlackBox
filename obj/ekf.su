@@ -1,4 +1,4 @@
-ekf.c:356:13:0	20	static
+ekf.c:365:13:0	0	static
 ekf.c:56:6:ekf_init	56	static
 ekf.c:137:6:ekf_exit	8	static
 ekf.c:163:5:ekf_update	456	dynamic,bounded

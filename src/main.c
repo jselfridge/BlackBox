@@ -12,45 +12,44 @@ int main ( void )  {
   // Begin program
   if(DEBUG)  printf("\n--- Begin BlackBox program ---\n");
   sys_init();
-  //flag_init();
-  //io_init();
-  //filter_init();
-  //imu_init();
-  //ahrs_init();
+  flag_init();
+  io_init();
+  filter_init();
+  imu_init();
+  ahrs_init();
   ekf_init();
-  //gps_init();
-  //gcs_init();
-  //ctrl_init();
-  //log_init();
-  //tmr_init();
+  gps_init();
+  gcs_init();
+  ctrl_init();
+  log_init();
+  tmr_init();
 
   //---  DEBUGGING  ---//
-  //log_start();
-  //datalog.enabled = true;
+  log_start();
+  datalog.enabled = true;
   //-------------------//
 
   // Run program
-  //while(running)  usleep(100000);
-  ekf_update();
+  while(running)  usleep(100000);
 
   //--  DEBUGGING  --//
-  //datalog.enabled = false;
-  //log_finish();
+  datalog.enabled = false;
+  log_finish();
   //-----------------//
 
   // Exit program
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
-  //tmr_exit();
-  //log_exit();
-  //ctrl_exit();
-  //gcs_exit();
-  //gps_exit();
+  tmr_exit();
+  log_exit();
+  ctrl_exit();
+  gcs_exit();
+  gps_exit();
   ekf_exit();
-  //ahrs_exit();
-  //imu_exit();
-  //filter_exit();
-  //io_exit();
-  //flag_exit();
+  ahrs_exit();
+  imu_exit();
+  filter_exit();
+  io_exit();
+  flag_exit();
   sys_exit();
 
   return 0;

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "ahrs.h"
 #include "ctrl.h"
+#include "ekf.h"
 #include "gcs.h"
 #include "gps.h"
 #include "imu.h"
@@ -37,6 +38,7 @@ void log_init ( void )  {
   log_accB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_magB.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
   log_ahrs.limit    =  LOG_MAX_DUR * HZ_AHRS;
+  log_ekf.limit     =  LOG_MAX_DUR * HZ_EKF;
   log_gps.limit     =  LOG_MAX_DUR * HZ_GPS;
   log_ctrl.limit    =  LOG_MAX_DUR * HZ_CTRL;
 
@@ -123,6 +125,19 @@ void log_init ( void )  {
   log_ahrs.bias     =  malloc( sizeof(float)  * log_ahrs.limit * 3 );
   log_ahrs.fx       =  malloc( sizeof(float)  * log_ahrs.limit     );
   log_ahrs.fz       =  malloc( sizeof(float)  * log_ahrs.limit     );
+
+  // Extended Kalman Filter setup
+  ushort n, m, nn, nm, mm;
+  n  = EKF_N;
+  m  = EKF_M;
+  nn = n*n;
+  nm = n*m;
+  mm = m*m;
+  log_ekf.time      =  malloc( sizeof(float)  * log_ekf.limit      );
+  log_ekf.dur       =  malloc( sizeof(ulong)  * log_ekf.limit      );
+  log_ekf.x         =  malloc( sizeof(float)  * log_ekf.limit * n  );
+  log_ekf.z         =  malloc( sizeof(float)  * log_ekf.limit * m  );
+  //log_ekf.val       =  malloc( sizeof(float)  * log_ekf.limit * X  );
 
   // Global Positioning System setup
   log_gps.time      =  malloc( sizeof(float)  * log_gps.limit      );
@@ -232,6 +247,13 @@ void log_exit ( void )  {
   free(log_ahrs.fx);
   free(log_ahrs.fz);
 
+  // EKF memory
+  free(log_ekf.time);
+  free(log_ekf.dur);
+  free(log_ekf.x);
+  free(log_ekf.z);
+  //free(log_ekf.val);
+
   // GPS memory
   free(log_gps.time);
   free(log_gps.dur);
@@ -266,6 +288,7 @@ void log_start ( void )  {
   log_accB.count   = 0;
   log_magB.count   = 0;
   log_ahrs.count   = 0;
+  log_ekf.count    = 0;
   log_gps.count    = 0;
   log_ctrl.count   = 0;
 
@@ -384,6 +407,13 @@ void log_start ( void )  {
     Mfx      Mfy      Mfz");
 
   }
+
+  // Extended Kalman Filter datalog file
+  sprintf( file, "%sekf.txt", datalog.path );
+  datalog.ekf = fopen( file, "w" );
+  if( datalog.ekf == NULL )  printf( "Error (log_init): Cannot generate 'ekf' file. \n" );
+  fprintf( datalog.ekf,
+    "       Ktime    Kdur     X      Z  ");
 
   // Attitude and heading reference system datalog file
   sprintf( file, "%sahrs.txt", datalog.path );
@@ -637,6 +667,26 @@ void log_record ( enum log_index index )  {
 
     return;
 
+  // Record EKF data
+  case LOG_EKF :
+
+    timestamp = (float) ( tmr_ekf.start_sec + ( tmr_ekf.start_usec / 1000000.0f ) ) - datalog.offset;
+
+    if ( log_ekf.count < log_ekf.limit ) {
+      row = log_ekf.count;
+      log_ekf.time[row] = timestamp;
+      log_ekf.dur[row]  = tmr_ekf.dur;
+
+      pthread_mutex_lock(&mutex_ekf);
+      for ( i=0; i<1; i++ )  log_ekf.x [ row*1 +i ] = ekf.x [i];
+      for ( i=0; i<1; i++ )  log_ekf.z [ row*1 +i ] = ekf.z [i];
+      pthread_mutex_unlock(&mutex_ekf);
+
+      log_ekf.count++;
+    }
+
+    return;
+
   // Record GPS data
   case LOG_GPS :
 
@@ -810,6 +860,13 @@ static void log_save ( void )  {
     fprintf( datalog.ahrs, "   " );
   }
 
+  // Extended Kalman Filter data
+  for ( row = 0; row < log_ekf.count; row++ ) {
+    fprintf( datalog.ekf, "\n %011.6f  %06ld    ", log_ekf.time[row], log_ekf.dur[row] );
+    for ( i=0; i<1; i++ )  fprintf( datalog.ekf, "%07.4f  ", log_ekf.x    [ row*1 +i ] );  fprintf( datalog.ekf, "   " );
+    for ( i=0; i<1; i++ )  fprintf( datalog.ekf, "%07.4f  ", log_ekf.z    [ row*1 +i ] );  fprintf( datalog.ekf, "   " );
+  }
+
   // GPS data
   for ( row = 0; row < log_gps.count; row++ ) {
     fprintf( datalog.gps, "\n %011.6f  %06ld    ", log_gps.time[row], log_gps.dur[row] );
@@ -853,6 +910,7 @@ static void log_close ( void )  {
   }
 
   fclose(datalog.ahrs);
+  fclose(datalog.ekf);
   fclose(datalog.gps);
   fclose(datalog.ctrl);
 

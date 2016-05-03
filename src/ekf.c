@@ -91,7 +91,7 @@ void ekf_init ( void )  {
   for ( i=0; i<nm; i++ )  ekf.K[i] = 0.0;
 
   // Assign plant covariance values (WIP: pull from file with error checking)
-  ekf.Q[0] = 0.0;
+  ekf.Q[0] = 0.001;
   /*
   ekf.Q[ 0] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;
   ekf.Q[ 6] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;  ekf.Q[ ] = 0.0;
@@ -102,7 +102,7 @@ void ekf_init ( void )  {
   */
 
   // Assign measurement covariance values (WIP: pull from file with error checking)
-  ekf.R[0] = 0.0;
+  ekf.R[0] = 0.001;
   /*
   ekf.R[0] = 0.0;  ekf.R[1] = 0.0;  ekf.R[2] = 0.0;
   ekf.R[3] = 0.0;  ekf.R[4] = 0.0;  ekf.R[5] = 0.0;
@@ -180,7 +180,14 @@ int ekf_update ( void )  {
   double Ft[nn], Ht[nm], Pt[nn], Inv[mm];
 
   // Define temp storage arrays
-  double tmpNN[nn], tmpNM[nm], tmpMN[nm], tmpMM[mm], tmpN[n], tmpM[m];
+  double tmpNN[nn], tmpNM[nm], tmpMN[nm], tmpN[n], tmpM[m];
+
+  // Obtain EKF values
+  pthread_mutex_lock(&mutex_ekf);
+  x[0] = ekf.x[0];
+  Q[0] = ekf.Q[0];
+  R[0] = ekf.R[0];
+  pthread_mutex_unlock(&mutex_ekf);
 
   // Obtain measurements
   pthread_mutex_lock(&mutex_gyrA);
@@ -192,7 +199,7 @@ int ekf_update ( void )  {
   H[0] = 1.0;
 
   // Evaluate derivatives
-  mulmat( F, x, f, x, x, 1 );
+  mulmat( F, x, f, n, n, 1 );
   mulmat( H, x, h, m, n, 1 );
 
   // Find transpose matrices
@@ -211,7 +218,7 @@ int ekf_update ( void )  {
 
   // K_k = P_k H^T_k (S_k)^{-1}
   mulmat( Pt, Ht, tmpNM, n, n, m );
-  if ( cholsl( S, Inv, tmpM, m ) )  return -1;
+  if ( cholsl( S, Inv, tmpM, m ) )  {  printf("Too bad... \n");  return -1;  }
   mulmat( tmpNM, Inv, K, n, m, m );
 
   // \hat{x}_k = \hat{f}_k + K_k ( z_k - h(\hat{x}_k) )
@@ -227,8 +234,8 @@ int ekf_update ( void )  {
 
   // Push data to structure
   pthread_mutex_lock(&mutex_ekf);
-  ekf.x = x;
-  ekf.z = z;
+  ekf.x[0] = x[0];
+  ekf.z[0] = z[0];
   ekf.f = f;
   ekf.h = h;
   ekf.F = F;
@@ -239,6 +246,8 @@ int ekf_update ( void )  {
   ekf.P = S;
   ekf.K = K;
   pthread_mutex_unlock(&mutex_ekf);
+
+  printf("\n Z: %f", z[0] ); fflush(stdout);
 
   return 0;
 }

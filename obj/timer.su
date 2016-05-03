@@ -11,7 +11,7 @@ timer.c:601:7:fcn_ctrl	40	static
 timer.c:584:7:fcn_gcsrx	40	static
 timer.c:567:7:fcn_gcstx	40	static
 timer.c:549:7:fcn_gps	40	static
-timer.c:531:7:fcn_ekf	48	static
+timer.c:531:7:fcn_ekf	40	static
 timer.c:513:7:fcn_ahrs	40	static
 timer.c:477:7:fcn_imuA	40	static
 timer.c:436:7:fcn_flag	40	static
