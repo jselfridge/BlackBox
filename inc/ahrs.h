@@ -7,10 +7,8 @@
 #include <sys/types.h>
 
 
-#define GYR_ERROR  5.0f * ( PI / 180.0 )
-#define GYR_DRIFT  0.2f * ( PI / 180.0 )
-#define IMU_BETA   sqrt( 3.0f / 4.0f ) * GYR_ERROR
-#define IMU_ZETA   sqrt( 3.0f / 4.0f ) * GYR_DRIFT
+#define IMU_BETA   ( sqrt( 3.0f / 4.0f ) * ( PI / 180.0 ) * 5.0f )
+#define IMU_ZETA   ( sqrt( 3.0f / 4.0f ) * ( PI / 180.0 ) * 0.2f )
 
 
 typedef struct ahrs_data_struct {

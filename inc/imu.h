@@ -10,7 +10,7 @@
 
 
 #define IMUA_ENABLED   true
-#define IMUB_ENABLED   false
+#define IMUB_ENABLED   true
 
 #define GYR_FSR    500
 #define ACC_FSR    4
@@ -27,6 +27,9 @@ typedef struct imu_data_struct {
   double scaled [3];
   double filter [3];
 } imu_data_struct;
+imu_data_struct gyr;
+imu_data_struct acc;
+imu_data_struct mag;
 imu_data_struct gyrA;
 imu_data_struct accA;
 imu_data_struct magA;
@@ -47,6 +50,7 @@ typedef struct imu_struct {
   imu_data_struct *acc;
   imu_data_struct *mag;
 } imu_struct;
+imu_struct imu;
 imu_struct imuA;
 imu_struct imuB;
 

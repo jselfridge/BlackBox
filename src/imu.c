@@ -78,8 +78,18 @@ void imu_init (  )  {
 
   }
 
+  // Setup shared IMU
+  if ( IMUA_ENABLED && IMUB_ENABLED )  {
+
+    // IMU data structures
+    imu.gyr  = &gyr;
+    imu.acc  = &acc;
+    imu.mag  = &mag;
+
+  }
+
   // IMU warmup period
-  usleep(500000);
+  usleep(300000);
   led_on(LED_IMU);
 
   return;

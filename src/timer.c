@@ -42,6 +42,9 @@ void tmr_mutex ( void )  {
   pthread_mutex_init( &mutex_output, NULL );
   pthread_mutex_init( &mutex_i2c1,   NULL );
   pthread_mutex_init( &mutex_i2c2,   NULL );
+  pthread_mutex_init( &mutex_gyr,    NULL );
+  pthread_mutex_init( &mutex_acc,    NULL );
+  pthread_mutex_init( &mutex_mag,    NULL );
   pthread_mutex_init( &mutex_gyrA,   NULL );
   pthread_mutex_init( &mutex_accA,   NULL );
   pthread_mutex_init( &mutex_magA,   NULL );
@@ -169,15 +172,15 @@ void tmr_attr ( pthread_attr_t *attr )  {
 void tmr_begin ( pthread_attr_t *attr )  {
   if(DEBUG)  printf("  Begin timing threads:  ");
 
-  //tmr_thread( &tmr_io,    attr, fcn_io    );  usleep(100000);
-  //tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(100000);
+  tmr_thread( &tmr_io,    attr, fcn_io    );  usleep(100000);
+  tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(100000);
 
   if( IMUA_ENABLED &&  IMUB_ENABLED ) {  tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);  }
   if( IMUA_ENABLED && !IMUB_ENABLED ) {  tmr_thread( &tmr_imuA,  attr, fcn_imuA  );  usleep(100000);  }
   if( IMUB_ENABLED && !IMUA_ENABLED ) {  tmr_thread( &tmr_imuB,  attr, fcn_imuB  );  usleep(100000);  }
 
-  tmr_thread( &tmr_ahrs,  attr, fcn_ahrs  );  usleep(100000);
-  tmr_thread( &tmr_ekf,   attr, fcn_ekf   );  usleep(100000);
+  //tmr_thread( &tmr_ahrs,  attr, fcn_ahrs  );  usleep(100000);
+  //tmr_thread( &tmr_ekf,   attr, fcn_ekf   );  usleep(100000);
 
   //tmr_thread( &tmr_gps,   attr, fcn_gps   );  usleep(100000);
   //tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
@@ -206,6 +209,9 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&mutex_output);
   pthread_mutex_destroy(&mutex_i2c1);
   pthread_mutex_destroy(&mutex_i2c2);
+  pthread_mutex_destroy(&mutex_gyr);
+  pthread_mutex_destroy(&mutex_acc);
+  pthread_mutex_destroy(&mutex_mag);
   pthread_mutex_destroy(&mutex_gyrA);
   pthread_mutex_destroy(&mutex_accA);
   pthread_mutex_destroy(&mutex_magA);
@@ -240,7 +246,7 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_gps.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gps' thread. \n" );
   if(DEBUG)  printf( "gps " );
-  */
+
   // Exit EKF thread
   if( pthread_join ( tmr_ekf.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ekf' thread. \n" );
@@ -250,7 +256,7 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_ahrs.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ahrs' thread. \n" );
   if(DEBUG)  printf( "ahrs " );
-
+  */
   // Exit IMUB thread
   if( IMUB_ENABLED && !IMUA_ENABLED )  {
   if( pthread_join ( tmr_imuB.id, NULL ) )
@@ -269,7 +275,7 @@ void tmr_exit ( void )  {
     printf( "Error (tmr_exit): Failed to exit 'imu' thread. \n" );
   if(DEBUG)  printf( "imu " );  }
 
-  /*  // Exit program execution flags thread
+  // Exit program execution flags thread
   if( pthread_join ( tmr_flag.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'flag' thread. \n" );
   if(DEBUG)  printf( "flag " );
@@ -278,7 +284,7 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_io.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'sio' thread. \n" );
   if(DEBUG)  printf( "io " );
-  */
+
   // Exit debugging thread
   if(DEBUG) {
   if( pthread_join ( tmr_debug.id, NULL ) )
@@ -457,11 +463,13 @@ void *fcn_imu (  )  {
     if (!datalog.saving) {  
       imu_update(&imuA);
       imu_update(&imuB);
+      imu_avg();
     }
     tmr_finish(&tmr_imu);
     if (datalog.enabled) {
       log_record(LOG_IMUA);
       log_record(LOG_IMUB);
+      log_record(LOG_IMU);
     }
     tmr_pause(&tmr_imu);
   }

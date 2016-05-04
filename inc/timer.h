@@ -23,9 +23,9 @@
 #define HZ_IMU_SLOW    100
 #define HZ_AHRS        100
 #define HZ_EKF         100
-#define HZ_IO           50
-#define HZ_CTRL         50
-#define HZ_FLAG         10
+#define HZ_IO          100
+#define HZ_CTRL        100
+#define HZ_FLAG         20
 #define HZ_GPS          10
 #define HZ_GCSTX        10
 #define HZ_GCSRX        10
@@ -36,6 +36,9 @@ pthread_mutex_t mutex_input;
 pthread_mutex_t mutex_output;
 pthread_mutex_t mutex_i2c1;
 pthread_mutex_t mutex_i2c2;
+pthread_mutex_t mutex_gyr;
+pthread_mutex_t mutex_acc;
+pthread_mutex_t mutex_mag;
 pthread_mutex_t mutex_gyrA;
 pthread_mutex_t mutex_accA;
 pthread_mutex_t mutex_magA;
