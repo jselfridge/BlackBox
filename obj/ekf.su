@@ -1,4 +1,4 @@
-ekf.c:327:13:mulmat	40	static
-ekf.c:56:6:ekf_init	56	static
-ekf.c:117:6:ekf_exit	0	static
-ekf.c:133:5:ekf_update	696	dynamic,bounded
+ekf.c:347:13:mulmat	40	static
+ekf.c:56:6:ekf_init	64	static
+ekf.c:137:6:ekf_exit	0	static
+ekf.c:153:5:ekf_update	6832	dynamic,bounded

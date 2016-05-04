@@ -14,14 +14,11 @@ stabilization, outer loop navigation, and autonomous capabilities.
 
 <b> Extended Kalman Filter </b>
 <ul>
-  <li> (WIP) Created module for Extended Kalman Filter (EKF) .</li>
-  <li> (WIP) Setup timing thread for the EKF. </li>
-  <li> (WIP) </li>
-  <li> (WIP) </li>
-  <li> (WIP) </li>
-  <li> (WIP) </li>
-  <li> (WIP) </li>
-  <li> (WIP) </li>
+  <li> Created module for Extended Kalman Filter (EKF). </li>
+  <li> Setup timing thread for the EKF. </li>
+  <li> Added simple matrix math functionality. </li>
+  <li> Incorporated a simple Cholesky decomposition for symmetric PSD matrix inverse. </li>
+  <li> Starting with nine states (pos,vel,acc for attitude) and three measurements (filtered rate gyros). </li>
 </ul>
 
 

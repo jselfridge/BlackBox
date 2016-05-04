@@ -91,21 +91,41 @@ void ekf_init ( void )  {
   for ( i=0; i<nm; i++ )  ekf.K[i] = 0.0;
 
   // Assign plant covariance values (WIP: pull from file with error checking)
-  ekf.Q[0] = 0.01;    // pitch angle
-  ekf.Q[3] = 0.1;     // pitch rate
+  ekf.Q[ 0] = 0.01;    // R angle
+  ekf.Q[10] = 0.01;    // P angle
+  ekf.Q[20] = 0.01;    // Y angle
+  ekf.Q[30] = 0.01;    // R rate
+  ekf.Q[40] = 0.01;    // P rate
+  ekf.Q[50] = 0.01;    // Y rate
+  ekf.Q[60] = 0.01;    // R acc
+  ekf.Q[70] = 0.01;    // P acc
+  ekf.Q[80] = 0.01;    // Y acc
 
   // Assign measurement covariance values (WIP: pull from file with error checking)
-  ekf.R[0] = 0.01;    // pitch gyro error
+  ekf.R[0]  = 0.01;    // gyro x
+  ekf.R[4]  = 0.01;    // gyro y
+  ekf.R[8]  = 0.01;    // gyro z
 
   // Static F matrix
   // WIP: Adaptively updated from MRAC or L1
   // WIP: Add acceleration state?
   // Unity diagonal, time step block diagonal in upper right
-  ekf.F[0] = 1.0;  ekf.F[1] = 1.0/HZ_EKF;
-  ekf.F[2] = 0.0;  ekf.F[3] = 1.0;
+  double dt  = 1.0 / HZ_EKF;
+  double dt2 = dt * dt / 2;
+  ekf.F[ 0] = 1.0;  ekf.F[ 3] = dt;  ekf.F[ 6] = dt2;
+  ekf.F[10] = 1.0;  ekf.F[13] = dt;  ekf.F[16] = dt2;
+  ekf.F[20] = 1.0;  ekf.F[23] = dt;  ekf.F[26] = dt2;
+  ekf.F[30] = 1.0;  ekf.F[33] = dt;
+  ekf.F[40] = 1.0;  ekf.F[43] = dt;
+  ekf.F[50] = 1.0;  ekf.F[53] = dt;
+  ekf.F[60] = 1.0;
+  ekf.F[70] = 1.0;
+  ekf.F[80] = 1.0;
 
   // Static H matrix (WIP: adaptively updated from MRAC or L1)
-  ekf.H[0] = 0.0;  ekf.H[1] = 1.0;
+  ekf.H[ 3] = 1.0;
+  ekf.H[13] = 1.0;
+  ekf.H[23] = 1.0;
 
   return;
 }
@@ -163,7 +183,7 @@ int ekf_update ( void )  {
 
   // Obtain measurements
   pthread_mutex_lock(&mutex_gyrA);
-  z[0] = imuA.gyr->filter[1];
+  for ( i=0; i<3; i++ )  z[i] = imuA.gyr->filter[i];
   pthread_mutex_unlock(&mutex_gyrA);
 
   // Evaluate derivatives

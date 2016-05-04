@@ -169,8 +169,8 @@ void tmr_attr ( pthread_attr_t *attr )  {
 void tmr_begin ( pthread_attr_t *attr )  {
   if(DEBUG)  printf("  Begin timing threads:  ");
 
-  tmr_thread( &tmr_io,    attr, fcn_io    );  usleep(100000);
-  tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(100000);
+  //tmr_thread( &tmr_io,    attr, fcn_io    );  usleep(100000);
+  //tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(100000);
 
   if( IMUA_ENABLED &&  IMUB_ENABLED ) {  tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);  }
   if( IMUA_ENABLED && !IMUB_ENABLED ) {  tmr_thread( &tmr_imuA,  attr, fcn_imuA  );  usleep(100000);  }
@@ -178,12 +178,12 @@ void tmr_begin ( pthread_attr_t *attr )  {
 
   tmr_thread( &tmr_ahrs,  attr, fcn_ahrs  );  usleep(100000);
   tmr_thread( &tmr_ekf,   attr, fcn_ekf   );  usleep(100000);
-  tmr_thread( &tmr_gps,   attr, fcn_gps   );  usleep(100000);
 
-  tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
-  tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(100000);
+  //tmr_thread( &tmr_gps,   attr, fcn_gps   );  usleep(100000);
+  //tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
+  //tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(100000);
 
-  tmr_thread( &tmr_ctrl,  attr, fcn_ctrl  );  usleep(100000);
+  //tmr_thread( &tmr_ctrl,  attr, fcn_ctrl  );  usleep(100000);
 
   if(DEBUG) {
     tmr_thread( &tmr_debug, attr, fcn_debug );
@@ -221,7 +221,7 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&mutex_gcs);
   pthread_mutex_destroy(&mutex_ctrl);
 
-  // Exit control thread
+  /*  // Exit control thread
   if( pthread_join ( tmr_ctrl.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ctrl' thread. \n" );
   if(DEBUG)  printf( "ctrl " );
@@ -240,7 +240,7 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_gps.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gps' thread. \n" );
   if(DEBUG)  printf( "gps " );
-
+  */
   // Exit EKF thread
   if( pthread_join ( tmr_ekf.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ekf' thread. \n" );
@@ -269,7 +269,7 @@ void tmr_exit ( void )  {
     printf( "Error (tmr_exit): Failed to exit 'imu' thread. \n" );
   if(DEBUG)  printf( "imu " );  }
 
-  // Exit program execution flags thread
+  /*  // Exit program execution flags thread
   if( pthread_join ( tmr_flag.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'flag' thread. \n" );
   if(DEBUG)  printf( "flag " );
@@ -278,7 +278,7 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_io.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'sio' thread. \n" );
   if(DEBUG)  printf( "io " );
-
+  */
   // Exit debugging thread
   if(DEBUG) {
   if( pthread_join ( tmr_debug.id, NULL ) )
