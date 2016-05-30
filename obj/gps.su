@@ -1,5 +1,0 @@
-gps.c:22:6:gps_init	88	dynamic,bounded
-gps.c:69:6:gps_exit	0	static
-gps.c:80:6:gps_update	128	dynamic,bounded
-gps.c:133:6:gps_hex2dec	0	static
-gps.c:146:6:gps_rmc	64	static

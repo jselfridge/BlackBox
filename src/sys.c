@@ -10,24 +10,24 @@
 #include <unistd.h>
 #include "ahrs.h"
 #include "ctrl.h"
-#include "filter.h"
 #include "flag.h"
 #include "gps.h"
 #include "imu.h"
 #include "io.h"
 #include "led.h"
 #include "log.h"
+#include "lpf.h"
 #include "timer.h"
 
 
-static void sys_io      ( void );
-static void sys_filter  ( void );
-static void sys_imuA    ( void );
-static void sys_imuB    ( void );
-static void sys_ahrs    ( void );
-static void sys_gps     ( void );
-static void sys_gcs     ( void );
-static void sys_ctrl    ( void );
+static void sys_io    ( void );
+static void sys_lpf   ( void );
+static void sys_imuA  ( void );
+static void sys_imuB  ( void );
+static void sys_ahrs  ( void );
+static void sys_gps   ( void );
+static void sys_gcs   ( void );
+static void sys_ctrl  ( void );
 
 
 /**
@@ -69,6 +69,10 @@ void sys_init ( void )  {
     printf( "Error (sys_init): Failed to lock memory. \n" );
   mallopt( M_TRIM_THRESHOLD, -1 );
   mallopt( M_MMAP_MAX, 0 );
+
+  // Set global boolean conditions
+  running = true;
+  armed = false;
 
   return;
 }
@@ -119,7 +123,7 @@ void sys_update ( void )  {
 
   // Select data for display
   if(SYS_IO)     sys_io();
-  if(SYS_FILTER) sys_filter();
+  if(SYS_LPF)    sys_lpf();
   if(SYS_IMUA)   if(IMUA_ENABLED)  sys_imuA();
   if(SYS_IMUB)   if(IMUB_ENABLED)  sys_imuB();
   if(SYS_AHRS)   sys_ahrs();
@@ -151,12 +155,13 @@ static void sys_io ( void )  {
   pthread_mutex_unlock(&mutex_input);
 
   // Output signals
-  pthread_mutex_lock(&mutex_output);
+  //pthread_mutex_lock(&mutex_output);
   //for ( i=0; i<4; i++ )  printf("%5d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%4d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<6; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_output);
+  //pthread_mutex_unlock(&mutex_output);
 
+  // Quadrotor output signals
   pthread_mutex_lock(&mutex_output);
   printf("%5.2f ", output.norm[0] );
   printf("%5.2f ", output.norm[1] );
@@ -170,35 +175,35 @@ static void sys_io ( void )  {
 
 
 /**
- *  sys_filter
- *  Prints filter parameter values to the terminal.
+ *  sys_lpf
+ *  Prints low pass filter parameter values to the terminal.
  */
-static void sys_filter ( void )  {
-
+static void sys_lpf ( void )  {
+  /*
   // IMUA filters
   if (IMUA_ENABLED) {
-    //printf("%6.1f ", filter_gyrA.freq );
-    //printf("%6.1f ", filter_accA.freq );
-    //printf("%6.1f ", filter_magA.freq );
-    //printf("   ");  fflush(stdout);  
-    //printf("%5d ",   filter_gyrA.hist );
-    //printf("%5d ",   filter_accA.hist );
-    //printf("%5d ",   filter_magA.hist );
-    //printf("   ");  fflush(stdout);  
+    printf("%6.1f ", filter_gyrA.freq );
+    printf("%6.1f ", filter_accA.freq );
+    printf("%6.1f ", filter_magA.freq );
+    printf("   ");  fflush(stdout);  
+    printf("%5d ",   filter_gyrA.hist );
+    printf("%5d ",   filter_accA.hist );
+    printf("%5d ",   filter_magA.hist );
+    printf("   ");  fflush(stdout);
   }
 
   // IMUB filters
   if (IMUB_ENABLED) {
-    //printf("%6.1f ", filter_gyrB.freq );
-    //printf("%6.1f ", filter_accB.freq );
-    //printf("%6.1f ", filter_magB.freq );
-    //printf("   ");  fflush(stdout);  
-    //printf("%5d ",   filter_gyrB.hist );
-    //printf("%5d ",   filter_accB.hist );
-    //printf("%5d ",   filter_magB.hist );
-    //printf("   ");  fflush(stdout);  
+    printf("%6.1f ", filter_gyrB.freq );
+    printf("%6.1f ", filter_accB.freq );
+    printf("%6.1f ", filter_magB.freq );
+    printf("   ");  fflush(stdout);  
+    printf("%5d ",   filter_gyrB.hist );
+    printf("%5d ",   filter_accB.hist );
+    printf("%5d ",   filter_magB.hist );
+    printf("   ");  fflush(stdout);
   }
-
+  */
   return;
 }
 
@@ -208,7 +213,7 @@ static void sys_filter ( void )  {
  *  Prints IMUA debugging messages to the terminal.
  */
 static void sys_imuA ( void )  {
-
+  /*
   // Check that IMUA is in use
   if (IMUA_ENABLED) {
 
@@ -237,7 +242,7 @@ static void sys_imuA ( void )  {
   pthread_mutex_unlock(&mutex_magA);
 
   }
-
+  */
   return;
 }
 
@@ -247,7 +252,7 @@ static void sys_imuA ( void )  {
  *  Prints IMUB debugging messages to the terminal.
  */
 static void sys_imuB ( void )  {
-
+  /*
   // Check that IMUB is in use
   if (IMUB_ENABLED) {
 
@@ -276,7 +281,7 @@ static void sys_imuB ( void )  {
   pthread_mutex_unlock(&mutex_magB);
 
   }
-
+  */
   return;
 }
 
@@ -286,7 +291,7 @@ static void sys_imuB ( void )  {
  *  Prints AHRS debugging messages to the terminal.
  */
 static void sys_ahrs ( void )  {
-
+  /*
   // Loop counter
   ushort i;
 
@@ -308,7 +313,7 @@ static void sys_ahrs ( void )  {
   //for ( i=0; i<3; i++ )  printf("%7.2f ", ahrs.eul[i]  * (180.0/PI) );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%7.2f ", ahrs.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_eul); 
-
+  */
   return;
 }
 
@@ -318,7 +323,7 @@ static void sys_ahrs ( void )  {
  *  Prints GPS debugging messages to the terminal.
  */
 static void sys_gps ( void )  {
-
+  /*
   pthread_mutex_lock(&mutex_gps);
   printf("GPS msg:    %s ", gps.msg );  printf("   ");  fflush(stdout);
   //printf("lat: %s    ",     gps.lat     );
@@ -329,7 +334,7 @@ static void sys_gps ( void )  {
   //printf("numsat: %s    ",  gps.numsat  );
   //fflush(stdout);
   pthread_mutex_unlock(&mutex_gps);
-
+  */
   return;
 }
 
@@ -339,6 +344,7 @@ static void sys_gps ( void )  {
  *  Prints ground control debugging messages to the terminal.
  */
 static void sys_gcs ( void )  {
+  // Add code as needed...
   return;
 }
 
@@ -348,9 +354,9 @@ static void sys_gcs ( void )  {
  *  Prints controller values to the terminal.
  */
 static void sys_ctrl ( void )  {
-
+  /*
   // Loop counter
-  ushort i;
+  //ushort i;
 
   // Control signals
   pthread_mutex_lock(&mutex_ctrl);
@@ -359,15 +365,15 @@ static void sys_ctrl ( void )  {
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.dgain[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.thrl[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.scale[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.perr[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.perr[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.ierr[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.derr[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.cmd[i]  );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", ctrl.bank    *(180.0/PI) );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", ctrl.climb   *(180.0/PI) );  printf("   ");  fflush(stdout);
-  printf("%5.2f ", ctrl.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
+  //printf("%5.2f ", ctrl.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&mutex_ctrl);
-
+  */
   return;
 }
 

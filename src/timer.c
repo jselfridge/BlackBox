@@ -40,25 +40,25 @@ void tmr_mutex ( void )  {
   if(DEBUG)  printf("  Establish mutex locks \n");
   pthread_mutex_init( &mutex_input,  NULL );
   pthread_mutex_init( &mutex_output, NULL );
-  pthread_mutex_init( &mutex_i2c1,   NULL );
-  pthread_mutex_init( &mutex_i2c2,   NULL );
-  pthread_mutex_init( &mutex_gyr,    NULL );
-  pthread_mutex_init( &mutex_acc,    NULL );
-  pthread_mutex_init( &mutex_mag,    NULL );
-  pthread_mutex_init( &mutex_gyrA,   NULL );
-  pthread_mutex_init( &mutex_accA,   NULL );
-  pthread_mutex_init( &mutex_magA,   NULL );
-  pthread_mutex_init( &mutex_gyrB,   NULL );
-  pthread_mutex_init( &mutex_accB,   NULL );
-  pthread_mutex_init( &mutex_magB,   NULL );
-  pthread_mutex_init( &mutex_ahrs,   NULL );
-  pthread_mutex_init( &mutex_eul,    NULL );
-  pthread_mutex_init( &mutex_lpfeul, NULL );
-  pthread_mutex_init( &mutex_quat,   NULL );
-  pthread_mutex_init( &mutex_ekf,    NULL );
-  pthread_mutex_init( &mutex_gps,    NULL );
-  pthread_mutex_init( &mutex_gcs,    NULL );
-  pthread_mutex_init( &mutex_ctrl,   NULL );
+  //pthread_mutex_init( &mutex_i2c1,   NULL );
+  //pthread_mutex_init( &mutex_i2c2,   NULL );
+  //pthread_mutex_init( &mutex_gyr,    NULL );
+  //pthread_mutex_init( &mutex_acc,    NULL );
+  //pthread_mutex_init( &mutex_mag,    NULL );
+  //pthread_mutex_init( &mutex_gyrA,   NULL );
+  //pthread_mutex_init( &mutex_accA,   NULL );
+  //pthread_mutex_init( &mutex_magA,   NULL );
+  //pthread_mutex_init( &mutex_gyrB,   NULL );
+  //pthread_mutex_init( &mutex_accB,   NULL );
+  //pthread_mutex_init( &mutex_magB,   NULL );
+  //pthread_mutex_init( &mutex_ahrs,   NULL );
+  //pthread_mutex_init( &mutex_eul,    NULL );
+  //pthread_mutex_init( &mutex_lpfeul, NULL );
+  //pthread_mutex_init( &mutex_quat,   NULL );
+  //pthread_mutex_init( &mutex_ekf,    NULL );
+  //pthread_mutex_init( &mutex_gps,    NULL );
+  //pthread_mutex_init( &mutex_gcs,    NULL );
+  //pthread_mutex_init( &mutex_ctrl,   NULL );
   return;
 }
 
@@ -81,49 +81,49 @@ void tmr_setup ( void )  {
   tmr_flag.per  = 1000000 / HZ_FLAG;
 
   // IMU timer
-  tmr_imu.name = "imu";
-  tmr_imu.prio = PRIO_IMU;
-  tmr_imu.per  = 1000000 / HZ_IMU_FAST;
+  //tmr_imu.name = "imu";
+  //tmr_imu.prio = PRIO_IMU;
+  //tmr_imu.per  = 1000000 / HZ_IMU_FAST;
 
   // IMUA timer
-  tmr_imuA.name =  "imuA";
-  tmr_imuA.prio =  PRIO_IMU;
-  tmr_imuA.per  =  1000000 / HZ_IMU_FAST;
+  //tmr_imuA.name =  "imuA";
+  //tmr_imuA.prio =  PRIO_IMU;
+  //tmr_imuA.per  =  1000000 / HZ_IMU_FAST;
 
   // IMUB timer
-  tmr_imuB.name = "imuB";
-  tmr_imuB.prio = PRIO_IMU;
-  tmr_imuB.per  = 1000000 / HZ_IMU_FAST;
+  //tmr_imuB.name = "imuB";
+  //tmr_imuB.prio = PRIO_IMU;
+  //tmr_imuB.per  = 1000000 / HZ_IMU_FAST;
 
   // AHRS timer
-  tmr_ahrs.name = "ahrs";
-  tmr_ahrs.prio = PRIO_AHRS;
-  tmr_ahrs.per  = 1000000 / HZ_AHRS;
+  //tmr_ahrs.name = "ahrs";
+  //tmr_ahrs.prio = PRIO_AHRS;
+  //tmr_ahrs.per  = 1000000 / HZ_AHRS;
 
   // EKF timer
-  tmr_ekf.name  = "ekf";
-  tmr_ekf.prio  = PRIO_EKF;
-  tmr_ekf.per   = 1000000 / HZ_EKF;
+  //tmr_ekf.name  = "ekf";
+  //tmr_ekf.prio  = PRIO_EKF;
+  //tmr_ekf.per   = 1000000 / HZ_EKF;
 
   // GPS timer
-  tmr_gps.name = "gps";
-  tmr_gps.prio = PRIO_GPS;
-  tmr_gps.per  = 1000000 / HZ_GPS;
+  //tmr_gps.name = "gps";
+  //tmr_gps.prio = PRIO_GPS;
+  //tmr_gps.per  = 1000000 / HZ_GPS;
 
   // GCSTX timer
-  tmr_gcstx.name = "gcstx";
-  tmr_gcstx.prio = PRIO_GCSTX;
-  tmr_gcstx.per  = 1000000 / HZ_GCSTX;
+  //tmr_gcstx.name = "gcstx";
+  //tmr_gcstx.prio = PRIO_GCSTX;
+  //tmr_gcstx.per  = 1000000 / HZ_GCSTX;
 
   // GCSRX timer
-  tmr_gcsrx.name = "gcsrx";
-  tmr_gcsrx.prio = PRIO_GCSRX;
-  tmr_gcsrx.per  = 1000000 / HZ_GCSRX;
+  //tmr_gcsrx.name = "gcsrx";
+  //tmr_gcsrx.prio = PRIO_GCSRX;
+  //tmr_gcsrx.per  = 1000000 / HZ_GCSRX;
 
   // Control timer
-  tmr_ctrl.name = "ctrl";
-  tmr_ctrl.prio = PRIO_CTRL;
-  tmr_ctrl.per  = 1000000 / HZ_CTRL;
+  //tmr_ctrl.name = "ctrl";
+  //tmr_ctrl.prio = PRIO_CTRL;
+  //tmr_ctrl.per  = 1000000 / HZ_CTRL;
 
   // Debugging timer
   tmr_debug.name = "debug";
@@ -175,9 +175,9 @@ void tmr_begin ( pthread_attr_t *attr )  {
   tmr_thread( &tmr_io,    attr, fcn_io    );  usleep(100000);
   tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(100000);
 
-  if( IMUA_ENABLED &&  IMUB_ENABLED ) {  tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);  }
-  if( IMUA_ENABLED && !IMUB_ENABLED ) {  tmr_thread( &tmr_imuA,  attr, fcn_imuA  );  usleep(100000);  }
-  if( IMUB_ENABLED && !IMUA_ENABLED ) {  tmr_thread( &tmr_imuB,  attr, fcn_imuB  );  usleep(100000);  }
+  //if( IMUA_ENABLED &&  IMUB_ENABLED ) {  tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);  }
+  //if( IMUA_ENABLED && !IMUB_ENABLED ) {  tmr_thread( &tmr_imuA,  attr, fcn_imuA  );  usleep(100000);  }
+  //if( IMUB_ENABLED && !IMUA_ENABLED ) {  tmr_thread( &tmr_imuB,  attr, fcn_imuB  );  usleep(100000);  }
 
   //tmr_thread( &tmr_ahrs,  attr, fcn_ahrs  );  usleep(100000);
   //tmr_thread( &tmr_ekf,   attr, fcn_ekf   );  usleep(100000);
@@ -207,25 +207,25 @@ void tmr_exit ( void )  {
   // Destroy mutex locks
   pthread_mutex_destroy(&mutex_input);
   pthread_mutex_destroy(&mutex_output);
-  pthread_mutex_destroy(&mutex_i2c1);
-  pthread_mutex_destroy(&mutex_i2c2);
-  pthread_mutex_destroy(&mutex_gyr);
-  pthread_mutex_destroy(&mutex_acc);
-  pthread_mutex_destroy(&mutex_mag);
-  pthread_mutex_destroy(&mutex_gyrA);
-  pthread_mutex_destroy(&mutex_accA);
-  pthread_mutex_destroy(&mutex_magA);
-  pthread_mutex_destroy(&mutex_gyrB);
-  pthread_mutex_destroy(&mutex_accB);
-  pthread_mutex_destroy(&mutex_magB);
-  pthread_mutex_destroy(&mutex_ahrs);
-  pthread_mutex_destroy(&mutex_eul);
-  pthread_mutex_destroy(&mutex_lpfeul);
-  pthread_mutex_destroy(&mutex_quat);
-  pthread_mutex_destroy(&mutex_ekf);
-  pthread_mutex_destroy(&mutex_gps);
-  pthread_mutex_destroy(&mutex_gcs);
-  pthread_mutex_destroy(&mutex_ctrl);
+  //pthread_mutex_destroy(&mutex_i2c1);
+  //pthread_mutex_destroy(&mutex_i2c2);
+  //pthread_mutex_destroy(&mutex_gyr);
+  //pthread_mutex_destroy(&mutex_acc);
+  //pthread_mutex_destroy(&mutex_mag);
+  //pthread_mutex_destroy(&mutex_gyrA);
+  //pthread_mutex_destroy(&mutex_accA);
+  //pthread_mutex_destroy(&mutex_magA);
+  //pthread_mutex_destroy(&mutex_gyrB);
+  //pthread_mutex_destroy(&mutex_accB);
+  //pthread_mutex_destroy(&mutex_magB);
+  //pthread_mutex_destroy(&mutex_ahrs);
+  //pthread_mutex_destroy(&mutex_eul);
+  //pthread_mutex_destroy(&mutex_lpfeul);
+  //pthread_mutex_destroy(&mutex_quat);
+  //pthread_mutex_destroy(&mutex_ekf);
+  //pthread_mutex_destroy(&mutex_gps);
+  //pthread_mutex_destroy(&mutex_gcs);
+  //pthread_mutex_destroy(&mutex_ctrl);
 
   /*  // Exit control thread
   if( pthread_join ( tmr_ctrl.id, NULL ) )
@@ -256,7 +256,7 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_ahrs.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ahrs' thread. \n" );
   if(DEBUG)  printf( "ahrs " );
-  */
+
   // Exit IMUB thread
   if( IMUB_ENABLED && !IMUA_ENABLED )  {
   if( pthread_join ( tmr_imuB.id, NULL ) )
@@ -274,7 +274,7 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_imu.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'imu' thread. \n" );
   if(DEBUG)  printf( "imu " );  }
-
+  */
   // Exit program execution flags thread
   if( pthread_join ( tmr_flag.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'flag' thread. \n" );
@@ -427,7 +427,7 @@ void *fcn_io (  )  {
     tmr_start(&tmr_io);
     io_update();
     tmr_finish(&tmr_io);
-    if (datalog.enabled)  log_record(LOG_IO);
+    //if (datalog.enabled)  log_record(LOG_IO);
     tmr_pause(&tmr_io);
   }
   pthread_exit(NULL);
@@ -456,7 +456,7 @@ void *fcn_flag (  )  {
  *  fcn_imu
  *  Function handler for dual IMU timing thread.
  */
-void *fcn_imu (  )  {
+/*void *fcn_imu (  )  {
   tmr_create(&tmr_imu);
   while (running) {
     tmr_start(&tmr_imu);
@@ -469,20 +469,20 @@ void *fcn_imu (  )  {
     if (datalog.enabled) {
       log_record(LOG_IMUA);
       log_record(LOG_IMUB);
-      log_record(LOG_IMU);
+      //log_record(LOG_IMU);
     }
     tmr_pause(&tmr_imu);
   }
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_imuA
  *  Function handler for the IMUA timing thread.
  */
-void *fcn_imuA (  )  {
+/*void *fcn_imuA (  )  {
   tmr_create(&tmr_imuA);
   while (running) {
     tmr_start(&tmr_imuA);
@@ -494,13 +494,13 @@ void *fcn_imuA (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_imuB
  *  Function handler for the IMUB timing thread.
  */
-void *fcn_imuB (  )  {
+/*void *fcn_imuB (  )  {
   tmr_create(&tmr_imuB);
   while (running) {
     tmr_start(&tmr_imuB);
@@ -512,13 +512,13 @@ void *fcn_imuB (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_ahrs
  *  Function handler for the AHRS timing thread.
  */
-void *fcn_ahrs (  )  {
+/*void *fcn_ahrs (  )  {
   tmr_create(&tmr_ahrs);
   while (running) {
     tmr_start(&tmr_ahrs);
@@ -530,13 +530,13 @@ void *fcn_ahrs (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_ekf
  *  Function handler for the Extended Kalman Filter timing thread.
  */
-void *fcn_ekf (  )  {
+/*void *fcn_ekf (  )  {
   tmr_create(&tmr_ekf);
   while (running) {
     tmr_start(&tmr_ekf);
@@ -548,13 +548,13 @@ void *fcn_ekf (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_gps
  *  Function handler for the GPS timing thread.
  */
-void *fcn_gps (  )  {
+/*void *fcn_gps (  )  {
   tmr_create(&tmr_gps);
   while (running) {
     tmr_start(&tmr_gps);
@@ -566,13 +566,13 @@ void *fcn_gps (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_gcstx
  *  Function handler for the GCS transmission timing thread.
  */
-void *fcn_gcstx (  )  {
+/*void *fcn_gcstx (  )  {
   tmr_create(&tmr_gcstx);
   while (running) {
     tmr_start(&tmr_gcstx);
@@ -583,13 +583,13 @@ void *fcn_gcstx (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_gcsrx
  *  Function handler for the GCS receiver timing thread.
  */
-void *fcn_gcsrx (  )  {
+/*void *fcn_gcsrx (  )  {
   tmr_create(&tmr_gcsrx);
   while (running) {
     tmr_start(&tmr_gcsrx);
@@ -600,13 +600,13 @@ void *fcn_gcsrx (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_ctrl
  *  Function handler for the control law timing thread.
  */
-void *fcn_ctrl (  )  {
+/*void *fcn_ctrl (  )  {
   tmr_create(&tmr_ctrl);
   while (running) {
     tmr_start(&tmr_ctrl);
@@ -618,7 +618,7 @@ void *fcn_ctrl (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_debug

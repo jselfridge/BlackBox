@@ -18,13 +18,11 @@
 void flag_init ( void )  {
   if(DEBUG)  printf("Initializing program execution flags \n");
 
-  // Set boolean values
-  if(DEBUG)  printf("  Set run time flags \n");
-  datalog.enabled  = false;
-  datalog.setup    = false;
-  datalog.saving   = false;
-  running          = true;
-  armed            = false;
+  // Set boolean values... move to "log.c"
+  //if(DEBUG)  printf("  Set run time flags \n");
+  //datalog.enabled  = false;
+  //datalog.setup    = false;
+  //datalog.saving   = false;
 
   // Zero out counters
   if(DEBUG)  printf("  Zero out counters \n");
@@ -70,35 +68,35 @@ void flag_update ( void )  {
   pthread_mutex_lock(&mutex_input);
   energized = ( input.norm[CH_T] <= -0.9 ) ? ( false ) : ( true );
   for ( ch=0; ch<4; ch++ ) {
-    ( input.norm[ch] >  0.95 ) ? ( flag.upper[ch]++ ) : ( flag.upper[ch] = 0 );
-    ( input.norm[ch] < -0.95 ) ? ( flag.lower[ch]++ ) : ( flag.lower[ch] = 0 );
+    ( input.norm[ch] >  0.9 ) ? ( flag.upper[ch]++ ) : ( flag.upper[ch] = 0 );
+    ( input.norm[ch] < -0.9 ) ? ( flag.lower[ch]++ ) : ( flag.lower[ch] = 0 );
   }
   pthread_mutex_unlock(&mutex_input);
 
   // Data log: roll stick only, no yaw command
   if ( !energized && !flag.lower[CH_Y] && !flag.upper[CH_Y] )  {
     if ( flag.lower[CH_R] >= flag.limit[CH_R] ) {
-      if (!datalog.setup)  log_start();
-      datalog.enabled = true;
-      led_on(LED_LOG);
+      //if (!datalog.setup)  log_start();
+      //datalog.enabled = true;
+      //led_on(LED_LOG);
     }
     if ( flag.upper[CH_R] >= flag.limit[CH_R] ) {
-      datalog.enabled = false;
-      if (datalog.setup)  log_finish();
-      led_off(LED_LOG);
+      //datalog.enabled = false;
+      //if (datalog.setup)  log_finish();
+      //led_off(LED_LOG);
     }
   }
 
   // Motor arming: yaw stick only, no roll command
   if ( !energized && !flag.lower[CH_R] && !flag.upper[CH_R] )  {
     if ( flag.upper[CH_Y] >= flag.limit[CH_Y] ) {
-      pthread_mutex_lock(&mutex_ctrl);
-      pthread_mutex_lock(&mutex_eul);
-      ctrl.bank    = ahrs.eul[0];
-      ctrl.climb   = ahrs.eul[1];
-      ctrl.heading = ahrs.eul[2];
-      pthread_mutex_unlock(&mutex_eul);
-      pthread_mutex_unlock(&mutex_ctrl);
+      //pthread_mutex_lock(&mutex_ctrl);
+      //pthread_mutex_lock(&mutex_eul);
+      //ctrl.bank    = ahrs.eul[0];
+      //ctrl.climb   = ahrs.eul[1];
+      //ctrl.heading = ahrs.eul[2];
+      //pthread_mutex_unlock(&mutex_eul);
+      //pthread_mutex_unlock(&mutex_ctrl);
       armed = true;
       led_on(LED_MOT);
     }

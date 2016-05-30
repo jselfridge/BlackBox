@@ -10,7 +10,7 @@
 
 #define DEBUG       true
 #define SYS_IO      false
-#define SYS_FILTER  false
+#define SYS_LPF     true
 #define SYS_IMUA    false
 #define SYS_IMUB    false
 #define SYS_AHRS    false
@@ -21,6 +21,8 @@
 
 
 struct sigaction sys_signal;
+bool running;
+bool armed;
 
 
 void sys_init   ( void );

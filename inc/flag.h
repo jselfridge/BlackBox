@@ -4,7 +4,6 @@
 #define FLAG_H
 
 
-#include <stdbool.h>
 #include <sys/types.h>
 
 
@@ -20,10 +19,6 @@ typedef struct flag_struct {
   ushort limit[4];
 } flag_struct;
 flag_struct flag;
-
-
-bool running;
-bool armed;
 
 
 void  flag_init   ( void );
