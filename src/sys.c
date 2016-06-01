@@ -213,7 +213,7 @@ static void sys_lpf ( void )  {
  *  Prints IMUA debugging messages to the terminal.
  */
 static void sys_imuA ( void )  {
-  /*
+
   // Check that IMUA is in use
   if (IMUA_ENABLED) {
 
@@ -221,28 +221,28 @@ static void sys_imuA ( void )  {
   ushort i;
 
   // Gyroscope data
-  pthread_mutex_lock(&mutex_gyrA);
+  pthread_mutex_lock(&gyrA.mutex);
   //for ( i=0; i<3; i++ )  printf("%6d ",   gyrA.raw[i]    );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.scaled[i] );  printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.filter[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_gyrA);
+  pthread_mutex_unlock(&gyrA.mutex);
 
   // Accelerometer data
-  pthread_mutex_lock(&mutex_accA);
+  pthread_mutex_lock(&accA.mutex);
   //for ( i=0; i<3; i++ )  printf("%6d ",   accA.raw[i]    );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", accA.scaled[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", accA.filter[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_accA);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", accA.filter[i] );  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&accA.mutex);
 
   // Magnetometer data
-  pthread_mutex_lock(&mutex_magA);
+  pthread_mutex_lock(&magA.mutex);
   //for ( i=0; i<3; i++ )  printf("%4d ",   magA.raw[i]    );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", magA.scaled[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", magA.filter[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_magA);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", magA.filter[i] );  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&magA.mutex);
 
   }
-  */
+
   return;
 }
 
@@ -252,7 +252,7 @@ static void sys_imuA ( void )  {
  *  Prints IMUB debugging messages to the terminal.
  */
 static void sys_imuB ( void )  {
-  /*
+
   // Check that IMUB is in use
   if (IMUB_ENABLED) {
 
@@ -260,28 +260,28 @@ static void sys_imuB ( void )  {
   ushort i;
 
   // Gyroscope data
-  pthread_mutex_lock(&mutex_gyrB);
+  pthread_mutex_lock(&gyrB.mutex);
   //for ( i=0; i<3; i++ )  printf("%6d ",   gyrB.raw[i]    );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.scaled[i] );  printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.filter[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_gyrB);
+  pthread_mutex_unlock(&gyrB.mutex);
 
   // Accelerometer data
-  pthread_mutex_lock(&mutex_accB);
+  pthread_mutex_lock(&accB.mutex);
   //for ( i=0; i<3; i++ )  printf("%6d ",   accB.raw[i]    );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", accB.scaled[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", accB.filter[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_accB);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", accB.filter[i] );  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&accB.mutex);
 
   // Magnetometer data
-  pthread_mutex_lock(&mutex_magB);
+  pthread_mutex_lock(&magB.mutex);
   //for ( i=0; i<3; i++ )  printf("%4d ",   magB.raw[i]    );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", magB.scaled[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", magB.filter[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_magB);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", magB.filter[i] );  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&magB.mutex);
 
   }
-  */
+
   return;
 }
 

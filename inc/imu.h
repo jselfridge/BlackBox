@@ -19,23 +19,26 @@
 
 
 typedef struct imu_data_struct {
-  double dt;
-  double gain;
   int    bias   [3];
   int    range  [3];
   short  raw    [3];
   double scaled [3];
   double filter [3];
+
+  pthread_mutex_t mutex;  //---  DEBUGGING  ---//
+
 } imu_data_struct;
-imu_data_struct gyr;
-imu_data_struct acc;
-imu_data_struct mag;
+//imu_data_struct gyr;
+//imu_data_struct acc;
+//imu_data_struct mag;
 imu_data_struct gyrA;
 imu_data_struct accA;
 imu_data_struct magA;
 imu_data_struct gyrB;
 imu_data_struct accB;
 imu_data_struct magB;
+
+imu_data_struct temp;  //---  DEBUGGING  ---//
 
 
 typedef struct imu_struct {
@@ -50,7 +53,7 @@ typedef struct imu_struct {
   imu_data_struct *acc;
   imu_data_struct *mag;
 } imu_struct;
-imu_struct imu;
+//imu_struct imu;
 imu_struct imuA;
 imu_struct imuB;
 
@@ -60,7 +63,7 @@ void  imu_exit    ( void );
 void  imu_param   ( imu_struct *imu );
 void  imu_getcal  ( imu_struct *imu );
 void  imu_update  ( imu_struct *imu );
-void  imu_avg     ( void );
+//void  imu_avg     ( void );
 
 
 #endif

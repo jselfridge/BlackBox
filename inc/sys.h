@@ -10,9 +10,9 @@
 
 #define DEBUG       true
 #define SYS_IO      false
-#define SYS_LPF     true
-#define SYS_IMUA    false
-#define SYS_IMUB    false
+#define SYS_LPF     false
+#define SYS_IMUA    true
+#define SYS_IMUB    true
 #define SYS_AHRS    false
 #define SYS_GPS     false
 #define SYS_GCS     false

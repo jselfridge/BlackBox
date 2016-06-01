@@ -1,5 +1,5 @@
-lpf.c:15:6:lpf_init	8	static
-lpf.c:135:6:lpf_exit	0	static
-lpf.c:146:6:lpf_freq	0	static
-lpf.c:170:6:lpf_hist	16	static
-lpf.c:195:6:lpf_update	56	dynamic
+lpf.c:15:6:lpf_init	104	static
+lpf.c:136:6:lpf_exit	0	static
+lpf.c:147:6:lpf_freq	0	static
+lpf.c:171:6:lpf_hist	16	static
+lpf.c:196:6:lpf_update	56	dynamic

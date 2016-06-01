@@ -5,9 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include "filter.h"
 #include "i2c.h"
 #include "led.h"
+#include "lpf.h"
 #include "mpu.h"
 #include "sys.h"
 #include "timer.h"
@@ -78,15 +78,14 @@ void imu_init ( void )  {
 
   }
 
-  // Setup shared IMU
+  // Setup averaged IMU
+  /*
   if ( IMUA_ENABLED && IMUB_ENABLED )  {
-
-    // IMU data structures
     imu.gyr  = &gyr;
     imu.acc  = &acc;
     imu.mag  = &mag;
-
   }
+  */
 
   // IMU warmup period
   usleep(300000);
@@ -159,7 +158,7 @@ void imu_getcal ( imu_struct *imu )  {
   char buff [32];  memset( buff, 0, sizeof(buff) );
   char path [32];  memset( path, 0, sizeof(path) );
 
-  // Set acceleration bias
+  // Set accelerometer bias
   sprintf( path, "../Param/board/bias/acc%c", imu->id );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'acc%c bias' not found. \n", imu->id );
@@ -169,7 +168,7 @@ void imu_getcal ( imu_struct *imu )  {
   }
   fclose(f);
 
-  // Set acceleration range
+  // Set accelerometer range
   sprintf( path, "../Param/board/range/acc%c", imu->id );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'acc%c range' not found. \n", imu->id );
@@ -280,55 +279,61 @@ void imu_update ( imu_struct *imu )  {
 
   // IMUA low pass filter
   if ( imu->id == 'A' )  {
-    filter_lpf ( &filter_gyrA, Gs, Gf );
-    filter_lpf ( &filter_accA, As, Af );
+    lpf_update ( &lpf_gyrA, Gs, Gf );
+    lpf_update ( &lpf_accA, As, Af );
     if (imu->getmag)  {
-    filter_lpf ( &filter_magA, Ms, Mf );
+    lpf_update ( &lpf_magA, Ms, Mf );
     }
   }
 
   // IMUB low pass filter
   if ( imu->id == 'B' )  {
-    filter_lpf ( &filter_gyrB, Gs, Gf );
-    filter_lpf ( &filter_accB, As, Af );
+    lpf_update ( &lpf_gyrB, Gs, Gf );
+    lpf_update ( &lpf_accB, As, Af );
     if (imu->getmag)  {
-    filter_lpf ( &filter_magB, Ms, Mf );
+    lpf_update ( &lpf_magB, Ms, Mf );
     }
   }
 
   // Push gyroscope values to data structure
-  if ( imu->bus == 1 )  pthread_mutex_lock(&mutex_gyrA);
-  if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_gyrB);
+  //if ( imu->bus == 1 )  pthread_mutex_lock(&mutex_gyrA);
+  //if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_gyrB);
+  pthread_mutex_lock(&(imu->gyr->mutex));
   for ( i=0; i<3; i++ )  {
     imu->gyr->raw[i]    = Gr[i];
     imu->gyr->scaled[i] = Gs[i];
     imu->gyr->filter[i] = Gf[i];
   }
-  if ( imu->bus == 1 )  pthread_mutex_unlock(&mutex_gyrA);
-  if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_gyrB);
+  pthread_mutex_unlock(&(imu->gyr->mutex));
+  //if ( imu->bus == 1 )  pthread_mutex_unlock(&mutex_gyrA);
+  //if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_gyrB);
 
   // Push accerometer values to data structure
-  if ( imu->bus == 1 )  pthread_mutex_lock(&mutex_accA);
-  if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_accB);
+  //if ( imu->bus == 1 )  pthread_mutex_lock(&mutex_accA);
+  //if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_accB);
+  pthread_mutex_lock(&(imu->acc->mutex));
   for ( i=0; i<3; i++ )  {
     imu->acc->raw[i]    = Ar[i];
     imu->acc->scaled[i] = As[i];
     imu->acc->filter[i] = Af[i];
   }
-  if ( imu->bus == 1 )  pthread_mutex_unlock(&mutex_accA);
-  if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_accB);
+  pthread_mutex_unlock(&(imu->acc->mutex));
+  //if ( imu->bus == 1 )  pthread_mutex_unlock(&mutex_accA);
+  //if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_accB);
 
   // Push magnetometer values to data structure
   if(imu->getmag) {
-  if ( imu->bus == 1 )  pthread_mutex_lock(&mutex_magA);
-  if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_magB);
+  //if ( imu->bus == 1 )  pthread_mutex_lock(&mutex_magA);
+  //if ( imu->bus == 2 )  pthread_mutex_lock(&mutex_magB);
+  pthread_mutex_lock(&(imu->mag->mutex));
   for ( i=0; i<3; i++ )  {
     imu->mag->raw[i]    = Mr[i];
     imu->mag->scaled[i] = Ms[i];
     imu->mag->filter[i] = Mf[i];
   }
-  if ( imu->bus == 1 )  pthread_mutex_unlock(&mutex_magA);
-  if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_magB);
+  pthread_mutex_unlock(&(imu->mag->mutex));
+  //if ( imu->bus == 1 )  pthread_mutex_unlock(&mutex_magA);
+  //if ( imu->bus == 2 )  pthread_mutex_unlock(&mutex_magB);
   }
 
   return;
@@ -339,7 +344,7 @@ void imu_update ( imu_struct *imu )  {
  *  imu_avg
  *  Averages the data from the two IMU sensors.
  */
-void imu_avg ( void )  {
+/*void imu_avg ( void )  {
 
   // Local variables
   ushort i;
@@ -351,18 +356,38 @@ void imu_avg ( void )  {
   double Gs[3], As[3], Ms[3];
   double Gf[3], Af[3], Mf[3];
 
-  // Pull scaled IMUA data
-  pthread_mutex_lock(&mutex_gyrA);  for ( i=0; i<3; i++ )  Ga[i] = imuA.gyr->scaled[i];  pthread_mutex_unlock(&mutex_gyrA);
-  pthread_mutex_lock(&mutex_accA);  for ( i=0; i<3; i++ )  Aa[i] = imuA.acc->scaled[i];  pthread_mutex_unlock(&mutex_accA);
+  // Pull scaled IMUA gyro data
+  pthread_mutex_lock(&mutex_gyrA);
+  for ( i=0; i<3; i++ )  Ga[i] = imuA.gyr->scaled[i];
+  pthread_mutex_unlock(&mutex_gyrA);
+
+  // Pull scaled IMUA acc data
+  pthread_mutex_lock(&mutex_accA);
+  for ( i=0; i<3; i++ )  Aa[i] = imuA.acc->scaled[i];
+  pthread_mutex_unlock(&mutex_accA);
+
+  // Pull scaled IMUA mag data
   if (getmag)  {
-  pthread_mutex_lock(&mutex_magA);  for ( i=0; i<3; i++ )  Ma[i] = imuA.mag->scaled[i];  pthread_mutex_unlock(&mutex_magA);
+  pthread_mutex_lock(&mutex_magA);
+  for ( i=0; i<3; i++ )  Ma[i] = imuA.mag->scaled[i];
+  pthread_mutex_unlock(&mutex_magA);
   }
 
-  // Pull scaled IMUB data
-  pthread_mutex_lock(&mutex_gyrB);  for ( i=0; i<3; i++ )  Gb[i] = imuB.gyr->scaled[i];  pthread_mutex_unlock(&mutex_gyrB);
-  pthread_mutex_lock(&mutex_accB);  for ( i=0; i<3; i++ )  Ab[i] = imuB.acc->scaled[i];  pthread_mutex_unlock(&mutex_accB);
+  // Pull scaled IMUB gyro data
+  pthread_mutex_lock(&mutex_gyrB);
+  for ( i=0; i<3; i++ )  Gb[i] = imuB.gyr->scaled[i];
+  pthread_mutex_unlock(&mutex_gyrB);
+
+  // Pull scaled IMUB acc data
+  pthread_mutex_lock(&mutex_accB);
+  for ( i=0; i<3; i++ )  Ab[i] = imuB.acc->scaled[i];
+  pthread_mutex_unlock(&mutex_accB);
+
+  // Pull scaled IMUB mag data
   if (getmag)  {
-  pthread_mutex_lock(&mutex_magB);  for ( i=0; i<3; i++ )  Mb[i] = imuB.mag->scaled[i];  pthread_mutex_unlock(&mutex_magB);
+  pthread_mutex_lock(&mutex_magB);
+  for ( i=0; i<3; i++ )  Mb[i] = imuB.mag->scaled[i];
+  pthread_mutex_unlock(&mutex_magB);
   }
 
   // Calculate average values
@@ -381,22 +406,42 @@ void imu_avg ( void )  {
   filter_lpf ( &filter_mag, Ms, Mf );
   }
 
-  // Save scaled IMU data to struct
-  pthread_mutex_lock(&mutex_gyr);  for ( i=0; i<3; i++ )  imu.gyr->scaled[i] = Gs[i];  pthread_mutex_unlock(&mutex_gyr);
-  pthread_mutex_lock(&mutex_acc);  for ( i=0; i<3; i++ )  imu.acc->scaled[i] = As[i];  pthread_mutex_unlock(&mutex_acc);
+  // Save scaled gyro data to struct
+  pthread_mutex_lock(&mutex_gyr);
+  for ( i=0; i<3; i++ )  imu.gyr->scaled[i] = Gs[i];
+  pthread_mutex_unlock(&mutex_gyr);
+
+  // Save scaled acc data to struct
+  pthread_mutex_lock(&mutex_acc);
+  for ( i=0; i<3; i++ )  imu.acc->scaled[i] = As[i];
+  pthread_mutex_unlock(&mutex_acc);
+
+  // Save scaled mag data to struct
   if (getmag)  {
-  pthread_mutex_lock(&mutex_mag);  for ( i=0; i<3; i++ )  imu.mag->scaled[i] = Ms[i];  pthread_mutex_unlock(&mutex_mag);
+  pthread_mutex_lock(&mutex_mag);
+  for ( i=0; i<3; i++ )  imu.mag->scaled[i] = Ms[i];
+  pthread_mutex_unlock(&mutex_mag);
   }
 
-  // Save filtered IMU data to struct
-  pthread_mutex_lock(&mutex_gyr);  for ( i=0; i<3; i++ )  imu.gyr->filter[i] = Gf[i];  pthread_mutex_unlock(&mutex_gyr);
-  pthread_mutex_lock(&mutex_acc);  for ( i=0; i<3; i++ )  imu.acc->filter[i] = Af[i];  pthread_mutex_unlock(&mutex_acc);
+  // Save filtered gyr data to struct
+  pthread_mutex_lock(&mutex_gyr);
+  for ( i=0; i<3; i++ )  imu.gyr->filter[i] = Gf[i];
+  pthread_mutex_unlock(&mutex_gyr);
+
+  // Save filtered acc data to struct
+  pthread_mutex_lock(&mutex_acc);
+  for ( i=0; i<3; i++ )  imu.acc->filter[i] = Af[i];
+  pthread_mutex_unlock(&mutex_acc);
+
+  // Save filtered mag data to struct
   if (getmag)  {
-  pthread_mutex_lock(&mutex_mag);  for ( i=0; i<3; i++ )  imu.mag->filter[i] = Mf[i];  pthread_mutex_unlock(&mutex_mag);
+  pthread_mutex_lock(&mutex_mag);
+  for ( i=0; i<3; i++ )  imu.mag->filter[i] = Mf[i];
+  pthread_mutex_unlock(&mutex_mag);
   }
 
   return;
 }
-
+*/
 
 

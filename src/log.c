@@ -37,10 +37,10 @@ void log_init ( void )  {
   log_gyrB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_accB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_magB.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
-  log_ahrs.limit    =  LOG_MAX_DUR * HZ_AHRS;
-  log_ekf.limit     =  LOG_MAX_DUR * HZ_EKF;
-  log_gps.limit     =  LOG_MAX_DUR * HZ_GPS;
-  log_ctrl.limit    =  LOG_MAX_DUR * HZ_CTRL;
+  //log_ahrs.limit    =  LOG_MAX_DUR * HZ_AHRS;
+  //log_ekf.limit     =  LOG_MAX_DUR * HZ_EKF;
+  //log_gps.limit     =  LOG_MAX_DUR * HZ_GPS;
+  //log_ctrl.limit    =  LOG_MAX_DUR * HZ_CTRL;
 
   // Parameter value setup
   log_param.time    =  malloc( sizeof(float)  * log_param.limit               );
@@ -109,7 +109,7 @@ void log_init ( void )  {
   log_magB.filter   =  malloc( sizeof(float)  * log_magB.limit * 3 );
 
   }
-
+  /*
   // Attitude and Heading Reference System setup
   log_ahrs.time     =  malloc( sizeof(float)  * log_ahrs.limit     );
   log_ahrs.dur      =  malloc( sizeof(ulong)  * log_ahrs.limit     );
@@ -155,7 +155,7 @@ void log_init ( void )  {
   log_ctrl.ierr     =  malloc( sizeof(float)  * log_ctrl.limit * 3 );
   log_ctrl.derr     =  malloc( sizeof(float)  * log_ctrl.limit * 3 );
   log_ctrl.cmd      =  malloc( sizeof(float)  * log_ctrl.limit * 4 );
-
+  */
   return;
 }
 
@@ -234,7 +234,7 @@ void log_exit ( void )  {
   free(log_magB.filter);
 
   }
-
+  /*
   // Attitude/Heading memory
   free(log_ahrs.time);
   free(log_ahrs.dur);
@@ -274,7 +274,7 @@ void log_exit ( void )  {
   free(log_ctrl.ierr);
   free(log_ctrl.derr);
   free(log_ctrl.cmd);
-
+  */
   return;
 }
 
@@ -295,10 +295,10 @@ void log_start ( void )  {
   log_gyrB.count   = 0;
   log_accB.count   = 0;
   log_magB.count   = 0;
-  log_ahrs.count   = 0;
-  log_ekf.count    = 0;
-  log_gps.count    = 0;
-  log_ctrl.count   = 0;
+  //log_ahrs.count   = 0;
+  //log_ekf.count    = 0;
+  //log_gps.count    = 0;
+  //log_ctrl.count   = 0;
 
   // Allocate dir/path/file memory
   datalog.dir  = malloc(16);
@@ -415,7 +415,7 @@ void log_start ( void )  {
     Mfx      Mfy      Mfz");
 
   }
-
+  /*
   // Attitude and heading reference system datalog file
   sprintf( file, "%sahrs.txt", datalog.path );
   datalog.ahrs = fopen( file, "w" );
@@ -477,7 +477,7 @@ void log_start ( void )  {
     EIX      EIY      EIZ     \
     EDX      EDY      EDZ      \
     CX       CY       CZ       CT" );
-
+  */
   // Determine start second
   struct timespec timeval;
   clock_gettime( CLOCK_MONOTONIC, &timeval );
@@ -510,7 +510,7 @@ void log_record ( enum log_index index )  {
 
   // Record parameter values
   case LOG_PARAM :
-
+    /*
     // Determine timestamp
     clock_gettime( CLOCK_MONOTONIC, &t );
     timestamp = (float) ( t.tv_sec + ( t.tv_nsec / 1000000000.0f ) ) - datalog.offset;
@@ -523,7 +523,7 @@ void log_record ( enum log_index index )  {
       log_param.count++;
     }
     pthread_mutex_unlock(&mutex_gcs);
-
+    */
     return;
 
   // Record system input/output data
@@ -556,105 +556,125 @@ void log_record ( enum log_index index )  {
   // Record IMUA data
   case LOG_IMUA :
 
-    if (IMUB_ENABLED)  {  timestamp = (float) ( tmr_imu.start_sec  + ( tmr_imu.start_usec  / 1000000.0f ) ) - datalog.offset;  }
-    else               {  timestamp = (float) ( tmr_imuA.start_sec + ( tmr_imuA.start_usec / 1000000.0f ) ) - datalog.offset;  }
+    timestamp = (float) ( tmr_imu.start_sec  + ( tmr_imu.start_usec  / 1000000.0f ) ) - datalog.offset;
+    //if (IMUB_ENABLED)  {  timestamp = (float) ( tmr_imu.start_sec  + ( tmr_imu.start_usec  / 1000000.0f ) ) - datalog.offset;  }
+    //else               {  timestamp = (float) ( tmr_imuA.start_sec + ( tmr_imuA.start_usec / 1000000.0f ) ) - datalog.offset;  }
 
     // Gyroscope A data
-    pthread_mutex_lock(&mutex_gyrA);
+    pthread_mutex_lock(&gyrA.mutex);
     if ( log_gyrA.count < log_gyrA.limit ) {
       row = log_gyrA.count;
       log_gyrA.time[row] = timestamp;
-      if (IMUB_ENABLED)  log_gyrA.dur[row]  = tmr_imu.dur;
-      else               log_gyrA.dur[row]  = tmr_imuA.dur;
+
+      log_gyrA.dur[row]  = tmr_imu.dur;
+      //if (IMUB_ENABLED)  log_gyrA.dur[row]  = tmr_imu.dur;
+      //else               log_gyrA.dur[row]  = tmr_imuA.dur;
+
       for ( i=0; i<3; i++ )  log_gyrA.raw    [ row*3 +i ] = gyrA.raw[i];
       for ( i=0; i<3; i++ )  log_gyrA.scaled [ row*3 +i ] = gyrA.scaled[i];
       for ( i=0; i<3; i++ )  log_gyrA.filter [ row*3 +i ] = gyrA.filter[i];
       log_gyrA.count++;
     }
-    pthread_mutex_unlock(&mutex_gyrA);
+    pthread_mutex_unlock(&gyrA.mutex);
 
     // Accelerometer A data
-    pthread_mutex_lock(&mutex_accA);
+    pthread_mutex_lock(&accA.mutex);
     if ( log_accA.count < log_accA.limit ) {
       row = log_accA.count;
       log_accA.time[row] = timestamp;
-      if (IMUB_ENABLED)  log_accA.dur[row]  = tmr_imu.dur;
-      else               log_accA.dur[row]  = tmr_imuA.dur;
+
+      log_accA.dur[row]  = tmr_imu.dur;
+      //if (IMUB_ENABLED)  log_accA.dur[row]  = tmr_imu.dur;
+      //else               log_accA.dur[row]  = tmr_imuA.dur;
+
       for ( i=0; i<3; i++ )  log_accA.raw    [ row*3 +i ] = accA.raw[i];
       for ( i=0; i<3; i++ )  log_accA.scaled [ row*3 +i ] = accA.scaled[i];
       for ( i=0; i<3; i++ )  log_accA.filter [ row*3 +i ] = accA.filter[i];
       log_accA.count++;
     }
-    pthread_mutex_unlock(&mutex_accA);
+    pthread_mutex_unlock(&accA.mutex);
 
     // Magnetometer A data
-    pthread_mutex_lock(&mutex_magA);
+    pthread_mutex_lock(&magA.mutex);
     if( imuA.getmag && ( log_magA.count < log_magA.limit) ) {
       row = log_magA.count;
       log_magA.time[row] = timestamp;
-      if (IMUB_ENABLED)  log_magA.dur[row]  = tmr_imu.dur;
-      else               log_magA.dur[row]  = tmr_imuA.dur;
+
+      log_magA.dur[row]  = tmr_imu.dur;
+      //if (IMUB_ENABLED)  log_magA.dur[row]  = tmr_imu.dur;
+      //else               log_magA.dur[row]  = tmr_imuA.dur;
+
       for ( i=0; i<3; i++ )  log_magA.raw    [ row*3 +i ] = magA.raw[i];
       for ( i=0; i<3; i++ )  log_magA.scaled [ row*3 +i ] = magA.scaled[i];
       for ( i=0; i<3; i++ )  log_magA.filter [ row*3 +i ] = magA.filter[i];
       log_magA.count++;
     }
-    pthread_mutex_unlock(&mutex_magA);
+    pthread_mutex_unlock(&magA.mutex);
 
     return;
 
   // Record IMUB data
   case LOG_IMUB :
 
-    if (IMUA_ENABLED)  {  timestamp = (float) ( tmr_imu.start_sec  + ( tmr_imu.start_usec  / 1000000.0f ) ) - datalog.offset;  }
-    else               {  timestamp = (float) ( tmr_imuB.start_sec + ( tmr_imuB.start_usec / 1000000.0f ) ) - datalog.offset;  }
+    timestamp = (float) ( tmr_imu.start_sec  + ( tmr_imu.start_usec  / 1000000.0f ) ) - datalog.offset;
+    //if (IMUA_ENABLED)  {  timestamp = (float) ( tmr_imu.start_sec  + ( tmr_imu.start_usec  / 1000000.0f ) ) - datalog.offset;  }
+    //else               {  timestamp = (float) ( tmr_imuB.start_sec + ( tmr_imuB.start_usec / 1000000.0f ) ) - datalog.offset;  }
 
     // Gyroscope B data
-    pthread_mutex_lock(&mutex_gyrB);
+    pthread_mutex_lock(&gyrB.mutex);
     if ( log_gyrB.count < log_gyrB.limit ) {
       row = log_gyrB.count;
       log_gyrB.time[row] = timestamp;
-      if (IMUA_ENABLED)  log_gyrB.dur[row]  = tmr_imu.dur;
-      else               log_gyrB.dur[row]  = tmr_imuB.dur;
+
+      log_gyrB.dur[row]  = tmr_imu.dur;
+      //if (IMUA_ENABLED)  log_gyrB.dur[row]  = tmr_imu.dur;
+      //else               log_gyrB.dur[row]  = tmr_imuB.dur;
+
       for ( i=0; i<3; i++ )  log_gyrB.raw    [ row*3 +i ] = gyrB.raw[i];
       for ( i=0; i<3; i++ )  log_gyrB.scaled [ row*3 +i ] = gyrB.scaled[i];
       for ( i=0; i<3; i++ )  log_gyrB.filter [ row*3 +i ] = gyrB.filter[i];
       log_gyrB.count++;
     }
-    pthread_mutex_unlock(&mutex_gyrB);
+    pthread_mutex_unlock(&gyrB.mutex);
 
     // Accelerometer B data
-    pthread_mutex_lock(&mutex_accB);
+    pthread_mutex_lock(&accB.mutex);
     if ( log_accB.count < log_accB.limit ) {
       row = log_accB.count;
       log_accB.time[row] = timestamp;
-      if (IMUA_ENABLED)  log_accB.dur[row]  = tmr_imu.dur;
-      else               log_accB.dur[row]  = tmr_imuB.dur;
+
+      log_accB.dur[row]  = tmr_imu.dur;
+      //if (IMUA_ENABLED)  log_accB.dur[row]  = tmr_imu.dur;
+      //else               log_accB.dur[row]  = tmr_imuB.dur;
+
       for ( i=0; i<3; i++ )  log_accB.raw    [ row*3 +i ] = accB.raw[i];
       for ( i=0; i<3; i++ )  log_accB.scaled [ row*3 +i ] = accB.scaled[i];
       for ( i=0; i<3; i++ )  log_accB.filter [ row*3 +i ] = accB.filter[i];
       log_accB.count++;
     }
-    pthread_mutex_unlock(&mutex_accB);
+    pthread_mutex_unlock(&accB.mutex);
 
     // Magnetometer B data
-    pthread_mutex_lock(&mutex_magB);
+    pthread_mutex_lock(&magB.mutex);
     if( imuB.getmag && ( log_magB.count < log_magB.limit) ) {
       row = log_magB.count;
       log_magB.time[row] = timestamp;
-      if (IMUA_ENABLED)  log_magB.dur[row]  = tmr_imu.dur;
-      else               log_magB.dur[row]  = tmr_imuB.dur;
+
+      log_magB.dur[row]  = tmr_imu.dur;
+      //if (IMUA_ENABLED)  log_magB.dur[row]  = tmr_imu.dur;
+      //else               log_magB.dur[row]  = tmr_imuB.dur;
+
       for ( i=0; i<3; i++ )  log_magB.raw    [ row*3 +i ] = magB.raw[i];
       for ( i=0; i<3; i++ )  log_magB.scaled [ row*3 +i ] = magB.scaled[i];
       for ( i=0; i<3; i++ )  log_magB.filter [ row*3 +i ] = magB.filter[i];
       log_magB.count++;
     }
-    pthread_mutex_unlock(&mutex_magB);
+    pthread_mutex_unlock(&magB.mutex);
 
     return;
 
   // Record AHRS data
-  case LOG_AHRS :
+/*  case LOG_AHRS :
 
     timestamp = (float) ( tmr_ahrs.start_sec + ( tmr_ahrs.start_usec / 1000000.0f ) ) - datalog.offset;
 
@@ -765,7 +785,7 @@ void log_record ( enum log_index index )  {
     }
 
     return;
-
+*/
   default :
     return;
   
@@ -807,12 +827,12 @@ static void log_save ( void )  {
   ushort i;
   ulong  row;
 
-  // Parameter data
+  /*  // Parameter data
   for ( row = 0; row < log_param.count; row++ )  {
     fprintf( datalog.param, "\n %011.6f    ", log_param.time[row] );
     for ( i=0; i < param_count; i++ )  fprintf( datalog.param, "%9.4f  ", log_param.values [ row * param_count + i ] );
   }
-
+  */
   // Input data
   for ( row = 0; row < log_input.count; row++ ) {
     fprintf( datalog.in, "\n %011.6f    ", log_input.time[row] );
@@ -882,7 +902,7 @@ static void log_save ( void )  {
   }
 
   }
-
+  /*
   // Attitude/Heading Reference System data
   for ( row = 0; row < log_ahrs.count; row++ ) {
     fprintf( datalog.ahrs, "\n %011.6f  %06ld    ", log_ahrs.time[row], log_ahrs.dur[row] );
@@ -934,7 +954,7 @@ static void log_save ( void )  {
     for ( i=0; i<3; i++ )  fprintf( datalog.ctrl, "%07.4f  ",  log_ctrl.derr[ row*3 +i ] );   fprintf( datalog.ctrl, "   " );
     for ( i=0; i<4; i++ )  fprintf( datalog.ctrl, "%07.4f  ",  log_ctrl.cmd [ row*4 +i ] );   fprintf( datalog.ctrl, "   " );
   }
-
+  */
   return;
 }
 
@@ -961,10 +981,10 @@ static void log_close ( void )  {
     fclose(datalog.magB);
   }
 
-  fclose(datalog.ahrs);
-  fclose(datalog.ekf);
-  fclose(datalog.gps);
-  fclose(datalog.ctrl);
+  //fclose(datalog.ahrs);
+  //fclose(datalog.ekf);
+  //fclose(datalog.gps);
+  //fclose(datalog.ctrl);
 
   return;
 }
