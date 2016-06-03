@@ -276,29 +276,23 @@ static void sys_imu ( void )  {
  *  Prints AHRS debugging messages to the terminal.
  */
 static void sys_ahrs ( void )  {
-  /*
+
   // Loop counter
   ushort i;
 
-  // Averaged IMU data
-  pthread_mutex_lock(&mutex_ahrs);
-  for ( i=0; i<3; i++ )  printf("%7.4f ", ahrs.gyr[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", ahrs.acc[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%7.4f ", ahrs.mag[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_ahrs);
+  // AHRS A data
+  if (IMUA_ENABLED)  {
+  pthread_mutex_lock(&ahrsA.mutex);
+  //for ( i=0; i<4; i++ )  printf("%7.4f ", ahrsA.quat[i]  );              printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%7.4f ", ahrsA.dquat[i] );              printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsA.eul[i]  * (180.0/PI) );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsA.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&ahrsA.mutex);
+  }
 
-  // Quaternion data
-  pthread_mutex_lock(&mutex_quat);
-  //for ( i=0; i<4; i++ )  printf("%7.4f ", ahrs.quat[i]  );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<4; i++ )  printf("%7.4f ", ahrs.dquat[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_quat);
 
-  // Euler data
-  pthread_mutex_lock(&mutex_eul);
-  //for ( i=0; i<3; i++ )  printf("%7.2f ", ahrs.eul[i]  * (180.0/PI) );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%7.2f ", ahrs.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_eul); 
-  */
+
+
   return;
 }
 

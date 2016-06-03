@@ -11,15 +11,11 @@
 #define LPF_FREQ_GYR  3.0
 #define LPF_FREQ_ACC  1.0
 #define LPF_FREQ_MAG  1.0
-//#define LPF_FREQ_EUL  0.0
-//#define LPF_FREQ_ANG  0.0
 
 // Move to a file
 #define LPF_HIST_GYR  100
 #define LPF_HIST_ACC  300
 #define LPF_HIST_MAG  300
-//#define LPF_HIST_EUL    1
-//#define LPF_HIST_ANG    1
 
 
 typedef struct lpf_struct {

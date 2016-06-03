@@ -14,9 +14,6 @@
 
 typedef struct ahrs_struct {
   double  dt;
-  //double  gyr    [3];
-  //double  acc    [3];
-  //double  mag    [3];
   double  quat   [4];
   double  dquat  [4];
   double  eul    [3];

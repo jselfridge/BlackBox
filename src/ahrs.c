@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//#include "filter.h"
-//#include "imu.h"
 #include "sys.h"
 #include "timer.h"
 
@@ -108,75 +106,28 @@ void ahrs_update ( ahrs_struct *ahrs, imu_struct *imu )  {
   double q[4], b[3], fx, fz, dt;
   pthread_mutex_lock(&ahrs->mutex);
   for ( i=0; i<4; i++ )  q[i] = ahrs->quat[i];
-  fx = ahrs->fx;  fz = ahrs->fz;  dt = ahrs->dt;
   for ( i=0; i<3; i++ )  b[i] = ahrs->bias[i];
+  fx = ahrs->fx;  fz = ahrs->fz;  dt = ahrs->dt;
   pthread_mutex_unlock(&ahrs->mutex);
 
-  // Get values from IMU data structure
+  // Zero out local variables
   double g[3], a[3], m[3];
   for ( i=0; i<3; i++ )  {  g[i] = 0.0;  a[i] = 0.0;  m[i] = 0.0;  }
 
-  //if (IMUA_ENABLED) {
-
-  //if ( imu->id == 'A' )  pthread_mutex_lock(&mutex_gyrA);
-  //if ( imu->id == 'B' )  pthread_mutex_lock(&mutex_gyrB);
+  // Get gyro IMU data
   pthread_mutex_lock(&(imu->gyr->mutex));
-  for ( i=0; i<3; i++ )  g[i] +=  imu->gyr->filter[i];
+  for ( i=0; i<3; i++ )  g[i] = imu->gyr->filter[i];
   pthread_mutex_unlock(&(imu->gyr->mutex));
-  //if ( imu->id == 'A' )  pthread_mutex_unlock(&mutex_gyrA);
-  //if ( imu->id == 'B' )  pthread_mutex_unlock(&mutex_gyrB);
 
-  //if ( imu->id == 'A' )  pthread_mutex_lock(&mutex_accA);
-  //if ( imu->id == 'B' )  pthread_mutex_lock(&mutex_accB);
+  // Get acc IMU data
   pthread_mutex_lock(&(imu->acc->mutex));
-  for ( i=0; i<3; i++ )  a[i] += -imu->acc->filter[i];
+  for ( i=0; i<3; i++ )  a[i] = -imu->acc->filter[i];
   pthread_mutex_lock(&(imu->acc->mutex));
-  //if ( imu->id == 'A' )  pthread_mutex_unlock(&mutex_accA);
-  //if ( imu->id == 'B' )  pthread_mutex_unlock(&mutex_accB);
 
-  //if ( imu->id == 'A' )  pthread_mutex_lock(&mutex_magA);
-  //if ( imu->id == 'B' )  pthread_mutex_lock(&mutex_magB);
+  // Get mag IMU data
   pthread_mutex_lock(&(imu->mag->mutex));
-  for ( i=0; i<3; i++ )  m[i] +=  imu->mag->filter[i];
+  for ( i=0; i<3; i++ )  m[i] = imu->mag->filter[i];
   pthread_mutex_lock(&(imu->mag->mutex));
-  //if ( imu->id == 'A' )  pthread_mutex_unlock(&mutex_magA);
-  //if ( imu->id == 'B' )  pthread_mutex_unlock(&mutex_magB);
-
-  //}
-  /*
-  if (IMUB_ENABLED) {
-
-    pthread_mutex_lock(&mutex_gyrB);
-    for ( i=0; i<3; i++ )  g[i] +=  gyrB.filter[i];
-    pthread_mutex_unlock(&mutex_gyrB);
-
-    pthread_mutex_lock(&mutex_accB);
-    for ( i=0; i<3; i++ )  a[i] += -accB.filter[i];
-    pthread_mutex_unlock(&mutex_accB);
-
-    pthread_mutex_lock(&mutex_magB);
-    for ( i=0; i<3; i++ )  m[i] +=  magB.filter[i];
-    pthread_mutex_unlock(&mutex_magB);
-
-  }
-
-  if ( IMUA_ENABLED && IMUB_ENABLED )  {
-    for ( i=0; i<3; i++ )  {
-      g[i] /= 2.0;
-      a[i] /= 2.0;
-      m[i] /= 2.0;
-    }
-  }
-  */
-
-  // Store averaged values to AHRS data structure
-  //pthread_mutex_lock(&mutex_ahrs);
-  //for ( i=0; i<3; i++ )  {
-    //ahrs.gyr[i] = g[i];
-    //ahrs.acc[i] = a[i];
-    //ahrs.mag[i] = m[i];
-  //}
-  //pthread_mutex_unlock(&mutex_ahrs);
 
   // Normalize magnetometer
   norm = 0.0;
@@ -301,12 +252,7 @@ void ahrs_update ( ahrs_struct *ahrs, imu_struct *imu )  {
   e[Y] = asin  (   2.0 * ( qwy - qxz ) )                                 ;// - ahrs.orient[Y];
   e[Z] = atan2 ( ( 2.0 * ( qwz + qxy ) ), ( 1.0 - 2.0 * ( qyy + qzz ) ) );// - ahrs.orient[Z];
 
-  // Apply low pass filters
-  //double lpfe[3], lpfg[3];
-  //filter_lpf ( &filter_eul, e, lpfe );
-  //filter_lpf ( &filter_ang, g, lpfg );
-
-  // Push quaternion data to struct
+  // Push AHRS data to struct
   pthread_mutex_lock(&ahrs->mutex);
   for ( i=0; i<4; i++ )  {
     ahrs->quat[i]  = q[i];
@@ -319,14 +265,6 @@ void ahrs_update ( ahrs_struct *ahrs, imu_struct *imu )  {
   }
   ahrs->fx = fx;  ahrs->fz = fz;
   pthread_mutex_unlock(&ahrs->mutex);
-
-  // Push LPF Euler data to struct
-  //pthread_mutex_lock(&mutex_lpfeul);
-  //for ( i=0; i<3; i++ ) {
-  //  ahrs.lpfeul[i] = lpfe[i];
-  //  ahrs.lpfang[i] = lpfg[i];
-  //}
-  //pthread_mutex_unlock(&mutex_lpfeul);
 
   return;
 }

@@ -37,7 +37,8 @@ void log_init ( void )  {
   log_gyrB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_accB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_magB.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
-  //log_ahrs.limit    =  LOG_MAX_DUR * HZ_AHRS;
+  log_ahrsA.limit   =  LOG_MAX_DUR * HZ_AHRS;
+  log_ahrsB.limit   =  LOG_MAX_DUR * HZ_AHRS;
   //log_ekf.limit     =  LOG_MAX_DUR * HZ_EKF;
   //log_gps.limit     =  LOG_MAX_DUR * HZ_GPS;
   //log_ctrl.limit    =  LOG_MAX_DUR * HZ_CTRL;
@@ -82,6 +83,17 @@ void log_init ( void )  {
   log_magA.scaled   =  malloc( sizeof(float)  * log_magA.limit * 3 );
   log_magA.filter   =  malloc( sizeof(float)  * log_magA.limit * 3 );
 
+  // Attitude and Heading Reference System setup
+  log_ahrsA.time    =  malloc( sizeof(float)  * log_ahrsA.limit     );
+  log_ahrsA.dur     =  malloc( sizeof(ulong)  * log_ahrsA.limit     );
+  log_ahrsA.quat    =  malloc( sizeof(float)  * log_ahrsA.limit * 4 );
+  log_ahrsA.dquat   =  malloc( sizeof(float)  * log_ahrsA.limit * 4 );
+  log_ahrsA.eul     =  malloc( sizeof(float)  * log_ahrsA.limit * 3 );
+  log_ahrsA.deul    =  malloc( sizeof(float)  * log_ahrsA.limit * 3 );
+  log_ahrsA.bias    =  malloc( sizeof(float)  * log_ahrsA.limit * 3 );
+  log_ahrsA.fx      =  malloc( sizeof(float)  * log_ahrsA.limit     );
+  log_ahrsA.fz      =  malloc( sizeof(float)  * log_ahrsA.limit     );
+
   }
 
   // IMU B setup
@@ -108,24 +120,20 @@ void log_init ( void )  {
   log_magB.scaled   =  malloc( sizeof(float)  * log_magB.limit * 3 );
   log_magB.filter   =  malloc( sizeof(float)  * log_magB.limit * 3 );
 
-  }
-  /*
   // Attitude and Heading Reference System setup
-  log_ahrs.time     =  malloc( sizeof(float)  * log_ahrs.limit     );
-  log_ahrs.dur      =  malloc( sizeof(ulong)  * log_ahrs.limit     );
-  log_ahrs.gyr      =  malloc( sizeof(float)  * log_ahrs.limit * 3 );
-  log_ahrs.acc      =  malloc( sizeof(float)  * log_ahrs.limit * 3 );
-  log_ahrs.mag      =  malloc( sizeof(float)  * log_ahrs.limit * 3 );
-  log_ahrs.quat     =  malloc( sizeof(float)  * log_ahrs.limit * 4 );
-  log_ahrs.dquat    =  malloc( sizeof(float)  * log_ahrs.limit * 4 );
-  log_ahrs.eul      =  malloc( sizeof(float)  * log_ahrs.limit * 3 );
-  log_ahrs.ang      =  malloc( sizeof(float)  * log_ahrs.limit * 3 );
-  log_ahrs.lpfeul   =  malloc( sizeof(float)  * log_ahrs.limit * 3 );
-  log_ahrs.lpfang   =  malloc( sizeof(float)  * log_ahrs.limit * 3 );
-  log_ahrs.bias     =  malloc( sizeof(float)  * log_ahrs.limit * 3 );
-  log_ahrs.fx       =  malloc( sizeof(float)  * log_ahrs.limit     );
-  log_ahrs.fz       =  malloc( sizeof(float)  * log_ahrs.limit     );
+  log_ahrsB.time    =  malloc( sizeof(float)  * log_ahrsB.limit     );
+  log_ahrsB.dur     =  malloc( sizeof(ulong)  * log_ahrsB.limit     );
+  log_ahrsB.quat    =  malloc( sizeof(float)  * log_ahrsB.limit * 4 );
+  log_ahrsB.dquat   =  malloc( sizeof(float)  * log_ahrsB.limit * 4 );
+  log_ahrsB.eul     =  malloc( sizeof(float)  * log_ahrsB.limit * 3 );
+  log_ahrsB.deul    =  malloc( sizeof(float)  * log_ahrsB.limit * 3 );
+  log_ahrsB.bias    =  malloc( sizeof(float)  * log_ahrsB.limit * 3 );
+  log_ahrsB.fx      =  malloc( sizeof(float)  * log_ahrsB.limit     );
+  log_ahrsB.fz      =  malloc( sizeof(float)  * log_ahrsB.limit     );
 
+  }
+
+  /*
   // Extended Kalman Filter setup
   uint n, m, nn, mm, nm;
   n  = EKF_N;
@@ -207,6 +215,17 @@ void log_exit ( void )  {
   free(log_magA.scaled);
   free(log_magA.filter);
 
+  // Attitude/Heading A memory
+  free(log_ahrsA.time);
+  free(log_ahrsA.dur);
+  free(log_ahrsA.quat);
+  free(log_ahrsA.dquat);
+  free(log_ahrsA.eul);
+  free(log_ahrsA.deul);
+  free(log_ahrsA.bias);
+  free(log_ahrsA.fx);
+  free(log_ahrsA.fz);
+
   }
 
   // IMU B memory
@@ -233,24 +252,20 @@ void log_exit ( void )  {
   free(log_magB.scaled);
   free(log_magB.filter);
 
-  }
-  /*
-  // Attitude/Heading memory
-  free(log_ahrs.time);
-  free(log_ahrs.dur);
-  free(log_ahrs.gyr);
-  free(log_ahrs.acc);
-  free(log_ahrs.mag);
-  free(log_ahrs.quat);
-  free(log_ahrs.dquat);
-  free(log_ahrs.eul);
-  free(log_ahrs.ang);
-  free(log_ahrs.lpfeul);
-  free(log_ahrs.lpfang);
-  free(log_ahrs.bias);
-  free(log_ahrs.fx);
-  free(log_ahrs.fz);
+  // Attitude/Heading B memory
+  free(log_ahrsB.time);
+  free(log_ahrsB.dur);
+  free(log_ahrsB.quat);
+  free(log_ahrsB.dquat);
+  free(log_ahrsB.eul);
+  free(log_ahrsB.deul);
+  free(log_ahrsB.bias);
+  free(log_ahrsB.fx);
+  free(log_ahrsB.fz);
 
+  }
+
+  /*
   // EKF memory
   free(log_ekf.time);
   free(log_ekf.dur);
@@ -295,7 +310,8 @@ void log_start ( void )  {
   log_gyrB.count   = 0;
   log_accB.count   = 0;
   log_magB.count   = 0;
-  //log_ahrs.count   = 0;
+  log_ahrsA.count  = 0;
+  log_ahrsB.count  = 0;
   //log_ekf.count    = 0;
   //log_gps.count    = 0;
   //log_ctrl.count   = 0;
@@ -379,6 +395,19 @@ void log_start ( void )  {
     MagAsx   MagAsy   MagAsz   \
     MagAfx   MagAfy   MagAfz");
 
+  // Attitude and heading reference system A datalog file
+  sprintf( file, "%sahrsA.txt", datalog.path );
+  datalog.ahrsA = fopen( file, "w" );
+  if( datalog.ahrsA == NULL )  printf( "Error (log_init): Cannot generate 'ahrsA' file. \n" );
+  fprintf( datalog.ahrsA,
+    "   ahrsAtime ahrsAdur  \
+    QuatAw   QuatAx   QuatAy   QuatAz \
+    dQuatAw  dQuatAx  dQuatAy  dQuatAz  \
+    EulAx    EulAy    EulAz  \
+    dEulAx   dEulAy   dEulAz  \
+    biasAx   biasAy   biasAz  \
+    fluxAx   fluxAz");
+
   }
 
   // IMUB datalogs
@@ -414,26 +443,22 @@ void log_start ( void )  {
     MagBsx   MagBsy   MagBsz   \
     MagBfx   MagBfy   MagBfz");
 
-  }
-  /*
-  // Attitude and heading reference system datalog file
-  sprintf( file, "%sahrs.txt", datalog.path );
-  datalog.ahrs = fopen( file, "w" );
-  if( datalog.ahrs == NULL )  printf( "Error (log_init): Cannot generate 'ahrs' file. \n" );
-  fprintf( datalog.ahrs,
-    "       Rtime    Rdur     \
-    Gx       Gy       Gz      \
-    Ax       Ay       Az      \
-    Mx       My       Mz      \
-    Qw       Qx       Qy       Qz     \
-    dQw      dQx      dQy      dQz      \
-    Ex       Ey       Ez     \
-    dEx      dEy      dEz     \
-    fEx      fEy      fEz    \
-    fdEx     fdEy     fdEz      \
-    bx       by       bz      \
-    fx       fz");
+  // Attitude and heading reference system B datalog file
+  sprintf( file, "%sahrsB.txt", datalog.path );
+  datalog.ahrsB = fopen( file, "w" );
+  if( datalog.ahrsB == NULL )  printf( "Error (log_init): Cannot generate 'ahrsB' file. \n" );
+  fprintf( datalog.ahrsB,
+    "   ahrsBtime ahrsBdur  \
+    QuatBw   QuatBx   QuatBy   QuatBz \
+    dQuatBw  dQuatBx  dQuatBy  dQuatBz  \
+    EulBx    EulBy    EulBz  \
+    dEulBx   dEulBy   dEulBz  \
+    biasBx   biasBy   biasBz  \
+    fluxBx   fluxBz");
 
+  }
+
+  /*
   // Extended Kalman Filter datalog file
   sprintf( file, "%sekf.txt", datalog.path );
   datalog.ekf = fopen( file, "w" );
@@ -645,48 +670,53 @@ void log_record ( enum log_index index )  {
 
     return;
 
-  // Record AHRS data
-/*  case LOG_AHRS :
+  // Record AHRSA data
+  case LOG_AHRSA :
 
     timestamp = (float) ( tmr_ahrs.start_sec + ( tmr_ahrs.start_usec / 1000000.0f ) ) - datalog.offset;
 
-    if ( log_ahrs.count < log_ahrs.limit ) {
-      row = log_ahrs.count;
-      log_ahrs.time[row] = timestamp;
-      log_ahrs.dur[row]  = tmr_ahrs.dur;
-
-      pthread_mutex_lock(&mutex_ahrs);
-      for ( i=0; i<3; i++ )  log_ahrs.gyr [ row*3 +i ] = ahrs.gyr [i];
-      for ( i=0; i<3; i++ )  log_ahrs.acc [ row*3 +i ] = ahrs.acc [i];
-      for ( i=0; i<3; i++ )  log_ahrs.mag [ row*3 +i ] = ahrs.mag [i];
-      pthread_mutex_unlock(&mutex_ahrs);
-
-      pthread_mutex_lock(&mutex_quat);
-      for ( i=0; i<4; i++ )  log_ahrs.quat  [ row*4 +i ] = ahrs.quat  [i];
-      for ( i=0; i<4; i++ )  log_ahrs.dquat [ row*4 +i ] = ahrs.dquat [i];
-      pthread_mutex_unlock(&mutex_quat);
-
-      pthread_mutex_lock(&mutex_eul);
-      for ( i=0; i<3; i++ )  log_ahrs.eul   [ row*3 +i ] = ahrs.eul   [i];
-      for ( i=0; i<3; i++ )  log_ahrs.ang   [ row*3 +i ] = ahrs.ang  [i];
-      pthread_mutex_unlock(&mutex_eul);
-
-      pthread_mutex_lock(&mutex_lpfeul);
-      for ( i=0; i<3; i++ )  log_ahrs.lpfeul [ row*3 +i ] = ahrs.lpfeul  [i];
-      for ( i=0; i<3; i++ )  log_ahrs.lpfang [ row*3 +i ] = ahrs.lpfang  [i];
-      pthread_mutex_unlock(&mutex_lpfeul);
-
-      pthread_mutex_lock(&mutex_ahrs);
-      for ( i=0; i<3; i++ )  log_ahrs.bias  [ row*3 +i ] = ahrs.bias  [i];
-                             log_ahrs.fx    [ row   +i ] = ahrs.fx;
-                             log_ahrs.fz    [ row   +i ] = ahrs.fz;
-      pthread_mutex_unlock(&mutex_ahrs);
-
-      log_ahrs.count++;
+    if ( log_ahrsA.count < log_ahrsA.limit ) {
+      row = log_ahrsA.count;
+      log_ahrsA.time[row] = timestamp;
+      log_ahrsA.dur[row]  = tmr_ahrs.dur;
+      pthread_mutex_lock(&ahrsA.mutex);
+      for ( i=0; i<4; i++ )  log_ahrsA.quat  [ row*4 +i ] = ahrsA.quat  [i];
+      for ( i=0; i<4; i++ )  log_ahrsA.dquat [ row*4 +i ] = ahrsA.dquat [i];
+      for ( i=0; i<3; i++ )  log_ahrsA.eul   [ row*3 +i ] = ahrsA.eul   [i];
+      for ( i=0; i<3; i++ )  log_ahrsA.deul  [ row*3 +i ] = ahrsA.deul [i];
+      for ( i=0; i<3; i++ )  log_ahrsA.bias  [ row*3 +i ] = ahrsA.bias  [i];
+                             log_ahrsA.fx    [ row   +i ] = ahrsA.fx;
+                             log_ahrsA.fz    [ row   +i ] = ahrsA.fz;
+      pthread_mutex_unlock(&ahrsA.mutex);
+      log_ahrsA.count++;
     }
 
     return;
 
+  // Record AHRSB data
+  case LOG_AHRSB :
+
+    timestamp = (float) ( tmr_ahrs.start_sec + ( tmr_ahrs.start_usec / 1000000.0f ) ) - datalog.offset;
+
+    if ( log_ahrsB.count < log_ahrsB.limit ) {
+      row = log_ahrsB.count;
+      log_ahrsB.time[row] = timestamp;
+      log_ahrsB.dur[row]  = tmr_ahrs.dur;
+      pthread_mutex_lock(&ahrsB.mutex);
+      for ( i=0; i<4; i++ )  log_ahrsB.quat  [ row*4 +i ] = ahrsB.quat  [i];
+      for ( i=0; i<4; i++ )  log_ahrsB.dquat [ row*4 +i ] = ahrsB.dquat [i];
+      for ( i=0; i<3; i++ )  log_ahrsB.eul   [ row*3 +i ] = ahrsB.eul   [i];
+      for ( i=0; i<3; i++ )  log_ahrsB.deul  [ row*3 +i ] = ahrsB.deul [i];
+      for ( i=0; i<3; i++ )  log_ahrsB.bias  [ row*3 +i ] = ahrsB.bias  [i];
+                             log_ahrsB.fx    [ row   +i ] = ahrsB.fx;
+                             log_ahrsB.fz    [ row   +i ] = ahrsB.fz;
+      pthread_mutex_unlock(&ahrsB.mutex);
+      log_ahrsB.count++;
+    }
+
+    return;
+
+/*
   // Record EKF data
   case LOG_EKF :
 
@@ -844,6 +874,19 @@ static void log_save ( void )  {
     for ( i=0; i<3; i++ )  fprintf( datalog.magA, "%07.4f  ", log_magA.filter [ row*3 +i ] );   fprintf( datalog.magA, "    " );
   }
 
+  // Attitude/Heading Reference System A data
+  for ( row = 0; row < log_ahrsA.count; row++ ) {
+    fprintf( datalog.ahrsA, "\n %011.6f   %06ld      ", log_ahrsA.time[row], log_ahrsA.dur[row] );
+    for ( i=0; i<4; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.quat   [ row*4 +i ] );  fprintf( datalog.ahrsA, "    " );
+    for ( i=0; i<4; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.dquat  [ row*4 +i ] );  fprintf( datalog.ahrsA, "    " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.eul    [ row*3 +i ] );  fprintf( datalog.ahrsA, "    " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.deul   [ row*3 +i ] );  fprintf( datalog.ahrsA, "    " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.bias   [ row*3 +i ] );  fprintf( datalog.ahrsA, "    " );
+    fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.fx[ row +i ] );
+    fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.fz[ row +i ] );
+    fprintf( datalog.ahrsA, "   " );
+  }
+
   }
 
   // IMU B datalogs
@@ -873,26 +916,22 @@ static void log_save ( void )  {
     for ( i=0; i<3; i++ )  fprintf( datalog.magB, "%07.4f  ", log_magB.filter [ row*3 +i ] );   fprintf( datalog.magB, "    " );
   }
 
-  }
-  /*
-  // Attitude/Heading Reference System data
-  for ( row = 0; row < log_ahrs.count; row++ ) {
-    fprintf( datalog.ahrs, "\n %011.6f  %06ld    ", log_ahrs.time[row], log_ahrs.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.gyr    [ row*3 +i ] );  fprintf( datalog.ahrs, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.acc    [ row*3 +i ] );  fprintf( datalog.ahrs, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.mag    [ row*3 +i ] );  fprintf( datalog.ahrs, "    " );
-    for ( i=0; i<4; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.quat   [ row*4 +i ] );  fprintf( datalog.ahrs, "    " );
-    for ( i=0; i<4; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.dquat  [ row*4 +i ] );  fprintf( datalog.ahrs, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.eul    [ row*3 +i ] );  fprintf( datalog.ahrs, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.ang    [ row*3 +i ] );  fprintf( datalog.ahrs, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.lpfeul [ row*3 +i ] );  fprintf( datalog.ahrs, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.lpfang [ row*3 +i ] );  fprintf( datalog.ahrs, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.bias   [ row*3 +i ] );  fprintf( datalog.ahrs, "    " );
-    fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.fx[ row +i ] );
-    fprintf( datalog.ahrs, "%07.4f  ", log_ahrs.fz[ row +i ] );
-    fprintf( datalog.ahrs, "   " );
+  // Attitude/Heading Reference System B data
+  for ( row = 0; row < log_ahrsB.count; row++ ) {
+    fprintf( datalog.ahrsB, "\n %011.6f   %06ld      ", log_ahrsB.time[row], log_ahrsB.dur[row] );
+    for ( i=0; i<4; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.quat   [ row*4 +i ] );  fprintf( datalog.ahrsB, "    " );
+    for ( i=0; i<4; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.dquat  [ row*4 +i ] );  fprintf( datalog.ahrsB, "    " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.eul    [ row*3 +i ] );  fprintf( datalog.ahrsB, "    " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.deul   [ row*3 +i ] );  fprintf( datalog.ahrsB, "    " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.bias   [ row*3 +i ] );  fprintf( datalog.ahrsB, "    " );
+    fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.fx[ row +i ] );
+    fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.fz[ row +i ] );
+    fprintf( datalog.ahrsB, "   " );
   }
 
+  }
+
+  /*
   // Extended Kalman Filter data
   uint n, m, nn, mm, nm;
   n  = EKF_N;
@@ -945,15 +984,16 @@ static void log_close ( void )  {
     fclose(datalog.gyrA);
     fclose(datalog.accA);
     fclose(datalog.magA);
+    fclose(datalog.ahrsA);
   }
 
   if (IMUB_ENABLED)  {
     fclose(datalog.gyrB);
     fclose(datalog.accB);
     fclose(datalog.magB);
+    fclose(datalog.ahrsB);
   }
 
-  //fclose(datalog.ahrs);
   //fclose(datalog.ekf);
   //fclose(datalog.gps);
   //fclose(datalog.ctrl);

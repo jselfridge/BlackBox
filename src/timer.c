@@ -42,17 +42,15 @@ void tmr_mutex ( void )  {
   pthread_mutex_init( &mutex_output, NULL );
   pthread_mutex_init( &mutex_i2c1,   NULL );
   pthread_mutex_init( &mutex_i2c2,   NULL );
-  pthread_mutex_init( &gyrA.mutex, NULL );
-  pthread_mutex_init( &accA.mutex, NULL );
-  pthread_mutex_init( &magA.mutex, NULL );
-  pthread_mutex_init( &gyrB.mutex, NULL );
-  pthread_mutex_init( &accB.mutex, NULL );
-  pthread_mutex_init( &magB.mutex, NULL );
+  pthread_mutex_init( &gyrA.mutex,   NULL );
+  pthread_mutex_init( &accA.mutex,   NULL );
+  pthread_mutex_init( &magA.mutex,   NULL );
+  pthread_mutex_init( &ahrsA.mutex,  NULL );
+  pthread_mutex_init( &gyrB.mutex,   NULL );
+  pthread_mutex_init( &accB.mutex,   NULL );
+  pthread_mutex_init( &magB.mutex,   NULL );
+  pthread_mutex_init( &ahrsB.mutex,  NULL );
 
-  //pthread_mutex_init( &mutex_ahrs,   NULL );
-  //pthread_mutex_init( &mutex_eul,    NULL );
-  //pthread_mutex_init( &mutex_lpfeul, NULL );
-  //pthread_mutex_init( &mutex_quat,   NULL );
   //pthread_mutex_init( &mutex_ekf,    NULL );
   //pthread_mutex_init( &mutex_gps,    NULL );
   //pthread_mutex_init( &mutex_gcs,    NULL );
@@ -85,9 +83,9 @@ void tmr_setup ( void )  {
   tmr_imu.per  = 1000000 / HZ_IMU_FAST;
 
   // AHRS timer
-  //tmr_ahrs.name = "ahrs";
-  //tmr_ahrs.prio = PRIO_AHRS;
-  //tmr_ahrs.per  = 1000000 / HZ_AHRS;
+  tmr_ahrs.name = "ahrs";
+  tmr_ahrs.prio = PRIO_AHRS;
+  tmr_ahrs.per  = 1000000 / HZ_AHRS;
 
   // EKF timer
   //tmr_ekf.name  = "ekf";
@@ -165,7 +163,7 @@ void tmr_begin ( pthread_attr_t *attr )  {
   tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(100000);
 
   tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);
-  //tmr_thread( &tmr_ahrs,  attr, fcn_ahrs  );  usleep(100000);
+  tmr_thread( &tmr_ahrs,  attr, fcn_ahrs  );  usleep(100000);
   //tmr_thread( &tmr_ekf,   attr, fcn_ekf   );  usleep(100000);
 
   //tmr_thread( &tmr_gps,   attr, fcn_gps   );  usleep(100000);
@@ -198,14 +196,12 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&gyrA.mutex);
   pthread_mutex_destroy(&accA.mutex);
   pthread_mutex_destroy(&magA.mutex);
+  pthread_mutex_destroy(&ahrsA.mutex);
   pthread_mutex_destroy(&gyrB.mutex);
   pthread_mutex_destroy(&accB.mutex);
   pthread_mutex_destroy(&magB.mutex);
+  pthread_mutex_destroy(&ahrsB.mutex);
 
-  //pthread_mutex_destroy(&mutex_ahrs);
-  //pthread_mutex_destroy(&mutex_eul);
-  //pthread_mutex_destroy(&mutex_lpfeul);
-  //pthread_mutex_destroy(&mutex_quat);
   //pthread_mutex_destroy(&mutex_ekf);
   //pthread_mutex_destroy(&mutex_gps);
   //pthread_mutex_destroy(&mutex_gcs);
@@ -235,12 +231,12 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_ekf.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ekf' thread. \n" );
   if(DEBUG)  printf( "ekf " );
-
+  */
   // Exit AHRS thread
   if( pthread_join ( tmr_ahrs.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ahrs' thread. \n" );
   if(DEBUG)  printf( "ahrs " );
-  */
+
   // Exit IMU thread
   if( pthread_join ( tmr_imu.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'imu' thread. \n" );
@@ -451,19 +447,27 @@ void *fcn_imu (  )  {
  *  fcn_ahrs
  *  Function handler for the AHRS timing thread.
  */
-/*void *fcn_ahrs (  )  {
+void *fcn_ahrs (  )  {
   tmr_create(&tmr_ahrs);
   while (running) {
     tmr_start(&tmr_ahrs);
-    if (!datalog.saving)  ahrs_update();
+    if (!datalog.saving) {
+      //if (IMUA_ENABLED)  ahrs_update( &ahrsA, &imuA );
+      //if (IMUB_ENABLED)  ahrs_update( &ahrsB, &imuB );
+    }
     tmr_finish(&tmr_ahrs);
-    if (datalog.enabled)  log_record(LOG_AHRS);
+    /*
+    if (datalog.enabled) {
+      if (IMUA_ENABLED)  log_record(LOG_AHRSA);
+      if (IMUB_ENABLED)  log_record(LOG_AHRSB);
+    }
+    */
     tmr_pause(&tmr_ahrs);
   }
   pthread_exit(NULL);
   return NULL;
 }
-*/
+
 
 /**
  *  fcn_ekf
