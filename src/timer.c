@@ -42,15 +42,13 @@ void tmr_mutex ( void )  {
   pthread_mutex_init( &mutex_output, NULL );
   pthread_mutex_init( &mutex_i2c1,   NULL );
   pthread_mutex_init( &mutex_i2c2,   NULL );
-  //pthread_mutex_init( &mutex_gyr,    NULL );
-  //pthread_mutex_init( &mutex_acc,    NULL );
-  //pthread_mutex_init( &mutex_mag,    NULL );
-  //pthread_mutex_init( &mutex_gyrA,   NULL );
-  //pthread_mutex_init( &mutex_accA,   NULL );
-  //pthread_mutex_init( &mutex_magA,   NULL );
-  //pthread_mutex_init( &mutex_gyrB,   NULL );
-  //pthread_mutex_init( &mutex_accB,   NULL );
-  //pthread_mutex_init( &mutex_magB,   NULL );
+  pthread_mutex_init( &gyrA.mutex, NULL );
+  pthread_mutex_init( &accA.mutex, NULL );
+  pthread_mutex_init( &magA.mutex, NULL );
+  pthread_mutex_init( &gyrB.mutex, NULL );
+  pthread_mutex_init( &accB.mutex, NULL );
+  pthread_mutex_init( &magB.mutex, NULL );
+
   //pthread_mutex_init( &mutex_ahrs,   NULL );
   //pthread_mutex_init( &mutex_eul,    NULL );
   //pthread_mutex_init( &mutex_lpfeul, NULL );
@@ -59,14 +57,6 @@ void tmr_mutex ( void )  {
   //pthread_mutex_init( &mutex_gps,    NULL );
   //pthread_mutex_init( &mutex_gcs,    NULL );
   //pthread_mutex_init( &mutex_ctrl,   NULL );
-
-  pthread_mutex_init( &gyrA.mutex, NULL );
-  pthread_mutex_init( &accA.mutex, NULL );
-  pthread_mutex_init( &magA.mutex, NULL );
-  pthread_mutex_init( &gyrB.mutex, NULL );
-  pthread_mutex_init( &accB.mutex, NULL );
-  pthread_mutex_init( &magB.mutex, NULL );
-  pthread_mutex_init( &temp.mutex, NULL );  //---  DEBUGGING  ---//
 
   return;
 }
@@ -93,16 +83,6 @@ void tmr_setup ( void )  {
   tmr_imu.name = "imu";
   tmr_imu.prio = PRIO_IMU;
   tmr_imu.per  = 1000000 / HZ_IMU_FAST;
-
-  // IMUA timer (remove???)
-  //tmr_imuA.name = "imuA";
-  //tmr_imuA.prio = PRIO_IMU;
-  //tmr_imuA.per  = 1000000 / HZ_IMU_FAST;
-
-  // IMUB timer (remove???)
-  //tmr_imuB.name = "imuB";
-  //tmr_imuB.prio = PRIO_IMU;
-  //tmr_imuB.per  = 1000000 / HZ_IMU_FAST;
 
   // AHRS timer
   //tmr_ahrs.name = "ahrs";
@@ -185,10 +165,6 @@ void tmr_begin ( pthread_attr_t *attr )  {
   tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(100000);
 
   tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);
-  //if( IMUA_ENABLED &&  IMUB_ENABLED ) {  tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);  }
-  //if( IMUA_ENABLED && !IMUB_ENABLED ) {  tmr_thread( &tmr_imuA,  attr, fcn_imuA  );  usleep(100000);  }
-  //if( IMUB_ENABLED && !IMUA_ENABLED ) {  tmr_thread( &tmr_imuB,  attr, fcn_imuB  );  usleep(100000);  }
-
   //tmr_thread( &tmr_ahrs,  attr, fcn_ahrs  );  usleep(100000);
   //tmr_thread( &tmr_ekf,   attr, fcn_ekf   );  usleep(100000);
 
@@ -219,15 +195,13 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&mutex_output);
   pthread_mutex_destroy(&mutex_i2c1);
   pthread_mutex_destroy(&mutex_i2c2);
-  //pthread_mutex_destroy(&mutex_gyr);
-  //pthread_mutex_destroy(&mutex_acc);
-  //pthread_mutex_destroy(&mutex_mag);
-  //pthread_mutex_destroy(&mutex_gyrA);
-  //pthread_mutex_destroy(&mutex_accA);
-  //pthread_mutex_destroy(&mutex_magA);
-  //pthread_mutex_destroy(&mutex_gyrB);
-  //pthread_mutex_destroy(&mutex_accB);
-  //pthread_mutex_destroy(&mutex_magB);
+  pthread_mutex_destroy(&gyrA.mutex);
+  pthread_mutex_destroy(&accA.mutex);
+  pthread_mutex_destroy(&magA.mutex);
+  pthread_mutex_destroy(&gyrB.mutex);
+  pthread_mutex_destroy(&accB.mutex);
+  pthread_mutex_destroy(&magB.mutex);
+
   //pthread_mutex_destroy(&mutex_ahrs);
   //pthread_mutex_destroy(&mutex_eul);
   //pthread_mutex_destroy(&mutex_lpfeul);
@@ -236,14 +210,6 @@ void tmr_exit ( void )  {
   //pthread_mutex_destroy(&mutex_gps);
   //pthread_mutex_destroy(&mutex_gcs);
   //pthread_mutex_destroy(&mutex_ctrl);
-
-  pthread_mutex_destroy(&gyrA.mutex);
-  pthread_mutex_destroy(&accA.mutex);
-  pthread_mutex_destroy(&magA.mutex);
-  pthread_mutex_destroy(&gyrB.mutex);
-  pthread_mutex_destroy(&accB.mutex);
-  pthread_mutex_destroy(&magB.mutex);
-  pthread_mutex_destroy(&temp.mutex);
 
   /*  // Exit control thread
   if( pthread_join ( tmr_ctrl.id, NULL ) )
@@ -274,24 +240,11 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_ahrs.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ahrs' thread. \n" );
   if(DEBUG)  printf( "ahrs " );
-
-  // Exit IMUB thread (remove???)
-  if( IMUB_ENABLED && !IMUA_ENABLED )  {
-  if( pthread_join ( tmr_imuB.id, NULL ) )
-    printf( "Error (tmr_exit): Failed to exit 'imuB' thread. \n" );
-  if(DEBUG)  printf( "imuB " );  }
-
-  // Exit IMUA thread (remove???)
-  if( IMUA_ENABLED )  {
-  if( pthread_join ( tmr_imuA.id, NULL ) )
-    printf( "Error (tmr_exit): Failed to exit 'imuA' thread. \n" );
-  if(DEBUG)  printf( "imuA " );  }
   */
   // Exit IMU thread
-  //if( IMUA_ENABLED && IMUB_ENABLED )  {
   if( pthread_join ( tmr_imu.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'imu' thread. \n" );
-  if(DEBUG)  printf( "imu " );//  }
+  if(DEBUG)  printf( "imu " );
 
   // Exit program execution flags thread
   if( pthread_join ( tmr_flag.id, NULL ) )
@@ -478,16 +431,14 @@ void *fcn_imu (  )  {
   tmr_create(&tmr_imu);
   while (running) {
     tmr_start(&tmr_imu);
-    //if (!datalog.saving) {  
-    if (IMUA_ENABLED)  imu_update(&imuA);
-    if (IMUB_ENABLED)  imu_update(&imuB);
-    //if ( IMUA_ENABLED && IMUB_ENABLED )  imu_avg();
-    //}
+    if (!datalog.saving) {  
+      if (IMUA_ENABLED)  imu_update(&imuA);
+      if (IMUB_ENABLED)  imu_update(&imuB);
+    }
     tmr_finish(&tmr_imu);
     if (datalog.enabled) {
-      log_record(LOG_IMUA);
-      log_record(LOG_IMUB);
-      //log_record(LOG_IMU);
+      if (IMUA_ENABLED)  log_record(LOG_IMUA);
+      if (IMUB_ENABLED)  log_record(LOG_IMUB);
     }
     tmr_pause(&tmr_imu);
   }
@@ -495,44 +446,6 @@ void *fcn_imu (  )  {
   return NULL;
 }
 
-
-/**
- *  fcn_imuA
- *  Function handler for the IMUA timing thread.
- */
-/*void *fcn_imuA (  )  {
-  tmr_create(&tmr_imuA);
-  while (running) {
-    tmr_start(&tmr_imuA);
-    //if (!datalog.saving)
-  imu_update(&imuA);
-    tmr_finish(&tmr_imuA);
-    //if (datalog.enabled)  log_record(LOG_IMUA);
-    tmr_pause(&tmr_imuA);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
-*/
-
-/**
- *  fcn_imuB
- *  Function handler for the IMUB timing thread.
- */
-/*void *fcn_imuB (  )  {
-  tmr_create(&tmr_imuB);
-  while (running) {
-    tmr_start(&tmr_imuB);
-    //if (!datalog.saving)
-  imu_update(&imuB);
-    tmr_finish(&tmr_imuB);
-    //if (datalog.enabled)  log_record(LOG_IMUB);
-    tmr_pause(&tmr_imuB);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
-*/
 
 /**
  *  fcn_ahrs

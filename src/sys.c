@@ -22,8 +22,7 @@
 
 static void sys_io    ( void );
 static void sys_lpf   ( void );
-static void sys_imuA  ( void );
-static void sys_imuB  ( void );
+static void sys_imu   ( void );
 static void sys_ahrs  ( void );
 static void sys_gps   ( void );
 static void sys_gcs   ( void );
@@ -124,8 +123,7 @@ void sys_update ( void )  {
   // Select data for display
   if(SYS_IO)     sys_io();
   if(SYS_LPF)    sys_lpf();
-  if(SYS_IMUA)   if(IMUA_ENABLED)  sys_imuA();
-  if(SYS_IMUB)   if(IMUB_ENABLED)  sys_imuB();
+  if(SYS_IMU)    sys_imu();
   if(SYS_AHRS)   sys_ahrs();
   if(SYS_GPS)    sys_gps();
   if(SYS_GCS)    sys_gcs();
@@ -209,16 +207,16 @@ static void sys_lpf ( void )  {
 
 
 /**
- *  sys_imuA
- *  Prints IMUA debugging messages to the terminal.
+ *  sys_imu
+ *  Prints IMU debugging messages to the terminal.
  */
-static void sys_imuA ( void )  {
-
-  // Check that IMUA is in use
-  if (IMUA_ENABLED) {
+static void sys_imu ( void )  {
 
   // Loop counter
   ushort i;
+
+  // Check that IMUA is in use
+  if (IMUA_ENABLED) {
 
   // Gyroscope data
   pthread_mutex_lock(&gyrA.mutex);
@@ -243,21 +241,8 @@ static void sys_imuA ( void )  {
 
   }
 
-  return;
-}
-
-
-/**
- *  sys_imuB
- *  Prints IMUB debugging messages to the terminal.
- */
-static void sys_imuB ( void )  {
-
   // Check that IMUB is in use
   if (IMUB_ENABLED) {
-
-  // Loop counter
-  ushort i;
 
   // Gyroscope data
   pthread_mutex_lock(&gyrB.mutex);

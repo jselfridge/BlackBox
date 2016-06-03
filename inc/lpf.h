@@ -30,23 +30,12 @@ typedef struct lpf_struct {
   double gain;
   double *data;
 } lpf_struct;
-
-
-//lpf_struct lpf_gyr;
-//lpf_struct lpf_acc;
-//lpf_struct lpf_mag;
-//lpf_struct lpf_eul;
-//lpf_struct lpf_ang;
 lpf_struct lpf_gyrA;
 lpf_struct lpf_accA;
 lpf_struct lpf_magA;
-//lpf_struct lpf_eulA;
-//lpf_struct lpf_angA;
 lpf_struct lpf_gyrB;
 lpf_struct lpf_accB;
 lpf_struct lpf_magB;
-//lpf_struct lpf_eulB;
-//lpf_struct lpf_angB;
 
 
 void  lpf_init    ( void );
