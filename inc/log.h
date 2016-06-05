@@ -133,10 +133,10 @@ typedef struct datalog_struct {
   FILE   *gyrA;
   FILE   *accA;
   FILE   *magA;
+  FILE   *ahrsA;
   FILE   *gyrB;
   FILE   *accB;
   FILE   *magB;
-  FILE   *ahrsA;
   FILE   *ahrsB;
   //FILE   *ekf;
   //FILE   *gps;

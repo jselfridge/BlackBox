@@ -122,12 +122,12 @@ void ahrs_update ( ahrs_struct *ahrs, imu_struct *imu )  {
   // Get acc IMU data
   pthread_mutex_lock(&(imu->acc->mutex));
   for ( i=0; i<3; i++ )  a[i] = -imu->acc->filter[i];
-  pthread_mutex_lock(&(imu->acc->mutex));
+  pthread_mutex_unlock(&(imu->acc->mutex));
 
   // Get mag IMU data
   pthread_mutex_lock(&(imu->mag->mutex));
   for ( i=0; i<3; i++ )  m[i] = imu->mag->filter[i];
-  pthread_mutex_lock(&(imu->mag->mutex));
+  pthread_mutex_unlock(&(imu->mag->mutex));
 
   // Normalize magnetometer
   norm = 0.0;

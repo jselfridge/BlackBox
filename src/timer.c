@@ -452,16 +452,14 @@ void *fcn_ahrs (  )  {
   while (running) {
     tmr_start(&tmr_ahrs);
     if (!datalog.saving) {
-      //if (IMUA_ENABLED)  ahrs_update( &ahrsA, &imuA );
-      //if (IMUB_ENABLED)  ahrs_update( &ahrsB, &imuB );
+      if (IMUA_ENABLED)  ahrs_update( &ahrsA, &imuA );
+      if (IMUB_ENABLED)  ahrs_update( &ahrsB, &imuB );
     }
     tmr_finish(&tmr_ahrs);
-    /*
     if (datalog.enabled) {
       if (IMUA_ENABLED)  log_record(LOG_AHRSA);
       if (IMUB_ENABLED)  log_record(LOG_AHRSB);
     }
-    */
     tmr_pause(&tmr_ahrs);
   }
   pthread_exit(NULL);

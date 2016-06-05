@@ -6,7 +6,7 @@ timer.c:24:6:tmr_init	56	static
 timer.c:188:6:tmr_exit	8	static
 timer.c:270:6:tmr_thread	32	static
 timer.c:293:6:tmr_create	40	static
-timer.c:564:7:fcn_debug	40	static
+timer.c:562:7:fcn_debug	40	static
 timer.c:450:7:fcn_ahrs	40	static
 timer.c:426:7:fcn_imu	40	static
 timer.c:409:7:fcn_flag	40	static

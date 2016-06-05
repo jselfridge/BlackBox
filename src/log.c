@@ -34,10 +34,10 @@ void log_init ( void )  {
   log_gyrA.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_accA.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_magA.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
+  log_ahrsA.limit   =  LOG_MAX_DUR * HZ_AHRS;
   log_gyrB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_accB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_magB.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
-  log_ahrsA.limit   =  LOG_MAX_DUR * HZ_AHRS;
   log_ahrsB.limit   =  LOG_MAX_DUR * HZ_AHRS;
   //log_ekf.limit     =  LOG_MAX_DUR * HZ_EKF;
   //log_gps.limit     =  LOG_MAX_DUR * HZ_GPS;
@@ -83,7 +83,7 @@ void log_init ( void )  {
   log_magA.scaled   =  malloc( sizeof(float)  * log_magA.limit * 3 );
   log_magA.filter   =  malloc( sizeof(float)  * log_magA.limit * 3 );
 
-  // Attitude and Heading Reference System setup
+  // Attitude and Heading Reference System A setup
   log_ahrsA.time    =  malloc( sizeof(float)  * log_ahrsA.limit     );
   log_ahrsA.dur     =  malloc( sizeof(ulong)  * log_ahrsA.limit     );
   log_ahrsA.quat    =  malloc( sizeof(float)  * log_ahrsA.limit * 4 );
@@ -120,7 +120,7 @@ void log_init ( void )  {
   log_magB.scaled   =  malloc( sizeof(float)  * log_magB.limit * 3 );
   log_magB.filter   =  malloc( sizeof(float)  * log_magB.limit * 3 );
 
-  // Attitude and Heading Reference System setup
+  // Attitude and Heading Reference System B setup
   log_ahrsB.time    =  malloc( sizeof(float)  * log_ahrsB.limit     );
   log_ahrsB.dur     =  malloc( sizeof(ulong)  * log_ahrsB.limit     );
   log_ahrsB.quat    =  malloc( sizeof(float)  * log_ahrsB.limit * 4 );
@@ -290,6 +290,7 @@ void log_exit ( void )  {
   free(log_ctrl.derr);
   free(log_ctrl.cmd);
   */
+
   return;
 }
 
@@ -307,10 +308,10 @@ void log_start ( void )  {
   log_gyrA.count   = 0;
   log_accA.count   = 0;
   log_magA.count   = 0;
+  log_ahrsA.count  = 0;
   log_gyrB.count   = 0;
   log_accB.count   = 0;
   log_magB.count   = 0;
-  log_ahrsA.count  = 0;
   log_ahrsB.count  = 0;
   //log_ekf.count    = 0;
   //log_gps.count    = 0;
@@ -400,12 +401,12 @@ void log_start ( void )  {
   datalog.ahrsA = fopen( file, "w" );
   if( datalog.ahrsA == NULL )  printf( "Error (log_init): Cannot generate 'ahrsA' file. \n" );
   fprintf( datalog.ahrsA,
-    "   ahrsAtime ahrsAdur  \
-    QuatAw   QuatAx   QuatAy   QuatAz \
-    dQuatAw  dQuatAx  dQuatAy  dQuatAz  \
-    EulAx    EulAy    EulAz  \
-    dEulAx   dEulAy   dEulAz  \
-    biasAx   biasAy   biasAz  \
+    "   ahrsAtime ahrsAdur   \
+    QuatAw   QuatAx   QuatAy   QuatAz  \
+    dQuatAw  dQuatAx  dQuatAy  dQuatAz    \
+    EulAx    EulAy    EulAz   \
+    dEulAx   dEulAy   dEulAz   \
+    biasAx   biasAy   biasAz   \
     fluxAx   fluxAz");
 
   }
@@ -448,12 +449,12 @@ void log_start ( void )  {
   datalog.ahrsB = fopen( file, "w" );
   if( datalog.ahrsB == NULL )  printf( "Error (log_init): Cannot generate 'ahrsB' file. \n" );
   fprintf( datalog.ahrsB,
-    "   ahrsBtime ahrsBdur  \
-    QuatBw   QuatBx   QuatBy   QuatBz \
-    dQuatBw  dQuatBx  dQuatBy  dQuatBz  \
-    EulBx    EulBy    EulBz  \
-    dEulBx   dEulBy   dEulBz  \
-    biasBx   biasBy   biasBz  \
+    "   ahrsBtime ahrsBdur   \
+    QuatBw   QuatBx   QuatBy   QuatBz  \
+    dQuatBw  dQuatBx  dQuatBy  dQuatBz    \
+    EulBx    EulBy    EulBz   \
+    dEulBx   dEulBy   dEulBz   \
+    biasBx   biasBy   biasBz   \
     fluxBx   fluxBz");
 
   }
@@ -503,6 +504,7 @@ void log_start ( void )  {
     EDX      EDY      EDZ      \
     CX       CY       CZ       CT" );
   */
+
   // Determine start second
   struct timespec timeval;
   clock_gettime( CLOCK_MONOTONIC, &timeval );
