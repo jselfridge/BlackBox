@@ -39,7 +39,7 @@ void log_init ( void )  {
   log_accB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_magB.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
   log_ahrsB.limit   =  LOG_MAX_DUR * HZ_AHRS;
-  //log_ekf.limit     =  LOG_MAX_DUR * HZ_EKF;
+  log_ekf.limit     =  LOG_MAX_DUR * HZ_EKF;
   //log_gps.limit     =  LOG_MAX_DUR * HZ_GPS;
   //log_ctrl.limit    =  LOG_MAX_DUR * HZ_CTRL;
 
@@ -133,7 +133,6 @@ void log_init ( void )  {
 
   }
 
-  /*
   // Extended Kalman Filter setup
   uint n, m, nn, mm, nm;
   n  = EKF_N;
@@ -150,7 +149,7 @@ void log_init ( void )  {
   log_ekf.P         =  malloc( sizeof(float)  * log_ekf.limit * nn );
   log_ekf.S         =  malloc( sizeof(float)  * log_ekf.limit * mm );
   log_ekf.K         =  malloc( sizeof(float)  * log_ekf.limit * nm );
-
+  /*
   // Global Positioning System setup
   log_gps.time      =  malloc( sizeof(float)  * log_gps.limit      );
   log_gps.dur       =  malloc( sizeof(ulong)  * log_gps.limit      );
@@ -265,7 +264,6 @@ void log_exit ( void )  {
 
   }
 
-  /*
   // EKF memory
   free(log_ekf.time);
   free(log_ekf.dur);
@@ -276,7 +274,7 @@ void log_exit ( void )  {
   free(log_ekf.P);
   free(log_ekf.S);
   free(log_ekf.K);
-
+  /*
   // GPS memory
   free(log_gps.time);
   free(log_gps.dur);
@@ -313,7 +311,7 @@ void log_start ( void )  {
   log_accB.count   = 0;
   log_magB.count   = 0;
   log_ahrsB.count  = 0;
-  //log_ekf.count    = 0;
+  log_ekf.count    = 0;
   //log_gps.count    = 0;
   //log_ctrl.count   = 0;
 
@@ -459,34 +457,35 @@ void log_start ( void )  {
 
   }
 
-  /*
   // Extended Kalman Filter datalog file
   sprintf( file, "%sekf.txt", datalog.path );
   datalog.ekf = fopen( file, "w" );
   if( datalog.ekf == NULL )  printf( "Error (log_init): Cannot generate 'ekf' file. \n" );
   fprintf( datalog.ekf,
-    "       Ktime    Kdur     \
-    x1       x2       x3       x4       x5       x6       x7       x8       x9      \
-    z1       z2       z3      \
-    f1       f2       f3       f4       f5       f6       f7       f8       f9      \
-    h1       h2       h3     \
-    P11      P12      P13      P14      P15      P16      P17      P18      P19  \
-    P21      P22      P23      P24      P25      P26      P27      P28      P29  \
-    P31      P32      P33      P34      P35      P36      P37      P38      P39  \
-    P41      P42      P43      P44      P45      P46      P47      P48      P49  \
-    P51      P52      P53      P54      P55      P56      P57      P58      P59  \
-    P61      P62      P63      P64      P65      P66      P67      P68      P69  \
-    P71      P72      P73      P74      P75      P76      P77      P78      P79  \
-    P81      P82      P83      P84      P85      P86      P87      P88      P89  \
-    P91      P92      P93      P94      P95      P96      P97      P98      P99     \
-    S11      S12      S13  \
-    S21      S22      S23  \
-    S31      S32      S33     \
-    K11      K12      K13      K14      K15      K16      K17      K18      K19  \
-    K21      K22      K23      K24      K25      K26      K27      K28      K29  \
-    K31      K32      K33      K34      K35      K36      K37      K38      K39     \
-    ");
+	   "     ekftime  ekfdur    ");
+//    x1       x2       x3       x4       x5       x6      \
+//    z1       z2       z3      \
+//    f1       f2       f3       f4       f5       f6       f7       f8       f9      \
+//    h1       h2       h3     \
+//    P11      P12      P13      P14      P15      P16      P17      P18      P19  \
+//    P21      P22      P23      P24      P25      P26      P27      P28      P29  \
+//    P31      P32      P33      P34      P35      P36      P37      P38      P39  \
+//    P41      P42      P43      P44      P45      P46      P47      P48      P49  \
+//    P51      P52      P53      P54      P55      P56      P57      P58      P59  \
+//    P61      P62      P63      P64      P65      P66      P67      P68      P69  \
+//    P71      P72      P73      P74      P75      P76      P77      P78      P79  \
+//    P81      P82      P83      P84      P85      P86      P87      P88      P89  \
+//    P91      P92      P93      P94      P95      P96      P97      P98      P99     \
+//    S11      S12      S13  \
+//    S21      S22      S23  \
+//    S31      S32      S33     \
+//    K11      K12      K13      K14      K15      K16      K17      K18      K19  \
+//    K21      K22      K23      K24      K25      K26      K27      K28      K29  \
+//    K31      K32      K33      K34      K35      K36      K37      K38      K39     \
+//    ");
 
+
+  /*
   // GPS datalog file
   sprintf( file, "%sgps.txt", datalog.path );
   datalog.gps = fopen( file, "w" );
@@ -718,7 +717,6 @@ void log_record ( enum log_index index )  {
 
     return;
 
-/*
   // Record EKF data
   case LOG_EKF :
 
@@ -737,7 +735,7 @@ void log_record ( enum log_index index )  {
       mm = m*m;
       nm = n*m;
 
-      pthread_mutex_lock(&mutex_ekf);
+      pthread_mutex_lock(&ekf.mutex);
       for ( i=0; i<n;  i++ )  log_ekf.x [ row*n  +i ] = ekf.x [i];
       for ( i=0; i<m;  i++ )  log_ekf.z [ row*m  +i ] = ekf.z [i];
       for ( i=0; i<n;  i++ )  log_ekf.f [ row*n  +i ] = ekf.f [i];
@@ -745,13 +743,14 @@ void log_record ( enum log_index index )  {
       for ( i=0; i<nn; i++ )  log_ekf.P [ row*nn +i ] = ekf.P [i];
       for ( i=0; i<mm; i++ )  log_ekf.S [ row*mm +i ] = ekf.S [i];
       for ( i=0; i<nm; i++ )  log_ekf.K [ row*nm +i ] = ekf.K [i];
-      pthread_mutex_unlock(&mutex_ekf);
+      pthread_mutex_unlock(&ekf.mutex);
 
       log_ekf.count++;
     }
 
     return;
 
+  /*
   // Record GPS data
   case LOG_GPS :
 
@@ -933,7 +932,6 @@ static void log_save ( void )  {
 
   }
 
-  /*
   // Extended Kalman Filter data
   uint n, m, nn, mm, nm;
   n  = EKF_N;
@@ -952,6 +950,7 @@ static void log_save ( void )  {
     for ( i=0; i<nm; i++ )  fprintf( datalog.ekf, "%07.4f  ", log_ekf.K [ row*nm +i ] );  fprintf( datalog.ekf, "    " );
   }
 
+  /*
   // GPS data
   for ( row = 0; row < log_gps.count; row++ ) {
     fprintf( datalog.gps, "\n %011.6f  %06ld    ", log_gps.time[row], log_gps.dur[row] );
@@ -996,7 +995,7 @@ static void log_close ( void )  {
     fclose(datalog.ahrsB);
   }
 
-  //fclose(datalog.ekf);
+  fclose(datalog.ekf);
   //fclose(datalog.gps);
   //fclose(datalog.ctrl);
 

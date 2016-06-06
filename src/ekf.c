@@ -5,7 +5,7 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "imu.h"
+#include "ahrs.h"
 #include "sys.h"
 #include "timer.h"
 
@@ -46,11 +46,6 @@ static void addeye    ( double *a, int n );
       double Pp[N][N]; // P, post-prediction, pre-update
       double fx[N];    // output of user defined f() state-transition function
       double hx[M];    // output of user defined h() measurement function
-      double tmp1[N][N];
-      double tmp2[M][N];
-      double tmp3[M][M];
-      double tmp4[M][M];
-      double tmp5[M];
  * </pre>
  */
 void ekf_init ( void )  {
@@ -91,41 +86,67 @@ void ekf_init ( void )  {
   for ( i=0; i<nm; i++ )  ekf.K[i] = 0.0;
 
   // Assign plant covariance values (WIP: pull from file with error checking)
-  ekf.Q[ 0] = 0.01;    // R angle
-  ekf.Q[10] = 0.01;    // P angle
-  ekf.Q[20] = 0.01;    // Y angle
-  ekf.Q[30] = 0.01;    // R rate
-  ekf.Q[40] = 0.01;    // P rate
-  ekf.Q[50] = 0.01;    // Y rate
-  ekf.Q[60] = 0.01;    // R acc
-  ekf.Q[70] = 0.01;    // P acc
-  ekf.Q[80] = 0.01;    // Y acc
+  ekf.Q[ 0] = 0.01;
+  ekf.Q[ 7] = 0.01;
+  ekf.Q[14] = 0.01;
+  ekf.Q[21] = 0.01;
+  ekf.Q[28] = 0.01;
+  ekf.Q[35] = 0.01;
 
   // Assign measurement covariance values (WIP: pull from file with error checking)
-  ekf.R[0]  = 0.01;    // gyro x
-  ekf.R[4]  = 0.01;    // gyro y
-  ekf.R[8]  = 0.01;    // gyro z
+  ekf.R[ 0] = 0.01;
+  ekf.R[ 7] = 0.01;
+  ekf.R[14] = 0.01;
+  ekf.R[21] = 0.01;
+  ekf.R[28] = 0.01;
+  ekf.R[35] = 0.01;
 
   // Static F matrix
   // WIP: Adaptively updated from MRAC or L1
   // WIP: Add acceleration state?
-  // Unity diagonal, time step block diagonal in upper right
   double dt  = 1.0 / HZ_EKF;
-  double dt2 = dt * dt / 2;
-  ekf.F[ 0] = 1.0;  ekf.F[ 3] = dt;  ekf.F[ 6] = dt2;
-  ekf.F[10] = 1.0;  ekf.F[13] = dt;  ekf.F[16] = dt2;
-  ekf.F[20] = 1.0;  ekf.F[23] = dt;  ekf.F[26] = dt2;
-  ekf.F[30] = 1.0;  ekf.F[33] = dt;
-  ekf.F[40] = 1.0;  ekf.F[43] = dt;
-  ekf.F[50] = 1.0;  ekf.F[53] = dt;
-  ekf.F[60] = 1.0;
-  ekf.F[70] = 1.0;
-  ekf.F[80] = 1.0;
+  ekf.F[ 0] = 1.0;  ekf.F[ 3] = dt;
+  ekf.F[ 7] = 1.0;  ekf.F[10] = dt;
+  ekf.F[14] = 1.0;  ekf.F[17] = dt;
+  ekf.F[21] = 1.0;
+  ekf.F[28] = 1.0;
+  ekf.F[35] = 1.0;
 
   // Static H matrix (WIP: adaptively updated from MRAC or L1)
-  ekf.H[ 3] = 1.0;
+  ekf.H[ 0] = 1.0;
+  ekf.H[ 6] = 1.0;
   ekf.H[13] = 1.0;
-  ekf.H[23] = 1.0;
+  ekf.H[19] = 1.0;
+  ekf.H[26] = 1.0;
+  ekf.H[32] = 1.0;
+  ekf.H[39] = 1.0;
+  ekf.H[45] = 1.0;
+  ekf.H[52] = 1.0;
+  ekf.H[58] = 1.0;
+  ekf.H[65] = 1.0;
+  ekf.H[71] = 1.0;
+
+  // Display EKF settings
+  if (DEBUG) {
+
+    // Plant matrix
+    printf("  Plant matrix (F): ");  fflush(stdout);
+    for ( i=0; i<nn; i++ ) {
+      if ( i%n == 0 )  printf("\n    ");
+      printf( "%6.4f  ", ekf.F[i] );
+    }
+    printf("\n");
+
+    // Measurement matrix
+    printf("  Measurement matrix (H): ");  fflush(stdout);
+    for ( i=0; i<nm; i++ ) {
+      if ( i%n == 0 )  printf("\n    ");
+      printf( "%6.4f  ", ekf.H[i] );
+    }
+    printf("\n");
+    fflush(stdout);
+
+  }
 
   return;
 }
@@ -173,18 +194,27 @@ int ekf_update ( void )  {
   double tmpNN[nn], tmpNM[nm], tmpMN[nm], tmpN[n], tmpM[m];
 
   // Obtain EKF values
-  pthread_mutex_lock(&mutex_ekf);
+  pthread_mutex_lock(&ekf.mutex);
   for ( i=0; i<n;  i++ )  x[i] = ekf.x[i];
   for ( i=0; i<nn; i++ )  F[i] = ekf.F[i];
   for ( i=0; i<nm; i++ )  H[i] = ekf.H[i];
   for ( i=0; i<nn; i++ )  Q[i] = ekf.Q[i];
   for ( i=0; i<mm; i++ )  R[i] = ekf.R[i];
-  pthread_mutex_unlock(&mutex_ekf);
+  pthread_mutex_unlock(&ekf.mutex);
 
-  // Obtain measurements
-  pthread_mutex_lock(&mutex_gyrA);
-  for ( i=0; i<3; i++ )  z[i] = imuA.gyr->filter[i];
-  pthread_mutex_unlock(&mutex_gyrA);
+  // Obtain AHRSA measurements
+  pthread_mutex_lock(&ahrsA.mutex);
+  z[ 0] = ahrsA.eul[0];  z[ 6] = ahrsA.deul[0];
+  z[ 2] = ahrsA.eul[1];  z[ 8] = ahrsA.deul[1];
+  z[ 4] = ahrsA.eul[2];  z[10] = ahrsA.deul[2];
+  pthread_mutex_unlock(&ahrsA.mutex);
+
+  // Obtain AHRSB measurements
+  pthread_mutex_lock(&ahrsB.mutex);
+  z[ 1] = ahrsB.eul[0];  z[ 7] = ahrsB.deul[0];
+  z[ 3] = ahrsB.eul[1];  z[ 9] = ahrsB.deul[1];
+  z[ 5] = ahrsB.eul[2];  z[11] = ahrsB.deul[2];
+  pthread_mutex_unlock(&ahrsB.mutex);
 
   // Evaluate derivatives
   mulvec( F, x, f, n, n );
@@ -206,7 +236,7 @@ int ekf_update ( void )  {
 
   // K = Pt Ht S^{-1}
   mulmat( Pt, Ht, tmpNM, n, n, m );
-  if ( cholsl( S, Inv, tmpM, m ) )  {  printf("Too bad... \n");  return -1;  }
+  if ( cholsl( S, Inv, tmpM, m ) )  {  /*printf("Too bad... \n");  return -1;*/  }
   mulmat( tmpNM, Inv, K, n, m, m );
 
   // x = f + K ( z - h )
@@ -221,7 +251,7 @@ int ekf_update ( void )  {
   mulmat( tmpNN, Pt, P, n, n, n );
 
   // Push data to structure
-  pthread_mutex_lock(&mutex_ekf);
+  pthread_mutex_lock(&ekf.mutex);
   for ( i=0; i<n;  i++ )  ekf.x[i] = x[i];
   for ( i=0; i<m;  i++ )  ekf.z[i] = z[i];
   for ( i=0; i<n;  i++ )  ekf.f[i] = f[i];
@@ -229,7 +259,7 @@ int ekf_update ( void )  {
   for ( i=0; i<nn; i++ )  ekf.P[i] = P[i];
   for ( i=0; i<mm; i++ )  ekf.S[i] = S[i];
   for ( i=0; i<nm; i++ )  ekf.K[i] = K[i];
-  pthread_mutex_unlock(&mutex_ekf);
+  pthread_mutex_unlock(&ekf.mutex);
 
   return 0;
 }

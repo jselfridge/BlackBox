@@ -10,7 +10,7 @@
 
 #define PRIO_IMU    96
 #define PRIO_AHRS   94
-//#define PRIO_EKF    92
+#define PRIO_EKF    92
 #define PRIO_IO     90
 //#define PRIO_CTRL   88
 //#define PRIO_GPS    86
@@ -22,7 +22,7 @@
 #define HZ_IMU_FAST    200
 #define HZ_IMU_SLOW    100
 #define HZ_AHRS        100
-//#define HZ_EKF         100
+#define HZ_EKF         100
 #define HZ_IO          100
 //#define HZ_CTRL        100
 #define HZ_FLAG         20
@@ -36,7 +36,6 @@ pthread_mutex_t mutex_input;
 pthread_mutex_t mutex_output;
 pthread_mutex_t mutex_i2c1;
 pthread_mutex_t mutex_i2c2;
-//pthread_mutex_t mutex_ekf;
 //pthread_mutex_t mutex_gps;
 //pthread_mutex_t mutex_gcs;
 //pthread_mutex_t mutex_ctrl;
@@ -60,7 +59,7 @@ timer_struct tmr_io;
 timer_struct tmr_flag;
 timer_struct tmr_imu;
 timer_struct tmr_ahrs;
-//timer_struct tmr_ekf;
+timer_struct tmr_ekf;
 //timer_struct tmr_gps;
 //timer_struct tmr_gcstx;
 //timer_struct tmr_gcsrx;
@@ -85,7 +84,7 @@ void *fcn_io     (  );
 void *fcn_flag   (  );
 void *fcn_imu    (  );
 void *fcn_ahrs   (  );
-//void *fcn_ekf    (  );
+void *fcn_ekf    (  );
 //void *fcn_gps    (  );
 //void *fcn_gcstx  (  );
 //void *fcn_gcsrx  (  );

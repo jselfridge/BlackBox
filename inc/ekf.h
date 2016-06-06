@@ -4,9 +4,12 @@
 #define EKF_H
 
 
+#include <sys/types.h>
+
+
 #define EKF_ENABLED true
-#define EKF_N   9
-#define EKF_M   3
+#define EKF_N   6
+#define EKF_M  12
 
 
 typedef struct ekf_struct {
@@ -21,6 +24,7 @@ typedef struct ekf_struct {
   double *P;   // Prediction error covariance
   double *S;   // Update error covariance
   double *K;   // Kalman gain
+  pthread_mutex_t mutex;
 } ekf_struct;
 ekf_struct ekf;
 

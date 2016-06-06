@@ -17,7 +17,7 @@ int main ( void )  {
   lpf_init();
   imu_init();
   ahrs_init();
-  //ekf_init();
+  ekf_init();
   //gps_init();
   //gcs_init();
   //ctrl_init();
@@ -44,7 +44,7 @@ int main ( void )  {
   //ctrl_exit();
   //gcs_exit();
   //gps_exit();
-  //ekf_exit();
+  ekf_exit();
   ahrs_exit();
   imu_exit();
   lpf_exit();
