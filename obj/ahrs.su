@@ -1,4 +1,4 @@
-ahrs.c:15:6:ahrs_init	40	static
-ahrs.c:55:6:ahrs_setup	16	static
-ahrs.c:84:6:ahrs_exit	0	static
-ahrs.c:95:6:ahrs_update	768	static
+ahrs.c:27:6:ahrs_setup	96	static
+ahrs.c:15:6:ahrs_init	8	static
+ahrs.c:77:6:ahrs_exit	0	static
+ahrs.c:88:6:ahrs_update	768	static

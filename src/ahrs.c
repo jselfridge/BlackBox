@@ -14,36 +14,8 @@
  */
 void ahrs_init ( void )  {
   if(DEBUG)  printf( "Initializing AHRS \n" );
-
-  // Local variable
-  //ushort i;
-
-  // Setup data structures
-  ahrs_setup( &ahrsA );
-  ahrs_setup( &ahrsB );
-
-  /*
-  // Set Euler angle bias
-  FILE* f;
-  char buff [32];  memset( buff, 0, sizeof(buff) );
-  char path [32];  memset( path, 0, sizeof(path) );
-  sprintf( path, "../Param/board/bias/eul" );
-  f = fopen( path, "r" );
-  if(!f)  printf( "Error (ahr_init): File for 'eul bias' not found. \n" );
-  for ( i=0; i<3; i++ ) {
-    fgets( buff, 32, f );
-    ahrs.orient[i] = atoi(buff) / 10000.0;
-  }
-  fclose(f);
-
-  // Display Euler attitude offset
-  if (DEBUG)  {
-    printf("  Euler offset:" );
-    for ( i=0; i<3; i++ )  printf(" %6.3f", ahrs.orient[i] );
-    printf("\n");
-  }
-  */
-
+  if (IMUA_ENABLED) {  ahrsA.id = 'A';  ahrs_setup(&ahrsA);  }
+  if (IMUB_ENABLED) {  ahrsB.id = 'B';  ahrs_setup(&ahrsB);  }
   return;
 }
 
@@ -72,6 +44,27 @@ void ahrs_setup ( ahrs_struct *ahrs )  {
   ahrs->fx       = 1.0;
   ahrs->fz       = -0.006;
   ahrs->dt       = 1.0 / HZ_AHRS;
+
+  // Assign AHRS offset
+  FILE *f;
+  char buff [32];  memset( buff, 0, sizeof(buff) );
+  char path [32];  memset( path, 0, sizeof(path) );
+  sprintf( path, "../Param/board/bias/ahrs%c", ahrs->id );
+  f = fopen( path, "r" );
+  if(!f)  printf( "Error (ahr_setup): File for 'ahrs%c bias' not found. \n", ahrs->id );
+  for ( i=0; i<3; i++ ) {
+    fgets( buff, 32, f );
+    ahrs->orient[i] = atoi(buff) / 10000.0;
+  }
+  fclose(f);
+
+  // Display AHRS offset
+  if (DEBUG)  {
+    printf("  AHRS%c offset:", ahrs->id );
+    for ( i=0; i<3; i++ )  printf(" %6.3f", ahrs->orient[i] );
+    printf("\n");
+  }
+
 
   return;
 }
@@ -248,9 +241,9 @@ void ahrs_update ( ahrs_struct *ahrs, imu_struct *imu )  {
 
   // Calculate euler angles
   double e[3];
-  e[X] = atan2 ( ( 2.0 * ( qwx + qyz ) ), ( 1.0 - 2.0 * ( qxx + qyy ) ) );// - ahrs.orient[X];
-  e[Y] = asin  (   2.0 * ( qwy - qxz ) )                                 ;// - ahrs.orient[Y];
-  e[Z] = atan2 ( ( 2.0 * ( qwz + qxy ) ), ( 1.0 - 2.0 * ( qyy + qzz ) ) );// - ahrs.orient[Z];
+  e[X] = atan2 ( ( 2.0 * ( qwx + qyz ) ), ( 1.0 - 2.0 * ( qxx + qyy ) ) ) - ahrs->orient[X];
+  e[Y] = asin  (   2.0 * ( qwy - qxz ) )                                  - ahrs->orient[Y];
+  e[Z] = atan2 ( ( 2.0 * ( qwz + qxy ) ), ( 1.0 - 2.0 * ( qyy + qzz ) ) ) - ahrs->orient[Z];
 
   // Push AHRS data to struct
   pthread_mutex_lock(&ahrs->mutex);

@@ -154,7 +154,7 @@ void imu_getcal ( imu_struct *imu )  {
 
   // Local variables
   int i;
-  FILE* f;
+  FILE *f;
   char buff [32];  memset( buff, 0, sizeof(buff) );
   char path [32];  memset( path, 0, sizeof(path) );
 
