@@ -38,8 +38,8 @@ void tmr_init ( void )  {
  */
 void tmr_mutex ( void )  {
   if(DEBUG)  printf("  Establish mutex locks \n");
-  pthread_mutex_init( &mutex_input,  NULL );
-  pthread_mutex_init( &mutex_output, NULL );
+  pthread_mutex_init( &input.mutex,  NULL );
+  pthread_mutex_init( &output.mutex, NULL );
   pthread_mutex_init( &mutex_i2c1,   NULL );
   pthread_mutex_init( &mutex_i2c2,   NULL );
   pthread_mutex_init( &gyrA.mutex,   NULL );
@@ -50,11 +50,12 @@ void tmr_mutex ( void )  {
   pthread_mutex_init( &accB.mutex,   NULL );
   pthread_mutex_init( &magB.mutex,   NULL );
   pthread_mutex_init( &ahrsB.mutex,  NULL );
+  pthread_mutex_init( &ctrl.mutex,   NULL );
 
   //pthread_mutex_init( &ekf.mutex,    NULL );
   //pthread_mutex_init( &mutex_gps,    NULL );
   //pthread_mutex_init( &mutex_gcs,    NULL );
-  //pthread_mutex_init( &mutex_ctrl,   NULL );
+
 
   return;
 }
@@ -108,9 +109,9 @@ void tmr_setup ( void )  {
   //tmr_gcsrx.per  = 1000000 / HZ_GCSRX;
 
   // Control timer
-  //tmr_ctrl.name = "ctrl";
-  //tmr_ctrl.prio = PRIO_CTRL;
-  //tmr_ctrl.per  = 1000000 / HZ_CTRL;
+  tmr_ctrl.name = "ctrl";
+  tmr_ctrl.prio = PRIO_CTRL;
+  tmr_ctrl.per  = 1000000 / HZ_CTRL;
 
   // Debugging timer
   tmr_debug.name = "debug";
@@ -169,7 +170,7 @@ void tmr_begin ( pthread_attr_t *attr )  {
   //tmr_thread( &tmr_gps,   attr, fcn_gps   );  usleep(100000);
   //tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
   //tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(100000);
-  //tmr_thread( &tmr_ctrl,  attr, fcn_ctrl  );  usleep(100000);
+  tmr_thread( &tmr_ctrl,  attr, fcn_ctrl  );  usleep(100000);
 
   if(DEBUG) {
     tmr_thread( &tmr_debug, attr, fcn_debug );
@@ -188,8 +189,8 @@ void tmr_exit ( void )  {
   printf("Close timing threads:  ");
 
   // Destroy mutex locks
-  pthread_mutex_destroy(&mutex_input);
-  pthread_mutex_destroy(&mutex_output);
+  pthread_mutex_destroy(&input.mutex);
+  pthread_mutex_destroy(&output.mutex);
   pthread_mutex_destroy(&mutex_i2c1);
   pthread_mutex_destroy(&mutex_i2c2);
   pthread_mutex_destroy(&gyrA.mutex);
@@ -200,17 +201,17 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&accB.mutex);
   pthread_mutex_destroy(&magB.mutex);
   pthread_mutex_destroy(&ahrsB.mutex);
+  pthread_mutex_destroy(&ctrl.mutex);
 
   //pthread_mutex_destroy(&ekf.mutex);
   //pthread_mutex_destroy(&mutex_gps);
   //pthread_mutex_destroy(&mutex_gcs);
-  //pthread_mutex_destroy(&mutex_ctrl);
 
-  /*  // Exit control thread
+  // Exit control thread
   if( pthread_join ( tmr_ctrl.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ctrl' thread. \n" );
   if(DEBUG)  printf( "ctrl " );
-
+  /*
   // Exit GCSRX thread
   if( pthread_join ( tmr_gcsrx.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gcsrx' thread. \n" );
@@ -540,7 +541,7 @@ void *fcn_ahrs (  )  {
  *  fcn_ctrl
  *  Function handler for the control law timing thread.
  */
-/*void *fcn_ctrl (  )  {
+void *fcn_ctrl (  )  {
   tmr_create(&tmr_ctrl);
   while (running) {
     tmr_start(&tmr_ctrl);
@@ -552,7 +553,7 @@ void *fcn_ahrs (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-*/
+
 
 /**
  *  fcn_debug

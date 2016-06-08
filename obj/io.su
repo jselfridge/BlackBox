@@ -1,6 +1,6 @@
 io.c:20:6:io_init	408	dynamic,bounded
 io.c:67:6:io_exit	8	static
-io.c:81:6:io_update	32	static
+io.c:81:6:io_update	40	static
 io.c:108:6:io_setreg	16	static
 io.c:129:6:io_setpwm	16	static
 io.c:150:6:io_setnorm	24	static

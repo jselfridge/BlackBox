@@ -50,6 +50,7 @@ typedef struct io_struct {
   ushort reg  [10];
   ushort pwm  [10];
   double norm [10];
+  pthread_mutex_t mutex;
 } io_struct;
 io_struct input;
 io_struct output;

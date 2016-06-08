@@ -149,11 +149,11 @@ static void sys_io ( void )  {
   ushort i;
 
   // Input signals
-  pthread_mutex_lock(&mutex_input);
+  pthread_mutex_lock(&input.mutex);
   //for ( i=0; i<6; i++ )  printf("%5d ",   input.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<6; i++ )  printf("%4d ",   input.pwm[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<4; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_input);
+  for ( i=0; i<6; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&input.mutex);
 
   // Output signals
   //pthread_mutex_lock(&mutex_output);
@@ -163,13 +163,13 @@ static void sys_io ( void )  {
   //pthread_mutex_unlock(&mutex_output);
 
   // Quadrotor output signals
-  pthread_mutex_lock(&mutex_output);
+  pthread_mutex_lock(&output.mutex);
   printf("%5.2f ", output.norm[0] );
   printf("%5.2f ", output.norm[1] );
   printf("%5.2f ", output.norm[4] );
   printf("%5.2f ", output.norm[5] );
   printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_output);
+  pthread_mutex_unlock(&output.mutex);
 
   return;
 }
@@ -289,7 +289,7 @@ static void sys_ahrs ( void )  {
   //for ( i=0; i<4; i++ )  printf("%7.4f ", ahrsA.quat[i]  );              printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%7.4f ", ahrsA.dquat[i] );              printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsA.eul[i]  * (180.0/PI) );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsA.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsA.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&ahrsA.mutex);
   }
 
@@ -299,7 +299,7 @@ static void sys_ahrs ( void )  {
   //for ( i=0; i<4; i++ )  printf("%7.4f ", ahrsB.quat[i]  );              printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%7.4f ", ahrsB.dquat[i] );              printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsB.eul[i]  * (180.0/PI) );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsB.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsB.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&ahrsB.mutex);
   }
 
@@ -368,26 +368,26 @@ static void sys_gcs ( void )  {
  *  Prints controller values to the terminal.
  */
 static void sys_ctrl ( void )  {
-  /*
+
   // Loop counter
-  //ushort i;
+  ushort i;
 
   // Control signals
-  pthread_mutex_lock(&mutex_ctrl);
+  pthread_mutex_lock(&ctrl.mutex);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.pgain[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.igain[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.dgain[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.thrl[i]  );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.scale[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.range[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.perr[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.ierr[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.derr[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.cmd[i]  );  printf("   ");  fflush(stdout);
+  for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.cmd[i]  );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", ctrl.bank    *(180.0/PI) );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", ctrl.climb   *(180.0/PI) );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", ctrl.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&mutex_ctrl);
-  */
+  pthread_mutex_unlock(&ctrl.mutex);
+
   return;
 }
 

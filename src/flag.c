@@ -18,12 +18,6 @@
 void flag_init ( void )  {
   if(DEBUG)  printf("Initializing program execution flags \n");
 
-  // Set boolean values... move to "log.c"
-  //if(DEBUG)  printf("  Set run time flags \n");
-  //datalog.enabled  = false;
-  //datalog.setup    = false;
-  //datalog.saving   = false;
-
   // Zero out counters
   if(DEBUG)  printf("  Zero out counters \n");
   ushort ch;
@@ -65,25 +59,25 @@ void flag_update ( void )  {
   bool energized = false;
 
   // Adjust state and counters
-  pthread_mutex_lock(&mutex_input);
+  pthread_mutex_lock(&input.mutex);
   energized = ( input.norm[CH_T] <= -0.9 ) ? ( false ) : ( true );
   for ( ch=0; ch<4; ch++ ) {
     ( input.norm[ch] >  0.9 ) ? ( flag.upper[ch]++ ) : ( flag.upper[ch] = 0 );
     ( input.norm[ch] < -0.9 ) ? ( flag.lower[ch]++ ) : ( flag.lower[ch] = 0 );
   }
-  pthread_mutex_unlock(&mutex_input);
+  pthread_mutex_unlock(&input.mutex);
 
   // Data log: roll stick only, no yaw command
   if ( !energized && !flag.lower[CH_Y] && !flag.upper[CH_Y] )  {
     if ( flag.lower[CH_R] >= flag.limit[CH_R] ) {
-      //if (!datalog.setup)  log_start();
-      //datalog.enabled = true;
-      //led_on(LED_LOG);
+      if (!datalog.setup)  log_start();
+      datalog.enabled = true;
+      led_on(LED_LOG);
     }
     if ( flag.upper[CH_R] >= flag.limit[CH_R] ) {
-      //datalog.enabled = false;
-      //if (datalog.setup)  log_finish();
-      //led_off(LED_LOG);
+      datalog.enabled = false;
+      if (datalog.setup)  log_finish();
+      led_off(LED_LOG);
     }
   }
 

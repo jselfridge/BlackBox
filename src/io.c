@@ -84,18 +84,18 @@ void io_update ( void )  {
   ushort ch;
 
   // Update input channels
-  pthread_mutex_lock(&mutex_input);
+  pthread_mutex_lock(&input.mutex);
   for ( ch=0; ch<IN_CH; ch++ ) {
     input.reg[ch]  = memoryPtr[ IN_OFFSET + ch ];
     input.pwm[ch]  = input.reg[ch] * IN_REG2PWM;
     input.norm[ch] = io_norm( input.reg[ch], 'i' );
   }
-  pthread_mutex_unlock(&mutex_input);
+  pthread_mutex_unlock(&input.mutex);
 
   // Assign output signal register values
-  pthread_mutex_lock(&mutex_output);
+  pthread_mutex_lock(&output.mutex);
   for ( ch=0; ch<OUT_CH; ch++ )  memoryPtr[ OUT_OFFSET + ch ] = output.reg[ch];
-  pthread_mutex_unlock(&mutex_output);
+  pthread_mutex_unlock(&output.mutex);
 
   return;
 }
@@ -112,11 +112,11 @@ void io_setreg ( ushort ch, ushort reg )  {
     printf( "Error (sio_setreg): Output channel must be between 0-9. \n" );
 
   // Assign output values
-  pthread_mutex_lock(&mutex_output);
+  pthread_mutex_lock(&output.mutex);
   output.reg[ch]  = reg;
   output.pwm[ch]  = reg * OUT_REG2PWM;
   output.norm[ch] = io_norm( reg, 'o' );
-  pthread_mutex_unlock(&mutex_output);
+  pthread_mutex_unlock(&output.mutex);
 
   return;
 }
@@ -133,11 +133,11 @@ void io_setpwm ( ushort ch, ushort pwm )  {
     printf( "Error (sio_setpwm): Output channel must be between 0-9. \n" );
 
   // Assign output values
-  pthread_mutex_lock(&mutex_output);
+  pthread_mutex_lock(&output.mutex);
   output.pwm[ch]  = pwm;
   output.reg[ch]  = pwm * OUT_PWM2REG;
   output.norm[ch] = io_norm( output.reg[ch], 'o' );
-  pthread_mutex_unlock(&mutex_output);
+  pthread_mutex_unlock(&output.mutex);
 
   return;
 }
@@ -159,11 +159,11 @@ void io_setnorm ( ushort ch, double norm )  {
   ushort reg = (ushort) ( (1/2.0) * (double) ( OUT_MAX - OUT_MIN ) * ( norm + 1.0 ) ) + OUT_MIN;
 
   // Assign output values
-  pthread_mutex_lock(&mutex_output);
+  pthread_mutex_lock(&output.mutex);
   output.norm[ch] = norm;
   output.reg[ch]  = reg;
   output.pwm[ch]  = reg * OUT_REG2PWM;
-  pthread_mutex_unlock(&mutex_output);
+  pthread_mutex_unlock(&output.mutex);
 
   return;
 }

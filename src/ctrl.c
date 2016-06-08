@@ -12,7 +12,7 @@
 
 
 static void  ctrl_quad    ( void );
-static void  ctrl_plane   ( void );
+//static void  ctrl_plane   ( void );
 static void  ctrl_disarm  ( void );
 
 
@@ -30,7 +30,7 @@ void ctrl_init ( void )  {
   ctrl.dt = 1.0 / HZ_CTRL;
 
   // Set 'quad' parameters
-  if ( !strcmp( SYSTEM, "quad" ) )  {
+  //if ( !strcmp( SYSTEM, "quad" ) )  {
 
     // Asign disarming array values
     ctrl.off[0] = QUAD_OFF0;
@@ -45,10 +45,10 @@ void ctrl_init ( void )  {
     ctrl.off[9] = QUAD_OFF9;
 
     // Reference ranges
-    ctrl.scale[CH_R] = QUAD_X_RANGE;
-    ctrl.scale[CH_P] = QUAD_Y_RANGE;
-    ctrl.scale[CH_Y] = QUAD_Z_RANGE;
-    ctrl.scale[CH_T] = QUAD_T_RANGE;
+    ctrl.range[CH_R] = QUAD_X_RANGE;
+    ctrl.range[CH_P] = QUAD_Y_RANGE;
+    ctrl.range[CH_Y] = QUAD_Z_RANGE;
+    ctrl.range[CH_T] = QUAD_T_RANGE;
 
     // Gain values
     ctrl.pgain[x] = QUAD_PX;  ctrl.pgain[y] = QUAD_PY;  ctrl.pgain[z] = QUAD_PZ;
@@ -60,8 +60,9 @@ void ctrl_init ( void )  {
     ctrl.thrl[1] = QUAD_TMAX;
     ctrl.thrl[2] = QUAD_TILT;
 
-  }
+  //}
 
+  /*
   // Set 'plane' parameters
   if ( !strcmp( SYSTEM, "plane" ) )  {
 
@@ -92,7 +93,7 @@ void ctrl_init ( void )  {
 
   // Display system
   if (DEBUG)  printf( "  System: %s \n", SYSTEM );
-
+  */
   return;
 }
 
@@ -114,11 +115,12 @@ void ctrl_exit ( void )  {
  */
 void ctrl_update ( void )  {
 
-  if (armed)  {
+  /*if (armed)  {
     if ( !strcmp( SYSTEM, "quad"  ) )  ctrl_quad();
     if ( !strcmp( SYSTEM, "plane" ) )  ctrl_plane();
-  }
-  else  ctrl_disarm();
+  }*/
+  if (armed)  ctrl_quad();
+  else        ctrl_disarm();
 
   return;
 }
@@ -141,27 +143,38 @@ void ctrl_quad ( void )  {
   static double derr[3] = { 0.0, 0.0, 0.0 };
 
   // Obtain states
-  pthread_mutex_lock(&mutex_eul);
-  for ( ch=0; ch<3; ch++ )  {  eul[ch] = ahrs.eul[ch];  ang[ch] = ahrs.ang[ch];  }
-  pthread_mutex_unlock(&mutex_eul);
+  for ( ch=0; ch<3; ch++ )  {  eul[ch] = 0.0;  ang[ch] = 0.0;  }
+  if (IMUA_ENABLED)  {
+    pthread_mutex_lock(&ahrsA.mutex);
+    for ( ch=0; ch<3; ch++ )  {  eul[ch] += ahrsA.eul[ch];  ang[ch] += ahrsA.deul[ch];  }
+    pthread_mutex_unlock(&ahrsA.mutex);
+  }
+  if (IMUB_ENABLED)  {
+    pthread_mutex_lock(&ahrsB.mutex);
+    for ( ch=0; ch<3; ch++ )  {  eul[ch] += ahrsB.eul[ch];  ang[ch] += ahrsB.deul[ch];  }
+    pthread_mutex_unlock(&ahrsB.mutex);
+  }
+  if ( IMUA_ENABLED && IMUB_ENABLED )  {
+    for ( ch=0; ch<3; ch++ )  {  eul[ch] /= 2.0;  ang[ch] /= 2.0;  }
+  }
 
   // Obtain inputs
-  pthread_mutex_lock(&mutex_input);
+  pthread_mutex_lock(&input.mutex);
   for ( ch=0; ch<4; ch++ )  in[ch] = input.norm[ch];
   dial = input.norm[CH_D];
-  pthread_mutex_unlock(&mutex_input);
+  pthread_mutex_unlock(&input.mutex);
 
   // Obtain ctrl parameters
-  pthread_mutex_lock(&mutex_ctrl);
-  trange  = ctrl.scale[3];
+  pthread_mutex_lock(&ctrl.mutex);
+  trange  = ctrl.range[3];
   tmin    = ctrl.thrl[0];
   tmax    = ctrl.thrl[1];
   tilt    = ctrl.thrl[2];
   heading = ctrl.heading;
-  pthread_mutex_unlock(&mutex_ctrl);
+  pthread_mutex_unlock(&ctrl.mutex);
 
   // Calculate reference signals
-  for ( ch=0; ch<4; ch++ )  ref[ch] = in[ch] * ctrl.scale[ch];
+  for ( ch=0; ch<4; ch++ )  ref[ch] = in[ch] * ctrl.range[ch];
 
   // Determine desired heading
   if ( in[CH_T] > -0.9 && fabs(in[CH_Y]) > 0.15 )  heading += ref[CH_Y] * ctrl.dt;
@@ -220,7 +233,7 @@ void ctrl_quad ( void )  {
   }
 
   // Push control data
-  pthread_mutex_lock(&mutex_ctrl);
+  pthread_mutex_lock(&ctrl.mutex);
   for ( ch=0; ch<3; ch++ )  {
     ctrl.perr[ch] = perr[ch];
     ctrl.ierr[ch] = ierr[ch];
@@ -228,7 +241,7 @@ void ctrl_quad ( void )  {
   }
   for ( ch=0; ch<4; ch++ )  ctrl.cmd[ch] = cmd[ch];
   ctrl.heading = heading;
-  pthread_mutex_unlock(&mutex_ctrl);
+  pthread_mutex_unlock(&ctrl.mutex);
 
   // Push system outputs
   io_setnorm( QUAD_FL, out[QUAD_FL] );
@@ -244,7 +257,7 @@ void ctrl_quad ( void )  {
  *  ctrl_plane
  *  Apply control to plane configuration.
  */
-void ctrl_plane ( void )  {
+/*void ctrl_plane ( void )  {
 
   // Local variables
   double elev, rudd, thrl, dial, prop, thresh;
@@ -272,7 +285,7 @@ void ctrl_plane ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  ctrl_disarm

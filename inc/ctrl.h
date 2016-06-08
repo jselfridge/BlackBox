@@ -4,8 +4,11 @@
 #define CTRL_H
 
 
+#include <sys/types.h>
+
+
 #define IRESET        0.25
-#define SYSTEM       "quad"
+//#define SYSTEM       "quad"
 
 #define QUAD_OFF0    -1.0
 #define QUAD_OFF1    -1.0
@@ -26,22 +29,25 @@
 #define QUAD_X_RANGE  0.50
 #define QUAD_Y_RANGE  0.50
 #define QUAD_Z_RANGE  1.50
-#define QUAD_T_RANGE  0.50
+#define QUAD_T_RANGE  0.00
 
 #define QUAD_TMIN     0.00
-#define QUAD_TMAX     0.30
+#define QUAD_TMAX     0.00
 #define QUAD_TILT     0.00
 
-#define QUAD_PX       0.30
-#define QUAD_PY       0.30
-#define QUAD_PZ       0.30
+#define QUAD_PX       0.00
+#define QUAD_PY       0.00
+#define QUAD_PZ       0.00
+
 #define QUAD_IX       0.00
 #define QUAD_IY       0.00
 #define QUAD_IZ       0.00
+
 #define QUAD_DX       0.00
 #define QUAD_DY       0.00
 #define QUAD_DZ       0.00
 
+/*
 #define PLANE_OFF0    0.0
 #define PLANE_OFF1    0.0
 #define PLANE_OFF2    0.0
@@ -71,12 +77,12 @@
 #define PLANE_DX       0.00
 #define PLANE_DY       0.00
 #define PLANE_DZ       0.00
-
+*/
 
 typedef struct ctrl_struct {
   double  dt;
   double  off   [10];
-  double  scale [4];
+  double  range [4];
   double  thrl  [3];
   double  pgain [3];
   double  igain [3];
@@ -88,6 +94,7 @@ typedef struct ctrl_struct {
   double  bank;
   double  climb;
   double  heading;
+  pthread_mutex_t mutex;
 } ctrl_struct;
 ctrl_struct ctrl;
 

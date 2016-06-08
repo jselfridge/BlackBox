@@ -27,6 +27,12 @@ static void  log_close ( void );
 void log_init ( void )  {
   if(DEBUG)  printf("Initializing data logging \n");
 
+  // Set boolean values... move to "log.c"
+  if(DEBUG)  printf("  Set boolean conditions \n");
+  datalog.enabled  = false;
+  datalog.setup    = false;
+  datalog.saving   = false;
+
   // Assign datalog limits
   log_param.limit   =  LOG_MAX_PARAM;  
   log_input.limit   =  LOG_MAX_DUR * HZ_IO;
@@ -41,7 +47,7 @@ void log_init ( void )  {
   log_ahrsB.limit   =  LOG_MAX_DUR * HZ_AHRS;
   //log_ekf.limit     =  LOG_MAX_DUR * HZ_EKF;
   //log_gps.limit     =  LOG_MAX_DUR * HZ_GPS;
-  //log_ctrl.limit    =  LOG_MAX_DUR * HZ_CTRL;
+  log_ctrl.limit    =  LOG_MAX_DUR * HZ_CTRL;
 
   // Parameter value setup
   log_param.time    =  malloc( sizeof(float)  * log_param.limit               );
@@ -155,6 +161,7 @@ void log_init ( void )  {
   log_gps.time      =  malloc( sizeof(float)  * log_gps.limit      );
   log_gps.dur       =  malloc( sizeof(ulong)  * log_gps.limit      );
   log_gps.msg       =  malloc( sizeof(char)   * log_gps.limit * 96 );
+  */
 
   // Controller parameter setup
   log_ctrl.time     =  malloc( sizeof(float)  * log_ctrl.limit     );
@@ -163,7 +170,6 @@ void log_init ( void )  {
   log_ctrl.ierr     =  malloc( sizeof(float)  * log_ctrl.limit * 3 );
   log_ctrl.derr     =  malloc( sizeof(float)  * log_ctrl.limit * 3 );
   log_ctrl.cmd      =  malloc( sizeof(float)  * log_ctrl.limit * 4 );
-  */
 
   return;
 }
@@ -282,6 +288,7 @@ void log_exit ( void )  {
   free(log_gps.time);
   free(log_gps.dur);
   free(log_gps.msg);
+  */
 
   // Controller memory
   free(log_ctrl.time);
@@ -290,7 +297,6 @@ void log_exit ( void )  {
   free(log_ctrl.ierr);
   free(log_ctrl.derr);
   free(log_ctrl.cmd);
-  */
 
   return;
 }
@@ -316,7 +322,7 @@ void log_start ( void )  {
   log_ahrsB.count  = 0;
   //log_ekf.count    = 0;
   //log_gps.count    = 0;
-  //log_ctrl.count   = 0;
+  log_ctrl.count   = 0;
 
   // Allocate dir/path/file memory
   datalog.dir  = malloc(16);
@@ -485,18 +491,18 @@ void log_start ( void )  {
   datalog.gps = fopen( file, "w" );
   if( datalog.gps == NULL )  printf( "Error (log_init): Cannot generate 'gps' file. \n" );
   fprintf( datalog.gps, "       Gtime    Gdur    Data    ");
+  */
 
   // Controller datalog file
   sprintf( file, "%sctrl.txt", datalog.path );
   datalog.ctrl = fopen( file, "w" );
   if( datalog.ctrl == NULL )  printf( "Error (log_init): Cannot generate 'ctrl' file. \n" );
   fprintf( datalog.ctrl,
-    "       Ctime    Cdur    \
-    EPX      EPY      EPZ     \
-    EIX      EIY      EIZ     \
-    EDX      EDY      EDZ      \
-    CX       CY       CZ       CT" );
-  */
+    "    ctrltime  ctrldur    \
+    errPX    errPY    errPZ    \
+    errIX    errIY    errIZ    \
+    errDX    errDY    errDZ     \
+    cmdX     cmdY     cmdZ     cmdT" );
 
   // Determine start second
   struct timespec timeval;
@@ -523,7 +529,6 @@ void log_record ( enum log_index index )  {
   ushort i;
   ulong  row;
   float  timestamp;
-  struct timespec t;
 
   // Jump to appropriate log 
   switch(index) {
@@ -532,6 +537,7 @@ void log_record ( enum log_index index )  {
   case LOG_PARAM :
     /*
     // Determine timestamp
+    struct timespec t;
     clock_gettime( CLOCK_MONOTONIC, &t );
     timestamp = (float) ( t.tv_sec + ( t.tv_nsec / 1000000000.0f ) ) - datalog.offset;
 
@@ -552,24 +558,24 @@ void log_record ( enum log_index index )  {
     timestamp = (float) ( tmr_io.start_sec + ( tmr_io.start_usec / 1000000.0f ) ) - datalog.offset;
 
     // Input data
-    pthread_mutex_lock(&mutex_input);
+    pthread_mutex_lock(&input.mutex);
     if ( log_input.count < log_input.limit ) {
       row = log_input.count;
       log_input.time[row] = timestamp;
       for ( i=0; i<10; i++ )  log_input.norm [ row*10 +i ] = input.norm[i];
       log_input.count++;
     }
-    pthread_mutex_unlock(&mutex_input);
+    pthread_mutex_unlock(&input.mutex);
 
     // Output data
-    pthread_mutex_lock(&mutex_output);
+    pthread_mutex_lock(&output.mutex);
     if ( log_output.count < log_output.limit ) {
       row = log_output.count;
       log_output.time[row] = timestamp;
       for ( i=0; i<10; i++ )  log_output.norm [ row*10 +i ] = output.norm[i];
       log_output.count++;
     }
-    pthread_mutex_unlock(&mutex_output);
+    pthread_mutex_unlock(&output.mutex);
 
     return;
 
@@ -764,6 +770,7 @@ void log_record ( enum log_index index )  {
     }
 
     return;
+  */
 
   // Record CTRL data
   case LOG_CTRL :
@@ -774,15 +781,16 @@ void log_record ( enum log_index index )  {
       row = log_ctrl.count;
       log_ctrl.time[row] = timestamp;
       log_ctrl.dur[row]  = tmr_ctrl.dur;
+      pthread_mutex_lock(&ctrl.mutex);
       for ( i=0; i<3; i++ )  log_ctrl.perr[ row*3 +i ] = ctrl.perr[i];
       for ( i=0; i<3; i++ )  log_ctrl.ierr[ row*3 +i ] = ctrl.ierr[i];
       for ( i=0; i<3; i++ )  log_ctrl.derr[ row*3 +i ] = ctrl.derr[i];
       for ( i=0; i<4; i++ )  log_ctrl.cmd [ row*4 +i ] = ctrl.cmd[i];
+      pthread_mutex_unlock(&ctrl.mutex);
       log_ctrl.count++;
     }
 
     return;
-  */
 
   default :
     return;
@@ -952,16 +960,16 @@ static void log_save ( void )  {
     fprintf( datalog.gps, "%s ", &log_gps.msg[row*96] );//  fprintf( fgps, "    " );
     fprintf( datalog.gps, "   " );
   }
+  */
 
   // Controller data
-  for ( row = 0; row < log_ctrl.count; row++ ) {
-    fprintf( datalog.ctrl, "\n %011.6f  %06ld    ", log_ctrl.time[row], log_ctrl.dur[row] );
+  for ( row = 0; row < log_ctrl.count; row++ )  {
+    fprintf( datalog.ctrl, "\n %011.6f   %06ld      ", log_ctrl.time[row], log_ctrl.dur[row] );
     for ( i=0; i<3; i++ )  fprintf( datalog.ctrl, "%07.4f  ",  log_ctrl.perr[ row*3 +i ] );   fprintf( datalog.ctrl, "    " );
     for ( i=0; i<3; i++ )  fprintf( datalog.ctrl, "%07.4f  ",  log_ctrl.ierr[ row*3 +i ] );   fprintf( datalog.ctrl, "    " );
     for ( i=0; i<3; i++ )  fprintf( datalog.ctrl, "%07.4f  ",  log_ctrl.derr[ row*3 +i ] );   fprintf( datalog.ctrl, "    " );
     for ( i=0; i<4; i++ )  fprintf( datalog.ctrl, "%07.4f  ",  log_ctrl.cmd [ row*4 +i ] );   fprintf( datalog.ctrl, "    " );
   }
-  */
 
   return;
 }
@@ -993,7 +1001,7 @@ static void log_close ( void )  {
 
   //fclose(datalog.ekf);
   //fclose(datalog.gps);
-  //fclose(datalog.ctrl);
+  fclose(datalog.ctrl);
 
   return;
 }
