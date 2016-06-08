@@ -19,8 +19,8 @@ int main ( void )  {
   ahrs_init();
   //ekf_init();
   //gps_init();
-  //gcs_init();
   ctrl_init();
+  gcs_init();
   log_init();
   tmr_init();
 
@@ -41,8 +41,8 @@ int main ( void )  {
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   tmr_exit();
   log_exit();
+  gcs_exit();
   ctrl_exit();
-  //gcs_exit();
   //gps_exit();
   //ekf_exit();
   ahrs_exit();

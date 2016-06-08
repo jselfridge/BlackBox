@@ -14,8 +14,8 @@
 #define PRIO_IO     90
 #define PRIO_CTRL   88
 //#define PRIO_GPS    86
-//#define PRIO_GCSTX  84
-//#define PRIO_GCSRX  84
+#define PRIO_GCSTX  84
+#define PRIO_GCSRX  84
 #define PRIO_FLAG   82
 #define PRIO_DEBUG  80
 
@@ -27,15 +27,13 @@
 #define HZ_CTRL        100
 #define HZ_FLAG         20
 //#define HZ_GPS          10
-//#define HZ_GCSTX        10
-//#define HZ_GCSRX        10
+#define HZ_GCSTX        10
+#define HZ_GCSRX        10
 #define HZ_DEBUG        10
 
 
 pthread_mutex_t mutex_i2c1;
 pthread_mutex_t mutex_i2c2;
-//pthread_mutex_t mutex_gps;
-//pthread_mutex_t mutex_gcs;
 
 
 typedef struct timer_struct {
@@ -58,9 +56,9 @@ timer_struct tmr_imu;
 timer_struct tmr_ahrs;
 //timer_struct tmr_ekf;
 //timer_struct tmr_gps;
-//timer_struct tmr_gcstx;
-//timer_struct tmr_gcsrx;
 timer_struct tmr_ctrl;
+timer_struct tmr_gcstx;
+timer_struct tmr_gcsrx;
 timer_struct tmr_debug;
 
 
@@ -83,9 +81,9 @@ void *fcn_imu    (  );
 void *fcn_ahrs   (  );
 //void *fcn_ekf    (  );
 //void *fcn_gps    (  );
-//void *fcn_gcstx  (  );
-//void *fcn_gcsrx  (  );
 void *fcn_ctrl   (  );
+void *fcn_gcstx  (  );
+void *fcn_gcsrx  (  );
 void *fcn_debug  (  );
 
 

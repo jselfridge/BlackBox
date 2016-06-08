@@ -12,7 +12,7 @@
 #include "ctrl.h"
 //#include "ekf.h"
 #include "flag.h"
-//#include "gcs.h"
+#include "gcs.h"
 //#include "gps.h"
 #include "imu.h"
 #include "io.h"

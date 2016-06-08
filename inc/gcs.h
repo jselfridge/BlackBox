@@ -6,7 +6,10 @@
 
 #include <stdbool.h>
 #include <common/mavlink.h>
+#include <sys/types.h>
 
+
+#define GCS_DEBUG        true
 
 #define GCS_SYSID        01
 
@@ -29,17 +32,17 @@
 #define GCS_GPS          70
 #define GCS_GAINS       120
 
-#define GCS_INPUT_ENABLED        true
-#define GCS_OUTPUT_ENABLED       true
+#define GCS_INPUT_ENABLED        false
+#define GCS_OUTPUT_ENABLED       false
 #define GCS_IMUA_RAW_ENABLED     false
 #define GCS_IMUA_SCALED_ENABLED  false
 #define GCS_IMUA_FILTER_ENABLED  false
 #define GCS_IMUB_RAW_ENABLED     false
 #define GCS_IMUB_SCALED_ENABLED  false
 #define GCS_IMUB_FILTER_ENABLED  false
-#define GCS_AHRS_EUL_ENABLED     true
+#define GCS_AHRS_EUL_ENABLED     false
 #define GCS_AHRS_QUAT_ENABLED    false
-#define GCS_GPS_ENABLED          true
+#define GCS_GPS_ENABLED          false
 
 
 enum param_index {
@@ -75,10 +78,10 @@ enum param_index {
   T_tilt,
 
   // Range values
-  X_R,
-  Y_R,
-  Z_R,
-  T_R,
+  X_Range,
+  Y_Range,
+  Z_Range,
+  T_Range,
 
   // Number of elements
   param_count
@@ -93,13 +96,14 @@ typedef struct param_struct {
 param_struct param;
 
 
-// GCS structure
 typedef struct gcs_struct {
   int     fd;
   char    path [16];
   bool    sendhb;
   bool    sendparam;
   bool    sendmission;
+  uint    pause;
+  pthread_mutex_t mutex;
 } gcs_struct;
 gcs_struct gcs;
 

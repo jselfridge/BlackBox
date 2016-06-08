@@ -138,7 +138,7 @@ typedef struct datalog_struct {
   FILE   *accB;
   FILE   *magB;
   FILE   *ahrsB;
-  FILE   *ekf;
+  //FILE   *ekf;
   //FILE   *gps;
   FILE   *ctrl;
 } datalog_struct;

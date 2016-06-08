@@ -349,8 +349,8 @@ void log_start ( void )  {
   sprintf( file, "%sparam.txt", datalog.path );
   datalog.param = fopen( file, "w" );
   if( datalog.param == NULL )  printf( "Error (log_init): Cannot generate 'param' file. \n" );
-  fprintf( datalog.param, "   ParamTime  " );
-  for ( i=1; i <= param_count; i++ )  fprintf( datalog.param, "    Param_%02d", i );
+  fprintf( datalog.param, "   ParamTime   " );
+  for ( i=1; i <= param_count; i++ )  fprintf( datalog.param, "   Param_%02d", i );
 
   // Input datalog file
   sprintf( file, "%sinput.txt", datalog.path );
@@ -529,27 +529,27 @@ void log_record ( enum log_index index )  {
   ushort i;
   ulong  row;
   float  timestamp;
+  struct timespec t;
 
   // Jump to appropriate log 
   switch(index) {
 
   // Record parameter values
   case LOG_PARAM :
-    /*
+
     // Determine timestamp
-    struct timespec t;
     clock_gettime( CLOCK_MONOTONIC, &t );
     timestamp = (float) ( t.tv_sec + ( t.tv_nsec / 1000000000.0f ) ) - datalog.offset;
 
-    pthread_mutex_lock(&mutex_gcs);
+    pthread_mutex_lock(&gcs.mutex);
     if ( log_param.count < log_param.limit )  {
       row = log_param.count;
       log_param.time[row] = timestamp;
       for ( i=0; i < param_count; i++ )  log_param.values [ row * param_count + i ] = param.val[i];
       log_param.count++;
     }
-    pthread_mutex_unlock(&mutex_gcs);
-    */
+    pthread_mutex_unlock(&gcs.mutex);
+
     return;
 
   // Record system input/output data
@@ -833,12 +833,12 @@ static void log_save ( void )  {
   ushort i;
   ulong  row;
 
-  /*  // Parameter data
+  // Parameter data
   for ( row = 0; row < log_param.count; row++ )  {
-    fprintf( datalog.param, "\n %011.6f    ", log_param.time[row] );
-    for ( i=0; i < param_count; i++ )  fprintf( datalog.param, "%9.4f  ", log_param.values [ row * param_count + i ] );
+    fprintf( datalog.param, "\n %011.6f     ", log_param.time[row] );
+    for ( i=0; i < param_count; i++ )  fprintf( datalog.param, "%09.4f  ", log_param.values [ row * param_count + i ] );
   }
-  */
+
   // Input data
   for ( row = 0; row < log_input.count; row++ ) {
     fprintf( datalog.in, "\n %011.6f    ", log_input.time[row] );

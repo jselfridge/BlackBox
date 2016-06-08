@@ -51,11 +51,10 @@ void tmr_mutex ( void )  {
   pthread_mutex_init( &magB.mutex,   NULL );
   pthread_mutex_init( &ahrsB.mutex,  NULL );
   pthread_mutex_init( &ctrl.mutex,   NULL );
+  pthread_mutex_init( &gcs.mutex,    NULL );
 
   //pthread_mutex_init( &ekf.mutex,    NULL );
   //pthread_mutex_init( &mutex_gps,    NULL );
-  //pthread_mutex_init( &mutex_gcs,    NULL );
-
 
   return;
 }
@@ -98,20 +97,20 @@ void tmr_setup ( void )  {
   //tmr_gps.prio = PRIO_GPS;
   //tmr_gps.per  = 1000000 / HZ_GPS;
 
-  // GCSTX timer
-  //tmr_gcstx.name = "gcstx";
-  //tmr_gcstx.prio = PRIO_GCSTX;
-  //tmr_gcstx.per  = 1000000 / HZ_GCSTX;
-
-  // GCSRX timer
-  //tmr_gcsrx.name = "gcsrx";
-  //tmr_gcsrx.prio = PRIO_GCSRX;
-  //tmr_gcsrx.per  = 1000000 / HZ_GCSRX;
-
   // Control timer
   tmr_ctrl.name = "ctrl";
   tmr_ctrl.prio = PRIO_CTRL;
   tmr_ctrl.per  = 1000000 / HZ_CTRL;
+
+  // GCSTX timer
+  tmr_gcstx.name = "gcstx";
+  tmr_gcstx.prio = PRIO_GCSTX;
+  tmr_gcstx.per  = 1000000 / HZ_GCSTX;
+
+  // GCSRX timer
+  tmr_gcsrx.name = "gcsrx";
+  tmr_gcsrx.prio = PRIO_GCSRX;
+  tmr_gcsrx.per  = 1000000 / HZ_GCSRX;
 
   // Debugging timer
   tmr_debug.name = "debug";
@@ -166,11 +165,11 @@ void tmr_begin ( pthread_attr_t *attr )  {
   tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);
   tmr_thread( &tmr_ahrs,  attr, fcn_ahrs  );  usleep(100000);
   //tmr_thread( &tmr_ekf,   attr, fcn_ekf   );  usleep(100000);
-
   //tmr_thread( &tmr_gps,   attr, fcn_gps   );  usleep(100000);
-  //tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
-  //tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(100000);
+
   tmr_thread( &tmr_ctrl,  attr, fcn_ctrl  );  usleep(100000);
+  tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
+  tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(100000);
 
   if(DEBUG) {
     tmr_thread( &tmr_debug, attr, fcn_debug );
@@ -202,16 +201,11 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&magB.mutex);
   pthread_mutex_destroy(&ahrsB.mutex);
   pthread_mutex_destroy(&ctrl.mutex);
+  pthread_mutex_destroy(&gcs.mutex);
 
   //pthread_mutex_destroy(&ekf.mutex);
   //pthread_mutex_destroy(&mutex_gps);
-  //pthread_mutex_destroy(&mutex_gcs);
 
-  // Exit control thread
-  if( pthread_join ( tmr_ctrl.id, NULL ) )
-    printf( "Error (tmr_exit): Failed to exit 'ctrl' thread. \n" );
-  if(DEBUG)  printf( "ctrl " );
-  /*
   // Exit GCSRX thread
   if( pthread_join ( tmr_gcsrx.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gcsrx' thread. \n" );
@@ -222,16 +216,23 @@ void tmr_exit ( void )  {
     printf( "Error (tmr_exit): Failed to exit 'gcstx' thread. \n" );
   if(DEBUG)  printf( "gcstx " );
 
-  // Exit GPS thread
+  // Exit control thread
+  if( pthread_join ( tmr_ctrl.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'ctrl' thread. \n" );
+  if(DEBUG)  printf( "ctrl " );
+
+  /*// Exit GPS thread
   if( pthread_join ( tmr_gps.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gps' thread. \n" );
   if(DEBUG)  printf( "gps " );
+  */
 
-  // Exit EKF thread
+  /*// Exit EKF thread
   if( pthread_join ( tmr_ekf.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ekf' thread. \n" );
-  if(DEBUG)  printf( "ekf " );
+  if(DEBUG)  printf( "ekf " ); 
   */
+
   // Exit AHRS thread
   if( pthread_join ( tmr_ahrs.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ahrs' thread. \n" );
@@ -504,40 +505,6 @@ void *fcn_ahrs (  )  {
 */
 
 /**
- *  fcn_gcstx
- *  Function handler for the GCS transmission timing thread.
- */
-/*void *fcn_gcstx (  )  {
-  tmr_create(&tmr_gcstx);
-  while (running) {
-    tmr_start(&tmr_gcstx);
-    gcs_tx();
-    tmr_finish(&tmr_gcstx);
-    tmr_pause(&tmr_gcstx);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
-*/
-
-/**
- *  fcn_gcsrx
- *  Function handler for the GCS receiver timing thread.
- */
-/*void *fcn_gcsrx (  )  {
-  tmr_create(&tmr_gcsrx);
-  while (running) {
-    tmr_start(&tmr_gcsrx);
-    gcs_rx();
-    tmr_finish(&tmr_gcsrx);
-    tmr_pause(&tmr_gcsrx);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
-*/
-
-/**
  *  fcn_ctrl
  *  Function handler for the control law timing thread.
  */
@@ -549,6 +516,40 @@ void *fcn_ctrl (  )  {
     tmr_finish(&tmr_ctrl);
     if (datalog.enabled)  log_record(LOG_CTRL);
     tmr_pause(&tmr_ctrl);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+
+/**
+ *  fcn_gcstx
+ *  Function handler for the GCS transmission timing thread.
+ */
+void *fcn_gcstx (  )  {
+  tmr_create(&tmr_gcstx);
+  while (running) {
+    tmr_start(&tmr_gcstx);
+    gcs_tx();
+    tmr_finish(&tmr_gcstx);
+    tmr_pause(&tmr_gcstx);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+
+/**
+ *  fcn_gcsrx
+ *  Function handler for the GCS receiver timing thread.
+ */
+void *fcn_gcsrx (  )  {
+  tmr_create(&tmr_gcsrx);
+  while (running) {
+    tmr_start(&tmr_gcsrx);
+    gcs_rx();
+    tmr_finish(&tmr_gcsrx);
+    tmr_pause(&tmr_gcsrx);
   }
   pthread_exit(NULL);
   return NULL;

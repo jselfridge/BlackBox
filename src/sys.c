@@ -27,8 +27,8 @@ static void sys_imu   ( void );
 static void sys_ahrs  ( void );
 static void sys_ekf   ( void );
 static void sys_gps   ( void );
-static void sys_gcs   ( void );
 static void sys_ctrl  ( void );
+static void sys_gcs   ( void );
 
 
 /**
@@ -354,16 +354,6 @@ static void sys_gps ( void )  {
 
 
 /**
- *  sys_gcs
- *  Prints ground control debugging messages to the terminal.
- */
-static void sys_gcs ( void )  {
-  // Add code as needed...
-  return;
-}
-
-
-/**
  *  sys_ctrl
  *  Prints controller values to the terminal.
  */
@@ -374,20 +364,30 @@ static void sys_ctrl ( void )  {
 
   // Control signals
   pthread_mutex_lock(&ctrl.mutex);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.pgain[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.igain[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.dgain[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.pgain[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.igain[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.dgain[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.thrl[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.range[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.perr[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.ierr[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.derr[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.cmd[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.cmd[i]  );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", ctrl.bank    *(180.0/PI) );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", ctrl.climb   *(180.0/PI) );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", ctrl.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&ctrl.mutex);
 
+  return;
+}
+
+
+/**
+ *  sys_gcs
+ *  Prints ground control debugging messages to the terminal.
+ */
+static void sys_gcs ( void )  {
+  // Add code as needed...
   return;
 }
 
