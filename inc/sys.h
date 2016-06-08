@@ -13,7 +13,7 @@
 #define SYS_LPF     false
 #define SYS_IMU     false
 #define SYS_AHRS    false
-#define SYS_EKF     true
+#define SYS_EKF     false
 #define SYS_GPS     false
 #define SYS_GCS     false
 #define SYS_CTRL    false

@@ -8,8 +8,8 @@
 
 
 #define EKF_ENABLED true
-#define EKF_N   6
-#define EKF_M  12
+#define EKF_N   2
+#define EKF_M   4
 
 
 typedef struct ekf_struct {

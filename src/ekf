@@ -86,45 +86,52 @@ void ekf_init ( void )  {
   for ( i=0; i<nm; i++ )  ekf.K[i] = 0.0;
 
   // Assign plant covariance values (WIP: pull from file with error checking)
-  ekf.Q[ 0] = 0.01;
-  ekf.Q[ 7] = 0.01;
-  ekf.Q[14] = 0.01;
-  ekf.Q[21] = 0.01;
-  ekf.Q[28] = 0.01;
-  ekf.Q[35] = 0.01;
+  ekf.Q[0] = 0.01;
+  ekf.Q[3] = 0.01;
+  //ekf.Q[ 0] = 0.01;
+  //ekf.Q[ 7] = 0.01;
+  //ekf.Q[14] = 0.01;
+  //ekf.Q[21] = 0.01;
+  //ekf.Q[28] = 0.01;
+  //ekf.Q[35] = 0.01;
 
   // Assign measurement covariance values (WIP: pull from file with error checking)
-  ekf.R[ 0] = 0.01;
-  ekf.R[ 7] = 0.01;
-  ekf.R[14] = 0.01;
-  ekf.R[21] = 0.01;
-  ekf.R[28] = 0.01;
-  ekf.R[35] = 0.01;
+  ekf.R[0] = 0.01;
+  ekf.R[3] = 0.01;
+  //ekf.R[ 0] = 0.01;
+  //ekf.R[ 7] = 0.01;
+  //ekf.R[14] = 0.01;
+  //ekf.R[21] = 0.01;
+  //ekf.R[28] = 0.01;
+  //ekf.R[35] = 0.01;
 
   // Static F matrix
   // WIP: Adaptively updated from MRAC or L1
   // WIP: Add acceleration state?
   double dt  = 1.0 / HZ_EKF;
-  ekf.F[ 0] = 1.0;  ekf.F[ 3] = dt;
-  ekf.F[ 7] = 1.0;  ekf.F[10] = dt;
-  ekf.F[14] = 1.0;  ekf.F[17] = dt;
-  ekf.F[21] = 1.0;
-  ekf.F[28] = 1.0;
-  ekf.F[35] = 1.0;
+  ekf.F[0] = 1.0;  ekf.F[1] = dt;  ekf.F[3] = 1.0;
+  //ekf.F[ 0] = 1.0;  ekf.F[ 3] = dt;
+  //ekf.F[ 7] = 1.0;  ekf.F[10] = dt;
+  //ekf.F[14] = 1.0;  ekf.F[17] = dt;
+  //ekf.F[21] = 1.0;
+  //ekf.F[28] = 1.0;
+  //ekf.F[35] = 1.0;
 
   // Static H matrix (WIP: adaptively updated from MRAC or L1)
-  ekf.H[ 0] = 1.0;
-  ekf.H[ 6] = 1.0;
-  ekf.H[13] = 1.0;
-  ekf.H[19] = 1.0;
-  ekf.H[26] = 1.0;
-  ekf.H[32] = 1.0;
-  ekf.H[39] = 1.0;
-  ekf.H[45] = 1.0;
-  ekf.H[52] = 1.0;
-  ekf.H[58] = 1.0;
-  ekf.H[65] = 1.0;
-  ekf.H[71] = 1.0;
+  ekf.H[0] = 1.0;
+  ekf.H[3] = 1.0;
+  //ekf.H[ 0] = 1.0;
+  //ekf.H[ 6] = 1.0;
+  //ekf.H[13] = 1.0;
+  //ekf.H[19] = 1.0;
+  //ekf.H[26] = 1.0;
+  //ekf.H[32] = 1.0;
+  //ekf.H[39] = 1.0;
+  //ekf.H[45] = 1.0;
+  //ekf.H[52] = 1.0;
+  //ekf.H[58] = 1.0;
+  //ekf.H[65] = 1.0;
+  //ekf.H[71] = 1.0;
 
   // Display EKF settings
   if (DEBUG) {
@@ -204,16 +211,16 @@ int ekf_update ( void )  {
 
   // Obtain AHRSA measurements
   pthread_mutex_lock(&ahrsA.mutex);
-  z[ 0] = ahrsA.eul[0];  z[ 6] = ahrsA.deul[0];
-  z[ 2] = ahrsA.eul[1];  z[ 8] = ahrsA.deul[1];
-  z[ 4] = ahrsA.eul[2];  z[10] = ahrsA.deul[2];
+  z[ 0] = ahrsA.eul[0];  z[ 2] = ahrsA.deul[0];
+  //z[ 2] = ahrsA.eul[1];  z[ 8] = ahrsA.deul[1];
+  //z[ 4] = ahrsA.eul[2];  z[10] = ahrsA.deul[2];
   pthread_mutex_unlock(&ahrsA.mutex);
 
   // Obtain AHRSB measurements
   pthread_mutex_lock(&ahrsB.mutex);
-  z[ 1] = ahrsB.eul[0];  z[ 7] = ahrsB.deul[0];
-  z[ 3] = ahrsB.eul[1];  z[ 9] = ahrsB.deul[1];
-  z[ 5] = ahrsB.eul[2];  z[11] = ahrsB.deul[2];
+  z[ 1] = ahrsB.eul[0];  z[ 3] = ahrsB.deul[0];
+  //z[ 3] = ahrsB.eul[1];  z[ 9] = ahrsB.deul[1];
+  //z[ 5] = ahrsB.eul[2];  z[11] = ahrsB.deul[2];
   pthread_mutex_unlock(&ahrsB.mutex);
 
   // Evaluate derivatives
