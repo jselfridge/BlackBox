@@ -9,7 +9,7 @@
 #include <sys/types.h>
 
 
-#define GCS_DEBUG        true
+#define GCS_DEBUG        false
 
 #define GCS_SYSID        01
 
@@ -32,8 +32,8 @@
 #define GCS_GPS          70
 #define GCS_GAINS       120
 
-#define GCS_INPUT_ENABLED        false
-#define GCS_OUTPUT_ENABLED       false
+#define GCS_INPUT_ENABLED        true
+#define GCS_OUTPUT_ENABLED       true
 #define GCS_IMUA_RAW_ENABLED     false
 #define GCS_IMUA_SCALED_ENABLED  false
 #define GCS_IMUA_FILTER_ENABLED  false

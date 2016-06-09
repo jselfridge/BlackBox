@@ -176,10 +176,10 @@ void ctrl_quad ( void )  {
   // Calculate reference signals
   for ( ch=0; ch<4; ch++ )  ref[ch] = in[ch] * ctrl.range[ch];
 
-  // Determine desired heading
-  if ( in[CH_T] > -0.9 && fabs(in[CH_Y]) > 0.15 )  heading += ref[CH_Y] * ctrl.dt;
-  while ( heading >   M_PI )  heading -= 2.0 * M_PI;
-  while ( heading <= -M_PI )  heading += 2.0 * M_PI;
+  // Determine desired heading (commented for bench testing) 
+  //if ( in[CH_T] > -0.9 && fabs(in[CH_Y]) > 0.15 )  heading += ref[CH_Y] * ctrl.dt;
+  //while ( heading >   M_PI )  heading -= 2.0 * M_PI;
+  //while ( heading <= -M_PI )  heading += 2.0 * M_PI;
 
   // Determine roll (X) adjustment
   perr[x] = -eul[x] + ref[CH_R];
@@ -201,10 +201,11 @@ void ctrl_quad ( void )  {
            ierr[y] * ctrl.igain[y] + 
            derr[y] * ctrl.dgain[y];
 
-  // Determine yaw (Z) adjustment
-  perr[z] = -eul[z] + heading;
-  while ( perr[z] >   M_PI )  heading -= 2.0 * M_PI;
-  while ( perr[z] <= -M_PI )  heading += 2.0 * M_PI;
+  // Determine yaw (Z) adjustment (commented for bench testing)
+  perr[z] = ref[CH_Y];  //---  DEBUGGING VALUE  ---//
+  //perr[z] = -eul[z] + heading;
+  //while ( perr[z] >   M_PI )  heading -= 2.0 * M_PI;
+  //while ( perr[z] <= -M_PI )  heading += 2.0 * M_PI;
   derr[z] = -ang[z];
   reset = ( in[CH_Y] < -IRESET || in[CH_Y] > IRESET );
   if (reset)  ierr[z] = 0.0; 

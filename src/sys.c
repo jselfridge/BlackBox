@@ -156,13 +156,14 @@ static void sys_io ( void )  {
   pthread_mutex_unlock(&input.mutex);
 
   // Output signals
-  //pthread_mutex_lock(&mutex_output);
+  pthread_mutex_lock(&output.mutex);
   //for ( i=0; i<4; i++ )  printf("%5d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%4d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<6; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
-  //pthread_mutex_unlock(&mutex_output);
+  for ( i=0; i<4; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&output.mutex);
 
   // Quadrotor output signals
+  /*
   pthread_mutex_lock(&output.mutex);
   printf("%5.2f ", output.norm[0] );
   printf("%5.2f ", output.norm[1] );
@@ -170,6 +171,7 @@ static void sys_io ( void )  {
   printf("%5.2f ", output.norm[5] );
   printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&output.mutex);
+  */
 
   return;
 }
