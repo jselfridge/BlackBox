@@ -241,7 +241,7 @@ void ctrl_quad ( void )  {
     ctrl.derr[ch] = derr[ch];
   }
   for ( ch=0; ch<4; ch++ )  ctrl.cmd[ch] = cmd[ch];
-  ctrl.heading = heading;
+  //ctrl.heading = heading;
   pthread_mutex_unlock(&ctrl.mutex);
 
   // Push system outputs
