@@ -26,26 +26,26 @@
 #define QUAD_FL       2
 #define QUAD_BR       3
 
-#define QUAD_X_RANGE  0.50
-#define QUAD_Y_RANGE  0.50
-#define QUAD_Z_RANGE  1.50
-#define QUAD_T_RANGE  0.00
+#define QUAD_X_RANGE  0.25
+#define QUAD_Y_RANGE  0.25
+#define QUAD_Z_RANGE  0.75
+#define QUAD_T_RANGE  0.50
 
 #define QUAD_TMIN     0.00
-#define QUAD_TMAX     0.00
+#define QUAD_TMAX     0.30
 #define QUAD_TILT     0.00
 
-#define QUAD_PX       0.00
-#define QUAD_PY       0.00
-#define QUAD_PZ       0.00
+#define QUAD_PX       0.50
+#define QUAD_PY       0.50
+#define QUAD_PZ       0.25
 
 #define QUAD_IX       0.00
 #define QUAD_IY       0.00
 #define QUAD_IZ       0.00
 
-#define QUAD_DX       0.00
-#define QUAD_DY       0.00
-#define QUAD_DZ       0.00
+#define QUAD_DX       0.20
+#define QUAD_DY       0.20
+#define QUAD_DZ       0.10
 
 /*
 #define PLANE_OFF0    0.0
