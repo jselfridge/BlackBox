@@ -8,14 +8,16 @@
 
 
 // Move to a file
-#define LPF_FREQ_GYR  3.0
-#define LPF_FREQ_ACC  1.0
-#define LPF_FREQ_MAG  1.0
+// GYR 3  ACC 1  MAG 1
+#define LPF_FREQ_GYR  0.0
+#define LPF_FREQ_ACC  0.0
+#define LPF_FREQ_MAG  0.0
 
 // Move to a file
-#define LPF_HIST_GYR  100
-#define LPF_HIST_ACC  300
-#define LPF_HIST_MAG  300
+// GYR 100  ACC 300  MAG 300
+#define LPF_HIST_GYR  1
+#define LPF_HIST_ACC  1
+#define LPF_HIST_MAG  1
 
 
 typedef struct lpf_struct {

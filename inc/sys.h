@@ -8,8 +8,8 @@
 #include <stdbool.h>
 
 
-#define DEBUG       false
-#define SYS_IO      false
+#define DEBUG       true
+#define SYS_IO      true
 #define SYS_LPF     false
 #define SYS_IMU     false
 #define SYS_AHRS    false

@@ -10,9 +10,9 @@
 #include <unistd.h>
 #include "ahrs.h"
 #include "ctrl.h"
-#include "ekf.h"
+//#include "ekf.h"
 #include "flag.h"
-#include "gps.h"
+//#include "gps.h"
 #include "imu.h"
 #include "io.h"
 #include "led.h"
@@ -25,8 +25,8 @@ static void sys_io    ( void );
 static void sys_lpf   ( void );
 static void sys_imu   ( void );
 static void sys_ahrs  ( void );
-static void sys_ekf   ( void );
-static void sys_gps   ( void );
+//static void sys_ekf   ( void );
+//static void sys_gps   ( void );
 static void sys_ctrl  ( void );
 static void sys_gcs   ( void );
 
@@ -87,7 +87,7 @@ void sys_exit ( void )  {
   if(DEBUG)  printf("Program complete \n");
   if( sigaction( SIGINT, &sys_signal, NULL ) == -1 )
     printf( "Error (sys_exit): Function 'sigaction' failed. \n" );
-  if(!DEBUG)  system("shutdown -h now");
+  //if(!DEBUG)  system("shutdown -h now");
   kill( 0, SIGINT );
   return;
 }
@@ -127,8 +127,8 @@ void sys_update ( void )  {
   if(SYS_LPF)    sys_lpf();
   if(SYS_IMU)    sys_imu();
   if(SYS_AHRS)   sys_ahrs();
-  if(SYS_EKF)    sys_ekf();
-  if(SYS_GPS)    sys_gps();
+  //if(SYS_EKF)    sys_ekf();
+  //if(SYS_GPS)    sys_gps();
   if(SYS_GCS)    sys_gcs();
   if(SYS_CTRL)   sys_ctrl();
 
@@ -291,7 +291,7 @@ static void sys_ahrs ( void )  {
   //for ( i=0; i<4; i++ )  printf("%7.4f ", ahrsA.quat[i]  );              printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%7.4f ", ahrsA.dquat[i] );              printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsA.eul[i]  * (180.0/PI) );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsA.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsA.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&ahrsA.mutex);
   }
 
@@ -301,7 +301,7 @@ static void sys_ahrs ( void )  {
   //for ( i=0; i<4; i++ )  printf("%7.4f ", ahrsB.quat[i]  );              printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%7.4f ", ahrsB.dquat[i] );              printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsB.eul[i]  * (180.0/PI) );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsB.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsB.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&ahrsB.mutex);
   }
 
@@ -313,7 +313,7 @@ static void sys_ahrs ( void )  {
  *  sys_ekf
  *  Prints EKF debugging messages to the terminal.
  */
-static void sys_ekf ( void )  {
+//static void sys_ekf ( void )  {
 
   // Loop counter
   //ushort i;
@@ -330,15 +330,15 @@ static void sys_ekf ( void )  {
   //for ( i=0; i<3; i++ )  printf("%7.2f ", ekf.x[i+6] * (180.0/PI) );  printf("   ");  fflush(stdout);
   //pthread_mutex_unlock(&ekf.mutex);
 
-  return;
-}
+//  return;
+//}
 
 
 /**
  *  sys_gps
  *  Prints GPS debugging messages to the terminal.
  */
-static void sys_gps ( void )  {
+//static void sys_gps ( void )  {
   /*
   pthread_mutex_lock(&mutex_gps);
   printf("GPS msg:    %s ", gps.msg );  printf("   ");  fflush(stdout);
@@ -351,8 +351,8 @@ static void sys_gps ( void )  {
   //fflush(stdout);
   pthread_mutex_unlock(&mutex_gps);
   */
-  return;
-}
+//  return;
+//}
 
 
 /**

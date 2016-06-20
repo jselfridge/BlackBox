@@ -136,26 +136,26 @@ void ctrl_quad ( void )  {
   bool reset;
   ushort ch;
   ushort x=0, y=1, z=2, t=3;
-  double eul[3], ang[3], in[4], ref[4], cmd[4], out[4];
+  double eul[3], deul[3], in[4], ref[4], cmd[4], out[4];
   double trange, tmin, tmax, tilt, heading, dial;
   static double perr[3] = { 0.0, 0.0, 0.0 };
   static double ierr[3] = { 0.0, 0.0, 0.0 };
   static double derr[3] = { 0.0, 0.0, 0.0 };
 
   // Obtain states
-  for ( ch=0; ch<3; ch++ )  {  eul[ch] = 0.0;  ang[ch] = 0.0;  }
+  for ( ch=0; ch<3; ch++ )  {  eul[ch] = 0.0;  deul[ch] = 0.0;  }
   if (IMUA_ENABLED)  {
     pthread_mutex_lock(&ahrsA.mutex);
-    for ( ch=0; ch<3; ch++ )  {  eul[ch] += ahrsA.eul[ch];  ang[ch] += ahrsA.deul[ch];  }
+    for ( ch=0; ch<3; ch++ )  {  eul[ch] += ahrsA.eul[ch];  deul[ch] += ahrsA.deul[ch];  }
     pthread_mutex_unlock(&ahrsA.mutex);
   }
   if (IMUB_ENABLED)  {
     pthread_mutex_lock(&ahrsB.mutex);
-    for ( ch=0; ch<3; ch++ )  {  eul[ch] += ahrsB.eul[ch];  ang[ch] += ahrsB.deul[ch];  }
+    for ( ch=0; ch<3; ch++ )  {  eul[ch] += ahrsB.eul[ch];  deul[ch] += ahrsB.deul[ch];  }
     pthread_mutex_unlock(&ahrsB.mutex);
   }
   if ( IMUA_ENABLED && IMUB_ENABLED )  {
-    for ( ch=0; ch<3; ch++ )  {  eul[ch] /= 2.0;  ang[ch] /= 2.0;  }
+    for ( ch=0; ch<3; ch++ )  {  eul[ch] /= 2.0;  deul[ch] /= 2.0;  }
   }
 
   // Obtain inputs
@@ -176,14 +176,14 @@ void ctrl_quad ( void )  {
   // Calculate reference signals
   for ( ch=0; ch<4; ch++ )  ref[ch] = in[ch] * ctrl.range[ch];
 
-  // Determine desired heading (commented for bench testing) 
-  //if ( in[CH_T] > -0.9 && fabs(in[CH_Y]) > 0.15 )  heading += ref[CH_Y] * ctrl.dt;
-  //while ( heading >   M_PI )  heading -= 2.0 * M_PI;
-  //while ( heading <= -M_PI )  heading += 2.0 * M_PI;
+  // Determine desired heading
+  if ( in[CH_T] > -0.9 && fabs(in[CH_Y]) > 0.1 )  heading += ref[CH_Y] * ctrl.dt;
+  while ( heading >   M_PI )  heading -= 2.0 * M_PI;
+  while ( heading <= -M_PI )  heading += 2.0 * M_PI;
 
   // Determine roll (X) adjustment
   perr[x] = -eul[x] + ref[CH_R];
-  derr[x] = -ang[x];
+  derr[x] = -deul[x];
   reset = ( in[CH_R] < -IRESET || in[CH_R] > IRESET );
   if (reset)  ierr[x] = 0.0;
   else        ierr[x] += perr[x] * ctrl.dt;
@@ -193,7 +193,7 @@ void ctrl_quad ( void )  {
 
   // Determine pitch (Y) adjustment
   perr[y] = -eul[y] + ref[CH_P];
-  derr[y] = -ang[y];
+  derr[y] = -deul[y];
   reset = ( in[CH_P] < -IRESET || in[CH_P] > IRESET );
   if (reset)  ierr[y] = 0.0; 
   else        ierr[y] += perr[y] * ctrl.dt;
@@ -201,12 +201,12 @@ void ctrl_quad ( void )  {
            ierr[y] * ctrl.igain[y] + 
            derr[y] * ctrl.dgain[y];
 
-  // Determine yaw (Z) adjustment (commented for bench testing)
-  perr[z] = ref[CH_Y];  //---  DEBUGGING VALUE  ---//
-  //perr[z] = -eul[z] + heading;
-  //while ( perr[z] >   M_PI )  heading -= 2.0 * M_PI;
-  //while ( perr[z] <= -M_PI )  heading += 2.0 * M_PI;
-  derr[z] = -ang[z];
+  // Determine yaw (Z) adjustment
+  //perr[z] = ref[CH_Y];  //---  DEBUGGING VALUE  ---//
+  perr[z] = -eul[z] + heading;
+  while ( perr[z] >   M_PI )  heading -= 2.0 * M_PI;
+  while ( perr[z] <= -M_PI )  heading += 2.0 * M_PI;
+  derr[z] = -deul[z];
   reset = ( in[CH_Y] < -IRESET || in[CH_Y] > IRESET );
   if (reset)  ierr[z] = 0.0; 
   else        ierr[z] += perr[z] * ctrl.dt;
@@ -241,7 +241,7 @@ void ctrl_quad ( void )  {
     ctrl.derr[ch] = derr[ch];
   }
   for ( ch=0; ch<4; ch++ )  ctrl.cmd[ch] = cmd[ch];
-  //ctrl.heading = heading;
+  ctrl.heading = heading;
   pthread_mutex_unlock(&ctrl.mutex);
 
   // Push system outputs

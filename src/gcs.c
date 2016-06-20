@@ -30,7 +30,7 @@ static void  gcs_imuA_filter  ( void );
 static void  gcs_imuB_raw     ( void );
 static void  gcs_imuB_scaled  ( void );
 static void  gcs_imuB_filter  ( void );
-//static void  gcs_ahrs_eul     ( void );
+static void  gcs_ahrs_eul     ( void );
 //static void  gcs_ahrs_quat    ( void );
 //static void  gcs_gps          ( void );
 
@@ -168,7 +168,7 @@ void gcs_tx ( void)  {
   }
 
   // Send attitude/heading data
-  //if (GCS_AHRS_EUL_ENABLED)       gcs_ahrs_eul();
+  if (GCS_AHRS_EUL_ENABLED)       gcs_ahrs_eul();
   //if (GCS_AHRS_QUAT_ENABLED)      gcs_ahrs_quat();
 
   // Send GPS data
@@ -764,7 +764,7 @@ static void gcs_imuA_filter ( void )  {
   pthread_mutex_lock(&gcs.mutex);
   int w = write( gcs.fd, buf, len );
   usleep( w * gcs.pause );
-  pthread_mutex_lock(&gcs.mutex);
+  pthread_mutex_unlock(&gcs.mutex);
 
   return;
 }
@@ -933,7 +933,7 @@ static void gcs_imuB_filter ( void )  {
  *  gcs_ahrs_eul
  *  Sends the Euler attitude representation.
  */
-/*static void gcs_ahrs_eul ( void )  {
+static void gcs_ahrs_eul ( void )  {
 
   // Initialize the required buffers
   mavlink_message_t msg;
@@ -945,14 +945,14 @@ static void gcs_imuB_filter ( void )  {
 
   // Collect the data
   uint32_t time_boot_ms = 0;
-  pthread_mutex_lock(&ahrs.mutex);
-  float roll       = (float) ahrs.eul[0];
-  float pitch      = (float) ahrs.eul[1];
-  float yaw        = (float) ahrs.eul[2];
-  float rollspeed  = (float) ahrs.ang[0];
-  float pitchspeed = (float) ahrs.ang[1];
-  float yawspeed   = (float) ahrs.ang[2];
-  pthread_mutex_unlock(&ahrs.mutex);
+  pthread_mutex_lock(&ahrsA.mutex);
+  float roll       = (float) ahrsA.eul[0];
+  float pitch      = (float) ahrsA.eul[1];
+  float yaw        = (float) ahrsA.eul[2];
+  float rollspeed  = (float) ahrsA.deul[0];
+  float pitchspeed = (float) ahrsA.deul[1];
+  float yawspeed   = (float) ahrsA.deul[2];
+  pthread_mutex_unlock(&ahrsA.mutex);
 
   // Pack the attitude message 
   mavlink_msg_attitude_pack ( 
@@ -972,7 +972,7 @@ static void gcs_imuB_filter ( void )  {
 
   return;
 }
-*/
+
 
 /**
  *  gcs_ahrs_quat
