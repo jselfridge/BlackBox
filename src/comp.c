@@ -55,18 +55,62 @@ void comp_update ( void )  {
   P     = comp.pitch;
   pthread_mutex_unlock(&comp.mutex);
 
-  // Obtain gyr data
-  pthread_mutex_lock(&gyrA.mutex);
-  gR = gyrA.scaled[0];
-  gP = gyrA.scaled[1];
-  pthread_mutex_unlock(&gyrA.mutex);
+  // Zero out gyr values
+  gR = 0.0;
+  gP = 0.0;
 
-  // Obtain acc data
-  pthread_mutex_lock(&accA.mutex);
-  ax =  accA.scaled[0];
-  ay = -accA.scaled[1];
-  az = -accA.scaled[2];
-  pthread_mutex_unlock(&accA.mutex);
+  // Obtain gyrA data
+  if(IMUA_ENABLED)  {
+    pthread_mutex_lock(&gyrA.mutex);
+    gR += gyrA.scaled[0];
+    gP += gyrA.scaled[1];
+    pthread_mutex_unlock(&gyrA.mutex);
+  }
+
+  // Obtain gyrB data
+  if(IMUB_ENABLED)  {
+    pthread_mutex_lock(&gyrB.mutex);
+    gR += gyrB.scaled[0];
+    gP += gyrB.scaled[1];
+    pthread_mutex_unlock(&gyrB.mutex);
+  }
+
+  // Average gyr data
+  if ( IMUA_ENABLED && IMUB_ENABLED )  {
+    gR /= 2.0;
+    gP /= 2.0;
+  }
+
+  // Zero out acc values
+  ax = 0.0;
+  ay = 0.0;
+  az = 0.0;
+
+  // Obtain accA data
+  if (IMUA_ENABLED)  {
+    pthread_mutex_lock(&accA.mutex);
+    ax +=  accA.scaled[0];
+    ay += -accA.scaled[1];
+    az += -accA.scaled[2];
+    pthread_mutex_unlock(&accA.mutex);
+  }
+
+  // Obtain accB data
+  if (IMUB_ENABLED)  {
+    pthread_mutex_lock(&accB.mutex);
+    ax +=  accB.scaled[0];
+    ay += -accB.scaled[1];
+    az += -accB.scaled[2];
+    pthread_mutex_unlock(&accB.mutex);
+  }
+
+  // Average acc data
+  if ( IMUA_ENABLED && IMUB_ENABLED )  {
+    ax /= 2.0;
+    ay /= 2.0;
+    az /= 2.0;
+  }
+  
 
   // Calculate accelerometer angle
   aR = atan2(ay,az);
@@ -81,7 +125,6 @@ void comp_update ( void )  {
   comp.roll  = R;
   comp.pitch = P;
   pthread_mutex_unlock(&comp.mutex);
-
 
   return;
 }
