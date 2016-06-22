@@ -8,8 +8,9 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <unistd.h>
-#include "ahrs.h"
+//#include "ahrs.h"
 #include "ctrl.h"
+#include "comp.h"
 //#include "ekf.h"
 #include "flag.h"
 //#include "gps.h"
@@ -24,7 +25,8 @@
 static void sys_io    ( void );
 static void sys_lpf   ( void );
 static void sys_imu   ( void );
-static void sys_ahrs  ( void );
+static void sys_comp  ( void );
+//static void sys_ahrs  ( void );
 //static void sys_ekf   ( void );
 //static void sys_gps   ( void );
 static void sys_ctrl  ( void );
@@ -126,7 +128,8 @@ void sys_update ( void )  {
   if(SYS_IO)     sys_io();
   if(SYS_LPF)    sys_lpf();
   if(SYS_IMU)    sys_imu();
-  if(SYS_AHRS)   sys_ahrs();
+  if(SYS_COMP)   sys_comp();
+  //if(SYS_AHRS)   sys_ahrs();
   //if(SYS_EKF)    sys_ekf();
   //if(SYS_GPS)    sys_gps();
   if(SYS_GCS)    sys_gcs();
@@ -227,21 +230,21 @@ static void sys_imu ( void )  {
   pthread_mutex_lock(&gyrA.mutex);
   //for ( i=0; i<3; i++ )  printf("%6d ",   gyrA.raw[i]    );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.scaled[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.filter[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&gyrA.mutex);
 
   // Accelerometer data
   pthread_mutex_lock(&accA.mutex);
-  //for ( i=0; i<3; i++ )  printf("%6d ",   accA.raw[i]    );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", accA.scaled[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", accA.filter[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6d ",   accA.raw[i]    );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", accA.scaled[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", accA.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&accA.mutex);
 
   // Magnetometer data
   pthread_mutex_lock(&magA.mutex);
   //for ( i=0; i<3; i++ )  printf("%4d ",   magA.raw[i]    );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", magA.scaled[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", magA.filter[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", magA.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&magA.mutex);
 
   }
@@ -252,22 +255,22 @@ static void sys_imu ( void )  {
   // Gyroscope data
   pthread_mutex_lock(&gyrB.mutex);
   //for ( i=0; i<3; i++ )  printf("%6d ",   gyrB.raw[i]    );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.scaled[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.filter[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.scaled[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&gyrB.mutex);
 
   // Accelerometer data
   pthread_mutex_lock(&accB.mutex);
   //for ( i=0; i<3; i++ )  printf("%6d ",   accB.raw[i]    );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", accB.scaled[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", accB.filter[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", accB.scaled[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", accB.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&accB.mutex);
 
   // Magnetometer data
   pthread_mutex_lock(&magB.mutex);
   //for ( i=0; i<3; i++ )  printf("%4d ",   magB.raw[i]    );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", magB.scaled[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", magB.filter[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", magB.scaled[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", magB.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&magB.mutex);
 
   }
@@ -277,9 +280,26 @@ static void sys_imu ( void )  {
 
 
 /**
+ *  sys_comp
+ *  Prints complimentary filter debugging messages to the terminal.
+ */
+static void sys_comp ( void )  {
+
+  pthread_mutex_lock(&comp.mutex);
+  printf( "%6.3f ", comp.roll  * (180.0/PI) );
+  printf( "%6.3f ", comp.pitch * (180.0/PI) );
+  fflush(stdout);
+  pthread_mutex_unlock(&comp.mutex);
+
+  return;
+}
+
+
+/**
  *  sys_ahrs
  *  Prints AHRS debugging messages to the terminal.
  */
+/*
 static void sys_ahrs ( void )  {
 
   // Loop counter
@@ -307,7 +327,7 @@ static void sys_ahrs ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  sys_ekf

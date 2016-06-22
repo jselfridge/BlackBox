@@ -240,7 +240,7 @@ void imu_update ( imu_struct *imu )  {
   // Local IMU struct arrays
   short  Gr[3], Ar[3], Mr[3];
   double Gs[3], As[3], Ms[3];
-  double Gf[3], Af[3], Mf[3];
+  //double Gf[3], Af[3], Mf[3];
 
   // Increment counter
   imu->getmag = false;
@@ -277,6 +277,7 @@ void imu_update ( imu_struct *imu )  {
   Ms[z] =   ( Mr[z] - imu->mag->bias[z] ) / (double) (imu->mag->range[z]);
   }
 
+  /*
   // IMUA low pass filter
   if ( imu->id == 'A' )  {
     lpf_update ( &lpf_gyrA, Gs, Gf );
@@ -285,8 +286,10 @@ void imu_update ( imu_struct *imu )  {
     lpf_update ( &lpf_magA, Ms, Mf );
     }
   }
+  */
 
   // IMUB low pass filter
+  /*
   if ( imu->id == 'B' )  {
     lpf_update ( &lpf_gyrB, Gs, Gf );
     lpf_update ( &lpf_accB, As, Af );
@@ -294,13 +297,14 @@ void imu_update ( imu_struct *imu )  {
     lpf_update ( &lpf_magB, Ms, Mf );
     }
   }
+  */
 
   // Push gyroscope values to data structure
   pthread_mutex_lock(&(imu->gyr->mutex));
   for ( i=0; i<3; i++ )  {
     imu->gyr->raw[i]    = Gr[i];
     imu->gyr->scaled[i] = Gs[i];
-    imu->gyr->filter[i] = Gf[i];
+    //imu->gyr->filter[i] = Gf[i];
   }
   pthread_mutex_unlock(&(imu->gyr->mutex));
 
@@ -309,7 +313,7 @@ void imu_update ( imu_struct *imu )  {
   for ( i=0; i<3; i++ )  {
     imu->acc->raw[i]    = Ar[i];
     imu->acc->scaled[i] = As[i];
-    imu->acc->filter[i] = Af[i];
+    //imu->acc->filter[i] = Af[i];
   }
   pthread_mutex_unlock(&(imu->acc->mutex));
 
@@ -319,7 +323,7 @@ void imu_update ( imu_struct *imu )  {
   for ( i=0; i<3; i++ )  {
     imu->mag->raw[i]    = Mr[i];
     imu->mag->scaled[i] = Ms[i];
-    imu->mag->filter[i] = Mf[i];
+    //imu->mag->filter[i] = Mf[i];
   }
   pthread_mutex_unlock(&(imu->mag->mutex));
   }

@@ -4,7 +4,8 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include "ahrs.h"
+//#include "ahrs.h"
+#include "comp.h"
 #include "ctrl.h"
 #include "ekf.h"
 #include "gcs.h"
@@ -40,11 +41,11 @@ void log_init ( void )  {
   log_gyrA.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_accA.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_magA.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
-  log_ahrsA.limit   =  LOG_MAX_DUR * HZ_AHRS;
+  //log_ahrsA.limit   =  LOG_MAX_DUR * HZ_AHRS;
   log_gyrB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_accB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_magB.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
-  log_ahrsB.limit   =  LOG_MAX_DUR * HZ_AHRS;
+  //log_ahrsB.limit   =  LOG_MAX_DUR * HZ_AHRS;
   //log_ekf.limit     =  LOG_MAX_DUR * HZ_EKF;
   //log_gps.limit     =  LOG_MAX_DUR * HZ_GPS;
   log_ctrl.limit    =  LOG_MAX_DUR * HZ_CTRL;
@@ -73,22 +74,23 @@ void log_init ( void )  {
   log_gyrA.dur      =  malloc( sizeof(ulong)  * log_gyrA.limit     );
   log_gyrA.raw      =  malloc( sizeof(short)  * log_gyrA.limit * 3 );
   log_gyrA.scaled   =  malloc( sizeof(float)  * log_gyrA.limit * 3 );
-  log_gyrA.filter   =  malloc( sizeof(float)  * log_gyrA.limit * 3 );
+  //log_gyrA.filter   =  malloc( sizeof(float)  * log_gyrA.limit * 3 );
 
   // Accelerometer A setup
   log_accA.time     =  malloc( sizeof(float)  * log_accA.limit     );
   log_accA.dur      =  malloc( sizeof(ulong)  * log_accA.limit     );
   log_accA.raw      =  malloc( sizeof(short)  * log_accA.limit * 3 );
   log_accA.scaled   =  malloc( sizeof(float)  * log_accA.limit * 3 );
-  log_accA.filter   =  malloc( sizeof(float)  * log_accA.limit * 3 );
+  //log_accA.filter   =  malloc( sizeof(float)  * log_accA.limit * 3 );
 
   // Magnetometer A setup
   log_magA.time     =  malloc( sizeof(float)  * log_magA.limit     );
   log_magA.dur      =  malloc( sizeof(ulong)  * log_magA.limit     );
   log_magA.raw      =  malloc( sizeof(short)  * log_magA.limit * 3 );
   log_magA.scaled   =  malloc( sizeof(float)  * log_magA.limit * 3 );
-  log_magA.filter   =  malloc( sizeof(float)  * log_magA.limit * 3 );
+  //log_magA.filter   =  malloc( sizeof(float)  * log_magA.limit * 3 );
 
+  /*
   // Attitude and Heading Reference System A setup
   log_ahrsA.time    =  malloc( sizeof(float)  * log_ahrsA.limit     );
   log_ahrsA.dur     =  malloc( sizeof(ulong)  * log_ahrsA.limit     );
@@ -99,7 +101,7 @@ void log_init ( void )  {
   log_ahrsA.bias    =  malloc( sizeof(float)  * log_ahrsA.limit * 3 );
   log_ahrsA.fx      =  malloc( sizeof(float)  * log_ahrsA.limit     );
   log_ahrsA.fz      =  malloc( sizeof(float)  * log_ahrsA.limit     );
-
+  */
   }
 
   // IMU B setup
@@ -110,22 +112,23 @@ void log_init ( void )  {
   log_gyrB.dur      =  malloc( sizeof(ulong)  * log_gyrB.limit     );
   log_gyrB.raw      =  malloc( sizeof(short)  * log_gyrB.limit * 3 );
   log_gyrB.scaled   =  malloc( sizeof(float)  * log_gyrB.limit * 3 );
-  log_gyrB.filter   =  malloc( sizeof(float)  * log_gyrB.limit * 3 );
+  //log_gyrB.filter   =  malloc( sizeof(float)  * log_gyrB.limit * 3 );
 
   // Accelerometer B setup
   log_accB.time     =  malloc( sizeof(float)  * log_accB.limit     );
   log_accB.dur      =  malloc( sizeof(ulong)  * log_accB.limit     );
   log_accB.raw      =  malloc( sizeof(short)  * log_accB.limit * 3 );
   log_accB.scaled   =  malloc( sizeof(float)  * log_accB.limit * 3 );
-  log_accB.filter   =  malloc( sizeof(float)  * log_accB.limit * 3 );
+  //log_accB.filter   =  malloc( sizeof(float)  * log_accB.limit * 3 );
 
   // Magnetometer B setup
   log_magB.time     =  malloc( sizeof(float)  * log_magB.limit     );
   log_magB.dur      =  malloc( sizeof(ulong)  * log_magB.limit     );
   log_magB.raw      =  malloc( sizeof(short)  * log_magB.limit * 3 );
   log_magB.scaled   =  malloc( sizeof(float)  * log_magB.limit * 3 );
-  log_magB.filter   =  malloc( sizeof(float)  * log_magB.limit * 3 );
+  //log_magB.filter   =  malloc( sizeof(float)  * log_magB.limit * 3 );
 
+  /*
   // Attitude and Heading Reference System B setup
   log_ahrsB.time    =  malloc( sizeof(float)  * log_ahrsB.limit     );
   log_ahrsB.dur     =  malloc( sizeof(ulong)  * log_ahrsB.limit     );
@@ -136,7 +139,7 @@ void log_init ( void )  {
   log_ahrsB.bias    =  malloc( sizeof(float)  * log_ahrsB.limit * 3 );
   log_ahrsB.fx      =  malloc( sizeof(float)  * log_ahrsB.limit     );
   log_ahrsB.fz      =  malloc( sizeof(float)  * log_ahrsB.limit     );
-
+  */
   }
 
   /*
@@ -206,22 +209,23 @@ void log_exit ( void )  {
   free(log_gyrA.dur);
   free(log_gyrA.raw);
   free(log_gyrA.scaled);
-  free(log_gyrA.filter);
+  //free(log_gyrA.filter);
 
   // Accelerometer A memory
   free(log_accA.time);
   free(log_accA.dur);
   free(log_accA.raw);
   free(log_accA.scaled);
-  free(log_accA.filter);
+  //free(log_accA.filter);
 
   // Magnetometer A memory
   free(log_magA.time);
   free(log_magA.dur);
   free(log_magA.raw);
   free(log_magA.scaled);
-  free(log_magA.filter);
+  //free(log_magA.filter);
 
+  /*
   // Attitude/Heading A memory
   free(log_ahrsA.time);
   free(log_ahrsA.dur);
@@ -232,7 +236,7 @@ void log_exit ( void )  {
   free(log_ahrsA.bias);
   free(log_ahrsA.fx);
   free(log_ahrsA.fz);
-
+  */
   }
 
   // IMU B memory
@@ -243,22 +247,23 @@ void log_exit ( void )  {
   free(log_gyrB.dur);
   free(log_gyrB.raw);
   free(log_gyrB.scaled);
-  free(log_gyrB.filter);
+  //free(log_gyrB.filter);
 
   // Accelerometer B memory
   free(log_accB.time);
   free(log_accB.dur);
   free(log_accB.raw);
   free(log_accB.scaled);
-  free(log_accB.filter);
+  //free(log_accB.filter);
 
   // Magnetometer B memory
   free(log_magB.time);
   free(log_magB.dur);
   free(log_magB.raw);
   free(log_magB.scaled);
-  free(log_magB.filter);
+  //free(log_magB.filter);
 
+  /*
   // Attitude/Heading B memory
   free(log_ahrsB.time);
   free(log_ahrsB.dur);
@@ -269,7 +274,7 @@ void log_exit ( void )  {
   free(log_ahrsB.bias);
   free(log_ahrsB.fx);
   free(log_ahrsB.fz);
-
+  */
   }
 
   /*
@@ -315,11 +320,11 @@ void log_start ( void )  {
   log_gyrA.count   = 0;
   log_accA.count   = 0;
   log_magA.count   = 0;
-  log_ahrsA.count  = 0;
+  //log_ahrsA.count  = 0;
   log_gyrB.count   = 0;
   log_accB.count   = 0;
   log_magB.count   = 0;
-  log_ahrsB.count  = 0;
+  //log_ahrsB.count  = 0;
   //log_ekf.count    = 0;
   //log_gps.count    = 0;
   log_ctrl.count   = 0;
@@ -403,6 +408,7 @@ void log_start ( void )  {
     MagAsx   MagAsy   MagAsz   \
     MagAfx   MagAfy   MagAfz");
 
+  /*
   // Attitude and heading reference system A datalog file
   sprintf( file, "%sahrsA.txt", datalog.path );
   datalog.ahrsA = fopen( file, "w" );
@@ -415,7 +421,7 @@ void log_start ( void )  {
     dEulAx   dEulAy   dEulAz   \
     biasAx   biasAy   biasAz   \
     fluxAx   fluxAz");
-
+  */
   }
 
   // IMUB datalogs
@@ -451,6 +457,7 @@ void log_start ( void )  {
     MagBsx   MagBsy   MagBsz   \
     MagBfx   MagBfy   MagBfz");
 
+  /*
   // Attitude and heading reference system B datalog file
   sprintf( file, "%sahrsB.txt", datalog.path );
   datalog.ahrsB = fopen( file, "w" );
@@ -463,7 +470,7 @@ void log_start ( void )  {
     dEulBx   dEulBy   dEulBz   \
     biasBx   biasBy   biasBz   \
     fluxBx   fluxBz");
-
+  */
   }
 
   /*
@@ -592,7 +599,7 @@ void log_record ( enum log_index index )  {
       log_gyrA.dur[row]  = tmr_imu.dur;
       for ( i=0; i<3; i++ )  log_gyrA.raw    [ row*3 +i ] = gyrA.raw[i];
       for ( i=0; i<3; i++ )  log_gyrA.scaled [ row*3 +i ] = gyrA.scaled[i];
-      for ( i=0; i<3; i++ )  log_gyrA.filter [ row*3 +i ] = gyrA.filter[i];
+      //for ( i=0; i<3; i++ )  log_gyrA.filter [ row*3 +i ] = gyrA.filter[i];
       log_gyrA.count++;
     }
     pthread_mutex_unlock(&gyrA.mutex);
@@ -605,7 +612,7 @@ void log_record ( enum log_index index )  {
       log_accA.dur[row]  = tmr_imu.dur;
       for ( i=0; i<3; i++ )  log_accA.raw    [ row*3 +i ] = accA.raw[i];
       for ( i=0; i<3; i++ )  log_accA.scaled [ row*3 +i ] = accA.scaled[i];
-      for ( i=0; i<3; i++ )  log_accA.filter [ row*3 +i ] = accA.filter[i];
+      //for ( i=0; i<3; i++ )  log_accA.filter [ row*3 +i ] = accA.filter[i];
       log_accA.count++;
     }
     pthread_mutex_unlock(&accA.mutex);
@@ -618,7 +625,7 @@ void log_record ( enum log_index index )  {
       log_magA.dur[row]  = tmr_imu.dur;
       for ( i=0; i<3; i++ )  log_magA.raw    [ row*3 +i ] = magA.raw[i];
       for ( i=0; i<3; i++ )  log_magA.scaled [ row*3 +i ] = magA.scaled[i];
-      for ( i=0; i<3; i++ )  log_magA.filter [ row*3 +i ] = magA.filter[i];
+      //for ( i=0; i<3; i++ )  log_magA.filter [ row*3 +i ] = magA.filter[i];
       log_magA.count++;
     }
     pthread_mutex_unlock(&magA.mutex);
@@ -638,7 +645,7 @@ void log_record ( enum log_index index )  {
       log_gyrB.dur[row]  = tmr_imu.dur;
       for ( i=0; i<3; i++ )  log_gyrB.raw    [ row*3 +i ] = gyrB.raw[i];
       for ( i=0; i<3; i++ )  log_gyrB.scaled [ row*3 +i ] = gyrB.scaled[i];
-      for ( i=0; i<3; i++ )  log_gyrB.filter [ row*3 +i ] = gyrB.filter[i];
+      //for ( i=0; i<3; i++ )  log_gyrB.filter [ row*3 +i ] = gyrB.filter[i];
       log_gyrB.count++;
     }
     pthread_mutex_unlock(&gyrB.mutex);
@@ -651,7 +658,7 @@ void log_record ( enum log_index index )  {
       log_accB.dur[row]  = tmr_imu.dur;
       for ( i=0; i<3; i++ )  log_accB.raw    [ row*3 +i ] = accB.raw[i];
       for ( i=0; i<3; i++ )  log_accB.scaled [ row*3 +i ] = accB.scaled[i];
-      for ( i=0; i<3; i++ )  log_accB.filter [ row*3 +i ] = accB.filter[i];
+      //for ( i=0; i<3; i++ )  log_accB.filter [ row*3 +i ] = accB.filter[i];
       log_accB.count++;
     }
     pthread_mutex_unlock(&accB.mutex);
@@ -664,13 +671,14 @@ void log_record ( enum log_index index )  {
       log_magB.dur[row]  = tmr_imu.dur;
       for ( i=0; i<3; i++ )  log_magB.raw    [ row*3 +i ] = magB.raw[i];
       for ( i=0; i<3; i++ )  log_magB.scaled [ row*3 +i ] = magB.scaled[i];
-      for ( i=0; i<3; i++ )  log_magB.filter [ row*3 +i ] = magB.filter[i];
+      //for ( i=0; i<3; i++ )  log_magB.filter [ row*3 +i ] = magB.filter[i];
       log_magB.count++;
     }
     pthread_mutex_unlock(&magB.mutex);
 
     return;
 
+    /*
   // Record AHRSA data
   case LOG_AHRSA :
 
@@ -693,7 +701,9 @@ void log_record ( enum log_index index )  {
     }
 
     return;
+    */
 
+    /*
   // Record AHRSB data
   case LOG_AHRSB :
 
@@ -716,6 +726,7 @@ void log_record ( enum log_index index )  {
     }
 
     return;
+    */
 
   /*
   // Record EKF data
@@ -859,7 +870,7 @@ static void log_save ( void )  {
     fprintf( datalog.gyrA, "\n %011.6f   %06ld      ", log_gyrA.time[row], log_gyrA.dur[row] );
     for ( i=0; i<3; i++ )  fprintf( datalog.gyrA, "%06d  ",   log_gyrA.raw    [ row*3 +i ] );   fprintf( datalog.gyrA, "    " );
     for ( i=0; i<3; i++ )  fprintf( datalog.gyrA, "%07.4f  ", log_gyrA.scaled [ row*3 +i ] );   fprintf( datalog.gyrA, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.gyrA, "%07.4f  ", log_gyrA.filter [ row*3 +i ] );   fprintf( datalog.gyrA, "    " );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.gyrA, "%07.4f  ", log_gyrA.filter [ row*3 +i ] );   fprintf( datalog.gyrA, "    " );
   }
 
   // Accelerometer A data
@@ -867,7 +878,7 @@ static void log_save ( void )  {
     fprintf( datalog.accA, "\n %011.6f   %06ld      ", log_accA.time[row], log_accA.dur[row] );
     for ( i=0; i<3; i++ )  fprintf( datalog.accA, "%06d  ",   log_accA.raw    [ row*3 +i ] );   fprintf( datalog.accA, "    " );
     for ( i=0; i<3; i++ )  fprintf( datalog.accA, "%07.4f  ", log_accA.scaled [ row*3 +i ] );   fprintf( datalog.accA, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.accA, "%07.4f  ", log_accA.filter [ row*3 +i ] );   fprintf( datalog.accA, "    " );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.accA, "%07.4f  ", log_accA.filter [ row*3 +i ] );   fprintf( datalog.accA, "    " );
   }
 
   // Magnetometer A data
@@ -875,9 +886,10 @@ static void log_save ( void )  {
     fprintf( datalog.magA, "\n %011.6f   %06ld      ", log_magA.time[row], log_magA.dur[row] );
     for ( i=0; i<3; i++ )  fprintf( datalog.magA, "%06d  ",   log_magA.raw    [ row*3 +i ] );   fprintf( datalog.magA, "    " );
     for ( i=0; i<3; i++ )  fprintf( datalog.magA, "%07.4f  ", log_magA.scaled [ row*3 +i ] );   fprintf( datalog.magA, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.magA, "%07.4f  ", log_magA.filter [ row*3 +i ] );   fprintf( datalog.magA, "    " );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.magA, "%07.4f  ", log_magA.filter [ row*3 +i ] );   fprintf( datalog.magA, "    " );
   }
 
+  /*
   // Attitude/Heading Reference System A data
   for ( row = 0; row < log_ahrsA.count; row++ ) {
     fprintf( datalog.ahrsA, "\n %011.6f   %06ld      ", log_ahrsA.time[row], log_ahrsA.dur[row] );
@@ -890,7 +902,7 @@ static void log_save ( void )  {
     fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.fz[ row +i ] );
     fprintf( datalog.ahrsA, "   " );
   }
-
+  */
   }
 
   // IMU B datalogs
@@ -901,7 +913,7 @@ static void log_save ( void )  {
     fprintf( datalog.gyrB, "\n %011.6f   %06ld      ", log_gyrB.time[row], log_gyrB.dur[row] );
     for ( i=0; i<3; i++ )  fprintf( datalog.gyrB, "%06d  ",   log_gyrB.raw    [ row*3 +i ] );   fprintf( datalog.gyrB, "    " );
     for ( i=0; i<3; i++ )  fprintf( datalog.gyrB, "%07.4f  ", log_gyrB.scaled [ row*3 +i ] );   fprintf( datalog.gyrB, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.gyrB, "%07.4f  ", log_gyrB.filter [ row*3 +i ] );   fprintf( datalog.gyrB, "    " );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.gyrB, "%07.4f  ", log_gyrB.filter [ row*3 +i ] );   fprintf( datalog.gyrB, "    " );
   }
 
   // Accelerometer B data
@@ -909,7 +921,7 @@ static void log_save ( void )  {
     fprintf( datalog.accB, "\n %011.6f   %06ld      ", log_accB.time[row], log_accB.dur[row] );
     for ( i=0; i<3; i++ )  fprintf( datalog.accB, "%06d  ",   log_accB.raw    [ row*3 +i ] );   fprintf( datalog.accB, "    " );
     for ( i=0; i<3; i++ )  fprintf( datalog.accB, "%07.4f  ", log_accB.scaled [ row*3 +i ] );   fprintf( datalog.accB, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.accB, "%07.4f  ", log_accB.filter [ row*3 +i ] );   fprintf( datalog.accB, "    " );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.accB, "%07.4f  ", log_accB.filter [ row*3 +i ] );   fprintf( datalog.accB, "    " );
   }
 
   // Magnetometer B data
@@ -917,9 +929,10 @@ static void log_save ( void )  {
     fprintf( datalog.magB, "\n %011.6f   %06ld      ", log_magB.time[row], log_magB.dur[row] );
     for ( i=0; i<3; i++ )  fprintf( datalog.magB, "%06d  ",   log_magB.raw    [ row*3 +i ] );   fprintf( datalog.magB, "    " );
     for ( i=0; i<3; i++ )  fprintf( datalog.magB, "%07.4f  ", log_magB.scaled [ row*3 +i ] );   fprintf( datalog.magB, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.magB, "%07.4f  ", log_magB.filter [ row*3 +i ] );   fprintf( datalog.magB, "    " );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.magB, "%07.4f  ", log_magB.filter [ row*3 +i ] );   fprintf( datalog.magB, "    " );
   }
 
+  /*
   // Attitude/Heading Reference System B data
   for ( row = 0; row < log_ahrsB.count; row++ ) {
     fprintf( datalog.ahrsB, "\n %011.6f   %06ld      ", log_ahrsB.time[row], log_ahrsB.dur[row] );
@@ -932,7 +945,7 @@ static void log_save ( void )  {
     fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.fz[ row +i ] );
     fprintf( datalog.ahrsB, "   " );
   }
-
+  */
   }
 
   /*
@@ -989,14 +1002,14 @@ static void log_close ( void )  {
     fclose(datalog.gyrA);
     fclose(datalog.accA);
     fclose(datalog.magA);
-    fclose(datalog.ahrsA);
+    //fclose(datalog.ahrsA);
   }
 
   if (IMUB_ENABLED)  {
     fclose(datalog.gyrB);
     fclose(datalog.accB);
     fclose(datalog.magB);
-    fclose(datalog.ahrsB);
+    //fclose(datalog.ahrsB);
   }
 
   //fclose(datalog.ekf);

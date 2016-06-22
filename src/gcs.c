@@ -26,11 +26,11 @@ static void  gcs_input        ( void );
 static void  gcs_output       ( void );
 static void  gcs_imuA_raw     ( void );
 static void  gcs_imuA_scaled  ( void );
-static void  gcs_imuA_filter  ( void );
+//static void  gcs_imuA_filter  ( void );
 static void  gcs_imuB_raw     ( void );
 static void  gcs_imuB_scaled  ( void );
-static void  gcs_imuB_filter  ( void );
-static void  gcs_ahrs_eul     ( void );
+//static void  gcs_imuB_filter  ( void );
+//static void  gcs_ahrs_eul     ( void );
 //static void  gcs_ahrs_quat    ( void );
 //static void  gcs_gps          ( void );
 
@@ -157,18 +157,18 @@ void gcs_tx ( void)  {
   if (IMUA_ENABLED)  {
     if (GCS_IMUA_RAW_ENABLED)     gcs_imuA_raw();
     if (GCS_IMUA_SCALED_ENABLED)  gcs_imuA_scaled();
-    if (GCS_IMUA_FILTER_ENABLED)  gcs_imuA_filter();
+    //if (GCS_IMUA_FILTER_ENABLED)  gcs_imuA_filter();
   }
 
   // Send IMUB data
   if (IMUB_ENABLED)  {
     if (GCS_IMUB_RAW_ENABLED)     gcs_imuB_raw();
     if (GCS_IMUB_SCALED_ENABLED)  gcs_imuB_scaled();
-    if (GCS_IMUB_FILTER_ENABLED)  gcs_imuB_filter();
+    //if (GCS_IMUB_FILTER_ENABLED)  gcs_imuB_filter();
   }
 
   // Send attitude/heading data
-  if (GCS_AHRS_EUL_ENABLED)       gcs_ahrs_eul();
+  //if (GCS_AHRS_EUL_ENABLED)       gcs_ahrs_eul();
   //if (GCS_AHRS_QUAT_ENABLED)      gcs_ahrs_quat();
 
   // Send GPS data
@@ -722,6 +722,7 @@ static void gcs_imuA_scaled ( void )  {
  *  gcs_imuA_filter
  *  Sends the filtered IMUA data.
  */
+/*
 static void gcs_imuA_filter ( void )  {
 
   // Initialize the required buffers
@@ -768,7 +769,7 @@ static void gcs_imuA_filter ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  gcs_imuB_raw
@@ -880,6 +881,7 @@ static void gcs_imuB_scaled ( void )  {
  *  gcs_imuB_filter
  *  Sends the filtered IMUB data.
  */
+/*
 static void gcs_imuB_filter ( void )  {
 
   // Initialize the required buffers
@@ -927,12 +929,13 @@ static void gcs_imuB_filter ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  gcs_ahrs_eul
  *  Sends the Euler attitude representation.
  */
+/*
 static void gcs_ahrs_eul ( void )  {
 
   // Initialize the required buffers
@@ -972,7 +975,7 @@ static void gcs_ahrs_eul ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  gcs_ahrs_quat

@@ -23,7 +23,7 @@ typedef struct imu_data_struct {
   int    range  [3];
   short  raw    [3];
   double scaled [3];
-  double filter [3];
+  //double filter [3];
   pthread_mutex_t mutex;
 } imu_data_struct;
 imu_data_struct gyrA;

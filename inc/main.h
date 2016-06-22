@@ -8,7 +8,8 @@
 #include <unistd.h>
 
 
-#include "ahrs.h"
+//#include "ahrs.h"
+#include "comp.h"
 #include "ctrl.h"
 //#include "ekf.h"
 #include "flag.h"
@@ -17,7 +18,7 @@
 #include "imu.h"
 #include "io.h"
 #include "log.h"
-#include "lpf.h"
+//#include "lpf.h"
 #include "sys.h"
 #include "timer.h"
 
