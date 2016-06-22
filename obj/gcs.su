@@ -4,7 +4,7 @@ gcs.c:286:13:gcs_heartbeat	640	dynamic,bounded
 gcs.c:404:13:gcs_param_value	720	dynamic,bounded
 gcs.c:573:13:gcs_output	656	dynamic,bounded
 gcs.c:524:13:gcs_input	680	dynamic,bounded
-gcs.c:42:6:gcs_init	120	dynamic,bounded
+gcs.c:42:6:gcs_init	128	dynamic,bounded
 gcs.c:130:6:gcs_exit	8	static
 gcs.c:141:6:gcs_tx	8	static
 gcs.c:185:6:gcs_rx	336	dynamic,bounded

@@ -14,7 +14,7 @@ int main ( void )  {
   sys_init();
   io_init();
   flag_init();
-  //lpf_init();
+  lpf_init();
   imu_init();
   comp_init();
   //ahrs_init();

@@ -467,7 +467,8 @@ void *fcn_comp (  )  {
   tmr_create(&tmr_comp);
   while (running) {
     tmr_start(&tmr_comp);
-    comp_update();
+    if (!datalog.saving)  comp_update();
+    if (datalog.enabled)  log_record(LOG_COMP);
     tmr_pause(&tmr_comp);
   }
   pthread_exit(NULL);

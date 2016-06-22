@@ -16,10 +16,10 @@
  */
 void comp_init ( void )  {
   if(DEBUG)  printf( "Initializing complimentary filter \n" );
-  comp.dt    = 1.0 / HZ_COMP;
-  comp.alpha = 0.95;
-  comp.roll  = 0.0;
-  comp.pitch = 0.0;
+  comp.dt     = 1.0 / HZ_COMP;
+  comp.alpha  = 0.95;
+  comp.roll   = 0.0;
+  comp.pitch  = 0.0;
   return;
 }
 
@@ -43,8 +43,8 @@ void comp_update ( void )  {
 
   // Local variables
   double dt, alpha;
-  double R, gR, aR;
-  double P, gP, aP;
+  double R, gyrR, accR;
+  double P, gyrP, accP;
   double ax, ay, az;
 
   // Obtain previous values
@@ -56,29 +56,29 @@ void comp_update ( void )  {
   pthread_mutex_unlock(&comp.mutex);
 
   // Zero out gyr values
-  gR = 0.0;
-  gP = 0.0;
+  gyrR = 0.0;
+  gyrP = 0.0;
 
   // Obtain gyrA data
   if(IMUA_ENABLED)  {
     pthread_mutex_lock(&gyrA.mutex);
-    gR += gyrA.scaled[0];
-    gP += gyrA.scaled[1];
+    gyrR += gyrA.scaled[0];
+    gyrP += gyrA.scaled[1];
     pthread_mutex_unlock(&gyrA.mutex);
   }
 
   // Obtain gyrB data
   if(IMUB_ENABLED)  {
     pthread_mutex_lock(&gyrB.mutex);
-    gR += gyrB.scaled[0];
-    gP += gyrB.scaled[1];
+    gyrR += gyrB.scaled[0];
+    gyrP += gyrB.scaled[1];
     pthread_mutex_unlock(&gyrB.mutex);
   }
 
   // Average gyr data
   if ( IMUA_ENABLED && IMUB_ENABLED )  {
-    gR /= 2.0;
-    gP /= 2.0;
+    gyrR /= 2.0;
+    gyrP /= 2.0;
   }
 
   // Zero out acc values
@@ -113,12 +113,12 @@ void comp_update ( void )  {
   
 
   // Calculate accelerometer angle
-  aR = atan2(ay,az);
-  aP = atan2(ax,az);
+  accR = atan2(ay,az);
+  accP = atan2(ax,az);
 
-  // Update angles
-  R = alpha * ( R + gR * dt ) + ( 1.0 - alpha ) * aR;
-  P = alpha * ( P + gP * dt ) + ( 1.0 - alpha ) * aP;
+  // Calculate attitude angles
+  R = alpha * ( R + gyrR * dt ) + ( 1.0 - alpha ) * accR;
+  P = alpha * ( P + gyrP * dt ) + ( 1.0 - alpha ) * accP;
 
   // Store updated values
   pthread_mutex_lock(&comp.mutex);

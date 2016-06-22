@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "ahrs.h"
+#include "comp.h"
 #include "flag.h"
 #include "io.h"
 #include "sys.h"
@@ -142,7 +143,8 @@ void ctrl_quad ( void )  {
   static double ierr[3] = { 0.0, 0.0, 0.0 };
   static double derr[3] = { 0.0, 0.0, 0.0 };
 
-  // Obtain states
+  /*
+  // Obtain AHRS states
   for ( ch=0; ch<3; ch++ )  {  eul[ch] = 0.0;  deul[ch] = 0.0;  }
   if (IMUA_ENABLED)  {
     pthread_mutex_lock(&ahrsA.mutex);
@@ -156,6 +158,30 @@ void ctrl_quad ( void )  {
   }
   if ( IMUA_ENABLED && IMUB_ENABLED )  {
     for ( ch=0; ch<3; ch++ )  {  eul[ch] /= 2.0;  deul[ch] /= 2.0;  }
+  }
+  */
+
+  // Obtain attitude states
+  pthread_mutex_lock(&comp.mutex);
+  eul[x] = comp.roll;
+  eul[y] = comp.pitch;
+  eul[z] = 0.0;
+  pthread_mutex_unlock(&comp.mutex);
+
+  // Obtain gyro states
+  for ( ch=0; ch<3; ch++ )  deul[ch] = 0.0;
+  if (IMUA_ENABLED)  {
+    pthread_mutex_lock(&gyrA.mutex);
+    for ( ch=0; ch<3; ch++ )  deul[ch] += gyrA.filter[ch];
+    pthread_mutex_unlock(&gyrA.mutex);
+  }
+  if (IMUB_ENABLED)  {
+    pthread_mutex_lock(&gyrB.mutex);
+    for ( ch=0; ch<3; ch++ )  deul[ch] += gyrB.filter[ch];
+    pthread_mutex_unlock(&gyrB.mutex);
+  }
+  if ( IMUA_ENABLED && IMUB_ENABLED )  {
+    for ( ch=0; ch<3; ch++ )  deul[ch] /= 2.0;
   }
 
   // Obtain inputs
@@ -177,9 +203,9 @@ void ctrl_quad ( void )  {
   for ( ch=0; ch<4; ch++ )  ref[ch] = in[ch] * ctrl.range[ch];
 
   // Determine desired heading
-  if ( in[CH_T] > -0.9 && fabs(in[CH_Y]) > 0.1 )  heading += ref[CH_Y] * ctrl.dt;
-  while ( heading >   M_PI )  heading -= 2.0 * M_PI;
-  while ( heading <= -M_PI )  heading += 2.0 * M_PI;
+  //if ( in[CH_T] > -0.9 && fabs(in[CH_Y]) > 0.1 )  heading += ref[CH_Y] * ctrl.dt;
+  //while ( heading >   M_PI )  heading -= 2.0 * M_PI;
+  //while ( heading <= -M_PI )  heading += 2.0 * M_PI;
 
   // Determine roll (X) adjustment
   perr[x] = -eul[x] + ref[CH_R];
@@ -202,10 +228,10 @@ void ctrl_quad ( void )  {
            derr[y] * ctrl.dgain[y];
 
   // Determine yaw (Z) adjustment
-  //perr[z] = ref[CH_Y];  //---  DEBUGGING VALUE  ---//
-  perr[z] = -eul[z] + heading;
-  while ( perr[z] >   M_PI )  heading -= 2.0 * M_PI;
-  while ( perr[z] <= -M_PI )  heading += 2.0 * M_PI;
+  perr[z] = ref[CH_Y];  //---  DEBUGGING VALUE  ---//
+  //perr[z] = -eul[z] + heading;
+  //while ( perr[z] >   M_PI )  heading -= 2.0 * M_PI;
+  //while ( perr[z] <= -M_PI )  heading += 2.0 * M_PI;
   derr[z] = -deul[z];
   reset = ( in[CH_Y] < -IRESET || in[CH_Y] > IRESET );
   if (reset)  ierr[z] = 0.0; 

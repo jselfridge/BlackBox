@@ -18,7 +18,7 @@
 #include "imu.h"
 #include "io.h"
 #include "log.h"
-//#include "lpf.h"
+#include "lpf.h"
 #include "sys.h"
 #include "timer.h"
 

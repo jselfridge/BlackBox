@@ -1,4 +1,4 @@
-lpf.c:15:6:lpf_init	96	static
+lpf.c:15:6:lpf_init	104	static
 lpf.c:85:6:lpf_exit	0	static
 lpf.c:96:6:lpf_freq	0	static
 lpf.c:120:6:lpf_hist	16	static
