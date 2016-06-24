@@ -671,7 +671,7 @@ static void gcs_imuA_raw ( void )  {
  *  Sends the scaled IMUA data.
  */
 static void gcs_imuA_scaled ( void )  {
-  /*
+
   // Initialize the required buffers
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -712,8 +712,8 @@ static void gcs_imuA_scaled ( void )  {
   pthread_mutex_lock(&gcs.mutex);
   int w = write( gcs.fd, buf, len );
   usleep( w * gcs.pause );
-  pthread_mutex_lock(&gcs.mutex);
-  */
+  pthread_mutex_unlock(&gcs.mutex);
+
   return;
 }
 
