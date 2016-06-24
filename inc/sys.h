@@ -9,7 +9,7 @@
 
 
 #define DEBUG       true
-#define SYS_IO      true
+#define SYS_IO      false
 #define SYS_LPF     false
 #define SYS_IMU     false
 #define SYS_COMP    false
