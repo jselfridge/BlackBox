@@ -1,3 +1,3 @@
 comp.c:17:6:comp_init	16	static
 comp.c:31:6:comp_exit	0	static
-comp.c:42:6:comp_update	112	static
+comp.c:42:6:comp_update	96	static

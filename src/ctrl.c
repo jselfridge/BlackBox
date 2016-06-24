@@ -162,27 +162,28 @@ void ctrl_quad ( void )  {
   */
 
   // Obtain attitude states
-  pthread_mutex_lock(&comp.mutex);
-  eul[x] = comp.roll;
-  eul[y] = comp.pitch;
-  eul[z] = 0.0;
-  pthread_mutex_unlock(&comp.mutex);
+  eul[x] = 0.0;  eul[y] = 0.0;  eul[z] = 0.0;
+  //pthread_mutex_lock(&comp.mutex);
+  //eul[x] = comp.roll;
+  //eul[y] = comp.pitch;
+  //eul[z] = 0.0;
+  //pthread_mutex_unlock(&comp.mutex);
 
   // Obtain gyro states
   for ( ch=0; ch<3; ch++ )  deul[ch] = 0.0;
-  if (IMUA_ENABLED)  {
+  //if (IMUA_ENABLED)  {
     pthread_mutex_lock(&gyrA.mutex);
     for ( ch=0; ch<3; ch++ )  deul[ch] += gyrA.filter[ch];
     pthread_mutex_unlock(&gyrA.mutex);
-  }
-  if (IMUB_ENABLED)  {
-    pthread_mutex_lock(&gyrB.mutex);
-    for ( ch=0; ch<3; ch++ )  deul[ch] += gyrB.filter[ch];
-    pthread_mutex_unlock(&gyrB.mutex);
-  }
-  if ( IMUA_ENABLED && IMUB_ENABLED )  {
-    for ( ch=0; ch<3; ch++ )  deul[ch] /= 2.0;
-  }
+  //}
+  //if (IMUB_ENABLED)  {
+    //pthread_mutex_lock(&gyrB.mutex);
+    //for ( ch=0; ch<3; ch++ )  deul[ch] += gyrB.filter[ch];
+    //pthread_mutex_unlock(&gyrB.mutex);
+  //}
+  //if ( IMUA_ENABLED && IMUB_ENABLED )  {
+    //for ( ch=0; ch<3; ch++ )  deul[ch] /= 2.0;
+  //}
 
   // Obtain inputs
   pthread_mutex_lock(&input.mutex);
