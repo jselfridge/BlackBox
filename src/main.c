@@ -17,7 +17,6 @@ int main ( void )  {
   lpf_init();
   imu_init();
   comp_init();
-  /*
   //ahrs_init();
   //ekf_init();
   //gps_init();
@@ -25,7 +24,6 @@ int main ( void )  {
   gcs_init();
   log_init();
   tmr_init();
-  */
 
   //---  DEBUGGING  ---//
   //log_start();
@@ -33,7 +31,7 @@ int main ( void )  {
   //-------------------//
 
   // Run program
-  //while(running)  usleep(100000);
+  while(running)  usleep(100000);
 
   //--  DEBUGGING  --//
   //datalog.enabled = false;
@@ -42,7 +40,6 @@ int main ( void )  {
 
   // Exit program
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
-  /*
   tmr_exit();
   log_exit();
   gcs_exit();
@@ -50,7 +47,6 @@ int main ( void )  {
   //gps_exit();
   //ekf_exit();
   //ahrs_exit();
-  */
   comp_exit();
   imu_exit();
   lpf_exit();

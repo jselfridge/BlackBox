@@ -171,11 +171,12 @@ void tmr_begin ( pthread_attr_t *attr )  {
 
   tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);
   tmr_thread( &tmr_comp,  attr, fcn_comp  );  usleep(100000);
+
   //tmr_thread( &tmr_ahrs,  attr, fcn_ahrs  );  usleep(100000);
   //tmr_thread( &tmr_ekf,   attr, fcn_ekf   );  usleep(100000);
   //tmr_thread( &tmr_gps,   attr, fcn_gps   );  usleep(100000);
 
-  tmr_thread( &tmr_ctrl,  attr, fcn_ctrl  );  usleep(100000);
+  //tmr_thread( &tmr_ctrl,  attr, fcn_ctrl  );  usleep(100000);
   tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
   tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(100000);
 
@@ -224,11 +225,12 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_gcstx.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gcstx' thread. \n" );
   if(DEBUG)  printf( "gcstx " );
-
+  /*
   // Exit control thread
   if( pthread_join ( tmr_ctrl.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'ctrl' thread. \n" );
   if(DEBUG)  printf( "ctrl " );
+  */
 
   /*// Exit GPS thread
   if( pthread_join ( tmr_gps.id, NULL ) )

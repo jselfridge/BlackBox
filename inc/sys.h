@@ -12,7 +12,7 @@
 #define SYS_IO      false
 #define SYS_LPF     false
 #define SYS_IMU     false
-#define SYS_COMP    false
+#define SYS_COMP    true
 #define SYS_AHRS    false
 #define SYS_EKF     false
 #define SYS_GPS     false

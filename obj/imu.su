@@ -1,5 +1,5 @@
-imu.c:20:6:imu_init	96	static
 imu.c:102:6:imu_exit	8	static
 imu.c:115:6:imu_param	16	static
 imu.c:152:6:imu_getcal	88	static
+imu.c:20:6:imu_init	32	static
 imu.c:232:6:imu_update	200	static
