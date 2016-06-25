@@ -35,16 +35,16 @@
 #define QUAD_TMAX     0.20
 #define QUAD_TILT     0.00
 
-#define QUAD_PX       0.00
-#define QUAD_PY       0.00
+#define QUAD_PX       0.045
+#define QUAD_PY       0.045
 #define QUAD_PZ       0.00
 
 #define QUAD_IX       0.00
 #define QUAD_IY       0.00
 #define QUAD_IZ       0.00
 
-#define QUAD_DX       0.00
-#define QUAD_DY       0.00
+#define QUAD_DX       0.015
+#define QUAD_DY       0.015
 #define QUAD_DZ       0.00
 
 /*

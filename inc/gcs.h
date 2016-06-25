@@ -40,6 +40,7 @@
 #define GCS_IMUB_RAW_ENABLED     false
 #define GCS_IMUB_SCALED_ENABLED  true
 #define GCS_IMUB_FILTER_ENABLED  true
+#define GCS_COMP_ENABLED         true
 #define GCS_AHRS_EUL_ENABLED     false
 #define GCS_AHRS_QUAT_ENABLED    false
 #define GCS_GPS_ENABLED          false
