@@ -162,12 +162,12 @@ void ctrl_quad ( void )  {
   */
 
   // Obtain attitude states
-  eul[x] = 0.0;  eul[y] = 0.0;  eul[z] = 0.0;
-  //pthread_mutex_lock(&comp.mutex);
-  //eul[x] = comp.roll;
-  //eul[y] = comp.pitch;
-  //eul[z] = 0.0;
-  //pthread_mutex_unlock(&comp.mutex);
+  //eul[x] = 0.0;  eul[y] = 0.0;  eul[z] = 0.0;
+  pthread_mutex_lock(&comp.mutex);
+  eul[x] = comp.roll;
+  eul[y] = comp.pitch;
+  eul[z] = 0.0;
+  pthread_mutex_unlock(&comp.mutex);
 
   // Obtain gyro states
   for ( ch=0; ch<3; ch++ )  deul[ch] = 0.0;

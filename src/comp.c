@@ -17,7 +17,7 @@
 void comp_init ( void )  {
   if(DEBUG)  printf( "Initializing complimentary filter \n" );
   comp.dt     = 1.0 / HZ_COMP;
-  comp.alpha  = 0.95;
+  comp.alpha  = 0.96;
   comp.roll   = 0.0;
   comp.pitch  = 0.0;
   return;
@@ -110,7 +110,6 @@ void comp_update ( void )  {
     ay /= 2.0;
     az /= 2.0;
   }
-  
 
   // Calculate accelerometer angle
   accR = atan2(ay,az);

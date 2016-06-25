@@ -26,9 +26,9 @@
 #define QUAD_BR       2
 #define QUAD_FR       3
 
-#define QUAD_X_RANGE  1.00
-#define QUAD_Y_RANGE  1.00
-#define QUAD_Z_RANGE  1.00
+#define QUAD_X_RANGE  0.50
+#define QUAD_Y_RANGE  0.50
+#define QUAD_Z_RANGE  1.50
 #define QUAD_T_RANGE  0.50
 
 #define QUAD_TMIN    -0.10
