@@ -12,7 +12,7 @@
 #include "imu.h"
 #include "io.h"
 #include "log.h"
-#include "lpf.h"
+//#include "lpf.h"
 #include "sys.h"
 #include "timer.h"
 
@@ -78,14 +78,14 @@ void gcs_init ( void )  {
   if (DEBUG)  printf( "  Loading %d parameters \n", param_count );
 
   // LPF cutoff frequency
-  strcpy( param.name[lpf_freq_gyr], "lpf_freq_gyr" );  param.val[lpf_freq_gyr] = LPF_FREQ_GYR;
-  strcpy( param.name[lpf_freq_acc], "lpf_freq_acc" );  param.val[lpf_freq_acc] = LPF_FREQ_ACC;
-  strcpy( param.name[lpf_freq_mag], "lpf_freq_mag" );  param.val[lpf_freq_mag] = LPF_FREQ_MAG;
+  //strcpy( param.name[lpf_freq_gyr], "lpf_freq_gyr" );  param.val[lpf_freq_gyr] = LPF_FREQ_GYR;
+  //strcpy( param.name[lpf_freq_acc], "lpf_freq_acc" );  param.val[lpf_freq_acc] = LPF_FREQ_ACC;
+  //strcpy( param.name[lpf_freq_mag], "lpf_freq_mag" );  param.val[lpf_freq_mag] = LPF_FREQ_MAG;
 
   // LPF sample history
-  strcpy( param.name[lpf_hist_gyr], "lpf_hist_gyr" );  param.val[lpf_hist_gyr] = LPF_HIST_GYR;
-  strcpy( param.name[lpf_hist_acc], "lpf_hist_acc" );  param.val[lpf_hist_acc] = LPF_HIST_ACC;
-  strcpy( param.name[lpf_hist_mag], "lpf_hist_mag" );  param.val[lpf_hist_mag] = LPF_HIST_MAG;
+  //strcpy( param.name[lpf_hist_gyr], "lpf_hist_gyr" );  param.val[lpf_hist_gyr] = LPF_HIST_GYR;
+  //strcpy( param.name[lpf_hist_acc], "lpf_hist_acc" );  param.val[lpf_hist_acc] = LPF_HIST_ACC;
+  //strcpy( param.name[lpf_hist_mag], "lpf_hist_mag" );  param.val[lpf_hist_mag] = LPF_HIST_MAG;
 
   // Roll gains
   strcpy( param.name[X_Kp], "X_Kp" );  param.val[X_Kp] = QUAD_PX;
@@ -482,14 +482,17 @@ static void gcs_param_value ( mavlink_message_t *msg )  {
   ushort x=0, y=1, z=2, t=3;
 
   // Update LPF cutoff frequency
-  lpf_freq( &lpf_gyrA, param.val[lpf_freq_gyr] );  lpf_freq( &lpf_gyrB, param.val[lpf_freq_gyr] );
-  lpf_freq( &lpf_accA, param.val[lpf_freq_acc] );  lpf_freq( &lpf_accB, param.val[lpf_freq_acc] );
-  lpf_freq( &lpf_magA, param.val[lpf_freq_mag] );  lpf_freq( &lpf_magB, param.val[lpf_freq_mag] );
+  //lpf_freq( &lpf_gyrA, param.val[lpf_freq_gyr] );  lpf_freq( &lpf_gyrB, param.val[lpf_freq_gyr] );
+  //lpf_freq( &lpf_accA, param.val[lpf_freq_acc] );  lpf_freq( &lpf_accB, param.val[lpf_freq_acc] );
+  //lpf_freq( &lpf_magA, param.val[lpf_freq_mag] );  lpf_freq( &lpf_magB, param.val[lpf_freq_mag] );
 
   // Update LPF sample history
-  lpf_hist( &lpf_gyrA, param.val[lpf_hist_gyr] );  lpf_hist( &lpf_gyrB, param.val[lpf_hist_gyr] );
-  lpf_hist( &lpf_accA, param.val[lpf_hist_acc] );  lpf_hist( &lpf_accB, param.val[lpf_hist_acc] );
-  lpf_hist( &lpf_magA, param.val[lpf_hist_mag] );  lpf_hist( &lpf_magB, param.val[lpf_hist_mag] );
+  //lpf_hist( &lpf_gyrA, param.val[lpf_hist_gyr] );  lpf_hist( &lpf_gyrB, param.val[lpf_hist_gyr] );
+  //lpf_hist( &lpf_accA, param.val[lpf_hist_acc] );  lpf_hist( &lpf_accB, param.val[lpf_hist_acc] );
+  //lpf_hist( &lpf_magA, param.val[lpf_hist_mag] );  lpf_hist( &lpf_magB, param.val[lpf_hist_mag] );
+
+  // Lock control mutex
+  pthread_mutex_lock(&ctrl.mutex);
 
   // Update roll gains
   ctrl.pgain[x] = param.val[X_Kp];
@@ -516,6 +519,9 @@ static void gcs_param_value ( mavlink_message_t *msg )  {
   ctrl.range[y] = param.val[Y_Range];
   ctrl.range[z] = param.val[Z_Range];
   ctrl.range[t] = param.val[T_Range];
+
+  // Unlock control mutex
+  pthread_mutex_unlock(&ctrl.mutex);
 
   return;
 }

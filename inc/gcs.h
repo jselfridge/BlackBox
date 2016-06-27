@@ -49,17 +49,17 @@
 enum param_index {
 
   // LPF cutoff freq
-  lpf_freq_gyr = 0,
-  lpf_freq_acc,
-  lpf_freq_mag,
+  //lpf_freq_gyr = 0,
+  //lpf_freq_acc,
+  //lpf_freq_mag,
 
   // LPF sample history
-  lpf_hist_gyr,
-  lpf_hist_acc,
-  lpf_hist_mag,
+  //lpf_hist_gyr,
+  //lpf_hist_acc,
+  //lpf_hist_mag,
 
   // Roll gains
-  X_Kp,
+  X_Kp = 0,
   X_Ki,
   X_Kd,
 

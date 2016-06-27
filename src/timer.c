@@ -44,8 +44,10 @@ void tmr_mutex ( void )  {
   pthread_mutex_init( &mutex_i2c1,   NULL );
   pthread_mutex_init( &mutex_i2c2,   NULL );
   pthread_mutex_init( &gyrA.mutex,   NULL );
+  pthread_mutex_init( &imuA.mutex,   NULL );
   pthread_mutex_init( &accA.mutex,   NULL );
   pthread_mutex_init( &magA.mutex,   NULL );
+  pthread_mutex_init( &imuB.mutex,   NULL );
   pthread_mutex_init( &gyrB.mutex,   NULL );
   pthread_mutex_init( &accB.mutex,   NULL );
   pthread_mutex_init( &magB.mutex,   NULL );
@@ -170,8 +172,8 @@ void tmr_begin ( pthread_attr_t *attr )  {
   tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(100000);
 
   tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);
-  tmr_thread( &tmr_comp,  attr, fcn_comp  );  usleep(100000);
 
+  //tmr_thread( &tmr_comp,  attr, fcn_comp  );  usleep(100000);
   //tmr_thread( &tmr_ahrs,  attr, fcn_ahrs  );  usleep(100000);
   //tmr_thread( &tmr_ekf,   attr, fcn_ekf   );  usleep(100000);
   //tmr_thread( &tmr_gps,   attr, fcn_gps   );  usleep(100000);
@@ -201,9 +203,11 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&output.mutex);
   pthread_mutex_destroy(&mutex_i2c1);
   pthread_mutex_destroy(&mutex_i2c2);
+  pthread_mutex_destroy(&imuA.mutex);
   pthread_mutex_destroy(&gyrA.mutex);
   pthread_mutex_destroy(&accA.mutex);
   pthread_mutex_destroy(&magA.mutex);
+  pthread_mutex_destroy(&imuB.mutex);
   pthread_mutex_destroy(&gyrB.mutex);
   pthread_mutex_destroy(&accB.mutex);
   pthread_mutex_destroy(&magB.mutex);
@@ -249,10 +253,11 @@ void tmr_exit ( void )  {
   if(DEBUG)  printf( "ahrs " );
   */
 
-  // Exit comp filter thread
+  /*// Exit comp filter thread
   if( pthread_join ( tmr_comp.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'comp' thread. \n" );
   if(DEBUG)  printf( "comp " );
+  */
 
   // Exit IMU thread
   if( pthread_join ( tmr_imu.id, NULL ) )

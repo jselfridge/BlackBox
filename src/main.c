@@ -14,9 +14,9 @@ int main ( void )  {
   sys_init();
   io_init();
   flag_init();
-  lpf_init();
+  //lpf_init();
   imu_init();
-  comp_init();
+  //comp_init();
   //ahrs_init();
   //ekf_init();
   //gps_init();
@@ -47,9 +47,9 @@ int main ( void )  {
   //gps_exit();
   //ekf_exit();
   //ahrs_exit();
-  comp_exit();
+  //comp_exit();
   imu_exit();
-  lpf_exit();
+  //lpf_exit();
   flag_exit();
   io_exit();
   sys_exit();

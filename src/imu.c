@@ -42,9 +42,15 @@ void imu_init ( void )  {
     imuA.getmag = false;
 
     // IMU data structures
-    imuA.gyr  = &gyrA;
-    imuA.acc  = &accA;
-    imuA.mag  = &magA;
+    imuA.gyr  = &gyrA;  imuA.gyr->gain[0] = 0.32;  imuA.gyr->gain[1] = 0.32;  imuA.gyr->gain[2] = 0.32;
+    imuA.acc  = &accA;  imuA.acc->gain[0] = 0.08;  imuA.acc->gain[1] = 0.08;  imuA.acc->gain[2] = 0.08;
+    imuA.mag  = &magA;  imuA.mag->gain[0] = 0.00;  imuA.mag->gain[1] = 0.00;  imuA.mag->gain[2] = 0.00;
+
+    // Complimentary filter values
+    imuA.dt    = 1.0 / HZ_IMU_FAST;
+    imuA.gain  = 0.95;
+    imuA.roll  = 0.00;
+    imuA.pitch = 0.00; 
 
     // Setup functions
     i2c_init( &(imuA.fd), imuA.bus, imuA.addr );
@@ -67,9 +73,15 @@ void imu_init ( void )  {
     imuB.getmag = false;
 
     // IMU data structures
-    imuB.gyr  = &gyrB;
-    imuB.acc  = &accB;
-    imuB.mag  = &magB;
+    imuB.gyr  = &gyrB;  imuB.gyr->gain[0] = 0.32;  imuB.gyr->gain[1] = 0.32;  imuB.gyr->gain[2] = 0.32;
+    imuB.acc  = &accB;  imuB.acc->gain[0] = 0.08;  imuB.acc->gain[1] = 0.08;  imuB.acc->gain[2] = 0.08;
+    imuB.mag  = &magB;  imuB.mag->gain[0] = 0.00;  imuB.mag->gain[1] = 0.00;  imuB.mag->gain[2] = 0.00;
+
+    // Complimentary filter values
+    imuB.dt    = 1.0 / HZ_IMU_FAST;
+    imuB.gain  = 0.95;
+    imuB.roll  = 0.00;
+    imuB.pitch = 0.00; 
 
     // Setup functions
     i2c_init( &(imuB.fd), imuB.bus, imuB.addr );
@@ -77,15 +89,6 @@ void imu_init ( void )  {
     imu_getcal(&imuB);
 
   }
-
-  // Setup averaged IMU
-  /*
-  if ( IMUA_ENABLED && IMUB_ENABLED )  {
-    imu.gyr  = &gyr;
-    imu.acc  = &acc;
-    imu.mag  = &mag;
-  }
-  */
 
   // IMU warmup period
   usleep(300000);
@@ -237,10 +240,12 @@ void imu_update ( imu_struct *imu )  {
   // Array index
   ushort x=0, y=1, z=2;
 
-  // Local IMU struct arrays
-  short  Gr[3], Ar[3], Mr[3];
-  double Gs[3], As[3], Ms[3];
-  double Gf[3], Af[3], Mf[3];
+  // Local IMU arrays
+  short  Gr[3], Ar[3], Mr[3];    // Raw
+  double Gs[3], As[3], Ms[3];    // Scaled
+  double Gp[3], Ap[3], Mp[3];    // Previous
+  double Gg[3], Ag[3], Mg[3];    // LPF Gain
+  double Gf[3], Af[3], Mf[3];    // Filtered
 
   // Increment counter
   imu->getmag = false;
@@ -277,52 +282,79 @@ void imu_update ( imu_struct *imu )  {
   Ms[z] =   ( Mr[z] - imu->mag->bias[z] ) / (double) (imu->mag->range[z]);
   }
 
-  // IMUA low pass filter
-  if ( imu->id == 'A' )  {
-    lpf_update ( &lpf_gyrA, Gs, Gf );
-    lpf_update ( &lpf_accA, As, Af );
+  // Get gyroscope values
+  pthread_mutex_lock( &(imu->gyr->mutex) );
+  for ( i=0; i<3; i++ )  {  Gp[i] = imu->gyr->filter[i];  Gg[i] = imu->gyr->gain[i];  }
+  pthread_mutex_unlock( &(imu->gyr->mutex) );
+
+  // Get accerometer values
+  pthread_mutex_lock( &(imu->acc->mutex) );
+  for ( i=0; i<3; i++ )  {  Ap[i] = imu->acc->filter[i];  Ag[i] = imu->acc->gain[i];  }
+  pthread_mutex_unlock( &(imu->acc->mutex) );
+
+  // Get magnetometer values
+  if(imu->getmag) {
+  pthread_mutex_lock( &(imu->mag->mutex) );
+  for ( i=0; i<3; i++ )  {  Mp[i] = imu->mag->filter[i];  Mg[i] = imu->mag->gain[i];  }
+  pthread_mutex_unlock( &(imu->mag->mutex) );
+  }
+
+  // Get complimentary filter values
+  pthread_mutex_lock( &(imu->mutex) );
+  dt = imu->dt;
+  gain = imu->gain;
+  R = imu->roll;
+  P = imu->pitch;
+  pthread_mutex_unlock( &(imu->mutex) );
+
+  // Low pass filter
+  for ( i=0; i<3; i++ )  {
+    Gf[i] = Gp[i] + Gg[i] * ( Gs[i] - Gp[i] );
+    Af[i] = Ap[i] + Ag[i] * ( As[i] - Ap[i] );
     if (imu->getmag)  {
-    lpf_update ( &lpf_magA, Ms, Mf );
+    Mf[i] = Mp[i] + Mg[i] * ( Ms[i] - Mp[i] );
     }
   }
 
-  // IMUB low pass filter
-  if ( imu->id == 'B' )  {
-    lpf_update ( &lpf_gyrB, Gs, Gf );
-    lpf_update ( &lpf_accB, As, Af );
-    if (imu->getmag)  {
-    lpf_update ( &lpf_magB, Ms, Mf );
-    }
-  }
+
+  // Calculate attitude angles
+  R = gain * ( R + gyrR * dt ) + ( 1.0 - gain ) * accR;
+  P = gain * ( P + gyrP * dt ) + ( 1.0 - gain ) * accP;
 
   // Push gyroscope values to data structure
-  pthread_mutex_lock(&(imu->gyr->mutex));
+  pthread_mutex_lock( &(imu->gyr->mutex) );
   for ( i=0; i<3; i++ )  {
     imu->gyr->raw[i]    = Gr[i];
     imu->gyr->scaled[i] = Gs[i];
     imu->gyr->filter[i] = Gf[i];
   }
-  pthread_mutex_unlock(&(imu->gyr->mutex));
+  pthread_mutex_unlock( &(imu->gyr->mutex) );
 
   // Push accerometer values to data structure
-  pthread_mutex_lock(&(imu->acc->mutex));
+  pthread_mutex_lock( &(imu->acc->mutex) );
   for ( i=0; i<3; i++ )  {
     imu->acc->raw[i]    = Ar[i];
     imu->acc->scaled[i] = As[i];
     imu->acc->filter[i] = Af[i];
   }
-  pthread_mutex_unlock(&(imu->acc->mutex));
+  pthread_mutex_unlock( &(imu->acc->mutex) );
 
   // Push magnetometer values to data structure
   if(imu->getmag) {
-  pthread_mutex_lock(&(imu->mag->mutex));
+  pthread_mutex_lock( &(imu->mag->mutex) );
   for ( i=0; i<3; i++ )  {
     imu->mag->raw[i]    = Mr[i];
     imu->mag->scaled[i] = Ms[i];
     imu->mag->filter[i] = Mf[i];
   }
-  pthread_mutex_unlock(&(imu->mag->mutex));
+  pthread_mutex_unlock( &(imu->mag->mutex) );
   }
+
+  // Push complimentary filter values to data structure
+  pthread_mutex_lock( &(imu->mutex) );
+  //imu->roll  = R;
+  //imu->pitch = P;
+  pthread_mutex_unlock( &(imu->mutex) );
 
   return;
 }

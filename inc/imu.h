@@ -24,6 +24,7 @@ typedef struct imu_data_struct {
   short  raw    [3];
   double scaled [3];
   double filter [3];
+  double gain   [3];
   pthread_mutex_t mutex;
 } imu_data_struct;
 imu_data_struct gyrA;
@@ -42,9 +43,14 @@ typedef struct imu_struct {
   ushort loops;
   ushort count;
   bool   getmag;
+  double dt;
+  double gain;
+  double roll;
+  double pitch;
   imu_data_struct *gyr;
   imu_data_struct *acc;
   imu_data_struct *mag;
+  pthread_mutex_t mutex;
 } imu_struct;
 imu_struct imuA;
 imu_struct imuB;

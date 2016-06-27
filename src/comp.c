@@ -62,16 +62,16 @@ void comp_update ( void )  {
   // Obtain gyrA data
   if(IMUA_ENABLED)  {
     pthread_mutex_lock(&gyrA.mutex);
-    gyrR += gyrA.scaled[0];
-    gyrP += gyrA.scaled[1];
+    gyrR += gyrA.filter[0];
+    gyrP += gyrA.filter[1];
     pthread_mutex_unlock(&gyrA.mutex);
   }
 
   // Obtain gyrB data
   if(IMUB_ENABLED)  {
     pthread_mutex_lock(&gyrB.mutex);
-    gyrR += gyrB.scaled[0];
-    gyrP += gyrB.scaled[1];
+    gyrR += gyrB.filter[0];
+    gyrP += gyrB.filter[1];
     pthread_mutex_unlock(&gyrB.mutex);
   }
 
@@ -89,18 +89,18 @@ void comp_update ( void )  {
   // Obtain accA data
   if (IMUA_ENABLED)  {
     pthread_mutex_lock(&accA.mutex);
-    ax +=  accA.scaled[0];
-    ay += -accA.scaled[1];
-    az += -accA.scaled[2];
+    ax +=  accA.filter[0];
+    ay += -accA.filter[1];
+    az += -accA.filter[2];
     pthread_mutex_unlock(&accA.mutex);
   }
 
   // Obtain accB data
   if (IMUB_ENABLED)  {
     pthread_mutex_lock(&accB.mutex);
-    ax +=  accB.scaled[0];
-    ay += -accB.scaled[1];
-    az += -accB.scaled[2];
+    ax +=  accB.filter[0];
+    ay += -accB.filter[1];
+    az += -accB.filter[2];
     pthread_mutex_unlock(&accB.mutex);
   }
 
