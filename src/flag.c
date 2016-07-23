@@ -84,13 +84,13 @@ void flag_update ( void )  {
   // Motor arming: yaw stick only, no roll command
   if ( !energized && !flag.lower[CH_R] && !flag.upper[CH_R] )  {
     if ( flag.upper[CH_Y] >= flag.limit[CH_Y] ) {
-      pthread_mutex_lock(&ctrl.mutex);
-      pthread_mutex_lock(&ahrsA.mutex);
-      ctrl.bank    = ahrsA.eul[0];
-      ctrl.climb   = ahrsA.eul[1];
-      ctrl.heading = ahrsA.eul[2];
-      pthread_mutex_unlock(&ahrsA.mutex);
-      pthread_mutex_unlock(&ctrl.mutex);
+      //pthread_mutex_lock(&ctrl.mutex);
+      //pthread_mutex_lock(&ahrsA.mutex);
+      //ctrl.bank    = ahrsA.eul[0];
+      //ctrl.climb   = ahrsA.eul[1];
+      //ctrl.heading = ahrsA.eul[2];
+      //pthread_mutex_unlock(&ahrsA.mutex);
+      //pthread_mutex_unlock(&ctrl.mutex);
       armed = true;
       led_on(LED_MOT);
     }

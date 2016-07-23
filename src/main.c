@@ -15,13 +15,13 @@ int main ( void )  {
   io_init();
   flag_init();
   //lpf_init();
-  imu_init();
+  //imu_init();
   //comp_init();
   //ahrs_init();
   //ekf_init();
   //gps_init();
-  ctrl_init();
-  gcs_init();
+  //ctrl_init();
+  //gcs_init();
   log_init();
   tmr_init();
 
@@ -42,13 +42,13 @@ int main ( void )  {
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   tmr_exit();
   log_exit();
-  gcs_exit();
-  ctrl_exit();
+  //gcs_exit();
+  //ctrl_exit();
   //gps_exit();
   //ekf_exit();
   //ahrs_exit();
   //comp_exit();
-  imu_exit();
+  //imu_exit();
   //lpf_exit();
   flag_exit();
   io_exit();

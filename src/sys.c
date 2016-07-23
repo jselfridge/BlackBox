@@ -9,28 +9,28 @@
 #include <sys/mman.h>
 #include <unistd.h>
 //#include "ahrs.h"
-#include "ctrl.h"
-#include "comp.h"
+//#include "ctrl.h"
+//#include "comp.h"
 //#include "ekf.h"
-#include "flag.h"
+//#include "flag.h"
 //#include "gps.h"
-#include "imu.h"
+//#include "imu.h"
 #include "io.h"
 #include "led.h"
 #include "log.h"
-#include "lpf.h"
+//#include "lpf.h"
 #include "timer.h"
 
 
 static void sys_io    ( void );
-static void sys_lpf   ( void );
-static void sys_imu   ( void );
-static void sys_comp  ( void );
+//static void sys_lpf   ( void );
+//static void sys_imu   ( void );
+//static void sys_comp  ( void );
 //static void sys_ahrs  ( void );
 //static void sys_ekf   ( void );
 //static void sys_gps   ( void );
-static void sys_ctrl  ( void );
-static void sys_gcs   ( void );
+//static void sys_ctrl  ( void );
+//static void sys_gcs   ( void );
 
 
 /**
@@ -126,14 +126,14 @@ void sys_update ( void )  {
 
   // Select data for display
   if(SYS_IO)     sys_io();
-  if(SYS_LPF)    sys_lpf();
-  if(SYS_IMU)    sys_imu();
-  if(SYS_COMP)   sys_comp();
+  //if(SYS_LPF)    sys_lpf();
+  //if(SYS_IMU)    sys_imu();
+  //if(SYS_COMP)   sys_comp();
   //if(SYS_AHRS)   sys_ahrs();
   //if(SYS_EKF)    sys_ekf();
   //if(SYS_GPS)    sys_gps();
-  if(SYS_GCS)    sys_gcs();
-  if(SYS_CTRL)   sys_ctrl();
+  //if(SYS_GCS)    sys_gcs();
+  //if(SYS_CTRL)   sys_ctrl();
 
   // Complete debugging display 
   printf("  "); fflush(stdout);
@@ -166,15 +166,13 @@ static void sys_io ( void )  {
   pthread_mutex_unlock(&output.mutex);
 
   // Quadrotor output signals
-  /*
-  pthread_mutex_lock(&output.mutex);
-  printf("%5.2f ", output.norm[0] );
-  printf("%5.2f ", output.norm[1] );
-  printf("%5.2f ", output.norm[4] );
-  printf("%5.2f ", output.norm[5] );
-  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&output.mutex);
-  */
+  //pthread_mutex_lock(&output.mutex);
+  //printf("%5.2f ", output.norm[0] );
+  //printf("%5.2f ", output.norm[1] );
+  //printf("%5.2f ", output.norm[4] );
+  //printf("%5.2f ", output.norm[5] );
+  //printf("   ");  fflush(stdout);
+  //pthread_mutex_unlock(&output.mutex);
 
   return;
 }
@@ -184,8 +182,9 @@ static void sys_io ( void )  {
  *  sys_lpf
  *  Prints low pass filter parameter values to the terminal.
  */
+/*
 static void sys_lpf ( void )  {
-  /*
+
   // IMUA filters
   if (IMUA_ENABLED) {
     printf("%6.1f ", filter_gyrA.freq );
@@ -209,15 +208,16 @@ static void sys_lpf ( void )  {
     printf("%5d ",   filter_magB.hist );
     printf("   ");  fflush(stdout);
   }
-  */
+
   return;
 }
-
+*/
 
 /**
  *  sys_imu
  *  Prints IMU debugging messages to the terminal.
  */
+/*
 static void sys_imu ( void )  {
 
   // Loop counter
@@ -277,12 +277,13 @@ static void sys_imu ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  sys_comp
  *  Prints complimentary filter debugging messages to the terminal.
  */
+/*
 static void sys_comp ( void )  {
 
   pthread_mutex_lock(&comp.mutex);
@@ -293,7 +294,7 @@ static void sys_comp ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  sys_ahrs
@@ -379,6 +380,7 @@ static void sys_ahrs ( void )  {
  *  sys_ctrl
  *  Prints controller values to the terminal.
  */
+/*
 static void sys_ctrl ( void )  {
 
   // Loop counter
@@ -402,16 +404,18 @@ static void sys_ctrl ( void )  {
 
   return;
 }
-
+*/
 
 /**
  *  sys_gcs
  *  Prints ground control debugging messages to the terminal.
  */
+/*
 static void sys_gcs ( void )  {
   // Add code as needed...
   return;
 }
+*/
 
 
 

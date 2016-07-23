@@ -5,12 +5,12 @@
 #include <sys/stat.h>
 #include <unistd.h>
 //#include "ahrs.h"
-#include "comp.h"
-#include "ctrl.h"
-#include "ekf.h"
-#include "gcs.h"
-#include "gps.h"
-#include "imu.h"
+//#include "comp.h"
+//#include "ctrl.h"
+//#include "ekf.h"
+//#include "gcs.h"
+//#include "gps.h"
+//#include "imu.h"
 #include "io.h"
 #include "led.h"
 #include "sys.h"
@@ -35,38 +35,35 @@ void log_init ( void )  {
   datalog.saving   = false;
 
   // Assign datalog limits
-  log_param.limit   =  LOG_MAX_PARAM;  
+  //log_param.limit   =  LOG_MAX_PARAM;  
   log_input.limit   =  LOG_MAX_DUR * HZ_IO;
   log_output.limit  =  LOG_MAX_DUR * HZ_IO;
-  log_gyrA.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
-  log_accA.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
-  log_magA.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
-  log_gyrB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
-  log_accB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
-  log_magB.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
-  log_comp.limit    =  LOG_MAX_DUR * HZ_COMP;
+  //log_gyrA.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
+  //log_accA.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
+  //log_magA.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
+  //log_gyrB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
+  //log_accB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
+  //log_magB.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
+  //log_comp.limit    =  LOG_MAX_DUR * HZ_COMP;
   //log_ahrsA.limit   =  LOG_MAX_DUR * HZ_AHRS;
   //log_ahrsB.limit   =  LOG_MAX_DUR * HZ_AHRS;
   //log_ekf.limit     =  LOG_MAX_DUR * HZ_EKF;
   //log_gps.limit     =  LOG_MAX_DUR * HZ_GPS;
-  log_ctrl.limit    =  LOG_MAX_DUR * HZ_CTRL;
+  //log_ctrl.limit    =  LOG_MAX_DUR * HZ_CTRL;
 
   // Parameter value setup
-  log_param.time    =  malloc( sizeof(float)  * log_param.limit               );
-  log_param.values  =  malloc( sizeof(float)  * log_param.limit * param_count );
+  //log_param.time    =  malloc( sizeof(float)  * log_param.limit               );
+  //log_param.values  =  malloc( sizeof(float)  * log_param.limit * param_count );
 
   // Input signal setup
   log_input.time    =  malloc( sizeof(float)  * log_input.limit         );
-  log_input.reg     =  malloc( sizeof(ushort) * log_input.limit * IN_CH );
-  log_input.pwm     =  malloc( sizeof(ushort) * log_input.limit * IN_CH );
-  log_input.norm    =  malloc( sizeof(float)  * log_input.limit * IN_CH );
+  log_input.data    =  malloc( sizeof(float)  * log_input.limit * IN_CH );
 
   // Output signal setup
   log_output.time   =  malloc( sizeof(float)  * log_output.limit          );
-  log_output.reg    =  malloc( sizeof(ushort) * log_output.limit * OUT_CH );
-  log_output.pwm    =  malloc( sizeof(ushort) * log_output.limit * OUT_CH );
-  log_output.norm   =  malloc( sizeof(float)  * log_output.limit * OUT_CH );
+  log_output.data   =  malloc( sizeof(float)  * log_output.limit * OUT_CH );
 
+  /*
   // IMU A setup
   if (IMUA_ENABLED) {
 
@@ -91,7 +88,6 @@ void log_init ( void )  {
   log_magA.scaled   =  malloc( sizeof(float)  * log_magA.limit * 3 );
   log_magA.filter   =  malloc( sizeof(float)  * log_magA.limit * 3 );
 
-  /*
   // Attitude and Heading Reference System A setup
   log_ahrsA.time    =  malloc( sizeof(float)  * log_ahrsA.limit     );
   log_ahrsA.dur     =  malloc( sizeof(ulong)  * log_ahrsA.limit     );
@@ -102,9 +98,11 @@ void log_init ( void )  {
   log_ahrsA.bias    =  malloc( sizeof(float)  * log_ahrsA.limit * 3 );
   log_ahrsA.fx      =  malloc( sizeof(float)  * log_ahrsA.limit     );
   log_ahrsA.fz      =  malloc( sizeof(float)  * log_ahrsA.limit     );
-  */
-  }
 
+  }
+  */
+
+  /*
   // IMU B setup
   if (IMUB_ENABLED) {
 
@@ -129,7 +127,6 @@ void log_init ( void )  {
   log_magB.scaled   =  malloc( sizeof(float)  * log_magB.limit * 3 );
   log_magB.filter   =  malloc( sizeof(float)  * log_magB.limit * 3 );
 
-  /*
   // Attitude and Heading Reference System B setup
   log_ahrsB.time    =  malloc( sizeof(float)  * log_ahrsB.limit     );
   log_ahrsB.dur     =  malloc( sizeof(ulong)  * log_ahrsB.limit     );
@@ -140,13 +137,16 @@ void log_init ( void )  {
   log_ahrsB.bias    =  malloc( sizeof(float)  * log_ahrsB.limit * 3 );
   log_ahrsB.fx      =  malloc( sizeof(float)  * log_ahrsB.limit     );
   log_ahrsB.fz      =  malloc( sizeof(float)  * log_ahrsB.limit     );
-  */
-  }
 
+  }
+  */
+
+  /*
   // Complimentary filter setup
   log_comp.time    =  malloc( sizeof(float) * log_comp.limit );
   log_comp.roll    =  malloc( sizeof(float) * log_comp.limit );
   log_comp.pitch   =  malloc( sizeof(float) * log_comp.limit );
+  */
 
   /*
   // Extended Kalman Filter setup
@@ -172,6 +172,7 @@ void log_init ( void )  {
   log_gps.msg       =  malloc( sizeof(char)   * log_gps.limit * 96 );
   */
 
+  /*
   // Controller parameter setup
   log_ctrl.time     =  malloc( sizeof(float)  * log_ctrl.limit     );
   log_ctrl.dur      =  malloc( sizeof(ulong)  * log_ctrl.limit     );
@@ -179,6 +180,7 @@ void log_init ( void )  {
   log_ctrl.ierr     =  malloc( sizeof(float)  * log_ctrl.limit * 3 );
   log_ctrl.derr     =  malloc( sizeof(float)  * log_ctrl.limit * 3 );
   log_ctrl.cmd      =  malloc( sizeof(float)  * log_ctrl.limit * 4 );
+  */
 
   return;
 }
@@ -192,21 +194,18 @@ void log_exit ( void )  {
   if(DEBUG)  printf("Close logs \n");
 
   // Parameter memory
-  free(log_param.time);
-  free(log_param.values);
+  //free(log_param.time);
+  //free(log_param.values);
 
   // Input memory
   free(log_input.time);
-  free(log_input.reg);
-  free(log_input.pwm);
-  free(log_input.norm);
+  free(log_input.data);
 
   // Output memory
   free(log_output.time);
-  free(log_output.reg);
-  free(log_output.pwm);
-  free(log_output.norm);
+  free(log_output.data);
 
+  /*
   // IMU A memory
   if (IMUA_ENABLED) {
 
@@ -231,7 +230,6 @@ void log_exit ( void )  {
   free(log_magA.scaled);
   free(log_magA.filter);
 
-  /*
   // Attitude/Heading A memory
   free(log_ahrsA.time);
   free(log_ahrsA.dur);
@@ -242,9 +240,11 @@ void log_exit ( void )  {
   free(log_ahrsA.bias);
   free(log_ahrsA.fx);
   free(log_ahrsA.fz);
-  */
-  }
 
+  }
+  */
+
+  /*
   // IMU B memory
   if (IMUB_ENABLED) {
 
@@ -269,7 +269,6 @@ void log_exit ( void )  {
   free(log_magB.scaled);
   free(log_magB.filter);
 
-  /*
   // Attitude/Heading B memory
   free(log_ahrsB.time);
   free(log_ahrsB.dur);
@@ -280,13 +279,14 @@ void log_exit ( void )  {
   free(log_ahrsB.bias);
   free(log_ahrsB.fx);
   free(log_ahrsB.fz);
-  */
+
   }
+  */
 
   // Comp filter memory
-  free(log_comp.time);
-  free(log_comp.roll);
-  free(log_comp.pitch);
+  //free(log_comp.time);
+  //free(log_comp.roll);
+  //free(log_comp.pitch);
 
   /*
   // EKF memory
@@ -306,6 +306,7 @@ void log_exit ( void )  {
   free(log_gps.msg);
   */
 
+  /*
   // Controller memory
   free(log_ctrl.time);
   free(log_ctrl.dur);
@@ -313,6 +314,7 @@ void log_exit ( void )  {
   free(log_ctrl.ierr);
   free(log_ctrl.derr);
   free(log_ctrl.cmd);
+  */
 
   return;
 }
@@ -325,21 +327,21 @@ void log_exit ( void )  {
 void log_start ( void )  {
 
   // Reset counters
-  log_param.count  = 0;
+  //log_param.count  = 0;
   log_input.count  = 0;
   log_output.count = 0;
-  log_gyrA.count   = 0;
-  log_accA.count   = 0;
-  log_magA.count   = 0;
-  log_gyrB.count   = 0;
-  log_accB.count   = 0;
-  log_magB.count   = 0;
-  log_comp.count   = 0;
+  //log_gyrA.count   = 0;
+  //log_accA.count   = 0;
+  //log_magA.count   = 0;
+  //log_gyrB.count   = 0;
+  //log_accB.count   = 0;
+  //log_magB.count   = 0;
+  //log_comp.count   = 0;
   //log_ahrsA.count  = 0;
   //log_ahrsB.count  = 0;
   //log_ekf.count    = 0;
   //log_gps.count    = 0;
-  log_ctrl.count   = 0;
+  //log_ctrl.count   = 0;
 
   // Allocate dir/path/file memory
   datalog.dir  = malloc(16);
@@ -367,7 +369,7 @@ void log_start ( void )  {
   datalog.param = fopen( file, "w" );
   if( datalog.param == NULL )  printf( "Error (log_init): Cannot generate 'param' file. \n" );
   fprintf( datalog.param, "   ParamTime   " );
-  for ( i=1; i <= param_count; i++ )  fprintf( datalog.param, "   Param_%02d", i );
+  //for ( i=1; i <= param_count; i++ )  fprintf( datalog.param, "   Param_%02d", i );
 
   // Input datalog file
   sprintf( file, "%sinput.txt", datalog.path );
@@ -386,7 +388,7 @@ void log_start ( void )  {
     "     OutTime  \
     Out01    Out02    Out03    Out04    Out05\
     Out06    Out07    Out08    Out09    Out10" );
-
+  /*
   // IMUA datalogs
   if (IMUA_ENABLED)  {
 
@@ -420,7 +422,6 @@ void log_start ( void )  {
     MagAsx   MagAsy   MagAsz   \
     MagAfx   MagAfy   MagAfz");
 
-  /*
   // Attitude and heading reference system A datalog file
   sprintf( file, "%sahrsA.txt", datalog.path );
   datalog.ahrsA = fopen( file, "w" );
@@ -433,7 +434,7 @@ void log_start ( void )  {
     dEulAx   dEulAy   dEulAz   \
     biasAx   biasAy   biasAz   \
     fluxAx   fluxAz");
-  */
+
   }
 
   // IMUB datalogs
@@ -469,7 +470,6 @@ void log_start ( void )  {
     MagBsx   MagBsy   MagBsz   \
     MagBfx   MagBfy   MagBfz");
 
-  /*
   // Attitude and heading reference system B datalog file
   sprintf( file, "%sahrsB.txt", datalog.path );
   datalog.ahrsB = fopen( file, "w" );
@@ -482,7 +482,7 @@ void log_start ( void )  {
     dEulBx   dEulBy   dEulBz   \
     biasBx   biasBy   biasBz   \
     fluxBx   fluxBz");
-  */
+
   }
 
   // Comp filter datalog file
@@ -491,7 +491,6 @@ void log_start ( void )  {
   if( datalog.comp == NULL )  printf( "Error (log_init): Cannot generate 'comp' file. \n" );
   fprintf( datalog.comp, "    CompTime       Roll    Pitch" );
 
-  /*
   // Extended Kalman Filter datalog file
   uint n, m, nn, mm, nm;
   n  = EKF_N;
@@ -516,7 +515,6 @@ void log_start ( void )  {
   datalog.gps = fopen( file, "w" );
   if( datalog.gps == NULL )  printf( "Error (log_init): Cannot generate 'gps' file. \n" );
   fprintf( datalog.gps, "       Gtime    Gdur    Data    ");
-  */
 
   // Controller datalog file
   sprintf( file, "%sctrl.txt", datalog.path );
@@ -528,6 +526,7 @@ void log_start ( void )  {
     errIX    errIY    errIZ    \
     errDX    errDY    errDZ     \
     cmdX     cmdY     cmdZ     cmdT" );
+  */
 
   // Determine start second
   struct timespec timeval;
@@ -554,11 +553,12 @@ void log_record ( enum log_index index )  {
   ushort i;
   ulong  row;
   float  timestamp;
-  struct timespec t;
+  //struct timespec t;
 
   // Jump to appropriate log 
   switch(index) {
 
+    /*
   // Record parameter values
   case LOG_PARAM :
 
@@ -576,6 +576,7 @@ void log_record ( enum log_index index )  {
     pthread_mutex_unlock(&gcs.mutex);
 
     return;
+    */
 
   // Record system input/output data
   case LOG_IO :
@@ -587,7 +588,7 @@ void log_record ( enum log_index index )  {
     if ( log_input.count < log_input.limit ) {
       row = log_input.count;
       log_input.time[row] = timestamp;
-      for ( i=0; i<10; i++ )  log_input.norm [ row*10 +i ] = input.norm[i];
+      for ( i=0; i<10; i++ )  log_input.data [ row*10 +i ] = input.norm[i];
       log_input.count++;
     }
     pthread_mutex_unlock(&input.mutex);
@@ -597,13 +598,14 @@ void log_record ( enum log_index index )  {
     if ( log_output.count < log_output.limit ) {
       row = log_output.count;
       log_output.time[row] = timestamp;
-      for ( i=0; i<10; i++ )  log_output.norm [ row*10 +i ] = output.norm[i];
+      for ( i=0; i<10; i++ )  log_output.data [ row*10 +i ] = output.norm[i];
       log_output.count++;
     }
     pthread_mutex_unlock(&output.mutex);
 
     return;
 
+    /*
   // Record IMUA data
   case LOG_IMUA :
 
@@ -714,7 +716,7 @@ void log_record ( enum log_index index )  {
 
     return;
 
-    /*
+
   // Record AHRSA data
   case LOG_AHRSA :
 
@@ -737,9 +739,8 @@ void log_record ( enum log_index index )  {
     }
 
     return;
-    */
 
-    /*
+
   // Record AHRSB data
   case LOG_AHRSB :
 
@@ -762,9 +763,8 @@ void log_record ( enum log_index index )  {
     }
 
     return;
-    */
 
-  /*
+
   // Record EKF data
   case LOG_EKF :
 
@@ -817,7 +817,7 @@ void log_record ( enum log_index index )  {
     }
 
     return;
-  */
+
 
   // Record CTRL data
   case LOG_CTRL :
@@ -838,6 +838,7 @@ void log_record ( enum log_index index )  {
     }
 
     return;
+    */
 
   default :
     return;
@@ -879,25 +880,25 @@ static void log_save ( void )  {
   // Local variables
   ushort i;
   ulong  row;
-
+  /*
   // Parameter data
   for ( row = 0; row < log_param.count; row++ )  {
     fprintf( datalog.param, "\n %011.6f     ", log_param.time[row] );
     for ( i=0; i < param_count; i++ )  fprintf( datalog.param, "%09.4f  ", log_param.values [ row * param_count + i ] );
   }
-
+  */
   // Input data
   for ( row = 0; row < log_input.count; row++ ) {
     fprintf( datalog.in, "\n %011.6f    ", log_input.time[row] );
-    for ( i=0; i<10; i++ )  fprintf( datalog.in, "%7.4f  ", log_input.norm [ row*10 +i ] );   fprintf( datalog.in, "    " );
+    for ( i=0; i<10; i++ )  fprintf( datalog.in, "%7.4f  ", log_input.data [ row*10 +i ] );   fprintf( datalog.in, "    " );
   }
 
   // Output data
   for ( row = 0; row < log_output.count; row++ ) {
     fprintf( datalog.out, "\n %011.6f    ", log_output.time[row] );
-    for ( i=0; i<10; i++ )  fprintf( datalog.out, "%7.4f  ", log_output.norm [ row*10 +i ] );   fprintf( datalog.out, "    " );
+    for ( i=0; i<10; i++ )  fprintf( datalog.out, "%7.4f  ", log_output.data [ row*10 +i ] );   fprintf( datalog.out, "    " );
   }
-
+  /*
   // IMU A datalogs
   if(IMUA_ENABLED)  {
 
@@ -925,7 +926,6 @@ static void log_save ( void )  {
     for ( i=0; i<3; i++ )  fprintf( datalog.magA, "%07.4f  ", log_magA.filter [ row*3 +i ] );   fprintf( datalog.magA, "    " );
   }
 
-  /*
   // Attitude/Heading Reference System A data
   for ( row = 0; row < log_ahrsA.count; row++ ) {
     fprintf( datalog.ahrsA, "\n %011.6f   %06ld      ", log_ahrsA.time[row], log_ahrsA.dur[row] );
@@ -938,7 +938,7 @@ static void log_save ( void )  {
     fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.fz[ row +i ] );
     fprintf( datalog.ahrsA, "   " );
   }
-  */
+
   }
 
   // IMU B datalogs
@@ -968,7 +968,6 @@ static void log_save ( void )  {
     for ( i=0; i<3; i++ )  fprintf( datalog.magB, "%07.4f  ", log_magB.filter [ row*3 +i ] );   fprintf( datalog.magB, "    " );
   }
 
-  /*
   // Attitude/Heading Reference System B data
   for ( row = 0; row < log_ahrsB.count; row++ ) {
     fprintf( datalog.ahrsB, "\n %011.6f   %06ld      ", log_ahrsB.time[row], log_ahrsB.dur[row] );
@@ -981,7 +980,7 @@ static void log_save ( void )  {
     fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.fz[ row +i ] );
     fprintf( datalog.ahrsB, "   " );
   }
-  */
+
   }
 
   // Complimentary filter data
@@ -991,7 +990,6 @@ static void log_save ( void )  {
     fprintf( datalog.comp, "%7.4f  ", log_comp.pitch[row]  );
   }
 
-  /*
   // Extended Kalman Filter data
   uint n, m, nn, mm, nm;
   n  = EKF_N;
@@ -1016,7 +1014,6 @@ static void log_save ( void )  {
     fprintf( datalog.gps, "%s ", &log_gps.msg[row*96] );//  fprintf( fgps, "    " );
     fprintf( datalog.gps, "   " );
   }
-  */
 
   // Controller data
   for ( row = 0; row < log_ctrl.count; row++ )  {
@@ -1026,6 +1023,7 @@ static void log_save ( void )  {
     for ( i=0; i<3; i++ )  fprintf( datalog.ctrl, "%07.4f  ",  log_ctrl.derr[ row*3 +i ] );   fprintf( datalog.ctrl, "    " );
     for ( i=0; i<4; i++ )  fprintf( datalog.ctrl, "%07.4f  ",  log_ctrl.cmd [ row*4 +i ] );   fprintf( datalog.ctrl, "    " );
   }
+  */
 
   return;
 }
@@ -1037,28 +1035,28 @@ static void log_save ( void )  {
  */
 static void log_close ( void )  {
 
-  fclose(datalog.param);
+  //fclose(datalog.param);
   fclose(datalog.in);
   fclose(datalog.out);
 
-  if (IMUA_ENABLED)  {
-    fclose(datalog.gyrA);
-    fclose(datalog.accA);
-    fclose(datalog.magA);
+  //if (IMUA_ENABLED)  {
+    //fclose(datalog.gyrA);
+    //fclose(datalog.accA);
+    //fclose(datalog.magA);
     //fclose(datalog.ahrsA);
-  }
+  //}
 
-  if (IMUB_ENABLED)  {
-    fclose(datalog.gyrB);
-    fclose(datalog.accB);
-    fclose(datalog.magB);
+  //if (IMUB_ENABLED)  {
+    //fclose(datalog.gyrB);
+    //fclose(datalog.accB);
+    //fclose(datalog.magB);
     //fclose(datalog.ahrsB);
-  }
+  //}
 
-  fclose(datalog.comp);
+  //fclose(datalog.comp);
   //fclose(datalog.ekf);
   //fclose(datalog.gps);
-  fclose(datalog.ctrl);
+  //fclose(datalog.ctrl);
 
   return;
 }
