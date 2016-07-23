@@ -10,22 +10,18 @@
 #include <unistd.h>
 //#include "ahrs.h"
 //#include "ctrl.h"
-//#include "comp.h"
 //#include "ekf.h"
 //#include "flag.h"
 //#include "gps.h"
-//#include "imu.h"
+#include "imu.h"
 #include "io.h"
 #include "led.h"
 #include "log.h"
-//#include "lpf.h"
 #include "timer.h"
 
 
 static void sys_io    ( void );
-//static void sys_lpf   ( void );
-//static void sys_imu   ( void );
-//static void sys_comp  ( void );
+static void sys_imu   ( void );
 //static void sys_ahrs  ( void );
 //static void sys_ekf   ( void );
 //static void sys_gps   ( void );
@@ -128,9 +124,7 @@ void sys_update ( void )  {
 
   // Select data for display
   if(SYS_IO)     sys_io();
-  //if(SYS_LPF)    sys_lpf();
-  //if(SYS_IMU)    sys_imu();
-  //if(SYS_COMP)   sys_comp();
+  if(SYS_IMU)    sys_imu();
   //if(SYS_AHRS)   sys_ahrs();
   //if(SYS_EKF)    sys_ekf();
   //if(SYS_GPS)    sys_gps();
@@ -181,45 +175,9 @@ static void sys_io ( void )  {
 
 
 /**
- *  sys_lpf
- *  Prints low pass filter parameter values to the terminal.
- */
-/*
-static void sys_lpf ( void )  {
-
-  // IMUA filters
-  if (IMUA_ENABLED) {
-    printf("%6.1f ", filter_gyrA.freq );
-    printf("%6.1f ", filter_accA.freq );
-    printf("%6.1f ", filter_magA.freq );
-    printf("   ");  fflush(stdout);  
-    printf("%5d ",   filter_gyrA.hist );
-    printf("%5d ",   filter_accA.hist );
-    printf("%5d ",   filter_magA.hist );
-    printf("   ");  fflush(stdout);
-  }
-
-  // IMUB filters
-  if (IMUB_ENABLED) {
-    printf("%6.1f ", filter_gyrB.freq );
-    printf("%6.1f ", filter_accB.freq );
-    printf("%6.1f ", filter_magB.freq );
-    printf("   ");  fflush(stdout);  
-    printf("%5d ",   filter_gyrB.hist );
-    printf("%5d ",   filter_accB.hist );
-    printf("%5d ",   filter_magB.hist );
-    printf("   ");  fflush(stdout);
-  }
-
-  return;
-}
-*/
-
-/**
  *  sys_imu
  *  Prints IMU debugging messages to the terminal.
  */
-/*
 static void sys_imu ( void )  {
 
   // Loop counter
@@ -231,8 +189,8 @@ static void sys_imu ( void )  {
   // Gyroscope data
   pthread_mutex_lock(&gyrA.mutex);
   //for ( i=0; i<3; i++ )  printf("%6d ",   gyrA.raw[i]    );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.scaled[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.filter[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.scaled[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&gyrA.mutex);
 
   // Accelerometer data
@@ -249,6 +207,13 @@ static void sys_imu ( void )  {
   //for ( i=0; i<3; i++ )  printf("%6.3f ", magA.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&magA.mutex);
 
+  // Complimentry filter data
+  pthread_mutex_lock(&imuA.mutex);
+  double Ra = imuA.roll  * ( 180.0 / PI );
+  double Pa = imuA.pitch * ( 180.0 / PI );
+  printf("%6.3f %6.3f ", Ra, Pa );  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&imuA.mutex);
+
   }
 
   // Check that IMUB is in use
@@ -257,8 +222,8 @@ static void sys_imu ( void )  {
   // Gyroscope data
   pthread_mutex_lock(&gyrB.mutex);
   //for ( i=0; i<3; i++ )  printf("%6d ",   gyrB.raw[i]    );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.scaled[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.filter[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.scaled[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&gyrB.mutex);
 
   // Accelerometer data
@@ -275,28 +240,18 @@ static void sys_imu ( void )  {
   //for ( i=0; i<3; i++ )  printf("%6.3f ", magB.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&magB.mutex);
 
+  // Complimentry filter data
+  pthread_mutex_lock(&imuB.mutex);
+  double Rb = imuB.roll  * ( 180.0 / PI );
+  double Pb = imuB.pitch * ( 180.0 / PI );
+  printf("%6.3f %6.3f ", Rb, Pb );  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&imuB.mutex);
+
   }
 
   return;
 }
-*/
 
-/**
- *  sys_comp
- *  Prints complimentary filter debugging messages to the terminal.
- */
-/*
-static void sys_comp ( void )  {
-
-  pthread_mutex_lock(&comp.mutex);
-  printf( "%6.3f ", comp.roll  * (180.0/PI) );
-  printf( "%6.3f ", comp.pitch * (180.0/PI) );
-  fflush(stdout);
-  pthread_mutex_unlock(&comp.mutex);
-
-  return;
-}
-*/
 
 /**
  *  sys_ahrs

@@ -5,13 +5,12 @@
 #include <stdio.h>
 #include <sys/timerfd.h>
 #include <unistd.h>
-#include "ahrs.h"
-#include "comp.h"
-#include "ctrl.h"
-#include "ekf.h"
+//#include "ahrs.h"
+//#include "ctrl.h"
+//#include "ekf.h"
 #include "flag.h"
-#include "gcs.h"
-#include "gps.h"
+//#include "gcs.h"
+//#include "gps.h"
 #include "imu.h"
 #include "io.h"
 #include "log.h"
@@ -41,17 +40,16 @@ void tmr_mutex ( void )  {
   if(DEBUG)  printf("  Establish mutex locks \n");
   pthread_mutex_init( &input.mutex,  NULL );
   pthread_mutex_init( &output.mutex, NULL );
-  //pthread_mutex_init( &mutex_i2c1,   NULL );
-  //pthread_mutex_init( &mutex_i2c2,   NULL );
-  //pthread_mutex_init( &gyrA.mutex,   NULL );
-  //pthread_mutex_init( &imuA.mutex,   NULL );
-  //pthread_mutex_init( &accA.mutex,   NULL );
-  //pthread_mutex_init( &magA.mutex,   NULL );
-  //pthread_mutex_init( &imuB.mutex,   NULL );
-  //pthread_mutex_init( &gyrB.mutex,   NULL );
-  //pthread_mutex_init( &accB.mutex,   NULL );
-  //pthread_mutex_init( &magB.mutex,   NULL );
-  //pthread_mutex_init( &comp.mutex,   NULL );
+  pthread_mutex_init( &mutex_i2c1,   NULL );
+  pthread_mutex_init( &mutex_i2c2,   NULL );
+  pthread_mutex_init( &imuA.mutex,   NULL );
+  pthread_mutex_init( &gyrA.mutex,   NULL );
+  pthread_mutex_init( &accA.mutex,   NULL );
+  pthread_mutex_init( &magA.mutex,   NULL );
+  pthread_mutex_init( &imuB.mutex,   NULL );
+  pthread_mutex_init( &gyrB.mutex,   NULL );
+  pthread_mutex_init( &accB.mutex,   NULL );
+  pthread_mutex_init( &magB.mutex,   NULL );
   //pthread_mutex_init( &ctrl.mutex,   NULL );
   //pthread_mutex_init( &gcs.mutex,    NULL );
   //pthread_mutex_init( &ahrsA.mutex,  NULL );
@@ -80,14 +78,9 @@ void tmr_setup ( void )  {
   tmr_flag.per  = 1000000 / HZ_FLAG;
 
   // IMU timer
-  //tmr_imu.name = "imu";
-  //tmr_imu.prio = PRIO_IMU;
-  //tmr_imu.per  = 1000000 / HZ_IMU_FAST;
-
-  // Complimentary filter timer
-  //tmr_comp.name = "comp";
-  //tmr_comp.prio = PRIO_COMP;
-  //tmr_comp.per  = 1000000 / HZ_COMP;
+  tmr_imu.name = "imu";
+  tmr_imu.prio = PRIO_IMU;
+  tmr_imu.per  = 1000000 / HZ_IMU_FAST;
 
   // AHRS timer
   //tmr_ahrs.name = "ahrs";
@@ -168,8 +161,7 @@ void tmr_begin ( pthread_attr_t *attr )  {
 
   tmr_thread( &tmr_io,    attr, fcn_io    );  usleep(100000);
   tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(100000);
-  //tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);
-  //tmr_thread( &tmr_comp,  attr, fcn_comp  );  usleep(100000);
+  tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);
   //tmr_thread( &tmr_ahrs,  attr, fcn_ahrs  );  usleep(100000);
   //tmr_thread( &tmr_ekf,   attr, fcn_ekf   );  usleep(100000);
   //tmr_thread( &tmr_gps,   attr, fcn_gps   );  usleep(100000);
@@ -196,17 +188,16 @@ void tmr_exit ( void )  {
   // Destroy mutex locks
   pthread_mutex_destroy(&input.mutex);
   pthread_mutex_destroy(&output.mutex);
-  //pthread_mutex_destroy(&mutex_i2c1);
-  //pthread_mutex_destroy(&mutex_i2c2);
-  //pthread_mutex_destroy(&imuA.mutex);
-  //pthread_mutex_destroy(&gyrA.mutex);
-  //pthread_mutex_destroy(&accA.mutex);
-  //pthread_mutex_destroy(&magA.mutex);
-  //pthread_mutex_destroy(&imuB.mutex);
-  //pthread_mutex_destroy(&gyrB.mutex);
-  //pthread_mutex_destroy(&accB.mutex);
-  //pthread_mutex_destroy(&magB.mutex);
-  //pthread_mutex_destroy(&comp.mutex);
+  pthread_mutex_destroy(&mutex_i2c1);
+  pthread_mutex_destroy(&mutex_i2c2);
+  pthread_mutex_destroy(&imuA.mutex);
+  pthread_mutex_destroy(&gyrA.mutex);
+  pthread_mutex_destroy(&accA.mutex);
+  pthread_mutex_destroy(&magA.mutex);
+  pthread_mutex_destroy(&imuB.mutex);
+  pthread_mutex_destroy(&gyrB.mutex);
+  pthread_mutex_destroy(&accB.mutex);
+  pthread_mutex_destroy(&magB.mutex);
   //pthread_mutex_destroy(&ctrl.mutex);
   //pthread_mutex_destroy(&gcs.mutex);
   //pthread_mutex_destroy(&ahrsA.mutex);
@@ -244,15 +235,10 @@ void tmr_exit ( void )  {
   //  printf( "Error (tmr_exit): Failed to exit 'ahrs' thread. \n" );
   //if(DEBUG)  printf( "ahrs " );
 
-  // Exit comp filter thread
-  //if( pthread_join ( tmr_comp.id, NULL ) )
-  //  printf( "Error (tmr_exit): Failed to exit 'comp' thread. \n" );
-  //if(DEBUG)  printf( "comp " );
-
   // Exit IMU thread
-  //if( pthread_join ( tmr_imu.id, NULL ) )
-  //  printf( "Error (tmr_exit): Failed to exit 'imu' thread. \n" );
-  //if(DEBUG)  printf( "imu " );
+  if( pthread_join ( tmr_imu.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'imu' thread. \n" );
+  if(DEBUG)  printf( "imu " );
 
   // Exit program execution flags thread
   if( pthread_join ( tmr_flag.id, NULL ) )
@@ -435,7 +421,6 @@ void *fcn_flag (  )  {
  *  fcn_imu
  *  Function handler for dual IMU timing thread.
  */
-/*
 void *fcn_imu (  )  {
   tmr_create(&tmr_imu);
   while (running) {
@@ -454,25 +439,7 @@ void *fcn_imu (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-*/
 
-/**
- *  fcn_comp
- *  Function handler for comp filter.
- */
-/*
-void *fcn_comp (  )  {
-  tmr_create(&tmr_comp);
-  while (running) {
-    tmr_start(&tmr_comp);
-    if (!datalog.saving)  comp_update();
-    if (datalog.enabled)  log_record(LOG_COMP);
-    tmr_pause(&tmr_comp);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
-*/
 
 /**
  *  fcn_ahrs

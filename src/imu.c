@@ -7,7 +7,6 @@
 #include <unistd.h>
 #include "i2c.h"
 #include "led.h"
-#include "lpf.h"
 #include "mpu.h"
 #include "sys.h"
 #include "timer.h"
@@ -41,14 +40,13 @@ void imu_init ( void )  {
     imuA.loops  = loops;
     imuA.getmag = false;
 
-    // IMU data structures
-    imuA.gyr  = &gyrA;  imuA.gyr->gain[0] = 0.32;  imuA.gyr->gain[1] = 0.32;  imuA.gyr->gain[2] = 0.32;
-    imuA.acc  = &accA;  imuA.acc->gain[0] = 0.08;  imuA.acc->gain[1] = 0.08;  imuA.acc->gain[2] = 0.08;
-    imuA.mag  = &magA;  imuA.mag->gain[0] = 0.00;  imuA.mag->gain[1] = 0.00;  imuA.mag->gain[2] = 0.00;
+    // Low pass filter values
+    imuA.gyr  = &gyrA;  imuA.gyr->lpf[0] = 0.32;  imuA.gyr->lpf[1] = 0.32;  imuA.gyr->lpf[2] = 0.32;
+    imuA.acc  = &accA;  imuA.acc->lpf[0] = 0.08;  imuA.acc->lpf[1] = 0.08;  imuA.acc->lpf[2] = 0.08;
+    imuA.mag  = &magA;  imuA.mag->lpf[0] = 1.00;  imuA.mag->lpf[1] = 1.00;  imuA.mag->lpf[2] = 1.00;
 
     // Complimentary filter values
-    imuA.dt    = 1.0 / HZ_IMU_FAST;
-    imuA.gain  = 0.95;
+    imuA.comp  = 0.00;
     imuA.roll  = 0.00;
     imuA.pitch = 0.00; 
 
@@ -72,14 +70,13 @@ void imu_init ( void )  {
     imuB.loops  = loops;
     imuB.getmag = false;
 
-    // IMU data structures
-    imuB.gyr  = &gyrB;  imuB.gyr->gain[0] = 0.32;  imuB.gyr->gain[1] = 0.32;  imuB.gyr->gain[2] = 0.32;
-    imuB.acc  = &accB;  imuB.acc->gain[0] = 0.08;  imuB.acc->gain[1] = 0.08;  imuB.acc->gain[2] = 0.08;
-    imuB.mag  = &magB;  imuB.mag->gain[0] = 0.00;  imuB.mag->gain[1] = 0.00;  imuB.mag->gain[2] = 0.00;
+    // Low pass filter values
+    imuB.gyr  = &gyrB;  imuB.gyr->lpf[0] = 0.32;  imuB.gyr->lpf[1] = 0.32;  imuB.gyr->lpf[2] = 0.32;
+    imuB.acc  = &accB;  imuB.acc->lpf[0] = 0.08;  imuB.acc->lpf[1] = 0.08;  imuB.acc->lpf[2] = 0.08;
+    imuB.mag  = &magB;  imuB.mag->lpf[0] = 1.00;  imuB.mag->lpf[1] = 1.00;  imuB.mag->lpf[2] = 1.00;
 
     // Complimentary filter values
-    imuB.dt    = 1.0 / HZ_IMU_FAST;
-    imuB.gain  = 0.95;
+    imuB.comp  = 0.00;
     imuB.roll  = 0.00;
     imuB.pitch = 0.00; 
 
@@ -284,28 +281,20 @@ void imu_update ( imu_struct *imu )  {
 
   // Get gyroscope values
   pthread_mutex_lock( &(imu->gyr->mutex) );
-  for ( i=0; i<3; i++ )  {  Gp[i] = imu->gyr->filter[i];  Gg[i] = imu->gyr->gain[i];  }
+  for ( i=0; i<3; i++ )  {  Gp[i] = imu->gyr->filter[i];  Gg[i] = imu->gyr->lpf[i];  }
   pthread_mutex_unlock( &(imu->gyr->mutex) );
 
   // Get accerometer values
   pthread_mutex_lock( &(imu->acc->mutex) );
-  for ( i=0; i<3; i++ )  {  Ap[i] = imu->acc->filter[i];  Ag[i] = imu->acc->gain[i];  }
+  for ( i=0; i<3; i++ )  {  Ap[i] = imu->acc->filter[i];  Ag[i] = imu->acc->lpf[i];  }
   pthread_mutex_unlock( &(imu->acc->mutex) );
 
   // Get magnetometer values
   if(imu->getmag) {
   pthread_mutex_lock( &(imu->mag->mutex) );
-  for ( i=0; i<3; i++ )  {  Mp[i] = imu->mag->filter[i];  Mg[i] = imu->mag->gain[i];  }
+  for ( i=0; i<3; i++ )  {  Mp[i] = imu->mag->filter[i];  Mg[i] = imu->mag->lpf[i];  }
   pthread_mutex_unlock( &(imu->mag->mutex) );
   }
-
-  // Get complimentary filter values
-  pthread_mutex_lock( &(imu->mutex) );
-  dt = imu->dt;
-  gain = imu->gain;
-  R = imu->roll;
-  P = imu->pitch;
-  pthread_mutex_unlock( &(imu->mutex) );
 
   // Low pass filter
   for ( i=0; i<3; i++ )  {
@@ -316,10 +305,20 @@ void imu_update ( imu_struct *imu )  {
     }
   }
 
+  // Complimentary filter variables
+  double dt, gain, R, P;
 
-  // Calculate attitude angles
-  R = gain * ( R + gyrR * dt ) + ( 1.0 - gain ) * accR;
-  P = gain * ( P + gyrP * dt ) + ( 1.0 - gain ) * accP;
+  // Get complimentary filter values
+  dt = 1.0 / HZ_IMU_FAST;
+  pthread_mutex_lock( &(imu->mutex) );
+  gain = imu->comp;
+  R = imu->roll;
+  P = imu->pitch;
+  pthread_mutex_unlock( &(imu->mutex) );
+
+  // Complimentary filter attitude angles
+  R = gain * ( R + Gs[0] * dt ) + ( 1.0 - gain ) * atan2( -As[1], -As[2] );
+  P = gain * ( P + Gs[1] * dt ) + ( 1.0 - gain ) * atan2(  As[0], -As[2] );
 
   // Push gyroscope values to data structure
   pthread_mutex_lock( &(imu->gyr->mutex) );
@@ -352,8 +351,8 @@ void imu_update ( imu_struct *imu )  {
 
   // Push complimentary filter values to data structure
   pthread_mutex_lock( &(imu->mutex) );
-  //imu->roll  = R;
-  //imu->pitch = P;
+  imu->roll  = R;
+  imu->pitch = P;
   pthread_mutex_unlock( &(imu->mutex) );
 
   return;

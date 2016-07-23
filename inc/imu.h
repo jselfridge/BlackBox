@@ -10,7 +10,7 @@
 
 
 #define IMUA_ENABLED   true
-#define IMUB_ENABLED   false
+#define IMUB_ENABLED   true
 
 #define GYR_FSR    500
 #define ACC_FSR    4
@@ -24,7 +24,7 @@ typedef struct imu_data_struct {
   short  raw    [3];
   double scaled [3];
   double filter [3];
-  double gain   [3];
+  double lpf    [3];
   pthread_mutex_t mutex;
 } imu_data_struct;
 imu_data_struct gyrA;
@@ -43,8 +43,7 @@ typedef struct imu_struct {
   ushort loops;
   ushort count;
   bool   getmag;
-  double dt;
-  double gain;
+  double comp;
   double roll;
   double pitch;
   imu_data_struct *gyr;

@@ -8,8 +8,7 @@
 #include <sys/types.h>
 
 
-//#define PRIO_IMU    96
-//#define PRIO_COMP   94
+#define PRIO_IMU    96
 //#define PRIO_AHRS   94
 //#define PRIO_EKF    92
 #define PRIO_IO     90
@@ -20,9 +19,8 @@
 #define PRIO_FLAG   82
 #define PRIO_DEBUG  80
 
-//#define HZ_IMU_FAST    200
-//#define HZ_COMP        200
-//#define HZ_IMU_SLOW    100
+#define HZ_IMU_FAST    200
+#define HZ_IMU_SLOW    100
 //#define HZ_AHRS        100
 //#define HZ_EKF         100
 #define HZ_IO          100
@@ -54,8 +52,7 @@ typedef struct timer_struct {
 
 timer_struct tmr_io;
 timer_struct tmr_flag;
-//timer_struct tmr_imu;
-//timer_struct tmr_comp;
+timer_struct tmr_imu;
 //timer_struct tmr_ahrs;
 //timer_struct tmr_ekf;
 //timer_struct tmr_gps;
@@ -80,8 +77,7 @@ void  tmr_finish ( timer_struct *tmr );
 
 void *fcn_io     (  );
 void *fcn_flag   (  );
-//void *fcn_imu    (  );
-//void *fcn_comp   (  );
+void *fcn_imu    (  );
 //void *fcn_ahrs   (  );
 //void *fcn_ekf    (  );
 //void *fcn_gps    (  );

@@ -14,9 +14,7 @@ int main ( void )  {
   sys_init();
   io_init();
   flag_init();
-  //lpf_init();
-  //imu_init();
-  //comp_init();
+  imu_init();
   //ahrs_init();
   //ekf_init();
   //gps_init();
@@ -26,16 +24,16 @@ int main ( void )  {
   tmr_init();
 
   //---  DEBUGGING  ---//
-  //log_start();
-  //datalog.enabled = true;
+  log_start();
+  datalog.enabled = true;
   //-------------------//
 
   // Run program
   while(running)  usleep(100000);
 
   //--  DEBUGGING  --//
-  //datalog.enabled = false;
-  //log_finish();
+  datalog.enabled = false;
+  log_finish();
   //-----------------//
 
   // Exit program
@@ -47,9 +45,7 @@ int main ( void )  {
   //gps_exit();
   //ekf_exit();
   //ahrs_exit();
-  //comp_exit();
-  //imu_exit();
-  //lpf_exit();
+  imu_exit();
   flag_exit();
   io_exit();
   sys_exit();

@@ -1,0 +1,5 @@
+imu.c:102:6:imu_exit	8	static
+imu.c:115:6:imu_param	16	static
+imu.c:152:6:imu_getcal	88	static
+imu.c:19:6:imu_init	48	static
+imu.c:232:6:imu_update	448	static
