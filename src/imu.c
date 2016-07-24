@@ -46,7 +46,7 @@ void imu_init ( void )  {
     imuA.mag  = &magA;  imuA.mag->lpf[0] = 1.00;  imuA.mag->lpf[1] = 1.00;  imuA.mag->lpf[2] = 1.00;
 
     // Complimentary filter values
-    imuA.comp  = 0.00;
+    imuA.comp  = 0.95;
     imuA.roll  = 0.00;
     imuA.pitch = 0.00; 
 
@@ -76,7 +76,7 @@ void imu_init ( void )  {
     imuB.mag  = &magB;  imuB.mag->lpf[0] = 1.00;  imuB.mag->lpf[1] = 1.00;  imuB.mag->lpf[2] = 1.00;
 
     // Complimentary filter values
-    imuB.comp  = 0.00;
+    imuB.comp  = 0.95;
     imuB.roll  = 0.00;
     imuB.pitch = 0.00; 
 

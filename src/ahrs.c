@@ -107,7 +107,7 @@ void ahrs_update ( ahrs_struct *ahrs, imu_struct *imu )  {
   double g[3], a[3], m[3];
   for ( i=0; i<3; i++ )  {  g[i] = 0.0;  a[i] = 0.0;  m[i] = 0.0;  }
 
-  // Get gyro IMU data
+  // Get gyr IMU data
   pthread_mutex_lock(&(imu->gyr->mutex));
   for ( i=0; i<3; i++ )  g[i] = imu->gyr->filter[i];
   pthread_mutex_unlock(&(imu->gyr->mutex));

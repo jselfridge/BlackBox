@@ -8,10 +8,9 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <unistd.h>
-//#include "ahrs.h"
+#include "ahrs.h"
 //#include "ctrl.h"
 //#include "ekf.h"
-//#include "flag.h"
 //#include "gps.h"
 #include "imu.h"
 #include "io.h"
@@ -22,7 +21,7 @@
 
 static void sys_io    ( void );
 static void sys_imu   ( void );
-//static void sys_ahrs  ( void );
+static void sys_ahrs  ( void );
 //static void sys_ekf   ( void );
 //static void sys_gps   ( void );
 //static void sys_ctrl  ( void );
@@ -125,7 +124,7 @@ void sys_update ( void )  {
   // Select data for display
   if(SYS_IO)     sys_io();
   if(SYS_IMU)    sys_imu();
-  //if(SYS_AHRS)   sys_ahrs();
+  if(SYS_AHRS)   sys_ahrs();
   //if(SYS_EKF)    sys_ekf();
   //if(SYS_GPS)    sys_gps();
   //if(SYS_GCS)    sys_gcs();
@@ -181,7 +180,7 @@ static void sys_io ( void )  {
 static void sys_imu ( void )  {
 
   // Loop counter
-  ushort i;
+  //ushort i;
 
   // Check that IMUA is in use
   if (IMUA_ENABLED) {
@@ -257,7 +256,6 @@ static void sys_imu ( void )  {
  *  sys_ahrs
  *  Prints AHRS debugging messages to the terminal.
  */
-/*
 static void sys_ahrs ( void )  {
 
   // Loop counter
@@ -285,7 +283,7 @@ static void sys_ahrs ( void )  {
 
   return;
 }
-*/
+
 
 /**
  *  sys_ekf

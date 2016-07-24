@@ -15,7 +15,7 @@ int main ( void )  {
   io_init();
   flag_init();
   imu_init();
-  //ahrs_init();
+  ahrs_init();
   //ekf_init();
   //gps_init();
   //ctrl_init();
@@ -44,7 +44,7 @@ int main ( void )  {
   //ctrl_exit();
   //gps_exit();
   //ekf_exit();
-  //ahrs_exit();
+  ahrs_exit();
   imu_exit();
   flag_exit();
   io_exit();

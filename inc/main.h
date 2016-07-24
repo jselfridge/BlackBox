@@ -8,7 +8,7 @@
 #include <unistd.h>
 
 
-//#include "ahrs.h"
+#include "ahrs.h"
 //#include "ctrl.h"
 //#include "ekf.h"
 #include "flag.h"

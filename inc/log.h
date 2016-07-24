@@ -18,9 +18,8 @@ enum log_index {
   LOG_IO,
   LOG_IMUA,
   LOG_IMUB,
-  //LOG_COMP,
-  //LOG_AHRSA,
-  //LOG_AHRSB,
+  LOG_AHRSA,
+  LOG_AHRSB,
   //LOG_EKF
   //LOG_GPS,
   //LOG_CTRL
@@ -73,7 +72,7 @@ typedef struct log_comp_struct {
 log_comp_struct log_compA;
 log_comp_struct log_compB;
 
-/*
+
 typedef struct log_ahrs_struct {
   ulong count;
   ulong limit;
@@ -89,7 +88,7 @@ typedef struct log_ahrs_struct {
 } log_ahrs_struct;
 log_ahrs_struct log_ahrsA;
 log_ahrs_struct log_ahrsB;
-*/
+
 /*
 typedef struct log_ekf_struct {
   ulong count;
@@ -144,12 +143,12 @@ typedef struct datalog_struct {
   FILE   *accA;
   FILE   *magA;
   FILE   *compA;
+  FILE   *ahrsA;
   FILE   *gyrB;
   FILE   *accB;
   FILE   *magB;
   FILE   *compB;
-  //FILE   *ahrsA;
-  //FILE   *ahrsB;
+  FILE   *ahrsB;
   //FILE   *ekf;
   //FILE   *gps;
   //FILE   *ctrl;
