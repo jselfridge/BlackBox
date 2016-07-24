@@ -1,26 +1,26 @@
 
 
 #include "ekf.h"
-#include <math.h>
-#include <pthread.h>
+//#include <math.h>
+//#include <pthread.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include "ahrs.h"
+//#include <stdlib.h>
+//#include "ahrs.h"
 #include "sys.h"
 #include "timer.h"
 
 
-static int  choldc1   ( double *a, double *p, int n );
-static int  choldcsl  ( double *A, double *a, double *p, int n );
-static int  cholsl    ( double *A, double *a, double *p, int n );
-static void mulmat    ( double *a, double *b, double *c, int arows, int acols, int bcols );
-static void mulvec    ( double *a, double *x, double *y, int m, int n );
-static void transpose ( double *a, double *at, int m, int n );
-static void accum     ( double *a, double *b, int m, int n );
-static void add       ( double *a, double *b, double *c, int n );
-static void sub       ( double *a, double *b, double *c, int n );
-static void negate    ( double *a, int m, int n );
-static void addeye    ( double *a, int n );
+//static int  choldc1   ( double *a, double *p, int n );
+//static int  choldcsl  ( double *A, double *a, double *p, int n );
+//static int  cholsl    ( double *A, double *a, double *p, int n );
+//static void mulmat    ( double *a, double *b, double *c, int arows, int acols, int bcols );
+//static void mulvec    ( double *a, double *x, double *y, int m, int n );
+//static void transpose ( double *a, double *at, int m, int n );
+//static void accum     ( double *a, double *b, int m, int n );
+//static void add       ( double *a, double *b, double *c, int n );
+//static void sub       ( double *a, double *b, double *c, int n );
+//static void negate    ( double *a, int m, int n );
+//static void addeye    ( double *a, int n );
 
 
 /**
@@ -52,107 +52,53 @@ void ekf_init ( void )  {
   if (DEBUG)  printf( "Initializing EKF \n" );
 
   // Local variables
-  int n  = EKF_N;
-  int m  = EKF_M;
+  uint n  = EKF_N;
+  uint m  = EKF_M;
+  /*
   int nn = n*n;
   int mm = m*m;
   int nm = n*m;
   int i;
+  */
 
   // Allocate memory for storage arrays
-  ekf.x = malloc( sizeof(double) * n  );
-  ekf.z = malloc( sizeof(double) * m  );
-  ekf.f = malloc( sizeof(double) * n  );
-  ekf.h = malloc( sizeof(double) * m  );
-  ekf.F = malloc( sizeof(double) * nn );
-  ekf.H = malloc( sizeof(double) * nm );
-  ekf.Q = malloc( sizeof(double) * nn );
-  ekf.R = malloc( sizeof(double) * mm );
-  ekf.P = malloc( sizeof(double) * nn );
-  ekf.S = malloc( sizeof(double) * mm );
-  ekf.K = malloc( sizeof(double) * nm );
-
-  // Zero out initial values
-  for ( i=0; i<n;  i++ )  ekf.x[i] = 0.0;
-  for ( i=0; i<m;  i++ )  ekf.z[i] = 0.0;
-  for ( i=0; i<n;  i++ )  ekf.f[i] = 0.0;
-  for ( i=0; i<m;  i++ )  ekf.h[i] = 0.0;
-  for ( i=0; i<nn; i++ )  ekf.F[i] = 0.0;
-  for ( i=0; i<nm; i++ )  ekf.H[i] = 0.0;
-  for ( i=0; i<nn; i++ )  ekf.Q[i] = 0.0;
-  for ( i=0; i<mm; i++ )  ekf.R[i] = 0.0;
-  for ( i=0; i<nn; i++ )  ekf.P[i] = 0.0;
-  for ( i=0; i<mm; i++ )  ekf.S[i] = 0.0;
-  for ( i=0; i<nm; i++ )  ekf.K[i] = 0.0;
+  ekf.x = mat_init(n,1);
+  ekf.z = mat_init(m,1);
+  ekf.f = mat_init(n,1);
+  ekf.h = mat_init(m,1);
+  ekf.F = mat_init(n,n);
+  ekf.H = mat_init(n,m);
+  ekf.Q = mat_init(n,n);
+  ekf.R = mat_init(m,m);
+  ekf.P = mat_init(n,n);
+  ekf.S = mat_init(m,m);
+  ekf.K = mat_init(n,m);
 
   // Assign plant covariance values (WIP: pull from file with error checking)
-  ekf.Q[0] = 0.01;
-  ekf.Q[3] = 0.01;
-  //ekf.Q[ 0] = 0.01;
-  //ekf.Q[ 7] = 0.01;
-  //ekf.Q[14] = 0.01;
-  //ekf.Q[21] = 0.01;
-  //ekf.Q[28] = 0.01;
-  //ekf.Q[35] = 0.01;
+  mat_set( ekf.Q, 1, 1, 0.01 );
+  mat_set( ekf.Q, 2, 2, 0.01 );
 
   // Assign measurement covariance values (WIP: pull from file with error checking)
-  ekf.R[0] = 0.01;
-  ekf.R[3] = 0.01;
-  //ekf.R[ 0] = 0.01;
-  //ekf.R[ 7] = 0.01;
-  //ekf.R[14] = 0.01;
-  //ekf.R[21] = 0.01;
-  //ekf.R[28] = 0.01;
-  //ekf.R[35] = 0.01;
+  mat_set( ekf.R, 1, 1, 0.01 );
+  mat_set( ekf.R, 2, 2, 0.01 );
 
   // Static F matrix
   // WIP: Adaptively updated from MRAC or L1
   // WIP: Add acceleration state?
   double dt  = 1.0 / HZ_EKF;
-  ekf.F[0] = 1.0;  ekf.F[1] = dt;  ekf.F[3] = 1.0;
-  //ekf.F[ 0] = 1.0;  ekf.F[ 3] = dt;
-  //ekf.F[ 7] = 1.0;  ekf.F[10] = dt;
-  //ekf.F[14] = 1.0;  ekf.F[17] = dt;
-  //ekf.F[21] = 1.0;
-  //ekf.F[28] = 1.0;
-  //ekf.F[35] = 1.0;
-
+  mat_set( ekf.F, 1, 1, 1.0 );  mat_set( ekf.F, 1, 2, dt );
+  mat_set( ekf.F, 2, 1, 0.0 );  mat_set( ekf.F, 2, 2, 1.0 );
+  
   // Static H matrix (WIP: adaptively updated from MRAC or L1)
-  ekf.H[0] = 1.0;
-  ekf.H[3] = 1.0;
-  //ekf.H[ 0] = 1.0;
-  //ekf.H[ 6] = 1.0;
-  //ekf.H[13] = 1.0;
-  //ekf.H[19] = 1.0;
-  //ekf.H[26] = 1.0;
-  //ekf.H[32] = 1.0;
-  //ekf.H[39] = 1.0;
-  //ekf.H[45] = 1.0;
-  //ekf.H[52] = 1.0;
-  //ekf.H[58] = 1.0;
-  //ekf.H[65] = 1.0;
-  //ekf.H[71] = 1.0;
-
+  mat_set( ekf.H, 1, 1, 1.0 );  mat_set( ekf.H, 1, 2, 0.0 );
+  mat_set( ekf.H, 2, 1, 0.0 );  mat_set( ekf.H, 2, 2, 1.0 );
+  
   // Display EKF settings
   if (DEBUG) {
-
-    // Plant matrix
-    printf("  Plant matrix (F): ");  fflush(stdout);
-    for ( i=0; i<nn; i++ ) {
-      if ( i%n == 0 )  printf("\n    ");
-      printf( "%6.4f  ", ekf.F[i] );
-    }
-    printf("\n");
-
-    // Measurement matrix
-    printf("  Measurement matrix (H): ");  fflush(stdout);
-    for ( i=0; i<nm; i++ ) {
-      if ( i%n == 0 )  printf("\n    ");
-      printf( "%6.4f  ", ekf.H[i] );
-    }
-    printf("\n");
-    fflush(stdout);
-
+    printf("Q  ");  mat_print(ekf.Q);
+    printf("R  ");  mat_print(ekf.R);
+    printf("F  ");  mat_print(ekf.F);
+    printf("H  ");  mat_print(ekf.H);
   }
 
   return;
@@ -181,26 +127,29 @@ void ekf_exit ( void )  {
 int ekf_update ( void )  {
 
   // Define local dimension sizes and counters
+  /*
   uint n, m, nn, nm, mm, i;
   n  = EKF_N;
   m  = EKF_M;
   nn = n*n;
   mm = m*m;
   nm = n*m;
+  */
 
   // Define local EKF arrays
-  double x[n], z[m], f[n], h[m];
+  //double x[n], z[m], f[n], h[m];
 
   // Define local EKF matrices
-  double F[nn], H[nm], Q[nn], R[mm], P[nn], S[mm], K[nm];
+  //double F[nn], H[nm], Q[nn], R[mm], P[nn], S[mm], K[nm];
 
   // Define intermediate storage arrays
-  double Ft[nn], Ht[nm], Pt[nn], Inv[mm];
+  //double Ft[nn], Ht[nm], Pt[nn], Inv[mm];
 
   // Define temp storage arrays
-  double tmpNN[nn], tmpNM[nm], tmpMN[nm], tmpN[n], tmpM[m];
+  //double tmpNN[nn], tmpNM[nm], tmpMN[nm], tmpN[n], tmpM[m];
 
   // Obtain EKF values
+  /*
   pthread_mutex_lock(&ekf.mutex);
   for ( i=0; i<n;  i++ )  x[i] = ekf.x[i];
   for ( i=0; i<nn; i++ )  F[i] = ekf.F[i];
@@ -208,56 +157,62 @@ int ekf_update ( void )  {
   for ( i=0; i<nn; i++ )  Q[i] = ekf.Q[i];
   for ( i=0; i<mm; i++ )  R[i] = ekf.R[i];
   pthread_mutex_unlock(&ekf.mutex);
+  */
 
   // Obtain AHRSA measurements
+  /*
   pthread_mutex_lock(&ahrsA.mutex);
   z[ 0] = ahrsA.eul[0];  z[ 2] = ahrsA.deul[0];
   //z[ 2] = ahrsA.eul[1];  z[ 8] = ahrsA.deul[1];
   //z[ 4] = ahrsA.eul[2];  z[10] = ahrsA.deul[2];
   pthread_mutex_unlock(&ahrsA.mutex);
+  */
 
   // Obtain AHRSB measurements
+  /*
   pthread_mutex_lock(&ahrsB.mutex);
   z[ 1] = ahrsB.eul[0];  z[ 3] = ahrsB.deul[0];
   //z[ 3] = ahrsB.eul[1];  z[ 9] = ahrsB.deul[1];
   //z[ 5] = ahrsB.eul[2];  z[11] = ahrsB.deul[2];
   pthread_mutex_unlock(&ahrsB.mutex);
+  */
 
   // Evaluate derivatives
-  mulvec( F, x, f, n, n );
-  mulvec( H, x, h, m, n );
+  //mulvec( F, x, f, n, n );
+  //mulvec( H, x, h, m, n );
 
   // Find transpose matrices
-  transpose( F, Ft, n, n );
-  transpose( H, Ht, m, n );
+  //transpose( F, Ft, n, n );
+  //transpose( H, Ht, m, n );
 
   // Pt = F P Ft + Q
-  mulmat( F, P, tmpNN, n, n, n );
-  mulmat( tmpNN, Ft, Pt, n, n, n );
-  accum( Pt, Q, n, n );
+  //mulmat( F, P, tmpNN, n, n, n );
+  //mulmat( tmpNN, Ft, Pt, n, n, n );
+  //accum( Pt, Q, n, n );
 
   // S = H Pt Ht + R
-  mulmat( H, Pt, tmpMN, m, n, n );
-  mulmat( tmpMN, Ht, S, m, n, m );
-  accum( S, R, m, m );
+  //mulmat( H, Pt, tmpMN, m, n, n );
+  //mulmat( tmpMN, Ht, S, m, n, m );
+  //accum( S, R, m, m );
 
   // K = Pt Ht S^{-1}
-  mulmat( Pt, Ht, tmpNM, n, n, m );
-  if ( cholsl( S, Inv, tmpM, m ) )  {  /*printf("Too bad... \n");  return -1;*/  }
-  mulmat( tmpNM, Inv, K, n, m, m );
+  //mulmat( Pt, Ht, tmpNM, n, n, m );
+  //if ( cholsl( S, Inv, tmpM, m ) )  {  /*printf("Too bad... \n");  return -1;*/  }
+  //mulmat( tmpNM, Inv, K, n, m, m );
 
   // x = f + K ( z - h )
-  sub( z, h, tmpM, m );
-  mulvec( K, tmpM, tmpN, n, m );
-  add( f, tmpN, x, n );
+  //sub( z, h, tmpM, m );
+  //mulvec( K, tmpM, tmpN, n, m );
+  //add( f, tmpN, x, n );
 
   // P = ( I - K H ) Pt
-  mulmat( K, H, tmpNN, n, m, n );
-  negate( tmpNN, n, n );
-  addeye( tmpNN, n );
-  mulmat( tmpNN, Pt, P, n, n, n );
+  //mulmat( K, H, tmpNN, n, m, n );
+  //negate( tmpNN, n, n );
+  //addeye( tmpNN, n );
+  //mulmat( tmpNN, Pt, P, n, n, n );
 
   // Push data to structure
+  /*
   pthread_mutex_lock(&ekf.mutex);
   for ( i=0; i<n;  i++ )  ekf.x[i] = x[i];
   for ( i=0; i<m;  i++ )  ekf.z[i] = z[i];
@@ -267,6 +222,7 @@ int ekf_update ( void )  {
   for ( i=0; i<mm; i++ )  ekf.S[i] = S[i];
   for ( i=0; i<nm; i++ )  ekf.K[i] = K[i];
   pthread_mutex_unlock(&ekf.mutex);
+  */
 
   return 0;
 }
@@ -276,6 +232,7 @@ int ekf_update ( void )  {
  * Cholesky-decomposition matrix-inversion code, adapated from
  * http://jean-pierre.moreau.pagesperso-orange.fr/Cplus/choles_cpp.txt
  */
+/*
 static int choldc1 ( double *a, double *p, int n )  {
 
   // Local variables
@@ -296,11 +253,12 @@ static int choldc1 ( double *a, double *p, int n )  {
 
   return 0;
 }
-
+*/
 
 /**
  * 
  */
+/*
 static int choldcsl ( double *A, double *a, double *p, int n )  {
 
   // Local variables
@@ -329,11 +287,12 @@ static int choldcsl ( double *A, double *a, double *p, int n )  {
 
   return 0;    
 }
-
+*/
 
 /**
  *
  */
+/*
 static int cholsl ( double *A, double *a, double *p, int n )  {
 
   // Local variables
@@ -375,12 +334,13 @@ static int cholsl ( double *A, double *a, double *p, int n )  {
 
   return 0;
 }
-
+*/
 
 /**
  *
  */
 // C <- A * B
+/*
 static void mulmat ( double *a, double *b, double *c, int arows, int acols, int bcols )  {
   int i, j, l;
   for( i=0; i<arows; ++i )  {
@@ -391,11 +351,12 @@ static void mulmat ( double *a, double *b, double *c, int arows, int acols, int 
   }
   return;
 }
-
+*/
 
 /**
  *
  */
+/*
 static void mulvec ( double *a, double *x, double *y, int m, int n )  {
   int i, j;
   for( i=0; i<m; ++i )  {
@@ -404,11 +365,12 @@ static void mulvec ( double *a, double *x, double *y, int m, int n )  {
   }
   return;
 }
-
+*/
 
 /**
  *
  */
+/*
 static void transpose ( double *a, double *at, int m, int n )  {
   int i, j;
   for( i=0; i<m; ++i )  {
@@ -418,12 +380,13 @@ static void transpose ( double *a, double *at, int m, int n )  {
   }
   return;
 }
-
+*/
 
 /**
  *
  */
 // A <- A + B
+/*
 static void accum ( double *a, double *b, int m, int n )  {
   int i, j;
   for( i=0; i<m; ++i )  {
@@ -433,33 +396,36 @@ static void accum ( double *a, double *b, int m, int n )  {
   }
   return;
 }
-
+*/
 
 /**
  *
  */
 // C <- A + B
+/*
 static void add ( double *a, double *b, double *c, int n )  {
   int j;
   for( j=0; j<n; ++j )  c[j] = a[j] + b[j];
   return;
 }
-
+*/
 
 /**
  *
  */
 // C <- A - B
+/*
 static void sub ( double *a, double *b, double *c, int n )  {
   int j;
   for( j=0; j<n; ++j )  c[j] = a[j] - b[j];
   return;
 }
-
+*/
 
 /**
  *
  */
+/*
 static void negate ( double *a, int m, int n )  {        
   int i, j;
   for( i=0; i<m; ++i )  {
@@ -469,16 +435,17 @@ static void negate ( double *a, int m, int n )  {
   }
   return;
 }
-
+*/
 
 /**
  *
  */
+/*
 static void addeye ( double *a, int n )  {
   int i;
   for( i=0; i<n; ++i )  a[i*n+i] += 1;
   return;
 }
-
+*/
 
 

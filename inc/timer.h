@@ -10,7 +10,7 @@
 
 #define PRIO_IMU    96
 #define PRIO_AHRS   94
-//#define PRIO_EKF    92
+#define PRIO_EKF    92
 #define PRIO_IO     90
 //#define PRIO_CTRL   88
 //#define PRIO_GPS    86
@@ -22,7 +22,7 @@
 #define HZ_IMU_FAST    200
 #define HZ_IMU_SLOW    100
 #define HZ_AHRS        100
-//#define HZ_EKF         100
+#define HZ_EKF         100
 #define HZ_IO          100
 //#define HZ_CTRL        100
 #define HZ_FLAG         20

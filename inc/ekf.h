@@ -5,25 +5,26 @@
 
 
 #include <sys/types.h>
+#include <matLib.h>
 
 
 #define EKF_ENABLED true
 #define EKF_N   2
-#define EKF_M   4
+#define EKF_M   2
 
 
 typedef struct ekf_struct {
-  double *x;   // State vector
-  double *z;   // Measurement vector
-  double *f;   // Plant function output
-  double *h;   // Measurement function output
-  double *F;   // Plant Jacobian
-  double *H;   // Measurement Jacobian
-  double *Q;   // Plant error covariance
-  double *R;   // Measurement error covariance
-  double *P;   // Prediction error covariance
-  double *S;   // Update error covariance
-  double *K;   // Kalman gain
+  matrix *x;   // State vector
+  matrix *z;   // Measurement vector
+  matrix *f;   // Plant function output
+  matrix *h;   // Measurement function output
+  matrix *F;   // Plant Jacobian
+  matrix *H;   // Measurement Jacobian
+  matrix *Q;   // Plant error covariance
+  matrix *R;   // Measurement error covariance
+  matrix *P;   // Prediction error covariance
+  matrix *S;   // Update error covariance
+  matrix *K;   // Kalman gain
   pthread_mutex_t mutex;
 } ekf_struct;
 ekf_struct ekf;

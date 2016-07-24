@@ -10,7 +10,7 @@
 
 #include "ahrs.h"
 //#include "ctrl.h"
-//#include "ekf.h"
+#include "ekf.h"
 #include "flag.h"
 //#include "gcs.h"
 //#include "gps.h"

@@ -9,7 +9,7 @@ EXEC   = RunBlackBox
 CC     = gcc
 CFLAGS = -Wall -g -c -fstack-check -fstack-usage -O3
 
-LIB    = -lm -lrt -lpthread -lprussdrv
+LIB    = -lm -lrt -lpthread -lprussdrv -lmat
 #LDIR   = ../Libraries/lib/
 #IDIR   = ../Libraries/inc/
 
@@ -27,10 +27,10 @@ DEFS = -DMPU9250
 all : $(EXEC)
 
 $(EXEC) : $(OBJ) $(BIN)
-	$(CC) -o $@ $(OBJ) $(LIB)   # -L$(LDIR)
+	$(CC) -o $@ $(OBJ) -Llib $(LIB)   # -L$(LDIR)
 
 obj/%.o : src/%.c inc/%.h
-	$(CC) $(CFLAGS) $(DEFS) -Iinc -Imavlink -o $@ $<  # -I$(IDIR) 
+	$(CC) $(CFLAGS) $(DEFS) -Iinc -Imavlink -o $@ $<
 
 bin/%.bin : pru/%.p
 	pasm -b $<
