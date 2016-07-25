@@ -55,12 +55,6 @@ void ekf_init ( void )  {
   // Local variables
   uint n  = EKF_N;
   uint m  = EKF_M;
-  /*
-  int nn = n*n;
-  int mm = m*m;
-  int nm = n*m;
-  int i;
-  */
 
   // Allocate memory for storage arrays
   ekf.x = mat_init(n,1);
@@ -128,12 +122,6 @@ int ekf_update ( void )  {
   // Define local dimension sizes and counters
   uint n  = EKF_N;
   uint m  = EKF_M;
-  /*
-  uint n, m, nn, nm, mm, i;
-  nn = n*n;
-  mm = m*m;
-  nm = n*m;
-  */
 
   // Initialize local EKF arrays
   matrix *x = mat_init(n,1);

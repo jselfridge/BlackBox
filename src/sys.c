@@ -19,6 +19,7 @@
 #include "timer.h"
 
 
+
 static void sys_io    ( void );
 static void sys_imu   ( void );
 static void sys_ahrs  ( void );
@@ -294,8 +295,9 @@ static void sys_ekf ( void )  {
   // Loop counter
   //ushort i;
 
-  //pthread_mutex_lock(&ekf.mutex);
-  //printf("%7.2f ", ekf.x[0] * (180.0/PI) );  printf("   ");  fflush(stdout);
+  pthread_mutex_lock(&ekf.mutex);
+  printf("%7.2f ", mat_get(ekf.x,1,1) * (180.0/PI) );  printf("   ");  fflush(stdout);
+  printf("%7.2f ", mat_get(ekf.x,2,1) * (180.0/PI) );  printf("   ");  fflush(stdout);
   //printf("%7.2f ", ekf.x[1] * (180.0/PI) );  printf("   ");  fflush(stdout);
   //printf("%7.2f ", ekf.x[2] * (180.0/PI) );  printf("   ");  fflush(stdout);
   //printf("%7.2f ", ekf.x[3] * (180.0/PI) );  printf("   ");  fflush(stdout);
@@ -304,7 +306,7 @@ static void sys_ekf ( void )  {
   //for ( i=0; i<3; i++ )  printf("%7.2f ", ekf.x[i+0] * (180.0/PI) );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%7.2f ", ekf.x[i+3] * (180.0/PI) );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%7.2f ", ekf.x[i+6] * (180.0/PI) );  printf("   ");  fflush(stdout);
-  //pthread_mutex_unlock(&ekf.mutex);
+  pthread_mutex_unlock(&ekf.mutex);
 
   return;
 }
