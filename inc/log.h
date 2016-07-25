@@ -95,10 +95,10 @@ typedef struct log_ekf_struct {
   ulong limit;
   float *time;
   ulong *dur;
-  //float *x;
-  //float *z;
-  //float *f;
-  //float *h;
+  float *x;
+  float *z;
+  float *f;
+  float *h;
   //float *P;
   //float *S;
   //float *K;

@@ -475,7 +475,7 @@ void *fcn_ekf (  )  {
     tmr_start(&tmr_ekf);
     if (!datalog.saving)  ekf_update();
     tmr_finish(&tmr_ekf);
-    //if (datalog.enabled)  log_record(LOG_EKF);
+    if (datalog.enabled)  log_record(LOG_EKF);
     tmr_pause(&tmr_ekf);
   }
   pthread_exit(NULL);
