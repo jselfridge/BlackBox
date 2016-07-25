@@ -162,10 +162,10 @@ int ekf_update ( void )  {
   pthread_mutex_unlock(&ekf.mutex);
 
   // Obtain comp filter A attitude
-  pthread_mutex_lock(&imuA.mutex);
-  double R_compA = imuA.roll;
+  //pthread_mutex_lock(&imuA.mutex);
+  //double R_compA = imuA.roll;
   //double P_compA = imuA.pitch;
-  pthread_mutex_unlock(&imuA.mutex);
+  //pthread_mutex_unlock(&imuA.mutex);
 
   // Obtain comp filter B attitude
   //pthread_mutex_lock(&imuB.mutex);
@@ -174,11 +174,11 @@ int ekf_update ( void )  {
   //pthread_mutex_unlock(&imuB.mutex);
 
   // Obtain rate gyro A 
-  pthread_mutex_lock(&gyrA.mutex);
-  double dR_gyrA = gyrA.filter[0];
+  //pthread_mutex_lock(&gyrA.mutex);
+  //double dR_gyrA = gyrA.filter[0];
   //double dP_gyrA = gyrA.filter[1];
   //double dY_gyrA = gyrA.filter[2];
-  pthread_mutex_unlock(&gyrA.mutex);
+  //pthread_mutex_unlock(&gyrA.mutex);
 
   // Obtain rate gyro B 
   //pthread_mutex_lock(&gyrB.mutex);
@@ -202,8 +202,8 @@ int ekf_update ( void )  {
   //pthread_mutex_unlock(&ahrsB.mutex);
 
   // Populate measurement vector
-  mat_set( z, 1, 1, R_compA );
-  mat_set( z, 2, 1, dR_gyrA );
+  mat_set( z, 1, 1, 0.0 );
+  mat_set( z, 2, 1, 0.0 );
 
   // Evaluate derivatives
   f = mat_mul( F, x );
@@ -239,15 +239,43 @@ int ekf_update ( void )  {
   P = mat_mul( tmpNN, Pt );
 
   // Push data to structure
-  pthread_mutex_lock(&ekf.mutex);
-  ekf.x = mat_copy(x);
-  ekf.z = mat_copy(z);
-  ekf.f = mat_copy(f);
-  ekf.h = mat_copy(h);
-  ekf.P = mat_copy(P);
-  ekf.S = mat_copy(S);
-  ekf.K = mat_copy(K);
-  pthread_mutex_unlock(&ekf.mutex);
+  //pthread_mutex_lock(&ekf.mutex);
+  //ekf.x = mat_copy(x);
+  //ekf.z = mat_copy(z);
+  //ekf.f = mat_copy(f);
+  //ekf.h = mat_copy(h);
+  //ekf.P = mat_copy(P);
+  //ekf.S = mat_copy(S);
+  //ekf.K = mat_copy(K);
+  //pthread_mutex_unlock(&ekf.mutex);
+
+  // Clear local EKF arrays
+  mat_clear(x);
+  mat_clear(z);
+  mat_clear(f);
+  mat_clear(h);
+
+  // Clear local EKF matrices
+  mat_clear(F);
+  mat_clear(H);
+  mat_clear(Q);
+  mat_clear(R);
+  mat_clear(P);
+  mat_clear(S);
+  mat_clear(K);
+
+  // Clear intermediate storage arrays
+  mat_clear(Ft);
+  mat_clear(Ht);
+  mat_clear(Pt);
+  mat_clear(Inv);
+
+  // Clear temp storage arrays
+  mat_clear(tmpNN);
+  mat_clear(tmpNM);
+  mat_clear(tmpMN);
+  mat_clear(tmpN);
+  mat_clear(tmpM);
 
   return 0;
 }
