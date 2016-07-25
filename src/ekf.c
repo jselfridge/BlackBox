@@ -239,15 +239,15 @@ int ekf_update ( void )  {
   P = mat_mul( tmpNN, Pt );
 
   // Push data to structure
-  //pthread_mutex_lock(&ekf.mutex);
-  //ekf.x = mat_copy(x);
-  //ekf.z = mat_copy(z);
-  //ekf.f = mat_copy(f);
-  //ekf.h = mat_copy(h);
+  pthread_mutex_lock(&ekf.mutex);
+  ekf.x = mat_copy(x);
+  ekf.z = mat_copy(z);
+  ekf.f = mat_copy(f);
+  ekf.h = mat_copy(h);
   //ekf.P = mat_copy(P);
-  //ekf.S = mat_copy(S);
-  //ekf.K = mat_copy(K);
-  //pthread_mutex_unlock(&ekf.mutex);
+  ekf.S = mat_copy(S);
+  ekf.K = mat_copy(K);
+  pthread_mutex_unlock(&ekf.mutex);
 
   // Clear local EKF arrays
   mat_clear(x);

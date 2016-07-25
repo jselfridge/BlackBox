@@ -1,3 +1,3 @@
 ekf.c:52:6:ekf_init	24	static
 ekf.c:104:6:ekf_exit	0	static
-ekf.c:120:5:ekf_update	96	static
+ekf.c:120:5:ekf_update	104	static
