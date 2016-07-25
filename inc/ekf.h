@@ -14,17 +14,17 @@
 
 
 typedef struct ekf_struct {
-  matrix *x;   // State vector
-  matrix *z;   // Measurement vector
-  matrix *f;   // Plant function output
-  matrix *h;   // Measurement function output
-  matrix *F;   // Plant Jacobian
-  matrix *H;   // Measurement Jacobian
-  matrix *Q;   // Plant error covariance
-  matrix *R;   // Measurement error covariance
-  matrix *P;   // Prediction error covariance
-  matrix *S;   // Update error covariance
-  matrix *K;   // Kalman gain
+  matrix *x;   // [n,1] State vector
+  matrix *z;   // [m,1] Measurement vector
+  matrix *f;   // [n,1] Plant function output
+  matrix *h;   // [m,1] Measurement function output
+  matrix *F;   // [n,n] Plant Jacobian
+  matrix *H;   // [n,m] Measurement Jacobian
+  matrix *Q;   // [n,n] Plant error covariance
+  matrix *R;   // [m,m] Measurement error covariance
+  matrix *P;   // [n,n] Prediction error covariance
+  matrix *S;   // [m,m] Update error covariance
+  matrix *K;   // [n,m] Kalman gain
   pthread_mutex_t mutex;
 } ekf_struct;
 ekf_struct ekf;
