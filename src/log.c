@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include "ahrs.h"
 //#include "ctrl.h"
-//#include "ekf.h"
+#include "ekf.h"
 //#include "gcs.h"
 //#include "gps.h"
 #include "imu.h"
@@ -47,7 +47,7 @@ void log_init ( void )  {
   log_magB.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
   log_compB.limit   =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_ahrsB.limit   =  LOG_MAX_DUR * HZ_AHRS;
-  //log_ekf.limit     =  LOG_MAX_DUR * HZ_EKF;
+  log_ekf.limit     =  LOG_MAX_DUR * HZ_EKF;
   //log_gps.limit     =  LOG_MAX_DUR * HZ_GPS;
   //log_ctrl.limit    =  LOG_MAX_DUR * HZ_CTRL;
 
@@ -149,24 +149,24 @@ void log_init ( void )  {
 
   }
 
-  /*
   // Extended Kalman Filter setup
-  uint n, m, nn, mm, nm;
-  n  = EKF_N;
-  m  = EKF_M;
-  nn = n*n;
-  mm = m*m;
-  nm = n*m;
+  //uint n, m, nn, mm, nm;
+  //n  = EKF_N;
+  //m  = EKF_M;
+  //nn = n*n;
+  //mm = m*m;
+  //nm = n*m;
   log_ekf.time      =  malloc( sizeof(float)  * log_ekf.limit      );
   log_ekf.dur       =  malloc( sizeof(ulong)  * log_ekf.limit      );
-  log_ekf.x         =  malloc( sizeof(float)  * log_ekf.limit * n  );
-  log_ekf.z         =  malloc( sizeof(float)  * log_ekf.limit * m  );
-  log_ekf.f         =  malloc( sizeof(float)  * log_ekf.limit * n  );
-  log_ekf.h         =  malloc( sizeof(float)  * log_ekf.limit * m  );
-  log_ekf.P         =  malloc( sizeof(float)  * log_ekf.limit * nn );
-  log_ekf.S         =  malloc( sizeof(float)  * log_ekf.limit * mm );
-  log_ekf.K         =  malloc( sizeof(float)  * log_ekf.limit * nm );
+  //log_ekf.x         =  malloc( sizeof(float)  * log_ekf.limit * n  );
+  //log_ekf.z         =  malloc( sizeof(float)  * log_ekf.limit * m  );
+  //log_ekf.f         =  malloc( sizeof(float)  * log_ekf.limit * n  );
+  //log_ekf.h         =  malloc( sizeof(float)  * log_ekf.limit * m  );
+  //log_ekf.P         =  malloc( sizeof(float)  * log_ekf.limit * nn );
+  //log_ekf.S         =  malloc( sizeof(float)  * log_ekf.limit * mm );
+  //log_ekf.K         =  malloc( sizeof(float)  * log_ekf.limit * nm );
 
+  /*
   // Global Positioning System setup
   log_gps.time      =  malloc( sizeof(float)  * log_gps.limit      );
   log_gps.dur       =  malloc( sizeof(ulong)  * log_gps.limit      );
@@ -290,18 +290,18 @@ void log_exit ( void )  {
 
   }
 
-  /*
   // EKF memory
   free(log_ekf.time);
   free(log_ekf.dur);
-  free(log_ekf.x);
-  free(log_ekf.z);
-  free(log_ekf.f);
-  free(log_ekf.h);
-  free(log_ekf.P);
-  free(log_ekf.S);
-  free(log_ekf.K);
+  //free(log_ekf.x);
+  //free(log_ekf.z);
+  //free(log_ekf.f);
+  //free(log_ekf.h);
+  //free(log_ekf.P);
+  //free(log_ekf.S);
+  //free(log_ekf.K);
 
+  /*
   // GPS memory
   free(log_gps.time);
   free(log_gps.dur);
@@ -340,7 +340,7 @@ void log_start ( void )  {
   log_magB.count   = 0;
   log_compB.count  = 0;
   log_ahrsB.count  = 0;
-  //log_ekf.count    = 0;
+  log_ekf.count    = 0;
   //log_gps.count    = 0;
   //log_ctrl.count   = 0;
 
@@ -498,26 +498,26 @@ void log_start ( void )  {
 
   }
 
-  /*
   // Extended Kalman Filter datalog file
-  uint n, m, nn, mm, nm;
-  n  = EKF_N;
-  m  = EKF_M;
-  nn = n * n;
-  mm = m * m;
-  nm = n * m;
+  //uint n, m, nn, mm, nm;
+  //n  = EKF_N;
+  //m  = EKF_M;
+  //nn = n * n;
+  //mm = m * m;
+  //nm = n * m;
   sprintf( file, "%sekf.txt", datalog.path );
   datalog.ekf = fopen( file, "w" );
   if( datalog.ekf == NULL )  printf( "Error (log_init): Cannot generate 'ekf' file. \n" );
   fprintf( datalog.ekf, "     ekftime   ekfdur           " );
-  for ( i=0; i<n;  i++ )  fprintf( datalog.ekf, "x%d       ", i+1 );  fprintf( datalog.ekf, "    " );
-  for ( i=0; i<m;  i++ )  fprintf( datalog.ekf, "z%d       ", i+1 );  fprintf( datalog.ekf, "    " );
-  for ( i=0; i<n;  i++ )  fprintf( datalog.ekf, "f%d       ", i+1 );  fprintf( datalog.ekf, "    " );
-  for ( i=0; i<m;  i++ )  fprintf( datalog.ekf, "h%d       ", i+1 );  fprintf( datalog.ekf, "  " );
-  for ( i=0; i<nn; i++ )  fprintf( datalog.ekf, "P_%d%d     ", i/n+1, i%n+1 );  fprintf( datalog.ekf, "    " );
-  for ( i=0; i<mm; i++ )  fprintf( datalog.ekf, "S_%d%d     ", i/m+1, i%m+1 );  fprintf( datalog.ekf, "    " );
-  for ( i=0; i<nm; i++ )  fprintf( datalog.ekf, "K_%d%d     ", i/n+1, i%n+1 );  fprintf( datalog.ekf, "    " );
+  //for ( i=0; i<n;  i++ )  fprintf( datalog.ekf, "x%d       ", i+1 );  fprintf( datalog.ekf, "    " );
+  //for ( i=0; i<m;  i++ )  fprintf( datalog.ekf, "z%d       ", i+1 );  fprintf( datalog.ekf, "    " );
+  //for ( i=0; i<n;  i++ )  fprintf( datalog.ekf, "f%d       ", i+1 );  fprintf( datalog.ekf, "    " );
+  //for ( i=0; i<m;  i++ )  fprintf( datalog.ekf, "h%d       ", i+1 );  fprintf( datalog.ekf, "  " );
+  //for ( i=0; i<nn; i++ )  fprintf( datalog.ekf, "P_%d%d     ", i/n+1, i%n+1 );  fprintf( datalog.ekf, "    " );
+  //for ( i=0; i<mm; i++ )  fprintf( datalog.ekf, "S_%d%d     ", i/m+1, i%m+1 );  fprintf( datalog.ekf, "    " );
+  //for ( i=0; i<nm; i++ )  fprintf( datalog.ekf, "K_%d%d     ", i/n+1, i%n+1 );  fprintf( datalog.ekf, "    " );
 
+  /*
   // GPS datalog file
   sprintf( file, "%sgps.txt", datalog.path );
   datalog.gps = fopen( file, "w" );
@@ -585,6 +585,7 @@ void log_record ( enum log_index index )  {
 
     return;
     */
+
 
   // Record system input/output data
   case LOG_IO :
@@ -779,7 +780,7 @@ void log_record ( enum log_index index )  {
 
     return;
 
-    /*
+
   // Record EKF data
   case LOG_EKF :
 
@@ -791,28 +792,30 @@ void log_record ( enum log_index index )  {
       log_ekf.time[row] = timestamp;
       log_ekf.dur[row]  = tmr_ekf.dur;
 
-      uint n, m, nn, mm, nm;
-      n  = EKF_N;
-      m  = EKF_M;
-      nn = n*n;
-      mm = m*m;
-      nm = n*m;
+      //uint n, m, nn, mm, nm;
+      //n  = EKF_N;
+      //m  = EKF_M;
+      //nn = n*n;
+      //mm = m*m;
+      //nm = n*m;
 
-      pthread_mutex_lock(&ekf.mutex);
-      for ( i=0; i<n;  i++ )  log_ekf.x [ row*n  +i ] = ekf.x [i];
-      for ( i=0; i<m;  i++ )  log_ekf.z [ row*m  +i ] = ekf.z [i];
-      for ( i=0; i<n;  i++ )  log_ekf.f [ row*n  +i ] = ekf.f [i];
-      for ( i=0; i<m;  i++ )  log_ekf.h [ row*m  +i ] = ekf.h [i];
-      for ( i=0; i<nn; i++ )  log_ekf.P [ row*nn +i ] = ekf.P [i];
-      for ( i=0; i<mm; i++ )  log_ekf.S [ row*mm +i ] = ekf.S [i];
-      for ( i=0; i<nm; i++ )  log_ekf.K [ row*nm +i ] = ekf.K [i];
-      pthread_mutex_unlock(&ekf.mutex);
+      //pthread_mutex_lock(&ekf.mutex);
+      //for ( i=0; i<n;  i++ )  log_ekf.x [ row*n  +i ] = ekf.x [i];
+      //for ( i=0; i<m;  i++ )  log_ekf.z [ row*m  +i ] = ekf.z [i];
+      //for ( i=0; i<n;  i++ )  log_ekf.f [ row*n  +i ] = ekf.f [i];
+      //for ( i=0; i<m;  i++ )  log_ekf.h [ row*m  +i ] = ekf.h [i];
+      //for ( i=0; i<nn; i++ )  log_ekf.P [ row*nn +i ] = ekf.P [i];
+      //for ( i=0; i<mm; i++ )  log_ekf.S [ row*mm +i ] = ekf.S [i];
+      //for ( i=0; i<nm; i++ )  log_ekf.K [ row*nm +i ] = ekf.K [i];
+      //pthread_mutex_unlock(&ekf.mutex);
 
       log_ekf.count++;
     }
 
     return;
 
+
+    /*
   // Record GPS data
   case LOG_GPS :
 
@@ -855,6 +858,7 @@ void log_record ( enum log_index index )  {
     return;
     */
 
+
   default :
     return;
 
@@ -895,6 +899,7 @@ static void log_save ( void )  {
   // Local variables
   ushort i;
   ulong  row;
+
   /*
   // Parameter data
   for ( row = 0; row < log_param.count; row++ )  {
@@ -902,6 +907,7 @@ static void log_save ( void )  {
     for ( i=0; i < param_count; i++ )  fprintf( datalog.param, "%09.4f  ", log_param.values [ row * param_count + i ] );
   }
   */
+
   // Input data
   for ( row = 0; row < log_input.count; row++ ) {
     fprintf( datalog.in, "\n %011.6f    ", log_input.time[row] );
@@ -1012,25 +1018,25 @@ static void log_save ( void )  {
 
   }
 
-  /*
   // Extended Kalman Filter data
-  uint n, m, nn, mm, nm;
-  n  = EKF_N;
-  m  = EKF_M;
-  nn = n*n;
-  mm = m*m;
-  nm = n*m;
+  //uint n, m, nn, mm, nm;
+  //n  = EKF_N;
+  //m  = EKF_M;
+  //nn = n*n;
+  //mm = m*m;
+  //nm = n*m;
   for ( row = 0; row < log_ekf.count; row++ ) {
     fprintf( datalog.ekf, "\n %011.6f   %06ld      ", log_ekf.time[row], log_ekf.dur[row] );
-    for ( i=0; i<n;  i++ )  fprintf( datalog.ekf, "%07.4f  ", log_ekf.x [ row*n  +i ] );  fprintf( datalog.ekf, "    " );
-    for ( i=0; i<m;  i++ )  fprintf( datalog.ekf, "%07.4f  ", log_ekf.z [ row*m  +i ] );  fprintf( datalog.ekf, "    " );
-    for ( i=0; i<n;  i++ )  fprintf( datalog.ekf, "%07.4f  ", log_ekf.f [ row*n  +i ] );  fprintf( datalog.ekf, "    " );
-    for ( i=0; i<m;  i++ )  fprintf( datalog.ekf, "%07.4f  ", log_ekf.h [ row*m  +i ] );  fprintf( datalog.ekf, "    " );
-    for ( i=0; i<nn; i++ )  fprintf( datalog.ekf, "%07.4f  ", log_ekf.P [ row*nn +i ] );  fprintf( datalog.ekf, "    " );
-    for ( i=0; i<mm; i++ )  fprintf( datalog.ekf, "%07.4f  ", log_ekf.S [ row*mm +i ] );  fprintf( datalog.ekf, "    " );
-    for ( i=0; i<nm; i++ )  fprintf( datalog.ekf, "%07.4f  ", log_ekf.K [ row*nm +i ] );  fprintf( datalog.ekf, "    " );
+    //for ( i=0; i<n;  i++ )  fprintf( datalog.ekf, "%07.4f  ", log_ekf.x [ row*n  +i ] );  fprintf( datalog.ekf, "    " );
+    //for ( i=0; i<m;  i++ )  fprintf( datalog.ekf, "%07.4f  ", log_ekf.z [ row*m  +i ] );  fprintf( datalog.ekf, "    " );
+    //for ( i=0; i<n;  i++ )  fprintf( datalog.ekf, "%07.4f  ", log_ekf.f [ row*n  +i ] );  fprintf( datalog.ekf, "    " );
+    //for ( i=0; i<m;  i++ )  fprintf( datalog.ekf, "%07.4f  ", log_ekf.h [ row*m  +i ] );  fprintf( datalog.ekf, "    " );
+    //for ( i=0; i<nn; i++ )  fprintf( datalog.ekf, "%07.4f  ", log_ekf.P [ row*nn +i ] );  fprintf( datalog.ekf, "    " );
+    //for ( i=0; i<mm; i++ )  fprintf( datalog.ekf, "%07.4f  ", log_ekf.S [ row*mm +i ] );  fprintf( datalog.ekf, "    " );
+    //for ( i=0; i<nm; i++ )  fprintf( datalog.ekf, "%07.4f  ", log_ekf.K [ row*nm +i ] );  fprintf( datalog.ekf, "    " );
   }
 
+  /*
   // GPS data
   for ( row = 0; row < log_gps.count; row++ ) {
     fprintf( datalog.gps, "\n %011.6f  %06ld    ", log_gps.time[row], log_gps.dur[row] );
@@ -1078,7 +1084,7 @@ static void log_close ( void )  {
     fclose(datalog.ahrsB);
   }
 
-  //fclose(datalog.ekf);
+  fclose(datalog.ekf);
   //fclose(datalog.gps);
   //fclose(datalog.ctrl);
 

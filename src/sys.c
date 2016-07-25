@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include "ahrs.h"
 //#include "ctrl.h"
-//#include "ekf.h"
+#include "ekf.h"
 //#include "gps.h"
 #include "imu.h"
 #include "io.h"
@@ -22,7 +22,7 @@
 static void sys_io    ( void );
 static void sys_imu   ( void );
 static void sys_ahrs  ( void );
-//static void sys_ekf   ( void );
+static void sys_ekf   ( void );
 //static void sys_gps   ( void );
 //static void sys_ctrl  ( void );
 //static void sys_gcs   ( void );
@@ -125,7 +125,7 @@ void sys_update ( void )  {
   if(SYS_IO)     sys_io();
   if(SYS_IMU)    sys_imu();
   if(SYS_AHRS)   sys_ahrs();
-  //if(SYS_EKF)    sys_ekf();
+  if(SYS_EKF)    sys_ekf();
   //if(SYS_GPS)    sys_gps();
   //if(SYS_GCS)    sys_gcs();
   //if(SYS_CTRL)   sys_ctrl();
@@ -289,7 +289,7 @@ static void sys_ahrs ( void )  {
  *  sys_ekf
  *  Prints EKF debugging messages to the terminal.
  */
-//static void sys_ekf ( void )  {
+static void sys_ekf ( void )  {
 
   // Loop counter
   //ushort i;
@@ -306,8 +306,8 @@ static void sys_ahrs ( void )  {
   //for ( i=0; i<3; i++ )  printf("%7.2f ", ekf.x[i+6] * (180.0/PI) );  printf("   ");  fflush(stdout);
   //pthread_mutex_unlock(&ekf.mutex);
 
-//  return;
-//}
+  return;
+}
 
 
 /**
