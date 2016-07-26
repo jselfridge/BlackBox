@@ -9,8 +9,8 @@
 
 
 #define EKF_ENABLED true
-#define EKF_N   2
-#define EKF_M   2
+#define EKF_N   3
+#define EKF_M   3
 
 
 typedef struct ekf_struct {
@@ -19,7 +19,7 @@ typedef struct ekf_struct {
   matrix *f;   // [n,1] Plant function output
   matrix *h;   // [m,1] Measurement function output
   matrix *F;   // [n,n] Plant Jacobian
-  matrix *H;   // [n,m] Measurement Jacobian
+  matrix *H;   // [m,n] Measurement Jacobian
   matrix *Q;   // [n,n] Plant error covariance
   matrix *R;   // [m,m] Measurement error covariance
   matrix *P;   // [n,n] Prediction error covariance

@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include "ahrs.h"
 //#include "ctrl.h"
-#include "ekf.h"
+//#include "ekf.h"
 #include "flag.h"
 //#include "gcs.h"
 //#include "gps.h"
@@ -52,7 +52,7 @@ void tmr_mutex ( void )  {
   pthread_mutex_init( &accB.mutex,   NULL );
   pthread_mutex_init( &magB.mutex,   NULL );
   pthread_mutex_init( &ahrsB.mutex,  NULL );
-  pthread_mutex_init( &ekf.mutex,    NULL );
+  //pthread_mutex_init( &ekf.mutex,    NULL );
   //pthread_mutex_init( &ctrl.mutex,   NULL );
   //pthread_mutex_init( &gcs.mutex,    NULL );
   //pthread_mutex_init( &mutex_gps,    NULL );
@@ -88,9 +88,9 @@ void tmr_setup ( void )  {
   tmr_ahrs.per  = 1000000 / HZ_AHRS;
 
   // EKF timer
-  tmr_ekf.name  = "ekf";
-  tmr_ekf.prio  = PRIO_EKF;
-  tmr_ekf.per   = 1000000 / HZ_EKF;
+  //tmr_ekf.name  = "ekf";
+  //tmr_ekf.prio  = PRIO_EKF;
+  //tmr_ekf.per   = 1000000 / HZ_EKF;
 
   // GPS timer
   //tmr_gps.name = "gps";
@@ -163,7 +163,7 @@ void tmr_begin ( pthread_attr_t *attr )  {
   tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(100000);
   tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);
   tmr_thread( &tmr_ahrs,  attr, fcn_ahrs  );  usleep(100000);
-  tmr_thread( &tmr_ekf,   attr, fcn_ekf   );  usleep(100000);
+  //tmr_thread( &tmr_ekf,   attr, fcn_ekf   );  usleep(100000);
   //tmr_thread( &tmr_gps,   attr, fcn_gps   );  usleep(100000);
   //tmr_thread( &tmr_ctrl,  attr, fcn_ctrl  );  usleep(100000);
   //tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
@@ -200,7 +200,7 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&accB.mutex);
   pthread_mutex_destroy(&magB.mutex);
   pthread_mutex_destroy(&ahrsB.mutex);
-  pthread_mutex_destroy(&ekf.mutex);
+  //pthread_mutex_destroy(&ekf.mutex);
   //pthread_mutex_destroy(&ctrl.mutex);
   //pthread_mutex_destroy(&gcs.mutex);
   //pthread_mutex_destroy(&mutex_gps);
@@ -226,9 +226,9 @@ void tmr_exit ( void )  {
   //if(DEBUG)  printf( "gps " );
 
   // Exit EKF thread
-  if( pthread_join ( tmr_ekf.id, NULL ) )
-    printf( "Error (tmr_exit): Failed to exit 'ekf' thread. \n" );
-  if(DEBUG)  printf( "ekf " ); 
+  //if( pthread_join ( tmr_ekf.id, NULL ) )
+  //  printf( "Error (tmr_exit): Failed to exit 'ekf' thread. \n" );
+  //if(DEBUG)  printf( "ekf " ); 
 
   // Exit AHRS thread
   if( pthread_join ( tmr_ahrs.id, NULL ) )
@@ -469,6 +469,7 @@ void *fcn_ahrs (  )  {
  *  fcn_ekf
  *  Function handler for the Extended Kalman Filter timing thread.
  */
+/*
 void *fcn_ekf (  )  {
   tmr_create(&tmr_ekf);
   while (running) {
@@ -481,7 +482,7 @@ void *fcn_ekf (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_gps

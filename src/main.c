@@ -16,35 +16,35 @@ int main ( void )  {
   flag_init();
   imu_init();
   ahrs_init();
-  ekf_init();
+  //ekf_init();
   //gps_init();
   //ctrl_init();
   //gcs_init();
-  //log_init();
-  //tmr_init();
+  log_init();
+  tmr_init();
 
   //---  DEBUGGING  ---//
-  //log_start();
-  //datalog.enabled = true;
+  usleep(500000);
+  log_start();
+  datalog.enabled = true;
   //-------------------//
 
   // Run program
-  //while(running)  usleep(100000);
-  ekf_update();
+  while(running)  usleep(100000);
 
   //--  DEBUGGING  --//
-  //datalog.enabled = false;
-  //log_finish();
+  datalog.enabled = false;
+  log_finish();
   //-----------------//
 
   // Exit program
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
-  //tmr_exit();
-  //log_exit();
+  tmr_exit();
+  log_exit();
   //gcs_exit();
   //ctrl_exit();
   //gps_exit();
-  ekf_exit();
+  //ekf_exit();
   ahrs_exit();
   imu_exit();
   flag_exit();

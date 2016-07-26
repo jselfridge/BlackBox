@@ -11,19 +11,6 @@
 #include "timer.h"
 
 
-//static int  choldc1   ( double *a, double *p, int n );
-//static int  choldcsl  ( double *A, double *a, double *p, int n );
-//static int  cholsl    ( double *A, double *a, double *p, int n );
-//static void mulmat    ( double *a, double *b, double *c, int arows, int acols, int bcols );
-//static void mulvec    ( double *a, double *x, double *y, int m, int n );
-//static void transpose ( double *a, double *at, int m, int n );
-//static void accum     ( double *a, double *b, int m, int n );
-//static void add       ( double *a, double *b, double *c, int n );
-//static void sub       ( double *a, double *b, double *c, int n );
-//static void negate    ( double *a, int m, int n );
-//static void addeye    ( double *a, int n );
-
-
 /**
  * Initializes the EKF structure.
  * @param ekf pointer to an EKF structure to be initialized
@@ -62,41 +49,48 @@ void ekf_init ( void )  {
   ekf.f = mat_init(n,1);
   ekf.h = mat_init(m,1);
   ekf.F = mat_init(n,n);
-  ekf.H = mat_init(n,m);
+  ekf.H = mat_init(m,n);
   ekf.Q = mat_init(n,n);
   ekf.R = mat_init(m,m);
   ekf.P = mat_init(n,n);
   ekf.S = mat_init(m,m);
   ekf.K = mat_init(n,m);
 
-  // Assign plant covariance values (WIP: pull from file with error checking)
+  // Assign plant covariance values
   mat_set( ekf.Q, 1, 1, 0.01 );
   mat_set( ekf.Q, 2, 2, 0.01 );
+  mat_set( ekf.Q, 3, 3, 0.01 );
 
-  // Assign measurement covariance values (WIP: pull from file with error checking)
+  // Assign measurement covariance values
   mat_set( ekf.R, 1, 1, 0.01 );
   mat_set( ekf.R, 2, 2, 0.01 );
+  mat_set( ekf.R, 3, 3, 0.01 );
+  //mat_set( ekf.R, 4, 4, 0.01 );
+
+  // Initialize prediction matrix
+  mat_set( ekf.P, 1, 1, 0.01 );
+  mat_set( ekf.P, 2, 2, 0.01 );
+  mat_set( ekf.P, 3, 3, 0.01 );
 
   // Static F matrix    //--- TODO: Adaptively updated from MRAC or L1 ---//
   double dt  = 1.0 / HZ_EKF;
-  mat_set( ekf.F, 1, 1, 1.0 );  mat_set( ekf.F, 1, 2, dt );
-  mat_set( ekf.F, 2, 1, 0.0 );  mat_set( ekf.F, 2, 2, 1.0 );
+  mat_set( ekf.F, 1, 1, 1.0 );  mat_set( ekf.F, 1, 2, dt  );  mat_set( ekf.F, 1, 3, (dt*dt)/2.0 );
+  mat_set( ekf.F, 2, 1, 0.0 );  mat_set( ekf.F, 2, 2, 1.0 );  mat_set( ekf.F, 2, 3, dt  );
+  mat_set( ekf.F, 3, 1, 0.0 );  mat_set( ekf.F, 3, 2, 0.0 );  mat_set( ekf.F, 3, 3, 1.0  );
   
   // Static H matrix   //--- TODO: Adaptively updated from MRAC or L1 ---//
-  mat_set( ekf.H, 1, 1, 1.0 );  mat_set( ekf.H, 1, 2, 0.0 );
-  mat_set( ekf.H, 2, 1, 0.0 );  mat_set( ekf.H, 2, 2, 1.0 );
-
-  // P matrix
-  mat_set( ekf.P, 1, 1, 1.0 );  mat_set( ekf.P, 1, 2, 1.0 );
-  mat_set( ekf.P, 2, 1, 0.0 );  mat_set( ekf.P, 2, 2, 0.0 );
+  mat_set( ekf.H, 1, 1, 1.0 );  mat_set( ekf.H, 1, 2, 0.0 );  mat_set( ekf.H, 1, 3, 0.0 );
+  mat_set( ekf.H, 2, 1, 0.0 );  mat_set( ekf.H, 2, 2, 1.0 );  mat_set( ekf.H, 2, 3, 0.0 );
+  mat_set( ekf.H, 3, 1, 0.0 );  mat_set( ekf.H, 3, 2, 0.0 );  mat_set( ekf.H, 3, 3, 1.0 );
+  //mat_set( ekf.H, 4, 1, 0.0 );  mat_set( ekf.H, 4, 2, 1.0 );
 
   // Display EKF settings
   if (DEBUG) {
     printf("Q  ");  mat_print(ekf.Q);
     printf("R  ");  mat_print(ekf.R);
+    printf("P  ");  mat_print(ekf.P);
     printf("F  ");  mat_print(ekf.F);
     printf("H  ");  mat_print(ekf.H);
-    printf("P  ");  mat_print(ekf.P);
   }
 
   return;
@@ -124,6 +118,8 @@ void ekf_exit ( void )  {
  */
 int ekf_update ( void )  {
 
+  uint debug = 0;
+
   // Define local dimension sizes and counters
   uint n  = EKF_N;
   uint m  = EKF_M;
@@ -145,7 +141,7 @@ int ekf_update ( void )  {
 
   // Initialize intermediate storage arrays
   matrix *Ft  = mat_init(n,n);
-  matrix *Ht  = mat_init(m,n);
+  matrix *Ht  = mat_init(n,m);
   matrix *Pt  = mat_init(n,n);
   matrix *Inv = mat_init(m,m);
 
@@ -207,51 +203,69 @@ int ekf_update ( void )  {
   //pthread_mutex_unlock(&ahrsB.mutex);
 
   // Debugging vector
-  mat_set( x, 1, 1, 0.1 );
-  mat_set( x, 2, 1, 0.3 );
+  mat_set( x, 1, 1, 0.0 );
+  mat_set( x, 2, 1, 0.0 );
+  mat_set( x, 3, 1, 0.0 );
 
   // Populate measurement vector
-  mat_set( z, 1, 1, 0.11 );
-  mat_set( z, 2, 1, 0.29 );
+  mat_set( z, 1, 1,  0.0 );
+  mat_set( z, 2, 1,  0.0 );
+  mat_set( z, 3, 1,  0.0 );
+  //mat_set( z, 4, 1, -0.001 );
 
   // Evaluate derivatives
   f = mat_mul( F, x );
   h = mat_mul( H, x );
-  mat_print(f);
-  mat_print(h);
+  if(debug) mat_print(f);
+  if(debug) mat_print(h);
 
   // Transpose matrices
   Ft = mat_trans(F);
   Ht = mat_trans(H);
+  if(debug) mat_print(Ft);
+  if(debug) mat_print(Ht);
 
   // Pt = F P Ft + Q
   tmpNN = mat_mul( F, P );
   Pt = mat_mul( tmpNN, Ft );
   Pt = mat_add( Pt, Q );
-  mat_print(Pt);
+  mat_sym( Pt, 0.0001 );
+  if(debug) mat_print(Pt);
 
   // S = H Pt Ht + R
   tmpMN = mat_mul( H, Pt );
   S = mat_mul( tmpMN, Ht );
   S = mat_add( S, R );
-  mat_print(S);
+  mat_sym( S, 0.0001 );
+  if(debug) mat_print(S);
 
-  // K = Pt Ht S^{-1}
+  // K = Pt Ht S^{-1}    //--- ORIG ---//
   tmpNM = mat_mul( Pt, Ht );
-  Inv = mat_inv(S);
-  K = mat_mul( tmpNM, Inv );
-  mat_print(K);
+  //Inv = mat_inv(S);
+  //K = mat_mul( tmpNM, Inv );
+  K = mat_mul( tmpNM, S );
+  if(debug) mat_print(K);
+
+  // K = Pt Ht S^{-1}  ==>>  K^T = (S^T)^(-1) H Pt^T
+  //tmpMN = mat_mul( H, mat_trans(Pt) );
+  //matrix *Kt = mat_init(m,n);
+  //Kt = mat_divL( mat_trans(S), tmpMN );
+  //K = mat_trans( Kt );
+  //mat_clear(Kt);
+  //if(debug) mat_print(K);
 
   // x = f + K ( z - h )
   tmpM = mat_sub( z, h );
   tmpN = mat_mul( K, tmpM );
   x = mat_add( f, tmpN );
-  mat_print(x);
+  if(debug) mat_print(x);
 
   // P = ( I - K H ) Pt
   tmpNN = mat_mul( K, H );
   tmpNN = mat_sub( mat_eye(n), tmpNN );
   P = mat_mul( tmpNN, Pt );
+  mat_sym( P, 0.0001 );
+  if(debug) mat_print(P);
 
   // Push data to structure
   pthread_mutex_lock(&ekf.mutex);
@@ -295,225 +309,5 @@ int ekf_update ( void )  {
   return 0;
 }
 
-
-/**
- * Cholesky-decomposition matrix-inversion code, adapated from
- * http://jean-pierre.moreau.pagesperso-orange.fr/Cplus/choles_cpp.txt
- */
-/*
-static int choldc1 ( double *a, double *p, int n )  {
-
-  // Local variables
-  int i, j, k;
-  double sum;
-
-  for ( i=0; i<n; i++ )  {
-    for ( j=i; j<n; j++ )  {
-      sum = a[i*n+j];
-      for ( k=i-1; k>=0; k-- )  sum -= a[i*n+k] * a[j*n+k];
-      if (i==j)  {
-        if (sum<=0)  return -1;
-        p[i] = sqrt(sum);
-      }
-      else  a[j*n+i] = sum / p[i];
-    }
-  }
-
-  return 0;
-}
-*/
-
-/**
- * 
- */
-/*
-static int choldcsl ( double *A, double *a, double *p, int n )  {
-
-  // Local variables
-  int i, j, k;
-  double sum;
-
-  // Assign A to a
-  for ( i=0; i<n; i++ )  {
-    for ( j=0; j<n; j++ )  {
-      a[i*n+j] = A[i*n+j];
-    }
-  }
-
-  // Check error condition
-  if ( choldc1( a, p, n ) )  return -1;
-
-  // Apply algorithm
-  for ( i=0; i<n; i++ )  {
-    a[i*n+i] = 1 / p[i];
-    for ( j=i+1; j<n; j++ )  {
-      sum = 0;
-      for ( k=i; k<j; k++ )  sum -= a[j*n+k] * a[k*n+i];
-      a[j*n+i] = sum / p[j];
-    }
-  }
-
-  return 0;    
-}
-*/
-
-/**
- *
- */
-/*
-static int cholsl ( double *A, double *a, double *p, int n )  {
-
-  // Local variables
-  int i, j, k;
-
-  // Check error condition
-  if ( choldcsl( A, a, p, n ) )  return -1;
-
-  // Zeros for upper triangular elements
-  for ( i=0; i<n; i++ )  {
-    for ( j=i+1; j<n; j++ )  {
-      a[i*n+j] = 0.0;
-    }
-  }
-
-  for ( i=0; i<n; i++ )  {
-
-    // Square diagonal elements
-    a[i*n+i] *= a[i*n+i];
-
-    // Sum square of non diagonal entries
-    for ( k=i+1; k<n; k++ )  a[i*n+i] += a[k*n+i] * a[k*n+i];
-
-    // Populate lower diagonal elements 
-    for ( j=i+1; j<n; j++ )  {
-      for ( k=j; k<n; k++ )  {
-        a[i*n+j] += a[k*n+i] * a[k*n+j];
-      }
-    }
-
-  }
-
-  // Pseudo transpose
-  for ( i=0; i<n; i++ )  {
-    for ( j=0; j<i; j++ )  {
-      a[i*n+j] = a[j*n+i];
-    }
-  }
-
-  return 0;
-}
-*/
-
-/**
- *
- */
-// C <- A * B
-/*
-static void mulmat ( double *a, double *b, double *c, int arows, int acols, int bcols )  {
-  int i, j, l;
-  for( i=0; i<arows; ++i )  {
-    for( j=0; j<bcols; ++j )  {
-      c[i*bcols+j] = 0;
-      for( l=0; l<acols; ++l )  c[i*bcols+j] += a[i*acols+l] * b[l*bcols+j];
-    }
-  }
-  return;
-}
-*/
-
-/**
- *
- */
-/*
-static void mulvec ( double *a, double *x, double *y, int m, int n )  {
-  int i, j;
-  for( i=0; i<m; ++i )  {
-    y[i] = 0;
-    for( j=0; j<n; ++j )  y[i] += x[j] * a[i*n+j];
-  }
-  return;
-}
-*/
-
-/**
- *
- */
-/*
-static void transpose ( double *a, double *at, int m, int n )  {
-  int i, j;
-  for( i=0; i<m; ++i )  {
-    for( j=0; j<n; ++j )  {
-      at[j*m+i] = a[i*n+j];
-    }
-  }
-  return;
-}
-*/
-
-/**
- *
- */
-// A <- A + B
-/*
-static void accum ( double *a, double *b, int m, int n )  {
-  int i, j;
-  for( i=0; i<m; ++i )  {
-    for( j=0; j<n; ++j )  {
-      a[i*n+j] += b[i*n+j];
-    }
-  }
-  return;
-}
-*/
-
-/**
- *
- */
-// C <- A + B
-/*
-static void add ( double *a, double *b, double *c, int n )  {
-  int j;
-  for( j=0; j<n; ++j )  c[j] = a[j] + b[j];
-  return;
-}
-*/
-
-/**
- *
- */
-// C <- A - B
-/*
-static void sub ( double *a, double *b, double *c, int n )  {
-  int j;
-  for( j=0; j<n; ++j )  c[j] = a[j] - b[j];
-  return;
-}
-*/
-
-/**
- *
- */
-/*
-static void negate ( double *a, int m, int n )  {        
-  int i, j;
-  for( i=0; i<m; ++i )  {
-    for( j=0; j<n; ++j )  {
-      a[i*n+j] = -a[i*n+j];
-    }
-  }
-  return;
-}
-*/
-
-/**
- *
- */
-/*
-static void addeye ( double *a, int n )  {
-  int i;
-  for( i=0; i<n; ++i )  a[i*n+i] += 1;
-  return;
-}
-*/
 
 
