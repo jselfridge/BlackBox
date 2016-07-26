@@ -8,6 +8,7 @@
 #include <unistd.h>
 
 
+#include "adapt.h"
 #include "ahrs.h"
 //#include "ekf.h"
 #include "flag.h"

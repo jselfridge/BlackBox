@@ -12,8 +12,8 @@
 //#include "timer.h"
 
 
-static void  stab_quad    ( void );
-static void  stab_disarm  ( void );
+//static void  stab_quad    ( void );
+//static void  stab_disarm  ( void );
 
 
 /**
