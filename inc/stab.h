@@ -1,7 +1,7 @@
 
 
-#ifndef CTRL_H
-#define CTRL_H
+#ifndef STAB_H
+#define STAB_H
 
 
 #include <sys/types.h>
@@ -79,6 +79,7 @@
 #define PLANE_DZ       0.00
 */
 
+/*
 typedef struct ctrl_struct {
   double  dt;
   double  off   [10];
@@ -97,11 +98,11 @@ typedef struct ctrl_struct {
   pthread_mutex_t mutex;
 } ctrl_struct;
 ctrl_struct ctrl;
+*/
 
-
-void    ctrl_init    ( void );
-void    ctrl_exit    ( void );
-void    ctrl_update  ( void );
+void    stab_init    ( void );
+void    stab_exit    ( void );
+void    stab_update  ( void );
 
 
 #endif

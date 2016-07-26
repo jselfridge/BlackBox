@@ -5,13 +5,13 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include "ahrs.h"
-//#include "ctrl.h"
 //#include "ekf.h"
 //#include "gcs.h"
 //#include "gps.h"
 #include "imu.h"
 #include "io.h"
 #include "led.h"
+#include "stab.h"
 #include "sys.h"
 #include "timer.h"
 
@@ -47,9 +47,9 @@ void log_init ( void )  {
   log_magB.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
   log_compB.limit   =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_ahrsB.limit   =  LOG_MAX_DUR * HZ_AHRS;
+  log_stab.limit    =  LOG_MAX_DUR * HZ_STAB;
   //log_ekf.limit     =  LOG_MAX_DUR * HZ_EKF;
   //log_gps.limit     =  LOG_MAX_DUR * HZ_GPS;
-  //log_ctrl.limit    =  LOG_MAX_DUR * HZ_CTRL;
 
   // Parameter value setup
   //log_param.time    =  malloc( sizeof(float)  * log_param.limit               );
@@ -149,6 +149,14 @@ void log_init ( void )  {
 
   }
 
+  // Stabilization parameter setup
+  log_stab.time     =  malloc( sizeof(float)  * log_stab.limit     );
+  log_stab.dur      =  malloc( sizeof(ulong)  * log_stab.limit     );
+  //log_stab.perr     =  malloc( sizeof(float)  * log_stab.limit * 3 );
+  //log_stab.ierr     =  malloc( sizeof(float)  * log_stab.limit * 3 );
+  //log_stab.derr     =  malloc( sizeof(float)  * log_stab.limit * 3 );
+  //log_stab.cmd      =  malloc( sizeof(float)  * log_stab.limit * 4 );
+
   // Extended Kalman Filter setup
   //uint n = EKF_N;
   //uint m = EKF_M;
@@ -167,14 +175,6 @@ void log_init ( void )  {
   log_gps.time      =  malloc( sizeof(float)  * log_gps.limit      );
   log_gps.dur       =  malloc( sizeof(ulong)  * log_gps.limit      );
   log_gps.msg       =  malloc( sizeof(char)   * log_gps.limit * 96 );
-
-  // Controller parameter setup
-  log_ctrl.time     =  malloc( sizeof(float)  * log_ctrl.limit     );
-  log_ctrl.dur      =  malloc( sizeof(ulong)  * log_ctrl.limit     );
-  log_ctrl.perr     =  malloc( sizeof(float)  * log_ctrl.limit * 3 );
-  log_ctrl.ierr     =  malloc( sizeof(float)  * log_ctrl.limit * 3 );
-  log_ctrl.derr     =  malloc( sizeof(float)  * log_ctrl.limit * 3 );
-  log_ctrl.cmd      =  malloc( sizeof(float)  * log_ctrl.limit * 4 );
   */
 
   return;
@@ -286,6 +286,14 @@ void log_exit ( void )  {
 
   }
 
+  // Stabilization memory
+  free(log_stab.time);
+  free(log_stab.dur);
+  //free(log_stab.perr);
+  //free(log_stab.ierr);
+  //free(log_stab.derr);
+  //free(log_stab.cmd);
+
   // EKF memory
   //free(log_ekf.time);
   //free(log_ekf.dur);
@@ -302,14 +310,6 @@ void log_exit ( void )  {
   free(log_gps.time);
   free(log_gps.dur);
   free(log_gps.msg);
-
-  // Controller memory
-  free(log_ctrl.time);
-  free(log_ctrl.dur);
-  free(log_ctrl.perr);
-  free(log_ctrl.ierr);
-  free(log_ctrl.derr);
-  free(log_ctrl.cmd);
   */
 
   return;
@@ -336,9 +336,9 @@ void log_start ( void )  {
   log_magB.count   = 0;
   log_compB.count  = 0;
   log_ahrsB.count  = 0;
+  log_stab.count   = 0;
   //log_ekf.count    = 0;
   //log_gps.count    = 0;
-  //log_ctrl.count   = 0;
 
   // Allocate dir/path/file memory
   datalog.dir  = malloc(16);
@@ -494,6 +494,19 @@ void log_start ( void )  {
 
   }
 
+  // Stabilization datalog file
+  sprintf( file, "%sstab.txt", datalog.path );
+  datalog.stab = fopen( file, "w" );
+  if( datalog.stab == NULL )  printf( "Error (log_init): Cannot generate 'stab' file. \n" );
+  fprintf( datalog.stab,
+    "    stabtime  stabdur    " );
+    /*
+    errPX    errPY    errPZ    \
+    errIX    errIY    errIZ    \
+    errDX    errDY    errDZ     \
+    cmdX     cmdY     cmdZ     cmdT" );
+    */
+
   // Extended Kalman Filter datalog file
   //uint n = EKF_N;
   //uint m = EKF_M;
@@ -515,17 +528,6 @@ void log_start ( void )  {
   datalog.gps = fopen( file, "w" );
   if( datalog.gps == NULL )  printf( "Error (log_init): Cannot generate 'gps' file. \n" );
   fprintf( datalog.gps, "       Gtime    Gdur    Data    ");
-
-  // Controller datalog file
-  sprintf( file, "%sctrl.txt", datalog.path );
-  datalog.ctrl = fopen( file, "w" );
-  if( datalog.ctrl == NULL )  printf( "Error (log_init): Cannot generate 'ctrl' file. \n" );
-  fprintf( datalog.ctrl,
-    "    ctrltime  ctrldur    \
-    errPX    errPY    errPZ    \
-    errIX    errIY    errIZ    \
-    errDX    errDY    errDZ     \
-    cmdX     cmdY     cmdZ     cmdT" );
   */
 
   // Determine start second
@@ -772,6 +774,27 @@ void log_record ( enum log_index index )  {
 
     return;
 
+
+  // Record STAB data
+  case LOG_STAB :
+
+    timestamp = (float) ( tmr_stab.start_sec + ( tmr_stab.start_usec / 1000000.0f ) ) - datalog.offset;
+
+    if ( log_stab.count < log_stab.limit ) {
+      row = log_stab.count;
+      log_stab.time[row] = timestamp;
+      log_stab.dur[row]  = tmr_stab.dur;
+      //pthread_mutex_lock(&stab.mutex);
+      //for ( i=0; i<3; i++ )  log_stab.perr[ row*3 +i ] = stab.perr[i];
+      //for ( i=0; i<3; i++ )  log_stab.ierr[ row*3 +i ] = stab.ierr[i];
+      //for ( i=0; i<3; i++ )  log_stab.derr[ row*3 +i ] = stab.derr[i];
+      //for ( i=0; i<4; i++ )  log_stab.cmd [ row*4 +i ] = stab.cmd[i];
+      //pthread_mutex_unlock(&stab.mutex);
+      log_stab.count++;
+    }
+
+    return;
+
     /*
   // Record EKF data
   case LOG_EKF :
@@ -823,29 +846,7 @@ void log_record ( enum log_index index )  {
     }
 
     return;
-
-
-  // Record CTRL data
-  case LOG_CTRL :
-
-    timestamp = (float) ( tmr_ctrl.start_sec + ( tmr_ctrl.start_usec / 1000000.0f ) ) - datalog.offset;
-
-    if ( log_ctrl.count < log_ctrl.limit ) {
-      row = log_ctrl.count;
-      log_ctrl.time[row] = timestamp;
-      log_ctrl.dur[row]  = tmr_ctrl.dur;
-      pthread_mutex_lock(&ctrl.mutex);
-      for ( i=0; i<3; i++ )  log_ctrl.perr[ row*3 +i ] = ctrl.perr[i];
-      for ( i=0; i<3; i++ )  log_ctrl.ierr[ row*3 +i ] = ctrl.ierr[i];
-      for ( i=0; i<3; i++ )  log_ctrl.derr[ row*3 +i ] = ctrl.derr[i];
-      for ( i=0; i<4; i++ )  log_ctrl.cmd [ row*4 +i ] = ctrl.cmd[i];
-      pthread_mutex_unlock(&ctrl.mutex);
-      log_ctrl.count++;
-    }
-
-    return;
     */
-
 
   default :
     return;
@@ -1006,6 +1007,15 @@ static void log_save ( void )  {
 
   }
 
+  // Stabilization data
+  for ( row = 0; row < log_stab.count; row++ )  {
+    fprintf( datalog.stab, "\n %011.6f   %06ld      ", log_stab.time[row], log_stab.dur[row] );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.perr[ row*3 +i ] );   fprintf( datalog.stab, "    " );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.ierr[ row*3 +i ] );   fprintf( datalog.stab, "    " );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.derr[ row*3 +i ] );   fprintf( datalog.stab, "    " );
+    //for ( i=0; i<4; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.cmd [ row*4 +i ] );   fprintf( datalog.stab, "    " );
+  }
+
   // Extended Kalman Filter data
   //uint n = EKF_N;
   //uint m = EKF_M;
@@ -1026,15 +1036,6 @@ static void log_save ( void )  {
     fprintf( datalog.gps, "\n %011.6f  %06ld    ", log_gps.time[row], log_gps.dur[row] );
     fprintf( datalog.gps, "%s ", &log_gps.msg[row*96] );//  fprintf( fgps, "    " );
     fprintf( datalog.gps, "   " );
-  }
-
-  // Controller data
-  for ( row = 0; row < log_ctrl.count; row++ )  {
-    fprintf( datalog.ctrl, "\n %011.6f   %06ld      ", log_ctrl.time[row], log_ctrl.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ctrl, "%07.4f  ",  log_ctrl.perr[ row*3 +i ] );   fprintf( datalog.ctrl, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ctrl, "%07.4f  ",  log_ctrl.ierr[ row*3 +i ] );   fprintf( datalog.ctrl, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ctrl, "%07.4f  ",  log_ctrl.derr[ row*3 +i ] );   fprintf( datalog.ctrl, "    " );
-    for ( i=0; i<4; i++ )  fprintf( datalog.ctrl, "%07.4f  ",  log_ctrl.cmd [ row*4 +i ] );   fprintf( datalog.ctrl, "    " );
   }
   */
 
@@ -1068,9 +1069,9 @@ static void log_close ( void )  {
     fclose(datalog.ahrsB);
   }
 
+  fclose(datalog.stab);
   //fclose(datalog.ekf);
   //fclose(datalog.gps);
-  //fclose(datalog.ctrl);
 
   return;
 }

@@ -18,7 +18,7 @@ int main ( void )  {
   ahrs_init();
   //ekf_init();
   //gps_init();
-  //ctrl_init();
+  stab_init();
   //gcs_init();
   log_init();
   tmr_init();
@@ -42,7 +42,7 @@ int main ( void )  {
   tmr_exit();
   log_exit();
   //gcs_exit();
-  //ctrl_exit();
+  stab_exit();
   //gps_exit();
   //ekf_exit();
   ahrs_exit();

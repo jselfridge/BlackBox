@@ -6,7 +6,6 @@
 #include <sys/timerfd.h>
 #include <unistd.h>
 #include "ahrs.h"
-//#include "ctrl.h"
 //#include "ekf.h"
 #include "flag.h"
 //#include "gcs.h"
@@ -14,6 +13,7 @@
 #include "imu.h"
 #include "io.h"
 #include "log.h"
+#include "stab.h"
 #include "sys.h"
 
 
@@ -52,8 +52,8 @@ void tmr_mutex ( void )  {
   pthread_mutex_init( &accB.mutex,   NULL );
   pthread_mutex_init( &magB.mutex,   NULL );
   pthread_mutex_init( &ahrsB.mutex,  NULL );
+  //pthread_mutex_init( &stab.mutex,   NULL );
   //pthread_mutex_init( &ekf.mutex,    NULL );
-  //pthread_mutex_init( &ctrl.mutex,   NULL );
   //pthread_mutex_init( &gcs.mutex,    NULL );
   //pthread_mutex_init( &mutex_gps,    NULL );
   return;
@@ -87,6 +87,11 @@ void tmr_setup ( void )  {
   tmr_ahrs.prio = PRIO_AHRS;
   tmr_ahrs.per  = 1000000 / HZ_AHRS;
 
+  // Stabilization timer
+  tmr_stab.name = "stab";
+  tmr_stab.prio = PRIO_STAB;
+  tmr_stab.per  = 1000000 / HZ_STAB;
+
   // EKF timer
   //tmr_ekf.name  = "ekf";
   //tmr_ekf.prio  = PRIO_EKF;
@@ -96,11 +101,6 @@ void tmr_setup ( void )  {
   //tmr_gps.name = "gps";
   //tmr_gps.prio = PRIO_GPS;
   //tmr_gps.per  = 1000000 / HZ_GPS;
-
-  // Control timer
-  //tmr_ctrl.name = "ctrl";
-  //tmr_ctrl.prio = PRIO_CTRL;
-  //tmr_ctrl.per  = 1000000 / HZ_CTRL;
 
   // GCSTX timer
   //tmr_gcstx.name = "gcstx";
@@ -163,9 +163,9 @@ void tmr_begin ( pthread_attr_t *attr )  {
   tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(100000);
   tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);
   tmr_thread( &tmr_ahrs,  attr, fcn_ahrs  );  usleep(100000);
+  tmr_thread( &tmr_stab,  attr, fcn_stab  );  usleep(100000);
   //tmr_thread( &tmr_ekf,   attr, fcn_ekf   );  usleep(100000);
   //tmr_thread( &tmr_gps,   attr, fcn_gps   );  usleep(100000);
-  //tmr_thread( &tmr_ctrl,  attr, fcn_ctrl  );  usleep(100000);
   //tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
   //tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(100000);
 
@@ -200,8 +200,8 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&accB.mutex);
   pthread_mutex_destroy(&magB.mutex);
   pthread_mutex_destroy(&ahrsB.mutex);
+  //pthread_mutex_destroy(&stab.mutex);
   //pthread_mutex_destroy(&ekf.mutex);
-  //pthread_mutex_destroy(&ctrl.mutex);
   //pthread_mutex_destroy(&gcs.mutex);
   //pthread_mutex_destroy(&mutex_gps);
 
@@ -215,11 +215,6 @@ void tmr_exit ( void )  {
   //  printf( "Error (tmr_exit): Failed to exit 'gcstx' thread. \n" );
   //if(DEBUG)  printf( "gcstx " );
 
-  // Exit control thread
-  //if( pthread_join ( tmr_ctrl.id, NULL ) )
-  //  printf( "Error (tmr_exit): Failed to exit 'ctrl' thread. \n" );
-  //if(DEBUG)  printf( "ctrl " );
-
   // Exit GPS thread
   //if( pthread_join ( tmr_gps.id, NULL ) )
   //  printf( "Error (tmr_exit): Failed to exit 'gps' thread. \n" );
@@ -229,6 +224,11 @@ void tmr_exit ( void )  {
   //if( pthread_join ( tmr_ekf.id, NULL ) )
   //  printf( "Error (tmr_exit): Failed to exit 'ekf' thread. \n" );
   //if(DEBUG)  printf( "ekf " ); 
+
+  // Exit stabilization thread
+  if( pthread_join ( tmr_stab.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'stab' thread. \n" );
+  if(DEBUG)  printf( "stab " );
 
   // Exit AHRS thread
   if( pthread_join ( tmr_ahrs.id, NULL ) )
@@ -466,6 +466,24 @@ void *fcn_ahrs (  )  {
 
 
 /**
+ *  fcn_stab
+ *  Function handler for the stabilization timing thread.
+ */
+void *fcn_stab (  )  {
+  tmr_create(&tmr_stab);
+  while (running) {
+    tmr_start(&tmr_stab);
+    stab_update();
+    tmr_finish(&tmr_stab);
+    if (datalog.enabled)  log_record(LOG_STAB);
+    tmr_pause(&tmr_stab);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+
+/**
  *  fcn_ekf
  *  Function handler for the Extended Kalman Filter timing thread.
  */
@@ -497,25 +515,6 @@ void *fcn_gps (  )  {
     tmr_finish(&tmr_gps);
     if (datalog.enabled)  log_record(LOG_GPS);
     tmr_pause(&tmr_gps);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
-*/
-
-/**
- *  fcn_ctrl
- *  Function handler for the control law timing thread.
- */
-/*
-void *fcn_ctrl (  )  {
-  tmr_create(&tmr_ctrl);
-  while (running) {
-    tmr_start(&tmr_ctrl);
-    ctrl_update();
-    tmr_finish(&tmr_ctrl);
-    if (datalog.enabled)  log_record(LOG_CTRL);
-    tmr_pause(&tmr_ctrl);
   }
   pthread_exit(NULL);
   return NULL;

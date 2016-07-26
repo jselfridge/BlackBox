@@ -9,7 +9,6 @@
 
 
 #include "ahrs.h"
-//#include "ctrl.h"
 //#include "ekf.h"
 #include "flag.h"
 //#include "gcs.h"
@@ -17,6 +16,7 @@
 #include "imu.h"
 #include "io.h"
 #include "log.h"
+#include "stab.h"
 #include "sys.h"
 #include "timer.h"
 

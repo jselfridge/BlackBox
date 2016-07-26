@@ -3,7 +3,6 @@
 #include "flag.h"
 #include <stdio.h>
 #include "ahrs.h"
-#include "ctrl.h"
 #include "io.h"
 #include "led.h"
 #include "log.h"

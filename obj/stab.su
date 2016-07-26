@@ -1,0 +1,3 @@
+stab.c:23:6:stab_init	0	static
+stab.c:106:6:stab_exit	0	static
+stab.c:117:6:stab_update	0	static

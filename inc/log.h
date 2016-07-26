@@ -19,10 +19,10 @@ enum log_index {
   LOG_IMUA,
   LOG_IMUB,
   LOG_AHRSA,
-  LOG_AHRSB
+  LOG_AHRSB,
+  LOG_STAB
   //LOG_EKF,
   //LOG_GPS,
-  //LOG_CTRL
 } log_index;
 
 /*
@@ -89,6 +89,19 @@ typedef struct log_ahrs_struct {
 log_ahrs_struct log_ahrsA;
 log_ahrs_struct log_ahrsB;
 
+
+typedef struct log_stab_struct {
+  ulong  count;
+  ulong  limit;
+  float  *time;
+  ulong  *dur;
+  //float  *perr;
+  //float  *ierr;
+  //float  *derr;
+  //float  *cmd;
+} log_stab_struct;
+log_stab_struct log_stab;
+
 /*
 typedef struct log_ekf_struct {
   ulong count;
@@ -115,19 +128,6 @@ typedef struct log_gps_struct {
 } log_gps_struct;
 log_gps_struct log_gps;
 */
-/*
-typedef struct log_ctrl_struct {
-  ulong  count;
-  ulong  limit;
-  float  *time;
-  ulong  *dur;
-  float  *perr;
-  float  *ierr;
-  float  *derr;
-  float  *cmd;
-} log_ctrl_struct;
-log_ctrl_struct log_ctrl;
-*/
 
 typedef struct datalog_struct {
   bool   enabled;
@@ -149,9 +149,9 @@ typedef struct datalog_struct {
   FILE   *magB;
   FILE   *compB;
   FILE   *ahrsB;
+  FILE   *stab;
   //FILE   *ekf;
   //FILE   *gps;
-  //FILE   *ctrl;
 } datalog_struct;
 datalog_struct datalog;
 
