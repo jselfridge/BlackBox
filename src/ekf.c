@@ -86,12 +86,17 @@ void ekf_init ( void )  {
   mat_set( ekf.H, 1, 1, 1.0 );  mat_set( ekf.H, 1, 2, 0.0 );
   mat_set( ekf.H, 2, 1, 0.0 );  mat_set( ekf.H, 2, 2, 1.0 );
 
+  // P matrix
+  mat_set( ekf.P, 1, 1, 1.0 );  mat_set( ekf.P, 1, 2, 1.0 );
+  mat_set( ekf.P, 2, 1, 0.0 );  mat_set( ekf.P, 2, 2, 0.0 );
+
   // Display EKF settings
   if (DEBUG) {
     printf("Q  ");  mat_print(ekf.Q);
     printf("R  ");  mat_print(ekf.R);
     printf("F  ");  mat_print(ekf.F);
     printf("H  ");  mat_print(ekf.H);
+    printf("P  ");  mat_print(ekf.P);
   }
 
   return;
@@ -201,13 +206,19 @@ int ekf_update ( void )  {
   //z[ 5] = ahrsB.eul[2];  z[11] = ahrsB.deul[2];
   //pthread_mutex_unlock(&ahrsB.mutex);
 
+  // Debugging vector
+  mat_set( x, 1, 1, 0.1 );
+  mat_set( x, 2, 1, 0.3 );
+
   // Populate measurement vector
-  mat_set( z, 1, 1, 0.0 );
-  mat_set( z, 2, 1, 0.0 );
+  mat_set( z, 1, 1, 0.11 );
+  mat_set( z, 2, 1, 0.29 );
 
   // Evaluate derivatives
   f = mat_mul( F, x );
   h = mat_mul( H, x );
+  mat_print(f);
+  mat_print(h);
 
   // Transpose matrices
   Ft = mat_trans(F);
@@ -217,21 +228,25 @@ int ekf_update ( void )  {
   tmpNN = mat_mul( F, P );
   Pt = mat_mul( tmpNN, Ft );
   Pt = mat_add( Pt, Q );
+  mat_print(Pt);
 
   // S = H Pt Ht + R
   tmpMN = mat_mul( H, Pt );
   S = mat_mul( tmpMN, Ht );
   S = mat_add( S, R );
+  mat_print(S);
 
   // K = Pt Ht S^{-1}
   tmpNM = mat_mul( Pt, Ht );
   Inv = mat_inv(S);
   K = mat_mul( tmpNM, Inv );
+  mat_print(K);
 
   // x = f + K ( z - h )
   tmpM = mat_sub( z, h );
   tmpN = mat_mul( K, tmpM );
   x = mat_add( f, tmpN );
+  mat_print(x);
 
   // P = ( I - K H ) Pt
   tmpNN = mat_mul( K, H );
@@ -244,7 +259,7 @@ int ekf_update ( void )  {
   ekf.z = mat_copy(z);
   ekf.f = mat_copy(f);
   ekf.h = mat_copy(h);
-  //ekf.P = mat_copy(P);
+  ekf.P = mat_copy(P);
   ekf.S = mat_copy(S);
   ekf.K = mat_copy(K);
   pthread_mutex_unlock(&ekf.mutex);

@@ -20,26 +20,27 @@ int main ( void )  {
   //gps_init();
   //ctrl_init();
   //gcs_init();
-  log_init();
-  tmr_init();
+  //log_init();
+  //tmr_init();
 
   //---  DEBUGGING  ---//
-  log_start();
-  datalog.enabled = true;
+  //log_start();
+  //datalog.enabled = true;
   //-------------------//
 
   // Run program
-  while(running)  usleep(100000);
+  //while(running)  usleep(100000);
+  ekf_update();
 
   //--  DEBUGGING  --//
-  datalog.enabled = false;
-  log_finish();
+  //datalog.enabled = false;
+  //log_finish();
   //-----------------//
 
   // Exit program
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
-  tmr_exit();
-  log_exit();
+  //tmr_exit();
+  //log_exit();
   //gcs_exit();
   //ctrl_exit();
   //gps_exit();
