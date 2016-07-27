@@ -149,7 +149,7 @@ void log_init ( void )  {
 
   }
 
-  // Stabilization parameter setup
+  // Stabilization setup
   log_stab.time     =  malloc( sizeof(float)  * log_stab.limit     );
   log_stab.dur      =  malloc( sizeof(ulong)  * log_stab.limit     );
   //log_stab.perr     =  malloc( sizeof(float)  * log_stab.limit * 3 );

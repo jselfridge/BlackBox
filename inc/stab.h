@@ -7,9 +7,10 @@
 #include <sys/types.h>
 
 
-#define IRESET        0.25
+//#define IRESET        0.25
 //#define SYSTEM       "quad"
 
+/*
 #define QUAD_OFF0    -1.0
 #define QUAD_OFF1    -1.0
 #define QUAD_OFF2    -1.0
@@ -25,7 +26,9 @@
 #define QUAD_BL       1
 #define QUAD_BR       2
 #define QUAD_FR       3
+*/
 
+/*
 #define QUAD_X_RANGE  0.50
 #define QUAD_Y_RANGE  0.50
 #define QUAD_Z_RANGE  15.0
@@ -46,6 +49,7 @@
 #define QUAD_DX       0.03
 #define QUAD_DY       0.03
 #define QUAD_DZ       0.03
+*/
 
 /*
 #define PLANE_OFF0    0.0

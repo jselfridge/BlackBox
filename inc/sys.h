@@ -12,10 +12,10 @@
 #define SYS_IO      false
 #define SYS_IMU     false
 #define SYS_AHRS    false
-#define SYS_EKF     false
-#define SYS_GPS     false
-#define SYS_GCS     false
-#define SYS_CTRL    false
+#define SYS_STAB    true
+//#define SYS_EKF     false
+//#define SYS_GPS     false
+//#define SYS_GCS     false
 #define SYS_STACK  ( 100 * 1024 * 1024 )
 
 

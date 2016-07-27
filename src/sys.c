@@ -8,14 +8,15 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <unistd.h>
+//#include "adapt.h"
 #include "ahrs.h"
-//#include "ctrl.h"
 //#include "ekf.h"
 //#include "gps.h"
 #include "imu.h"
 #include "io.h"
 #include "led.h"
 #include "log.h"
+#include "stab.h"
 #include "timer.h"
 
 
@@ -23,9 +24,9 @@
 static void sys_io    ( void );
 static void sys_imu   ( void );
 static void sys_ahrs  ( void );
+static void sys_stab  ( void );
 //static void sys_ekf   ( void );
 //static void sys_gps   ( void );
-//static void sys_ctrl  ( void );
 //static void sys_gcs   ( void );
 
 
@@ -126,10 +127,10 @@ void sys_update ( void )  {
   if(SYS_IO)     sys_io();
   if(SYS_IMU)    sys_imu();
   if(SYS_AHRS)   sys_ahrs();
+  if(SYS_STAB)   sys_stab();
   //if(SYS_EKF)    sys_ekf();
   //if(SYS_GPS)    sys_gps();
   //if(SYS_GCS)    sys_gcs();
-  //if(SYS_CTRL)   sys_ctrl();
 
   // Complete debugging display 
   printf("  "); fflush(stdout);
@@ -155,20 +156,20 @@ static void sys_io ( void )  {
   pthread_mutex_unlock(&input.mutex);
 
   // Output signals
-  pthread_mutex_lock(&output.mutex);
+  //pthread_mutex_lock(&output.mutex);
   //for ( i=0; i<4; i++ )  printf("%5d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%4d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<4; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&output.mutex);
+  //for ( i=0; i<4; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
+  //pthread_mutex_unlock(&output.mutex);
 
   // Quadrotor output signals
-  //pthread_mutex_lock(&output.mutex);
-  //printf("%5.2f ", output.norm[0] );
-  //printf("%5.2f ", output.norm[1] );
-  //printf("%5.2f ", output.norm[4] );
-  //printf("%5.2f ", output.norm[5] );
-  //printf("   ");  fflush(stdout);
-  //pthread_mutex_unlock(&output.mutex);
+  pthread_mutex_lock(&output.mutex);
+  printf("%5.2f ", output.norm[0] );
+  printf("%5.2f ", output.norm[1] );
+  printf("%5.2f ", output.norm[4] );
+  printf("%5.2f ", output.norm[5] );
+  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&output.mutex);
 
   return;
 }
@@ -181,7 +182,7 @@ static void sys_io ( void )  {
 static void sys_imu ( void )  {
 
   // Loop counter
-  //ushort i;
+  ushort i;
 
   // Check that IMUA is in use
   if (IMUA_ENABLED) {
@@ -190,21 +191,21 @@ static void sys_imu ( void )  {
   pthread_mutex_lock(&gyrA.mutex);
   //for ( i=0; i<3; i++ )  printf("%6d ",   gyrA.raw[i]    );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.scaled[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.filter[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&gyrA.mutex);
 
   // Accelerometer data
   pthread_mutex_lock(&accA.mutex);
   //for ( i=0; i<3; i++ )  printf("%6d ",   accA.raw[i]    );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", accA.scaled[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", accA.filter[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", accA.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&accA.mutex);
 
   // Magnetometer data
   pthread_mutex_lock(&magA.mutex);
   //for ( i=0; i<3; i++ )  printf("%4d ",   magA.raw[i]    );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", magA.scaled[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", magA.filter[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", magA.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&magA.mutex);
 
   // Complimentry filter data
@@ -223,21 +224,21 @@ static void sys_imu ( void )  {
   pthread_mutex_lock(&gyrB.mutex);
   //for ( i=0; i<3; i++ )  printf("%6d ",   gyrB.raw[i]    );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.scaled[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.filter[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&gyrB.mutex);
 
   // Accelerometer data
   pthread_mutex_lock(&accB.mutex);
   //for ( i=0; i<3; i++ )  printf("%6d ",   accB.raw[i]    );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", accB.scaled[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", accB.filter[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", accB.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&accB.mutex);
 
   // Magnetometer data
   pthread_mutex_lock(&magB.mutex);
   //for ( i=0; i<3; i++ )  printf("%4d ",   magB.raw[i]    );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", magB.scaled[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", magB.filter[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", magB.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&magB.mutex);
 
   // Complimentry filter data
@@ -281,6 +282,35 @@ static void sys_ahrs ( void )  {
   for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsB.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&ahrsB.mutex);
   }
+
+  return;
+}
+
+
+/**
+ *  sys_stab
+ *  Prints stabilization loop values to the terminal.
+ */
+static void sys_stab ( void )  {
+
+  // Loop counter
+  //ushort i;
+
+  // Control signals
+  //pthread_mutex_lock(&ctrl.mutex);
+  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.pgain[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.igain[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.dgain[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.thrl[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.range[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.perr[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.ierr[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.derr[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.cmd[i]  );  printf("   ");  fflush(stdout);
+  //printf("%5.2f ", ctrl.bank    *(180.0/PI) );  printf("   ");  fflush(stdout);
+  //printf("%5.2f ", ctrl.climb   *(180.0/PI) );  printf("   ");  fflush(stdout);
+  //printf("%5.2f ", ctrl.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
+  //pthread_mutex_unlock(&ctrl.mutex);
 
   return;
 }
@@ -333,36 +363,6 @@ static void sys_ekf ( void )  {
 //  return;
 //}
 
-
-/**
- *  sys_ctrl
- *  Prints controller values to the terminal.
- */
-/*
-static void sys_ctrl ( void )  {
-
-  // Loop counter
-  ushort i;
-
-  // Control signals
-  pthread_mutex_lock(&ctrl.mutex);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.pgain[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.igain[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.dgain[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.thrl[i]  );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.range[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.perr[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.ierr[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.derr[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.cmd[i]  );  printf("   ");  fflush(stdout);
-  //printf("%5.2f ", ctrl.bank    *(180.0/PI) );  printf("   ");  fflush(stdout);
-  //printf("%5.2f ", ctrl.climb   *(180.0/PI) );  printf("   ");  fflush(stdout);
-  //printf("%5.2f ", ctrl.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&ctrl.mutex);
-
-  return;
-}
-*/
 
 /**
  *  sys_gcs

@@ -10,7 +10,7 @@
 
 
 #define IMUA_ENABLED   true
-#define IMUB_ENABLED   false
+#define IMUB_ENABLED   true
 
 #define GYR_FSR    500
 #define ACC_FSR    4

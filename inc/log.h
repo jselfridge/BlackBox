@@ -61,6 +61,7 @@ log_imu_struct log_gyrB;
 log_imu_struct log_accB;
 log_imu_struct log_magB;
 
+
 typedef struct log_comp_struct {
   ulong count;
   ulong limit;
