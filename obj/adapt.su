@@ -1,3 +1,0 @@
-adapt.c:12:6:adapt_init	16	static
-adapt.c:39:6:adapt_exit	0	static
-adapt.c:50:6:adapt_update	64	static

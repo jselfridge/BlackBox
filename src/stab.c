@@ -281,44 +281,6 @@ void stab_quad ( void )  {
 }
 
 
-/**
- *  ctrl_plane
- *  Apply control to plane configuration.
- */
-/*void ctrl_plane ( void )  {
-
-  // Local variables
-  double elev, rudd, thrl, dial, prop, thresh;
-
-  // Obtain inputs
-  pthread_mutex_lock(&mutex_input);
-  elev = input.norm[CH_P];
-  rudd = input.norm[CH_Y];
-  thrl = input.norm[CH_T];
-  dial = input.norm[CH_D];
-  pthread_mutex_unlock(&mutex_input);
-
-  // Determine throttle adjustment
-  thresh = ( 0.5 * ( dial + 1.0 ) * ( PLANE_TMAX - PLANE_TMIN ) ) + PLANE_TMIN - PLANE_T_RANGE;
-  if ( thrl <= -0.6 )  prop = ( 2.50 * ( thrl + 1.0 ) * ( thresh + 1.0 ) ) - 1.0;
-  else                 prop = ( 1.25 * ( thrl + 0.6 ) * PLANE_T_RANGE ) + thresh;
-
-  // Assign signal outputs
-  if ( thrl > -0.9 )  {
-    io_setnorm( PLANE_ELEV,  elev );
-    io_setnorm( PLANE_RUDD, -rudd );
-    io_setnorm( PLANE_THRL,  prop );
-  }
-  else  ctrl_disarm();
-
-  return;
-}
-*/
-
-/**
- *  stab_disarm
- *  Set all system outputs to their disarmed state.
- */
 void stab_disarm ( void )  {
   //ushort ch;
   //for ( ch=0; ch<OUT_CH; ch++ )  io_setnorm( ch, ctrl.off[ch] );
