@@ -12,6 +12,21 @@
 void adapt_init ( void )  {
   if (DEBUG)  printf("Initializing adaptive ctrl \n");
 
+  adaptR.x1   = 2.6;
+  adaptR.x2   = 0.4;
+  adaptR.r    = 3.2;
+  adaptR.u    = 0.0;
+  adaptR.kx1  = 0.0;
+  adaptR.kx2  = 0.0;
+  adaptR.kr   = 0.0;
+  adaptR.kp   = 0.0;
+  adaptR.kx1p = 0.0;
+  adaptR.kx2p = 0.0;
+  adaptR.krp  = 0.0;
+  adaptR.Gx1  = 0.6;
+  adaptR.Gx2  = 0.8;
+  adaptR.Gr   = 1.0;
+  adaptR.Gp   = 1.2;
 
   return;
 }
@@ -32,47 +47,55 @@ void adapt_exit ( void )  {
  *  adapt_update
  *  Executes the adaptive control update loop.
  */
-void adapt_update ( void )  {
+void adapt_update ( adapt_struct *adapt, double *states )  {
 
-  // Get current states (from measurements)
-  double x1 = 3.0;
-  double x2 = 0.4;
-  double r  = 3.3;
+  // Get current states (from measurements, or fcn input)
+  double x1, x2, r;
+  x1 = states[0];
+  x2 = states[1];
+  r  = states[2];
 
   // Get previous states (from structure)
-  double x1p = adapt_test.x1;
-  double x2p = adapt_test.x2;
-  double rp  = adapt_test.r;
-
-  // Get current state gains (from structure)
-  double kx1 = adapt_test.kx1;
-  double kx2 = adapt_test.kx2;
-  double kr  = adapt_test.kr;
-  double kp  = adapt_test.kp;
-
-  // Get previous state gains (from structure)
-  double kx1p = adapt_test.kx1p;
-  double kx2p = adapt_test.kx2p;
-  double krp  = adapt_test.krp;
+  double x1p, x2p, rp;
+  x1p = adapt->x1;
+  x2p = adapt->x2;
+  rp  = adapt->r;
 
   // Get adaptive law gains
-  double Gx1 = adapt_test.Gx1;
-  double Gx2 = adapt_test.Gx2;
-  double Gr  = adapt_test.Gr;
-  double Gp  = adapt_test.Gp;
+  double Gx1, Gx2, Gr, Gp;
+  Gx1 = adapt->Gx1;
+  Gx2 = adapt->Gx2;
+  Gr  = adapt->Gr;
+  Gp  = adapt->Gp;
+
+  // Get current state gains (from structure)
+  double kx1, kx2, kr, kp;
+  kx1 = adapt->kx1;
+  kx2 = adapt->kx2;
+  kr  = adapt->kr;
+  kp  = adapt->kp;
+
+  // Get previous state gains (from structure)
+  double kx1p, kx2p, krp;
+  kx1p = adapt->kx1p;
+  kx2p = adapt->kx2p;
+  krp  = adapt->krp;
+
+  // Assign previous state gains (before they are updated)
+  adapt->kx1p = kx1;
+  adapt->kx2p = kx2;
+  adapt->krp  = kr;
 
   // Control input 
   double u = kx1 * x1 + kx2 * x2 + kr * r;
 
   // Auxilliary signals
   double xi =  ( kx1 - kx1p ) * x1p  + ( kx2 - kx2p ) * x2p  + ( kr - krp ) * rp;
-  double eps = ( x1 - rp ) + ( kp * xi );  
+  double eps = ( x1 - rp ) + ( kp * xi );
 
   // Normalizing signal
   double m = 1 + x1p * x1p + x2p * x2p + rp * rp + xi * xi;
   double n = eps / m;
-
-
 
   // Adaptive laws
   kx1 -= Gx1 * x1p * n;
@@ -81,15 +104,16 @@ void adapt_update ( void )  {
   kp  -= Gp  * xi  * n;
 
   // Update states
-  adapt_test.x1 = x1;
-  adapt_test.x2 = x2;
-  adapt_test.r  = r;
-  adapt_test.u  = u;
+  adapt->x1 = x1;
+  adapt->x2 = x2;
+  adapt->r  = r;
+  adapt->u  = u;
 
-  // Update gains
-  adapt_test.kx1 = kx1;
-  adapt_test.kx2 = kx2;
-  adapt_test.kr  = kr;
+  // Update current gains
+  adapt->kx1 = kx1;
+  adapt->kx2 = kx2;
+  adapt->kr  = kr;
+  adapt->kp  = kp;
 
   return;
 }

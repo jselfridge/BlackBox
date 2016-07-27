@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <sys/timerfd.h>
 #include <unistd.h>
+#include "adapt.h"
 #include "ahrs.h"
 //#include "ekf.h"
 #include "flag.h"
@@ -52,6 +53,8 @@ void tmr_mutex ( void )  {
   pthread_mutex_init( &accB.mutex,   NULL );
   pthread_mutex_init( &magB.mutex,   NULL );
   pthread_mutex_init( &ahrsB.mutex,  NULL );
+  pthread_mutex_init( &adaptR.mutex, NULL );
+  pthread_mutex_init( &adaptP.mutex, NULL );
   //pthread_mutex_init( &stab.mutex,   NULL );
   //pthread_mutex_init( &ekf.mutex,    NULL );
   //pthread_mutex_init( &gcs.mutex,    NULL );
@@ -200,6 +203,8 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&accB.mutex);
   pthread_mutex_destroy(&magB.mutex);
   pthread_mutex_destroy(&ahrsB.mutex);
+  pthread_mutex_destroy(&adaptR.mutex);
+  pthread_mutex_destroy(&adaptP.mutex);
   //pthread_mutex_destroy(&stab.mutex);
   //pthread_mutex_destroy(&ekf.mutex);
   //pthread_mutex_destroy(&gcs.mutex);

@@ -4,6 +4,9 @@
 #define ADAPT_H
 
 
+#include <sys/types.h>
+
+
 typedef struct adapt_struct {
   double x1;
   double x2;
@@ -20,13 +23,14 @@ typedef struct adapt_struct {
   double Gx2;
   double Gr;
   double Gp;
-  //pthread_mutex_t mutex;
+  pthread_mutex_t mutex;
 } adapt_struct;
-adapt_struct adapt_test;
+adapt_struct adaptR;
+adapt_struct adaptP;
 
 void    adapt_init    ( void );
 void    adapt_exit    ( void );
-void    adapt_update  ( void );
+void    adapt_update  ( adapt_struct *adapt, double *states );
 
 
 #endif

@@ -32,7 +32,6 @@ int main ( void )  {
 
   // Run program
   //while(running)  usleep(100000);
-  adapt_update();
 
   //--  DEBUGGING  --//
   //datalog.enabled = false;
