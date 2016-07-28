@@ -53,12 +53,15 @@ void tmr_mutex ( void )  {
   pthread_mutex_init( &accB.mutex,   NULL );
   pthread_mutex_init( &magB.mutex,   NULL );
   pthread_mutex_init( &ahrsB.mutex,  NULL );
+  pthread_mutex_init( &stab.mutex,   NULL );
+  pthread_mutex_init( &pidX.mutex,   NULL );
+  pthread_mutex_init( &pidY.mutex,   NULL );
+  pthread_mutex_init( &pidZ.mutex,   NULL );
   //pthread_mutex_init( &adaptR.mutex, NULL );
   //pthread_mutex_init( &adaptP.mutex, NULL );
-  //pthread_mutex_init( &stab.mutex,   NULL );
   //pthread_mutex_init( &ekf.mutex,    NULL );
   //pthread_mutex_init( &gcs.mutex,    NULL );
-  //pthread_mutex_init( &mutex_gps,    NULL );
+  //pthread_mutex_init( &gps.mutex,    NULL );
   return;
 }
 
@@ -203,9 +206,12 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&accB.mutex);
   pthread_mutex_destroy(&magB.mutex);
   pthread_mutex_destroy(&ahrsB.mutex);
+  pthread_mutex_destroy(&stab.mutex);
+  pthread_mutex_destroy(&pidX.mutex);
+  pthread_mutex_destroy(&pidY.mutex);
+  pthread_mutex_destroy(&pidZ.mutex);
   //pthread_mutex_destroy(&adaptR.mutex);
   //pthread_mutex_destroy(&adaptP.mutex);
-  //pthread_mutex_destroy(&stab.mutex);
   //pthread_mutex_destroy(&ekf.mutex);
   //pthread_mutex_destroy(&gcs.mutex);
   //pthread_mutex_destroy(&mutex_gps);
@@ -480,7 +486,7 @@ void *fcn_stab (  )  {
     tmr_start(&tmr_stab);
     stab_update();
     tmr_finish(&tmr_stab);
-    if (datalog.enabled)  log_record(LOG_STAB);
+    //if (datalog.enabled)  log_record(LOG_STAB);
     tmr_pause(&tmr_stab);
   }
   pthread_exit(NULL);

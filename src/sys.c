@@ -294,23 +294,35 @@ static void sys_ahrs ( void )  {
 static void sys_stab ( void )  {
 
   // Loop counter
-  ushort i;
+  //ushort i;
 
-  // Control signals
-  pthread_mutex_lock(&stab.mutex);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", stab.pgain[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", stab.igain[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", stab.dgain[i] );  printf("   ");  fflush(stdout);
+  // Stabilization signals
+  //pthread_mutex_lock(&stab.mutex);
   //for ( i=0; i<3; i++ )  printf("%5.2f ", stab.thrl[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%5.2f ", stab.range[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%5.2f ", stab.perr[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", stab.ierr[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%5.2f ", stab.derr[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<4; i++ )  printf("%5.2f ", stab.cmd[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%5.2f ", stab.cmd[i]  );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", stab.bank    *(180.0/PI) );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", stab.climb   *(180.0/PI) );  printf("   ");  fflush(stdout);
   printf("%5.2f ", stab.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&stab.mutex);
+  //pthread_mutex_unlock(&stab.mutex);
+
+  // Roll PID
+  pthread_mutex_lock(&pidX.mutex);
+  //printf("%5.2f %5.2f %5.2f   ", pidX.pgain, pidX.igain, pidX.dgain );  fflush(stdout);
+  printf("%5.2f %5.2f %5.2f   ", pidX.perr,  pidX.ierr,  pidX.derr  );  fflush(stdout);
+  pthread_mutex_unlock(&pidX.mutex);
+
+  // Pitch PID
+  pthread_mutex_lock(&pidY.mutex);
+  //printf("%5.2f %5.2f %5.2f   ", pidY.pgain, pidY.igain, pidY.dgain );  fflush(stdout);
+  printf("%5.2f %5.2f %5.2f   ", pidY.perr,  pidY.ierr,  pidY.derr  );  fflush(stdout);
+  pthread_mutex_unlock(&pidY.mutex);
+
+  // Yaw PID
+  pthread_mutex_lock(&pidZ.mutex);
+  //printf("%5.2f %5.2f %5.2f   ", pidZ.pgain, pidZ.igain, pidZ.dgain );  fflush(stdout);
+  printf("%5.2f %5.2f %5.2f   ", pidZ.perr,  pidZ.ierr,  pidZ.derr  );  fflush(stdout);
+  pthread_mutex_unlock(&pidZ.mutex);
 
   return;
 }

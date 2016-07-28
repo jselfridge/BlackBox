@@ -775,7 +775,7 @@ void log_record ( enum log_index index )  {
 
   // Record STAB data
   case LOG_STAB :
-
+    /*
     timestamp = (float) ( tmr_stab.start_sec + ( tmr_stab.start_usec / 1000000.0f ) ) - datalog.offset;
 
     if ( log_stab.count < log_stab.limit ) {
@@ -790,7 +790,7 @@ void log_record ( enum log_index index )  {
       pthread_mutex_unlock(&stab.mutex);
       log_stab.count++;
     }
-
+    */
     return;
 
     /*
