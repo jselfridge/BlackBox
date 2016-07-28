@@ -486,7 +486,7 @@ void *fcn_stab (  )  {
     tmr_start(&tmr_stab);
     stab_update();
     tmr_finish(&tmr_stab);
-    //if (datalog.enabled)  log_record(LOG_STAB);
+    if (datalog.enabled)  log_record(LOG_STAB);
     tmr_pause(&tmr_stab);
   }
   pthread_exit(NULL);

@@ -23,15 +23,7 @@ typedef struct stab_struct {
   double  off   [10];
   double  range [4];
   double  thrl  [3];
-  //double  pgain [3];
-  //double  igain [3];
-  //double  dgain [3];
-  //double  perr  [3];
-  //double  ierr  [3];
-  //double  derr  [3];
   double  cmd   [4];
-  //double  bank;
-  //double  climb;
   double  heading;
   pthread_mutex_t mutex;
 } stab_struct;

@@ -1,11 +1,8 @@
 
 
 #include "stab.h"
-//#include <math.h>
 #include <stdio.h>
 #include "ahrs.h"
-//#include "comp.h"
-//#include "flag.h"
 #include "imu.h"
 #include "io.h"
 #include "sys.h"
