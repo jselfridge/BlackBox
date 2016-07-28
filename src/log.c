@@ -152,10 +152,10 @@ void log_init ( void )  {
   // Stabilization setup
   log_stab.time     =  malloc( sizeof(float)  * log_stab.limit     );
   log_stab.dur      =  malloc( sizeof(ulong)  * log_stab.limit     );
-  //log_stab.perr     =  malloc( sizeof(float)  * log_stab.limit * 3 );
-  //log_stab.ierr     =  malloc( sizeof(float)  * log_stab.limit * 3 );
-  //log_stab.derr     =  malloc( sizeof(float)  * log_stab.limit * 3 );
-  //log_stab.cmd      =  malloc( sizeof(float)  * log_stab.limit * 4 );
+  log_stab.perr     =  malloc( sizeof(float)  * log_stab.limit * 3 );
+  log_stab.ierr     =  malloc( sizeof(float)  * log_stab.limit * 3 );
+  log_stab.derr     =  malloc( sizeof(float)  * log_stab.limit * 3 );
+  log_stab.cmd      =  malloc( sizeof(float)  * log_stab.limit * 4 );
 
   // Extended Kalman Filter setup
   //uint n = EKF_N;
@@ -289,10 +289,10 @@ void log_exit ( void )  {
   // Stabilization memory
   free(log_stab.time);
   free(log_stab.dur);
-  //free(log_stab.perr);
-  //free(log_stab.ierr);
-  //free(log_stab.derr);
-  //free(log_stab.cmd);
+  free(log_stab.perr);
+  free(log_stab.ierr);
+  free(log_stab.derr);
+  free(log_stab.cmd);
 
   // EKF memory
   //free(log_ekf.time);
@@ -499,13 +499,11 @@ void log_start ( void )  {
   datalog.stab = fopen( file, "w" );
   if( datalog.stab == NULL )  printf( "Error (log_init): Cannot generate 'stab' file. \n" );
   fprintf( datalog.stab,
-    "    stabtime  stabdur    " );
-    /*
+    "    stabtime  stabdur    \
     errPX    errPY    errPZ    \
     errIX    errIY    errIZ    \
     errDX    errDY    errDZ     \
     cmdX     cmdY     cmdZ     cmdT" );
-    */
 
   // Extended Kalman Filter datalog file
   //uint n = EKF_N;
@@ -784,12 +782,12 @@ void log_record ( enum log_index index )  {
       row = log_stab.count;
       log_stab.time[row] = timestamp;
       log_stab.dur[row]  = tmr_stab.dur;
-      //pthread_mutex_lock(&stab.mutex);
-      //for ( i=0; i<3; i++ )  log_stab.perr[ row*3 +i ] = stab.perr[i];
-      //for ( i=0; i<3; i++ )  log_stab.ierr[ row*3 +i ] = stab.ierr[i];
-      //for ( i=0; i<3; i++ )  log_stab.derr[ row*3 +i ] = stab.derr[i];
-      //for ( i=0; i<4; i++ )  log_stab.cmd [ row*4 +i ] = stab.cmd[i];
-      //pthread_mutex_unlock(&stab.mutex);
+      pthread_mutex_lock(&stab.mutex);
+      for ( i=0; i<3; i++ )  log_stab.perr[ row*3 +i ] = stab.perr[i];
+      for ( i=0; i<3; i++ )  log_stab.ierr[ row*3 +i ] = stab.ierr[i];
+      for ( i=0; i<3; i++ )  log_stab.derr[ row*3 +i ] = stab.derr[i];
+      for ( i=0; i<4; i++ )  log_stab.cmd [ row*4 +i ] = stab.cmd[i];
+      pthread_mutex_unlock(&stab.mutex);
       log_stab.count++;
     }
 
@@ -1010,10 +1008,10 @@ static void log_save ( void )  {
   // Stabilization data
   for ( row = 0; row < log_stab.count; row++ )  {
     fprintf( datalog.stab, "\n %011.6f   %06ld      ", log_stab.time[row], log_stab.dur[row] );
-    //for ( i=0; i<3; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.perr[ row*3 +i ] );   fprintf( datalog.stab, "    " );
-    //for ( i=0; i<3; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.ierr[ row*3 +i ] );   fprintf( datalog.stab, "    " );
-    //for ( i=0; i<3; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.derr[ row*3 +i ] );   fprintf( datalog.stab, "    " );
-    //for ( i=0; i<4; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.cmd [ row*4 +i ] );   fprintf( datalog.stab, "    " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.perr[ row*3 +i ] );   fprintf( datalog.stab, "    " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.ierr[ row*3 +i ] );   fprintf( datalog.stab, "    " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.derr[ row*3 +i ] );   fprintf( datalog.stab, "    " );
+    for ( i=0; i<4; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.cmd [ row*4 +i ] );   fprintf( datalog.stab, "    " );
   }
 
   // Extended Kalman Filter data

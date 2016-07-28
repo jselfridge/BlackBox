@@ -309,7 +309,7 @@ static void sys_stab ( void )  {
   for ( i=0; i<4; i++ )  printf("%5.2f ", stab.cmd[i]  );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", stab.bank    *(180.0/PI) );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", stab.climb   *(180.0/PI) );  printf("   ");  fflush(stdout);
-  //printf("%5.2f ", stab.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
+  printf("%5.2f ", stab.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&stab.mutex);
 
   return;

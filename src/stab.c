@@ -53,19 +53,19 @@ void stab_init ( void )  {
   stab.thrl[2] =  0.0;  // Ttilt
 
   // P gain values
-  stab.pgain[x] = 0.00;
-  stab.pgain[y] = 0.00;
-  stab.pgain[z] = 0.00;
+  stab.pgain[x] = 0.20;
+  stab.pgain[y] = 0.20;
+  stab.pgain[z] = 0.30;
 
   // I gain values
-  stab.igain[x] = 0.00;
-  stab.igain[y] = 0.00;
-  stab.igain[z] = 0.00;
+  stab.igain[x] = 0.40;
+  stab.igain[y] = 0.40;
+  stab.igain[z] = 0.60;
 
   // D gain values
-  stab.dgain[x] = 0.00;
-  stab.dgain[y] = 0.00;
-  stab.dgain[z] = 0.00;
+  stab.dgain[x] = 0.04;
+  stab.dgain[y] = 0.04;
+  stab.dgain[z] = 0.06;
 
   return;
 }

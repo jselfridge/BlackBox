@@ -96,10 +96,10 @@ typedef struct log_stab_struct {
   ulong  limit;
   float  *time;
   ulong  *dur;
-  //float  *perr;
-  //float  *ierr;
-  //float  *derr;
-  //float  *cmd;
+  float  *perr;
+  float  *ierr;
+  float  *derr;
+  float  *cmd;
 } log_stab_struct;
 log_stab_struct log_stab;
 
