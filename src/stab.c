@@ -3,17 +3,17 @@
 #include "stab.h"
 //#include <math.h>
 #include <stdio.h>
-//#include <string.h>
-//#include "ahrs.h"
+#include "ahrs.h"
 //#include "comp.h"
 //#include "flag.h"
-//#include "io.h"
+#include "imu.h"
+#include "io.h"
 #include "sys.h"
-//#include "timer.h"
+#include "timer.h"
 
 
-//static void  stab_quad    ( void );
-//static void  stab_disarm  ( void );
+static void  stab_quad    ( void );
+static void  stab_disarm  ( void );
 
 
 /**
@@ -23,77 +23,37 @@
 void stab_init ( void )  {
   if (DEBUG)  printf("Initializing stabilization \n");
 
-  // Array index
-  //ushort x=0, y=1, z=2;
+  // Set timing value
+  stab.dt = 1.0 / HZ_STAB;
 
-  // Set timing values (make 'const' during initialization)
-  //ctrl.dt = 1.0 / HZ_CTRL;
+  // Asign disarming array values
+  stab.off[0] = -1.0;
+  stab.off[1] = -1.0;
+  stab.off[2] = -1.0;
+  stab.off[3] = -1.0;
+  stab.off[4] = -1.0;
+  stab.off[5] = -1.0;
+  stab.off[6] = -1.0;
+  stab.off[7] = -1.0;
+  stab.off[8] = -1.0;
+  stab.off[9] = -1.0;
 
-  // Set 'quad' parameters
-  //if ( !strcmp( SYSTEM, "quad" ) )  {
+  // Reference ranges
+  stab.range[CH_R] = 0.5;
+  stab.range[CH_P] = 0.5;
+  stab.range[CH_Y] = 1.5;
+  stab.range[CH_T] = 0.5;
 
-    // Asign disarming array values
-    //ctrl.off[0] = QUAD_OFF0;
-    //ctrl.off[1] = QUAD_OFF1;
-    //ctrl.off[2] = QUAD_OFF2;
-    //ctrl.off[3] = QUAD_OFF3;
-    //ctrl.off[4] = QUAD_OFF4;
-    //ctrl.off[5] = QUAD_OFF5;
-    //ctrl.off[6] = QUAD_OFF6;
-    //ctrl.off[7] = QUAD_OFF7;
-    //ctrl.off[8] = QUAD_OFF8;
-    //ctrl.off[9] = QUAD_OFF9;
+  // Throttle values
+  stab.thrl[0] = -0.1;  // Tmin
+  stab.thrl[1] =  0.2;  // Tmax
+  stab.thrl[2] =  0.0;  // Ttilt
 
-    // Reference ranges
-    //ctrl.range[CH_R] = QUAD_X_RANGE;
-    //ctrl.range[CH_P] = QUAD_Y_RANGE;
-    //ctrl.range[CH_Y] = QUAD_Z_RANGE;
-    //ctrl.range[CH_T] = QUAD_T_RANGE;
-
-    // Gain values
-    //ctrl.pgain[x] = QUAD_PX;  ctrl.pgain[y] = QUAD_PY;  ctrl.pgain[z] = QUAD_PZ;
-    //ctrl.igain[x] = QUAD_IX;  ctrl.igain[y] = QUAD_IY;  ctrl.igain[z] = QUAD_IZ;
-    //ctrl.dgain[x] = QUAD_DX;  ctrl.dgain[y] = QUAD_DY;  ctrl.dgain[z] = QUAD_DZ;
-
-    // Throttle values
-    //ctrl.thrl[0] = QUAD_TMIN;
-    //ctrl.thrl[1] = QUAD_TMAX;
-    //ctrl.thrl[2] = QUAD_TILT;
-
-  //}
-
-  /*
-  // Set 'plane' parameters
-  if ( !strcmp( SYSTEM, "plane" ) )  {
-
-    // Asign disarming array values (make 'const' in header file? adjustable via GCS?) 
-    ctrl.off[0] = PLANE_OFF0;
-    ctrl.off[1] = PLANE_OFF1;
-    ctrl.off[2] = PLANE_OFF2;
-    ctrl.off[3] = PLANE_OFF3;
-    ctrl.off[4] = PLANE_OFF4;
-    ctrl.off[5] = PLANE_OFF5;
-    ctrl.off[6] = PLANE_OFF6;
-    ctrl.off[7] = PLANE_OFF7;
-    ctrl.off[8] = PLANE_OFF8;
-    ctrl.off[9] = PLANE_OFF9;
-
-    // Reference ranges
-    ctrl.scale[CH_R] = PLANE_R_RANGE;
-    ctrl.scale[CH_Y] = PLANE_Y_RANGE;
-    ctrl.scale[CH_P] = PLANE_P_RANGE;
-    ctrl.scale[CH_T] = PLANE_T_RANGE;
-
-    // Gain values
-    ctrl.pgain[x] = PLANE_PX;  ctrl.pgain[y] = PLANE_PY;  ctrl.pgain[z] = PLANE_PZ;
-    ctrl.dgain[x] = PLANE_DX;  ctrl.dgain[y] = PLANE_DY;  ctrl.dgain[z] = PLANE_DZ;
-    ctrl.igain[x] = 0.0;       ctrl.igain[y] = 0.0;       ctrl.igain[z] = 0.0;
-
-  }
-
-  // Display system
-  if (DEBUG)  printf( "  System: %s \n", SYSTEM );
-  */
+  // Gain values
+  ushort x=0, y=1, z=2;
+  stab.pgain[x] = 0.20;  stab.pgain[y] = 0.20;  stab.pgain[z] = 0.00;
+  stab.igain[x] = 0.00;  stab.igain[y] = 0.00;  stab.igain[z] = 0.00;
+  stab.dgain[x] = 0.04;  stab.dgain[y] = 0.04;  stab.dgain[z] = 0.00;
 
   return;
 }
@@ -116,12 +76,8 @@ void stab_exit ( void )  {
  */
 void stab_update ( void )  {
 
-  /*if (armed)  {
-    if ( !strcmp( SYSTEM, "quad"  ) )  ctrl_quad();
-    if ( !strcmp( SYSTEM, "plane" ) )  ctrl_plane();
-  }*/
-  //if (armed)  stab_quad();
-  //else        stab_disarm();
+  if (armed)  stab_quad();
+  else        stab_disarm();
 
   return;
 }
@@ -134,32 +90,36 @@ void stab_update ( void )  {
 void stab_quad ( void )  {
 
   // Local variables
-  //bool reset;
-  //ushort ch;
-  //ushort x=0, y=1, z=2, t=3;
-  //double eul[3], deul[3], in[4], ref[4], cmd[4], out[4];
-  //double trange, tmin, tmax, tilt, heading, dial;
-  //static double perr[3] = { 0.0, 0.0, 0.0 };
-  //static double ierr[3] = { 0.0, 0.0, 0.0 };
-  //static double derr[3] = { 0.0, 0.0, 0.0 };
+  bool reset;
+  ushort ch;
+  ushort x=0, y=1, z=2, t=3;
+  double eul[3], deul[3], in[4], ref[4], cmd[4], out[4];
+  double trange, tmin, tmax, tilt, heading, dial;
+  static double perr[3] = { 0.0, 0.0, 0.0 };
+  static double ierr[3] = { 0.0, 0.0, 0.0 };
+  static double derr[3] = { 0.0, 0.0, 0.0 };
 
-  /*
-  // Obtain AHRS states
+  // Obtain states
   for ( ch=0; ch<3; ch++ )  {  eul[ch] = 0.0;  deul[ch] = 0.0;  }
   if (IMUA_ENABLED)  {
     pthread_mutex_lock(&ahrsA.mutex);
-    for ( ch=0; ch<3; ch++ )  {  eul[ch] += ahrsA.eul[ch];  deul[ch] += ahrsA.deul[ch];  }
+    for ( ch=0; ch<3; ch++ )  {
+      eul[ch]  += ahrsA.eul[ch];
+      deul[ch] += ahrsA.deul[ch];
+    }
     pthread_mutex_unlock(&ahrsA.mutex);
   }
   if (IMUB_ENABLED)  {
     pthread_mutex_lock(&ahrsB.mutex);
-    for ( ch=0; ch<3; ch++ )  {  eul[ch] += ahrsB.eul[ch];  deul[ch] += ahrsB.deul[ch];  }
+    for ( ch=0; ch<3; ch++ )  {
+      eul[ch]  += ahrsB.eul[ch];
+      deul[ch] += ahrsB.deul[ch];
+    }
     pthread_mutex_unlock(&ahrsB.mutex);
   }
   if ( IMUA_ENABLED && IMUB_ENABLED )  {
     for ( ch=0; ch<3; ch++ )  {  eul[ch] /= 2.0;  deul[ch] /= 2.0;  }
   }
-  */
 
   // Obtain attitude states
   //eul[x] = 0.0;  eul[y] = 0.0;  eul[z] = 0.0;
@@ -186,105 +146,105 @@ void stab_quad ( void )  {
   //}
 
   // Obtain inputs
-  //pthread_mutex_lock(&input.mutex);
-  //for ( ch=0; ch<4; ch++ )  in[ch] = input.norm[ch];
-  //dial = input.norm[CH_D];
-  //pthread_mutex_unlock(&input.mutex);
+  pthread_mutex_lock(&input.mutex);
+  for ( ch=0; ch<4; ch++ )  in[ch] = input.norm[ch];
+  dial = input.norm[CH_D];
+  pthread_mutex_unlock(&input.mutex);
 
   // Obtain ctrl parameters
-  //pthread_mutex_lock(&ctrl.mutex);
-  //trange  = ctrl.range[3];
-  //tmin    = ctrl.thrl[0];
-  //tmax    = ctrl.thrl[1];
-  //tilt    = ctrl.thrl[2];
-  //heading = ctrl.heading;
-  //pthread_mutex_unlock(&ctrl.mutex);
+  pthread_mutex_lock(&stab.mutex);
+  trange  = stab.range[3];
+  tmin    = stab.thrl[0];
+  tmax    = stab.thrl[1];
+  tilt    = stab.thrl[2];
+  heading = stab.heading;
+  pthread_mutex_unlock(&stab.mutex);
 
   // Calculate reference signals
-  //for ( ch=0; ch<4; ch++ )  ref[ch] = in[ch] * ctrl.range[ch];
+  for ( ch=0; ch<4; ch++ )  ref[ch] = in[ch] * stab.range[ch];
 
   // Determine desired heading
-  //if ( in[CH_T] > -0.9 && fabs(in[CH_Y]) > 0.1 )  heading += ref[CH_Y] * ctrl.dt;
-  //while ( heading >   M_PI )  heading -= 2.0 * M_PI;
-  //while ( heading <= -M_PI )  heading += 2.0 * M_PI;
+  if ( in[CH_T] > -0.9 && fabs(in[CH_Y]) > 0.1 )  heading += ref[CH_Y] * stab.dt;
+  while ( heading >   M_PI )  heading -= 2.0 * M_PI;
+  while ( heading <= -M_PI )  heading += 2.0 * M_PI;
 
   // Determine roll (X) adjustment
-  //perr[x] = -eul[x] + ref[CH_R];
-  //derr[x] = -deul[x];
-  //reset = ( in[CH_R] < -IRESET || in[CH_R] > IRESET );
-  //if (reset)  ierr[x] = 0.0;
-  //else        ierr[x] += perr[x] * ctrl.dt;
-  //cmd[x] = perr[x] * ctrl.pgain[x] +
-  //         ierr[x] * ctrl.igain[x] +
-  //         derr[x] * ctrl.dgain[x];
+  perr[x] = -eul[x] + ref[CH_R];
+  derr[x] = -deul[x];
+  reset = ( in[CH_R] < -IRESET || in[CH_R] > IRESET );
+  if (reset)  ierr[x] = 0.0;
+  else        ierr[x] += perr[x] * stab.dt;
+  cmd[x] = perr[x] * stab.pgain[x] +
+           ierr[x] * stab.igain[x] +
+           derr[x] * stab.dgain[x];
 
   // Determine pitch (Y) adjustment
-  //perr[y] = -eul[y] + ref[CH_P];
-  //derr[y] = -deul[y];
-  //reset = ( in[CH_P] < -IRESET || in[CH_P] > IRESET );
-  //if (reset)  ierr[y] = 0.0; 
-  //else        ierr[y] += perr[y] * ctrl.dt;
-  //cmd[y] = perr[y] * ctrl.pgain[y] + 
-  //         ierr[y] * ctrl.igain[y] + 
-  //         derr[y] * ctrl.dgain[y];
+  perr[y] = -eul[y] + ref[CH_P];
+  derr[y] = -deul[y];
+  reset = ( in[CH_P] < -IRESET || in[CH_P] > IRESET );
+  if (reset)  ierr[y] = 0.0; 
+  else        ierr[y] += perr[y] * stab.dt;
+  cmd[y] = perr[y] * stab.pgain[y] + 
+           ierr[y] * stab.igain[y] + 
+           derr[y] * stab.dgain[y];
 
   // Determine yaw (Z) adjustment
   //perr[z] = ref[CH_Y];  //---  DEBUGGING VALUE  ---//
-  //perr[z] = -eul[z] + heading;
-  //while ( perr[z] >   M_PI )  heading -= 2.0 * M_PI;
-  //while ( perr[z] <= -M_PI )  heading += 2.0 * M_PI;
-  //derr[z] = -deul[z];
-  //reset = ( in[CH_Y] < -IRESET || in[CH_Y] > IRESET );
-  //if (reset)  ierr[z] = 0.0; 
-  //else        ierr[z] += perr[z] * ctrl.dt;
-  //cmd[z] = perr[z] * ctrl.pgain[z] + 
-  //         ierr[z] * ctrl.igain[z] + 
-  //         derr[z] * ctrl.dgain[z];
+  perr[z] = -eul[z] + heading;
+  while ( perr[z] >   M_PI )  heading -= 2.0 * M_PI;
+  while ( perr[z] <= -M_PI )  heading += 2.0 * M_PI;
+  derr[z] = -deul[z];
+  reset = ( in[CH_Y] < -IRESET || in[CH_Y] > IRESET );
+  if (reset)  ierr[z] = 0.0; 
+  else        ierr[z] += perr[z] * stab.dt;
+  cmd[z] = perr[z] * stab.pgain[z] + 
+           ierr[z] * stab.igain[z] + 
+           derr[z] * stab.dgain[z];
 
   // Determine throttle adjustment
-  //double tilt_adj = ( 1 - ( cos(eul[x]) * cos(eul[y]) ) ) * tilt;
-  //double thresh = ( 0.5 * ( dial + 1.0 ) * ( tmax - tmin ) ) + tmin - trange;
-  //if ( in[CH_T] <= -0.6 )  cmd[t] = ( 2.50 * ( in[CH_T] + 1.0 ) * ( thresh + 1.0 ) ) - 1.0 + tilt_adj;
-  //else                     cmd[t] = ( 1.25 * ( in[CH_T] + 0.6 ) * trange ) + thresh + tilt_adj; 
+  double tilt_adj = ( 1 - ( cos(eul[x]) * cos(eul[y]) ) ) * tilt;
+  double thresh = ( 0.5 * ( dial + 1.0 ) * ( tmax - tmin ) ) + tmin - trange;
+  if ( in[CH_T] <= -0.6 )  cmd[t] = ( 2.50 * ( in[CH_T] + 1.0 ) * ( thresh + 1.0 ) ) - 1.0 + tilt_adj;
+  else                     cmd[t] = ( 1.25 * ( in[CH_T] + 0.6 ) * trange ) + thresh + tilt_adj; 
 
   // Assign motor outputs
-  //if ( in[CH_T] > -0.9 ) {
-  //  out[QUAD_FL] = cmd[t] + cmd[x] + cmd[y] - cmd[z];
-  //  out[QUAD_BL] = cmd[t] + cmd[x] - cmd[y] + cmd[z];
-  //  out[QUAD_BR] = cmd[t] - cmd[x] - cmd[y] - cmd[z];
-  //  out[QUAD_FR] = cmd[t] - cmd[x] + cmd[y] + cmd[z];
-  //} else {
-  //  out[QUAD_FL] = -1.0;
-  //  out[QUAD_BL] = -1.0;
-  //  out[QUAD_BR] = -1.0;
-  //  out[QUAD_FR] = -1.0;
-  //}
+  if ( in[CH_T] > -0.9 ) {
+    out[QUAD_FL] = cmd[t] + cmd[x] + cmd[y] - cmd[z];
+    out[QUAD_BL] = cmd[t] + cmd[x] - cmd[y] + cmd[z];
+    out[QUAD_BR] = cmd[t] - cmd[x] - cmd[y] - cmd[z];
+    out[QUAD_FR] = cmd[t] - cmd[x] + cmd[y] + cmd[z];
+  } else {
+    out[QUAD_FL] = -1.0;
+    out[QUAD_BL] = -1.0;
+    out[QUAD_BR] = -1.0;
+    out[QUAD_FR] = -1.0;
+  }
 
   // Push control data
-  //pthread_mutex_lock(&ctrl.mutex);
-  //for ( ch=0; ch<3; ch++ )  {
-  //  ctrl.perr[ch] = perr[ch];
-  //  ctrl.ierr[ch] = ierr[ch];
-  //  ctrl.derr[ch] = derr[ch];
-  //}
-  //for ( ch=0; ch<4; ch++ )  ctrl.cmd[ch] = cmd[ch];
-  //ctrl.heading = heading;
-  //pthread_mutex_unlock(&ctrl.mutex);
+  pthread_mutex_lock(&stab.mutex);
+  for ( ch=0; ch<3; ch++ )  {
+    stab.perr[ch] = perr[ch];
+    stab.ierr[ch] = ierr[ch];
+    stab.derr[ch] = derr[ch];
+  }
+  for ( ch=0; ch<4; ch++ )  stab.cmd[ch] = cmd[ch];
+  stab.heading = heading;
+  pthread_mutex_unlock(&stab.mutex);
 
   // Push system outputs
-  //io_setnorm( QUAD_FL, out[QUAD_FL] );
-  //io_setnorm( QUAD_BL, out[QUAD_BL] );
-  //io_setnorm( QUAD_BR, out[QUAD_BR] );
-  //io_setnorm( QUAD_FR, out[QUAD_FR] );
+  io_setnorm( QUAD_FL, out[QUAD_FL] );
+  io_setnorm( QUAD_BL, out[QUAD_BL] );
+  io_setnorm( QUAD_BR, out[QUAD_BR] );
+  io_setnorm( QUAD_FR, out[QUAD_FR] );
 
   return;
 }
 
 
 void stab_disarm ( void )  {
-  //ushort ch;
-  //for ( ch=0; ch<OUT_CH; ch++ )  io_setnorm( ch, ctrl.off[ch] );
-  //return;
+  ushort ch;
+  for ( ch=0; ch<OUT_CH; ch++ )  io_setnorm( ch, stab.off[ch] );
+  return;
 }
 
 

@@ -7,84 +7,15 @@
 #include <sys/types.h>
 
 
-//#define IRESET        0.25
-//#define SYSTEM       "quad"
-
-/*
-#define QUAD_OFF0    -1.0
-#define QUAD_OFF1    -1.0
-#define QUAD_OFF2    -1.0
-#define QUAD_OFF3    -1.0
-#define QUAD_OFF4     0.0
-#define QUAD_OFF5     0.0
-#define QUAD_OFF6     0.0
-#define QUAD_OFF7     0.0
-#define QUAD_OFF8     0.0
-#define QUAD_OFF9     0.0
+#define IRESET        0.25
 
 #define QUAD_FL       0
 #define QUAD_BL       1
-#define QUAD_BR       2
-#define QUAD_FR       3
-*/
+#define QUAD_BR       4
+#define QUAD_FR       5
 
-/*
-#define QUAD_X_RANGE  0.50
-#define QUAD_Y_RANGE  0.50
-#define QUAD_Z_RANGE  15.0
-#define QUAD_T_RANGE  0.50
 
-#define QUAD_TMIN    -0.10
-#define QUAD_TMAX     0.20
-#define QUAD_TILT     0.00
-
-#define QUAD_PX       0.30
-#define QUAD_PY       0.30
-#define QUAD_PZ       0.01
-
-#define QUAD_IX       0.00
-#define QUAD_IY       0.00
-#define QUAD_IZ       0.00
-
-#define QUAD_DX       0.03
-#define QUAD_DY       0.03
-#define QUAD_DZ       0.03
-*/
-
-/*
-#define PLANE_OFF0    0.0
-#define PLANE_OFF1    0.0
-#define PLANE_OFF2    0.0
-#define PLANE_OFF3    0.0
-#define PLANE_OFF4    0.0
-#define PLANE_OFF5    0.0
-#define PLANE_OFF6    0.0
-#define PLANE_OFF7    0.0
-#define PLANE_OFF8    0.0
-#define PLANE_OFF9    0.0
-
-#define PLANE_ELEV    0
-#define PLANE_RUDD    0
-#define PLANE_THRL    0
-
-#define PLANE_R_RANGE  1.00
-#define PLANE_P_RANGE  1.00
-#define PLANE_Y_RANGE  1.00
-#define PLANE_T_RANGE  1.00
-
-#define PLANE_TMIN     0.00
-#define PLANE_TMAX     0.00
-
-#define PLANE_PX       0.00
-#define PLANE_PY       0.00
-#define PLANE_PZ       0.00
-#define PLANE_DX       0.00
-#define PLANE_DY       0.00
-#define PLANE_DZ       0.00
-*/
-
-/*
-typedef struct ctrl_struct {
+typedef struct stab_struct {
   double  dt;
   double  off   [10];
   double  range [4];
@@ -100,9 +31,9 @@ typedef struct ctrl_struct {
   double  climb;
   double  heading;
   pthread_mutex_t mutex;
-} ctrl_struct;
-ctrl_struct ctrl;
-*/
+} stab_struct;
+stab_struct stab;
+
 
 void    stab_init    ( void );
 void    stab_exit    ( void );
