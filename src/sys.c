@@ -294,23 +294,23 @@ static void sys_ahrs ( void )  {
 static void sys_stab ( void )  {
 
   // Loop counter
-  //ushort i;
+  ushort i;
 
   // Control signals
-  //pthread_mutex_lock(&ctrl.mutex);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.pgain[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.igain[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.dgain[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.thrl[i]  );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.range[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.perr[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.ierr[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", ctrl.derr[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<4; i++ )  printf("%5.2f ", ctrl.cmd[i]  );  printf("   ");  fflush(stdout);
-  //printf("%5.2f ", ctrl.bank    *(180.0/PI) );  printf("   ");  fflush(stdout);
-  //printf("%5.2f ", ctrl.climb   *(180.0/PI) );  printf("   ");  fflush(stdout);
-  //printf("%5.2f ", ctrl.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
-  //pthread_mutex_unlock(&ctrl.mutex);
+  pthread_mutex_lock(&stab.mutex);
+  //for ( i=0; i<3; i++ )  printf("%5.2f ", stab.pgain[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%5.2f ", stab.igain[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%5.2f ", stab.dgain[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%5.2f ", stab.thrl[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%5.2f ", stab.range[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%5.2f ", stab.perr[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%5.2f ", stab.ierr[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%5.2f ", stab.derr[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<4; i++ )  printf("%5.2f ", stab.cmd[i]  );  printf("   ");  fflush(stdout);
+  //printf("%5.2f ", stab.bank    *(180.0/PI) );  printf("   ");  fflush(stdout);
+  //printf("%5.2f ", stab.climb   *(180.0/PI) );  printf("   ");  fflush(stdout);
+  //printf("%5.2f ", stab.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&stab.mutex);
 
   return;
 }

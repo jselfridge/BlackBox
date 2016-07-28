@@ -23,6 +23,9 @@ static void  stab_disarm  ( void );
 void stab_init ( void )  {
   if (DEBUG)  printf("Initializing stabilization \n");
 
+  // Array index
+  ushort x=0, y=1, z=2;
+
   // Set timing value
   stab.dt = 1.0 / HZ_STAB;
 
@@ -49,11 +52,20 @@ void stab_init ( void )  {
   stab.thrl[1] =  0.2;  // Tmax
   stab.thrl[2] =  0.0;  // Ttilt
 
-  // Gain values
-  ushort x=0, y=1, z=2;
-  stab.pgain[x] = 0.20;  stab.pgain[y] = 0.20;  stab.pgain[z] = 0.00;
-  stab.igain[x] = 0.00;  stab.igain[y] = 0.00;  stab.igain[z] = 0.00;
-  stab.dgain[x] = 0.04;  stab.dgain[y] = 0.04;  stab.dgain[z] = 0.00;
+  // P gain values
+  stab.pgain[x] = 0.00;
+  stab.pgain[y] = 0.00;
+  stab.pgain[z] = 0.00;
+
+  // I gain values
+  stab.igain[x] = 0.00;
+  stab.igain[y] = 0.00;
+  stab.igain[z] = 0.00;
+
+  // D gain values
+  stab.dgain[x] = 0.00;
+  stab.dgain[y] = 0.00;
+  stab.dgain[z] = 0.00;
 
   return;
 }
