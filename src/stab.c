@@ -13,6 +13,7 @@
 
 
 static void  stab_quad    ( void );
+static void  stab_pid     ( pid_struct *pid );
 static void  stab_disarm  ( void );
 
 
@@ -180,6 +181,7 @@ void stab_quad ( void )  {
   while ( heading >   M_PI )  heading -= 2.0 * M_PI;
   while ( heading <= -M_PI )  heading += 2.0 * M_PI;
 
+  /*
   // Determine roll (X) adjustment
   perr[x] = -eul[x] + ref[CH_R];
   derr[x] = -deul[x];
@@ -201,7 +203,6 @@ void stab_quad ( void )  {
            derr[y] * stab.dgain[y];
 
   // Determine yaw (Z) adjustment
-  //perr[z] = ref[CH_Y];  //---  DEBUGGING VALUE  ---//
   perr[z] = -eul[z] + heading;
   while ( perr[z] >   M_PI )  heading -= 2.0 * M_PI;
   while ( perr[z] <= -M_PI )  heading += 2.0 * M_PI;
@@ -212,6 +213,12 @@ void stab_quad ( void )  {
   cmd[z] = perr[z] * stab.pgain[z] + 
            ierr[z] * stab.igain[z] + 
            derr[z] * stab.dgain[z];
+  */
+
+  // Apply PID on attitude
+  stab_pid( &pid_roll  );
+  stab_pid( &pid_pitch );
+  stab_pid( &pid_yaw   );
 
   // Determine throttle adjustment
   double tilt_adj = ( 1 - ( cos(eul[x]) * cos(eul[y]) ) ) * tilt;
@@ -253,6 +260,32 @@ void stab_quad ( void )  {
 }
 
 
+/**
+ *  stab_pid
+ *  Apply PID contorl loop
+ */
+void stab_pid ( pid_struct *pid )  {
+
+  double perr;
+  perr = -x1 + ref;
+  while ( perr >   M_PI )  heading -= 2.0 * M_PI;
+  while ( perr <= -M_PI )  heading += 2.0 * M_PI;
+  //derr[z] = -deul[z];
+  //reset = ( in[CH_Y] < -IRESET || in[CH_Y] > IRESET );
+  //if (reset)  ierr[z] = 0.0; 
+  //else        ierr[z] += perr[z] * stab.dt;
+  //cmd[z] = perr[z] * stab.pgain[z] + 
+  //         ierr[z] * stab.igain[z] + 
+  //         derr[z] * stab.dgain[z];
+
+  return;
+}
+
+
+/**
+ *  stab_disarm
+ *  Disarm the motors and reset control surfaces
+ */
 void stab_disarm ( void )  {
   ushort ch;
   for ( ch=0; ch<OUT_CH; ch++ )  io_setnorm( ch, stab.off[ch] );

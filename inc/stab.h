@@ -35,6 +35,17 @@ typedef struct stab_struct {
 stab_struct stab;
 
 
+typedef struct pid_struct {
+  double  dt;
+  double perr;
+  double ierr;
+  double derr;
+} pid_struct;
+pid_struct pid_roll;
+pid_struct pid_pitch;
+pid_struct pid_yaw;
+
+
 void    stab_init    ( void );
 void    stab_exit    ( void );
 void    stab_update  ( void );
