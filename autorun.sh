@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 
 ### BEGIN INIT INFO
 # Provides:          autorun
@@ -16,9 +16,8 @@
 ### END INIT INFO
 
 
-#sleep 1
+sleep 1
 echo BLACKBOX > /sys/devices/platform/bone_capemgr/slots
-#sleep 1
 
 echo none > /sys/class/leds/beaglebone\:green\:usr0/trigger
 echo none > /sys/class/leds/beaglebone\:green\:usr1/trigger
@@ -30,9 +29,12 @@ echo 1 > /sys/class/leds/beaglebone\:green\:usr1/brightness
 echo 1 > /sys/class/leds/beaglebone\:green\:usr2/brightness
 echo 1 > /sys/class/leds/beaglebone\:green\:usr3/brightness
 
+#sleep 3
+#cd /root/BlackBox/
+#./RunBlackBox
+
 sleep 3
-cd /root/BlackBox/
-./RunBlackBox
+/root/BlackBox/RunBlackBox
 
 exit 0
 
