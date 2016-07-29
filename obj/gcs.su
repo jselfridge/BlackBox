@@ -1,0 +1,4 @@
+gcs.c:44:6:gcs_init	0	static
+gcs.c:132:6:gcs_exit	0	static
+gcs.c:143:6:gcs_tx	0	static
+gcs.c:189:6:gcs_rx	0	static

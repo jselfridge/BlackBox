@@ -27,7 +27,6 @@ static void sys_ahrs  ( void );
 static void sys_stab  ( void );
 //static void sys_ekf   ( void );
 //static void sys_gps   ( void );
-//static void sys_gcs   ( void );
 
 
 /**
@@ -130,7 +129,6 @@ void sys_update ( void )  {
   if(SYS_STAB)   sys_stab();
   //if(SYS_EKF)    sys_ekf();
   //if(SYS_GPS)    sys_gps();
-  //if(SYS_GCS)    sys_gcs();
 
   // Complete debugging display 
   printf("  "); fflush(stdout);
@@ -372,18 +370,6 @@ static void sys_ekf ( void )  {
   */
 //  return;
 //}
-
-
-/**
- *  sys_gcs
- *  Prints ground control debugging messages to the terminal.
- */
-/*
-static void sys_gcs ( void )  {
-  // Add code as needed...
-  return;
-}
-*/
 
 
 

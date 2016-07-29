@@ -14,8 +14,8 @@
 #define PRIO_IO     90
 #define PRIO_STAB   88
 //#define PRIO_GPS    86
-//#define PRIO_GCSTX  84
-//#define PRIO_GCSRX  84
+#define PRIO_GCSTX  84
+#define PRIO_GCSRX  84
 #define PRIO_FLAG   82
 #define PRIO_DEBUG  80
 
@@ -27,8 +27,8 @@
 #define HZ_STAB        100
 #define HZ_FLAG         20
 //#define HZ_GPS          10
-//#define HZ_GCSTX        10
-//#define HZ_GCSRX        10
+#define HZ_GCSTX        10
+#define HZ_GCSRX        10
 #define HZ_DEBUG        10
 
 
@@ -57,8 +57,8 @@ timer_struct tmr_ahrs;
 timer_struct tmr_stab;
 //timer_struct tmr_ekf;
 //timer_struct tmr_gps;
-//timer_struct tmr_gcstx;
-//timer_struct tmr_gcsrx;
+timer_struct tmr_gcstx;
+timer_struct tmr_gcsrx;
 timer_struct tmr_debug;
 
 
@@ -82,8 +82,8 @@ void *fcn_ahrs   (  );
 void *fcn_stab   (  );
 //void *fcn_ekf    (  );
 //void *fcn_gps    (  );
-//void *fcn_gcstx  (  );
-//void *fcn_gcsrx  (  );
+void *fcn_gcstx  (  );
+void *fcn_gcsrx  (  );
 void *fcn_debug  (  );
 
 

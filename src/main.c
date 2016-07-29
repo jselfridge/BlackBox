@@ -20,7 +20,7 @@ int main ( void )  {
   //ekf_init();
   //gps_init();
   //adapt_init();
-  //gcs_init();
+  gcs_init();
   log_init();
   tmr_init();
 
@@ -41,7 +41,7 @@ int main ( void )  {
   if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   tmr_exit();
   log_exit();
-  //gcs_exit();
+  gcs_exit();
   //adapt_exit();
   //gps_exit();
   //ekf_exit();

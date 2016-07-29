@@ -15,7 +15,6 @@
 #define SYS_STAB    true
 //#define SYS_EKF     false
 //#define SYS_GPS     false
-//#define SYS_GCS     false
 #define SYS_STACK  ( 100 * 1024 * 1024 )
 
 

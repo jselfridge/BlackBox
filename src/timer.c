@@ -9,7 +9,7 @@
 #include "ahrs.h"
 //#include "ekf.h"
 #include "flag.h"
-//#include "gcs.h"
+#include "gcs.h"
 //#include "gps.h"
 #include "imu.h"
 #include "io.h"
@@ -109,14 +109,14 @@ void tmr_setup ( void )  {
   //tmr_gps.per  = 1000000 / HZ_GPS;
 
   // GCSTX timer
-  //tmr_gcstx.name = "gcstx";
-  //tmr_gcstx.prio = PRIO_GCSTX;
-  //tmr_gcstx.per  = 1000000 / HZ_GCSTX;
+  tmr_gcstx.name = "gcstx";
+  tmr_gcstx.prio = PRIO_GCSTX;
+  tmr_gcstx.per  = 1000000 / HZ_GCSTX;
 
   // GCSRX timer
-  //tmr_gcsrx.name = "gcsrx";
-  //tmr_gcsrx.prio = PRIO_GCSRX;
-  //tmr_gcsrx.per  = 1000000 / HZ_GCSRX;
+  tmr_gcsrx.name = "gcsrx";
+  tmr_gcsrx.prio = PRIO_GCSRX;
+  tmr_gcsrx.per  = 1000000 / HZ_GCSRX;
 
   // Debugging timer
   tmr_debug.name = "debug";
@@ -172,8 +172,8 @@ void tmr_begin ( pthread_attr_t *attr )  {
   tmr_thread( &tmr_stab,  attr, fcn_stab  );  usleep(100000);
   //tmr_thread( &tmr_ekf,   attr, fcn_ekf   );  usleep(100000);
   //tmr_thread( &tmr_gps,   attr, fcn_gps   );  usleep(100000);
-  //tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
-  //tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(100000);
+  tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
+  tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(100000);
 
   if(DEBUG) {
     tmr_thread( &tmr_debug, attr, fcn_debug );
@@ -214,17 +214,17 @@ void tmr_exit ( void )  {
   //pthread_mutex_destroy(&adaptP.mutex);
   //pthread_mutex_destroy(&ekf.mutex);
   //pthread_mutex_destroy(&gcs.mutex);
-  //pthread_mutex_destroy(&mutex_gps);
+  //pthread_mutex_destroy(&gps.mutex);
 
   // Exit GCSRX thread
-  //if( pthread_join ( tmr_gcsrx.id, NULL ) )
-  //  printf( "Error (tmr_exit): Failed to exit 'gcsrx' thread. \n" );
-  //if(DEBUG)  printf( "gcsrx " );
+  if( pthread_join ( tmr_gcsrx.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'gcsrx' thread. \n" );
+  if(DEBUG)  printf( "gcsrx " );
 
   // Exit GCSTX thread
-  //if( pthread_join ( tmr_gcstx.id, NULL ) )
-  //  printf( "Error (tmr_exit): Failed to exit 'gcstx' thread. \n" );
-  //if(DEBUG)  printf( "gcstx " );
+  if( pthread_join ( tmr_gcstx.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'gcstx' thread. \n" );
+  if(DEBUG)  printf( "gcstx " );
 
   // Exit GPS thread
   //if( pthread_join ( tmr_gps.id, NULL ) )
@@ -536,7 +536,6 @@ void *fcn_gps (  )  {
  *  fcn_gcstx
  *  Function handler for the GCS transmission timing thread.
  */
-/*
 void *fcn_gcstx (  )  {
   tmr_create(&tmr_gcstx);
   while (running) {
@@ -548,13 +547,12 @@ void *fcn_gcstx (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-*/
+
 
 /**
  *  fcn_gcsrx
  *  Function handler for the GCS receiver timing thread.
  */
-/*
 void *fcn_gcsrx (  )  {
   tmr_create(&tmr_gcsrx);
   while (running) {
@@ -566,7 +564,7 @@ void *fcn_gcsrx (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-*/
+
 
 /**
  *  fcn_debug

@@ -1,20 +1,20 @@
 
 
 #include "gcs.h"
-#include <fcntl.h>
-#include <pthread.h>
+//#include <fcntl.h>
+//#include <pthread.h>
 #include <stdio.h>
-#include <termios.h>
-#include <unistd.h>
-#include "ahrs.h"
-#include "comp.h"
-#include "ctrl.h"
-#include "imu.h"
-#include "io.h"
-#include "log.h"
+//#include <termios.h>
+//#include <unistd.h>
+//#include "ahrs.h"
+//#include "comp.h"
+//#include "ctrl.h"
+//#include "imu.h"
+//#include "io.h"
+//#include "log.h"
 //#include "lpf.h"
 #include "sys.h"
-#include "timer.h"
+//#include "timer.h"
 
 
 static void  gcs_heartbeat    ( void );
@@ -43,7 +43,7 @@ static void  gcs_comp         ( void );
  */
 void gcs_init ( void )  {
   if (DEBUG)  printf("Initializing GCS \n");
-
+  /*
   // Assign UART path
   if (DEBUG)  printf("  Open UART channel \n");
   memset( gcs.path, 0, sizeof(gcs.path) );
@@ -120,7 +120,7 @@ void gcs_init ( void )  {
 
   // Assign pause for serial stream
   gcs.pause = 100;
-
+  */
   return;
 }
 
@@ -131,7 +131,7 @@ void gcs_init ( void )  {
  */
 void gcs_exit ( void )  {
   if (DEBUG)  printf("Close GCS \n");
-  close (gcs.fd);
+  //close (gcs.fd);
   return;
 }
 
@@ -141,7 +141,7 @@ void gcs_exit ( void )  {
  *  Transmit to the ground control station.
  */
 void gcs_tx ( void)  {
-
+  /*
   static int count = 0;
   if ( count < HZ_GCSTX )  {  count++;  }
   else                     {  count = 0;  gcs.sendhb = true;  }
@@ -177,7 +177,7 @@ void gcs_tx ( void)  {
 
   // Send GPS data
   //if (GCS_GPS_ENABLED)            gcs_gps();
-
+  */
   return;
 }
 
@@ -187,7 +187,7 @@ void gcs_tx ( void)  {
  *  Receive from the ground control station.
  */
 void gcs_rx ( void)  {
-
+  /*
   // Local variables
   mavlink_message_t msg;
   mavlink_status_t  status;
@@ -278,7 +278,7 @@ void gcs_rx ( void)  {
 
   // Update global packet drops counter
   //packet_drops += status.packet_rx_drop_count;
-
+  */
   return;
 }
 
@@ -288,7 +288,7 @@ void gcs_rx ( void)  {
  *  Sends a heartbeat transmission.
  */
 static void gcs_heartbeat ( void )  {
-
+  /*
   // Initialize the required buffers
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -315,7 +315,7 @@ static void gcs_heartbeat ( void )  {
   pthread_mutex_unlock(&gcs.mutex);
 
   gcs.sendhb = false;
-
+  */
   return;
 }
 
@@ -325,7 +325,7 @@ static void gcs_heartbeat ( void )  {
  *  Sends the onboard parameter list.
  */
 static void gcs_paramlist ( void )  {
-
+  /*
   // Local variables
   int len, w, i;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -359,7 +359,7 @@ static void gcs_paramlist ( void )  {
   }
 
   gcs.sendparam = false;
-
+  */
   return;
 }
 
@@ -369,7 +369,7 @@ static void gcs_paramlist ( void )  {
  *  Sends the onboard mission list.
  */
 static void gcs_missionlist ( void)  {
-
+  /*
   // Local variables
   int len, w;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -396,7 +396,7 @@ static void gcs_missionlist ( void)  {
   pthread_mutex_unlock(&gcs.mutex);
 
   gcs.sendmission = false;
-
+  */
   return;
 }
 
@@ -406,7 +406,7 @@ static void gcs_missionlist ( void)  {
  *  Updates the parameter values as needed.
  */
 static void gcs_param_value ( mavlink_message_t *msg )  {
-
+  /*
   // Local variables
   uint i, j;
   bool match;
@@ -522,7 +522,7 @@ static void gcs_param_value ( mavlink_message_t *msg )  {
 
   // Unlock control mutex
   pthread_mutex_unlock(&ctrl.mutex);
-
+  */
   return;
 }
 
@@ -532,7 +532,7 @@ static void gcs_param_value ( mavlink_message_t *msg )  {
  *  Sends the radio input commands.
  */
 static void gcs_input ( void )  {
-
+  /*
   // Initialize the required buffers
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -571,7 +571,7 @@ static void gcs_input ( void )  {
   int w = write( gcs.fd, buf, len );
   usleep( w * gcs.pause );
   pthread_mutex_unlock(&gcs.mutex);
-
+  */
   return;
 }
 
@@ -581,7 +581,7 @@ static void gcs_input ( void )  {
  *  Sends the system output commands.
  */
 static void gcs_output ( void )  {
-
+  /*
   // Initialize the required buffers
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -619,7 +619,7 @@ static void gcs_output ( void )  {
   int w = write( gcs.fd, buf, len );
   usleep(w*300);
   pthread_mutex_unlock(&gcs.mutex);
-
+  */
   return;
 }
 
@@ -629,7 +629,7 @@ static void gcs_output ( void )  {
  *  Sends the raw IMUA data.
  */
 static void gcs_imuA_raw ( void )  {
-
+  /*
   // Initialize the required buffers
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -671,7 +671,7 @@ static void gcs_imuA_raw ( void )  {
   int w = write( gcs.fd, buf, len );
   usleep( w * gcs.pause );
   pthread_mutex_unlock(&gcs.mutex);
-
+  */
   return;
 }
 
@@ -681,7 +681,7 @@ static void gcs_imuA_raw ( void )  {
  *  Sends the scaled IMUA data.
  */
 static void gcs_imuA_scaled ( void )  {
-
+  /*
   // Initialize the required buffers
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -723,7 +723,7 @@ static void gcs_imuA_scaled ( void )  {
   int w = write( gcs.fd, buf, len );
   usleep( w * gcs.pause );
   pthread_mutex_unlock(&gcs.mutex);
-
+  */
   return;
 }
 
@@ -733,7 +733,7 @@ static void gcs_imuA_scaled ( void )  {
  *  Sends the filtered IMUA data.
  */
 static void gcs_imuA_filter ( void )  {
-
+  /*
   // Initialize the required buffers
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -775,7 +775,7 @@ static void gcs_imuA_filter ( void )  {
   int w = write( gcs.fd, buf, len );
   usleep( w * gcs.pause );
   pthread_mutex_unlock(&gcs.mutex);
-
+  */
   return;
 }
 
@@ -785,7 +785,7 @@ static void gcs_imuA_filter ( void )  {
  *  Sends the raw IMUB data.
  */
 static void gcs_imuB_raw ( void )  {
-
+  /*
   // Initialize the required buffers
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -828,7 +828,7 @@ static void gcs_imuB_raw ( void )  {
   int w = write( gcs.fd, buf, len );
   usleep( w * gcs.pause );
   pthread_mutex_unlock(&gcs.mutex);
-
+  */
   return;
 }
 
@@ -838,7 +838,7 @@ static void gcs_imuB_raw ( void )  {
  *  Sends the scaled IMUB data.
  */
 static void gcs_imuB_scaled ( void )  {
-
+  /*
   // Initialize the required buffers
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -881,7 +881,7 @@ static void gcs_imuB_scaled ( void )  {
   int w = write( gcs.fd, buf, len );
   usleep( w * gcs.pause);
   pthread_mutex_unlock(&gcs.mutex);
-
+  */
   return;
 }
 
@@ -891,7 +891,7 @@ static void gcs_imuB_scaled ( void )  {
  *  Sends the filtered IMUB data.
  */
 static void gcs_imuB_filter ( void )  {
-
+  /*
   // Initialize the required buffers
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -934,7 +934,7 @@ static void gcs_imuB_filter ( void )  {
   int w = write( gcs.fd, buf, len );
   usleep( w * gcs.pause );
   pthread_mutex_unlock(&gcs.mutex);
-
+  */
   return;
 }
 
@@ -944,7 +944,7 @@ static void gcs_imuB_filter ( void )  {
  *  Sends the complimentary filter attitude representation.
  */
 static void gcs_comp ( void )  {
-
+  /*
   // Initialize the required buffers
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -981,7 +981,7 @@ static void gcs_comp ( void )  {
   int w = write( gcs.fd, buf, len );
   usleep( w * gcs.pause );
   pthread_mutex_unlock(&gcs.mutex);
-
+  */
   return;
 }
 
