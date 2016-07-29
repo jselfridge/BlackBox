@@ -182,7 +182,7 @@ static void sys_io ( void )  {
 static void sys_imu ( void )  {
 
   // Loop counter
-  ushort i;
+  //ushort i;
 
   // Check that IMUA is in use
   if (IMUA_ENABLED) {
@@ -203,16 +203,16 @@ static void sys_imu ( void )  {
 
   // Magnetometer data
   pthread_mutex_lock(&magA.mutex);
-  for ( i=0; i<3; i++ )  printf("%4d ",   magA.raw[i]    );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", magA.scaled[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%4d ",   magA.raw[i]    );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", magA.scaled[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", magA.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&magA.mutex);
 
   // Complimentry filter data
   pthread_mutex_lock(&imuA.mutex);
-  //double Ra = imuA.roll  * ( 180.0 / PI );
-  //double Pa = imuA.pitch * ( 180.0 / PI );
-  //printf("%6.3f %6.3f ", Ra, Pa );  printf("   ");  fflush(stdout);
+  double Ra = imuA.roll  * ( 180.0 / PI );
+  double Pa = imuA.pitch * ( 180.0 / PI );
+  printf("%6.3f %6.3f ", Ra, Pa );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&imuA.mutex);
 
   }
@@ -236,17 +236,17 @@ static void sys_imu ( void )  {
 
   // Magnetometer data
   pthread_mutex_lock(&magB.mutex);
-  for ( i=0; i<3; i++ )  printf("%4d ",   magB.raw[i]    );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", magB.scaled[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%4d ",   magB.raw[i]    );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", magB.scaled[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", magB.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&magB.mutex);
 
   // Complimentry filter data
-  //pthread_mutex_lock(&imuB.mutex);
-  //double Rb = imuB.roll  * ( 180.0 / PI );
-  //double Pb = imuB.pitch * ( 180.0 / PI );
-  //printf("%6.3f %6.3f ", Rb, Pb );  printf("   ");  fflush(stdout);
-  //pthread_mutex_unlock(&imuB.mutex);
+  pthread_mutex_lock(&imuB.mutex);
+  double Rb = imuB.roll  * ( 180.0 / PI );
+  double Pb = imuB.pitch * ( 180.0 / PI );
+  printf("%6.3f %6.3f ", Rb, Pb );  printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&imuB.mutex);
 
   }
 
