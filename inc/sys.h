@@ -10,7 +10,7 @@
 
 #define DEBUG       true
 #define SYS_IO      false
-#define SYS_IMU     false
+#define SYS_IMU     true
 #define SYS_AHRS    false
 #define SYS_STAB    false
 //#define SYS_EKF     false
