@@ -25,7 +25,7 @@ enum log_index {
   //LOG_GPS,
 } log_index;
 
-/*
+
 typedef struct log_param_struct {
   ulong  count;
   ulong  limit;
@@ -33,7 +33,7 @@ typedef struct log_param_struct {
   float  *values;
 } log_param_struct;
 log_param_struct log_param;
-*/
+
 
 typedef struct log_io_struct {
   ulong  count;

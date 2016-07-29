@@ -41,14 +41,14 @@ void stab_init ( void )  {
   stab.off[9] = -1.0;
 
   // Reference ranges (TODO: Move into radio or transmitter function)
-  stab.range[CH_R] = 0.5;
-  stab.range[CH_P] = 0.5;
-  stab.range[CH_Y] = 1.5;
-  stab.range[CH_T] = 0.5;
+  stab.range[CH_R] = 0.0;
+  stab.range[CH_P] = 0.0;
+  stab.range[CH_Y] = 0.0;
+  stab.range[CH_T] = 0.0;
 
   // Throttle values (TODO: Move into radio or transmitter function)
-  stab.thrl[0] = -0.1;  // Tmin
-  stab.thrl[1] =  0.2;  // Tmax
+  stab.thrl[0] =  0.0;  // Tmin
+  stab.thrl[1] =  0.0;  // Tmax
   stab.thrl[2] =  0.0;  // Ttilt
 
   // Wrap values of pi

@@ -27,7 +27,7 @@
 #define HZ_STAB        100
 #define HZ_FLAG         20
 //#define HZ_GPS          10
-#define HZ_GCSTX        10
+#define HZ_GCSTX       100
 #define HZ_GCSRX         2
 #define HZ_DEBUG        10
 

@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include "ahrs.h"
 //#include "ekf.h"
-//#include "gcs.h"
+#include "gcs.h"
 //#include "gps.h"
 #include "imu.h"
 #include "io.h"
@@ -34,7 +34,7 @@ void log_init ( void )  {
   datalog.saving   = false;
 
   // Assign datalog limits
-  //log_param.limit   =  LOG_MAX_PARAM;  
+  log_param.limit   =  LOG_MAX_PARAM;  
   log_input.limit   =  LOG_MAX_DUR * HZ_IO;
   log_output.limit  =  LOG_MAX_DUR * HZ_IO;
   log_gyrA.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
@@ -52,8 +52,8 @@ void log_init ( void )  {
   //log_gps.limit     =  LOG_MAX_DUR * HZ_GPS;
 
   // Parameter value setup
-  //log_param.time    =  malloc( sizeof(float)  * log_param.limit               );
-  //log_param.values  =  malloc( sizeof(float)  * log_param.limit * param_count );
+  log_param.time    =  malloc( sizeof(float)  * log_param.limit               );
+  log_param.values  =  malloc( sizeof(float)  * log_param.limit * param_count );
 
   // Input signal setup
   log_input.time    =  malloc( sizeof(float)  * log_input.limit         );
@@ -197,8 +197,8 @@ void log_exit ( void )  {
   if(DEBUG)  printf("Close logs \n");
 
   // Parameter memory
-  //free(log_param.time);
-  //free(log_param.values);
+  free(log_param.time);
+  free(log_param.values);
 
   // Input memory
   free(log_input.time);
@@ -339,7 +339,7 @@ void log_exit ( void )  {
 void log_start ( void )  {
 
   // Reset counters
-  //log_param.count  = 0;
+  log_param.count  = 0;
   log_input.count  = 0;
   log_output.count = 0;
   log_gyrA.count   = 0;
@@ -382,7 +382,7 @@ void log_start ( void )  {
   datalog.param = fopen( file, "w" );
   if( datalog.param == NULL )  printf( "Error (log_init): Cannot generate 'param' file. \n" );
   fprintf( datalog.param, "   ParamTime   " );
-  //for ( i=1; i <= param_count; i++ )  fprintf( datalog.param, "   Param_%02d", i );
+  for ( i=1; i <= param_count; i++ )  fprintf( datalog.param, "   Param_%02d", i );
 
   // Input datalog file
   sprintf( file, "%sinput.txt", datalog.path );
@@ -565,12 +565,12 @@ void log_record ( enum log_index index )  {
   ushort i;
   ulong  row;
   float  timestamp;
-  //struct timespec t;
+  struct timespec t;
 
   // Jump to appropriate log 
   switch(index) {
 
-    /*
+
   // Record parameter values
   case LOG_PARAM :
 
@@ -588,7 +588,6 @@ void log_record ( enum log_index index )  {
     pthread_mutex_unlock(&gcs.mutex);
 
     return;
-    */
 
 
   // Record system input/output data
@@ -920,13 +919,11 @@ static void log_save ( void )  {
   ushort i;
   ulong  row;
 
-  /*
   // Parameter data
   for ( row = 0; row < log_param.count; row++ )  {
     fprintf( datalog.param, "\n %011.6f     ", log_param.time[row] );
     for ( i=0; i < param_count; i++ )  fprintf( datalog.param, "%09.4f  ", log_param.values [ row * param_count + i ] );
   }
-  */
 
   // Input data
   for ( row = 0; row < log_input.count; row++ ) {
@@ -1089,7 +1086,7 @@ static void log_save ( void )  {
  */
 static void log_close ( void )  {
 
-  //fclose(datalog.param);
+  fclose(datalog.param);
   fclose(datalog.in);
   fclose(datalog.out);
 

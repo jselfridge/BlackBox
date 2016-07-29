@@ -1,6 +1,9 @@
 gcs.c:286:13:gcs_heartbeat	640	dynamic,bounded
 gcs.c:327:13:gcs_paramlist	640	dynamic,bounded
-gcs.c:45:6:gcs_init	112	dynamic,bounded
-gcs.c:123:6:gcs_exit	8	static
-gcs.c:134:6:gcs_tx	16	static
-gcs.c:186:6:gcs_rx	336	dynamic,bounded
+gcs.c:421:13:gcs_get_param_value	680	dynamic,bounded
+gcs.c:663:13:gcs_output	656	dynamic,bounded
+gcs.c:614:13:gcs_input	680	dynamic,bounded
+gcs.c:46:6:gcs_init	112	dynamic,bounded
+gcs.c:124:6:gcs_exit	8	static
+gcs.c:135:6:gcs_tx	16	static
+gcs.c:187:6:gcs_rx	336	dynamic,bounded

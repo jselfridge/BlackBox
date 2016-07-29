@@ -10,7 +10,7 @@
 //#include "comp.h"
 //#include "ctrl.h"
 //#include "imu.h"
-//#include "io.h"
+#include "io.h"
 #include "log.h"
 //#include "lpf.h"
 #include "stab.h"
@@ -22,10 +22,11 @@ static void  gcs_heartbeat    ( void );
 static void  gcs_paramlist    ( void );
 static void  gcs_missionlist  ( void );
 
-//static void  gcs_param_value  ( mavlink_message_t *msg );
+static void  gcs_get_param_value  ( mavlink_message_t *msg );
+static void  gcs_set_param_value  ( uint index, double val );
 
-//static void  gcs_input        ( void );
-//static void  gcs_output       ( void );
+static void  gcs_input        ( void );
+static void  gcs_output       ( void );
 //static void  gcs_imuA_raw     ( void );
 //static void  gcs_imuA_scaled  ( void );
 //static void  gcs_imuA_filter  ( void );
@@ -144,11 +145,11 @@ void gcs_tx ( void)  {
   if (gcs.sendparam)              gcs_paramlist();
   if (gcs.sendmission)            gcs_missionlist();
 
-  /*
   // Send input/output values
   if (GCS_INPUT_ENABLED)          gcs_input();
   if (GCS_OUTPUT_ENABLED)         gcs_output();
 
+  /*
   // Send IMUA data
   if (IMUA_ENABLED)  {
     if (GCS_IMUA_RAW_ENABLED)     gcs_imuA_raw();
@@ -218,7 +219,6 @@ void gcs_rx ( void)  {
         // ID: #20
         case MAVLINK_MSG_ID_PARAM_REQUEST_READ:
 	  gcs.sendparam = true;
-          //if (datalog.enabled)  log_record(LOG_PARAM);
 	  if (GCS_DEBUG)  { printf("(20) ParamReqRead    ");  fflush(stdout); }
         break;
 
@@ -230,8 +230,8 @@ void gcs_rx ( void)  {
 
         // ID: #23
         case MAVLINK_MSG_ID_PARAM_SET:
-          //gcs_param_value(&msg);
-          //if (datalog.enabled)  log_record(LOG_PARAM);
+          gcs_get_param_value(&msg);
+          if (datalog.enabled)  log_record(LOG_PARAM);
 	  if (GCS_DEBUG)  { printf("(23) ParamSet    ");  fflush(stdout); }
         break;
 
@@ -415,11 +415,11 @@ static void gcs_missionlist ( void)  {
 
 
 /**
- *  gcs_param_value
- *  Updates the parameter values as needed.
+ *  gcs_get_param_value
+ *  Obtains an updated parameter value from a message
  */
-//static void gcs_param_value ( mavlink_message_t *msg )  {
-  /*
+static void gcs_get_param_value ( mavlink_message_t *msg )  {
+
   // Local variables
   uint i, j;
   bool match;
@@ -430,7 +430,7 @@ static void gcs_missionlist ( void)  {
   if (  (uint8_t) set.target_system    == GCS_SYSID  && 
         (uint8_t) set.target_component == GCS_PARAM )  {
 
-    char* key = (char*) set.param_id;
+    char *key = (char*) set.param_id;
 
     for ( i=0; i < param_count; i++ )  {
 
@@ -452,6 +452,8 @@ static void gcs_missionlist ( void)  {
       // Check if matched
       if (match)  {
 
+	if(GCS_DEBUG)  printf("\nmatched %d \n\n", i);
+
         // Only write and emit changes if there is actually a difference
         // AND only write if new value is NOT "not-a-number"
         // AND is NOT infinity
@@ -461,6 +463,7 @@ static void gcs_missionlist ( void)  {
              !isinf(set.param_value) && set.param_type == MAVLINK_TYPE_FLOAT )  {
 
           param.val[i] = set.param_value;
+          gcs_set_param_value( i, param.val[i] );
 
           // Pack parameter message
           mavlink_message_t confirm_msg;
@@ -492,60 +495,124 @@ static void gcs_missionlist ( void)  {
     }
   }
 
-  ushort x=0, y=1, z=2, t=3;
+  return;
+}
 
-  // Update LPF cutoff frequency
-  //lpf_freq( &lpf_gyrA, param.val[lpf_freq_gyr] );  lpf_freq( &lpf_gyrB, param.val[lpf_freq_gyr] );
-  //lpf_freq( &lpf_accA, param.val[lpf_freq_acc] );  lpf_freq( &lpf_accB, param.val[lpf_freq_acc] );
-  //lpf_freq( &lpf_magA, param.val[lpf_freq_mag] );  lpf_freq( &lpf_magB, param.val[lpf_freq_mag] );
 
-  // Update LPF sample history
-  //lpf_hist( &lpf_gyrA, param.val[lpf_hist_gyr] );  lpf_hist( &lpf_gyrB, param.val[lpf_hist_gyr] );
-  //lpf_hist( &lpf_accA, param.val[lpf_hist_acc] );  lpf_hist( &lpf_accB, param.val[lpf_hist_acc] );
-  //lpf_hist( &lpf_magA, param.val[lpf_hist_mag] );  lpf_hist( &lpf_magB, param.val[lpf_hist_mag] );
+/**
+ *  gcs_set_param_value
+ *  Assigns an updated parameter value to a structure
+ */
+static void gcs_set_param_value ( uint index, double val )  {
 
-  // Lock control mutex
-  pthread_mutex_lock(&ctrl.mutex);
+  // Jump to parameter
+  switch (index)  {
 
-  // Update roll gains
-  ctrl.pgain[x] = param.val[X_Kp];
-  ctrl.igain[x] = param.val[X_Ki];
-  ctrl.dgain[x] = param.val[X_Kd];
+  // Roll (X) PID Gains
+  case X_Kp :
+    pthread_mutex_lock(&pidX.mutex);
+    pidX.pgain = val;
+    pthread_mutex_unlock(&pidX.mutex);
+    break;
+  case X_Ki :
+    pthread_mutex_lock(&pidX.mutex);
+    pidX.igain = val;
+    pthread_mutex_unlock(&pidX.mutex);
+    break;
+  case X_Kd :
+    pthread_mutex_lock(&pidX.mutex);
+    pidX.dgain = val;
+    pthread_mutex_unlock(&pidX.mutex);
+    break;
 
-  // Update pitch gains
-  ctrl.pgain[y] = param.val[Y_Kp];
-  ctrl.igain[y] = param.val[Y_Ki];
-  ctrl.dgain[y] = param.val[Y_Kd];
+  // Pitch (Y) PID Gains
+  case Y_Kp :
+    pthread_mutex_lock(&pidY.mutex);
+    pidY.pgain = val;
+    pthread_mutex_unlock(&pidY.mutex);
+    break;
+  case Y_Ki :
+    pthread_mutex_lock(&pidY.mutex);
+    pidY.igain = val;
+    pthread_mutex_unlock(&pidY.mutex);
+    break;
+  case Y_Kd :
+    pthread_mutex_lock(&pidY.mutex);
+    pidY.dgain = val;
+    pthread_mutex_unlock(&pidY.mutex);
+    break;
 
-  // Update yaw gains
-  ctrl.pgain[z] = param.val[Z_Kp];
-  ctrl.igain[z] = param.val[Z_Ki];
-  ctrl.dgain[z] = param.val[Z_Kd];
+  // Yaw (Z) PID Gains
+  case Z_Kp :
+    pthread_mutex_lock(&pidZ.mutex);
+    pidZ.pgain = val;
+    pthread_mutex_unlock(&pidZ.mutex);
+    break;
+  case Z_Ki :
+    pthread_mutex_lock(&pidZ.mutex);
+    pidZ.igain = val;
+    pthread_mutex_unlock(&pidZ.mutex);
+    break;
+  case Z_Kd :
+    pthread_mutex_lock(&pidZ.mutex);
+    pidZ.dgain = val;
+    pthread_mutex_unlock(&pidZ.mutex);
+    break;
 
-  // Update throttle values
-  ctrl.thrl[0] = param.val[T_min];
-  ctrl.thrl[1] = param.val[T_max];
-  ctrl.thrl[2] = param.val[T_tilt];
+  // Throttle settings
+  case T_min :
+    pthread_mutex_lock(&stab.mutex);
+    stab.thrl[0] = val;
+    pthread_mutex_unlock(&stab.mutex);
+    break;
+  case T_max :
+    pthread_mutex_lock(&stab.mutex);
+    stab.thrl[1] = val;
+    pthread_mutex_unlock(&stab.mutex);
+    break;
+  case T_tilt :
+    pthread_mutex_lock(&stab.mutex);
+    stab.thrl[2] = val;
+    pthread_mutex_unlock(&stab.mutex);
+    break;
 
-  // Update range values
-  ctrl.range[x] = param.val[X_Range];
-  ctrl.range[y] = param.val[Y_Range];
-  ctrl.range[z] = param.val[Z_Range];
-  ctrl.range[t] = param.val[T_Range];
+  // Range settings
+  case X_Range :
+    pthread_mutex_lock(&stab.mutex);
+    stab.range[0] = val;
+    pthread_mutex_unlock(&stab.mutex);
+    break;
+  case Y_Range :
+    pthread_mutex_lock(&stab.mutex);
+    stab.range[1] = val;
+    pthread_mutex_unlock(&stab.mutex);
+    break;
+  case Z_Range :
+    pthread_mutex_lock(&stab.mutex);
+    stab.range[2] = val;
+    pthread_mutex_unlock(&stab.mutex);
+    break;
+  case T_Range :
+    pthread_mutex_lock(&stab.mutex);
+    stab.range[3] = val;
+    pthread_mutex_unlock(&stab.mutex);
+    break;
 
-  // Unlock control mutex
-  pthread_mutex_unlock(&ctrl.mutex);
-  */
-//  return;
-//}
+  default :
+    break;
+
+  }
+
+  return;
+}
 
 
 /**
  *  gcs_input
  *  Sends the radio input commands.
  */
-//static void gcs_input ( void )  {
-  /*
+static void gcs_input ( void )  {
+
   // Initialize the required buffers
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -584,17 +651,17 @@ static void gcs_missionlist ( void)  {
   int w = write( gcs.fd, buf, len );
   usleep( w * gcs.pause );
   pthread_mutex_unlock(&gcs.mutex);
-  */
-//  return;
-//}
+
+  return;
+}
 
 
 /**
  *  gcs_output
  *  Sends the system output commands.
  */
-//static void gcs_output ( void )  {
-  /*
+static void gcs_output ( void )  {
+
   // Initialize the required buffers
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -632,9 +699,9 @@ static void gcs_missionlist ( void)  {
   int w = write( gcs.fd, buf, len );
   usleep(w*300);
   pthread_mutex_unlock(&gcs.mutex);
-  */
-//  return;
-//}
+
+  return;
+}
 
 
 /**
