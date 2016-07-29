@@ -294,13 +294,11 @@ static void sys_ahrs ( void )  {
 static void sys_stab ( void )  {
 
   // Loop counter
-  //ushort i;
+  ushort i;
 
   // Stabilization signals
   //pthread_mutex_lock(&stab.mutex);
-  //for ( i=0; i<3; i++ )  printf("%5.2f ", stab.thrl[i]  );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<4; i++ )  printf("%5.2f ", stab.range[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<4; i++ )  printf("%5.2f ", stab.cmd[i]  );  printf("   ");  fflush(stdout);
+  for ( i=0; i<4; i++ )  printf("%5.2f ", stab.cmd[i]  );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", stab.bank    *(180.0/PI) );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", stab.climb   *(180.0/PI) );  printf("   ");  fflush(stdout);
   printf("%5.2f ", stab.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
