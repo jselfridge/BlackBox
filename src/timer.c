@@ -57,10 +57,10 @@ void tmr_mutex ( void )  {
   pthread_mutex_init( &pidX.mutex,   NULL );
   pthread_mutex_init( &pidY.mutex,   NULL );
   pthread_mutex_init( &pidZ.mutex,   NULL );
+  pthread_mutex_init( &gcs.mutex,    NULL );
   //pthread_mutex_init( &adaptR.mutex, NULL );
   //pthread_mutex_init( &adaptP.mutex, NULL );
   //pthread_mutex_init( &ekf.mutex,    NULL );
-  //pthread_mutex_init( &gcs.mutex,    NULL );
   //pthread_mutex_init( &gps.mutex,    NULL );
   return;
 }
@@ -210,10 +210,10 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&pidX.mutex);
   pthread_mutex_destroy(&pidY.mutex);
   pthread_mutex_destroy(&pidZ.mutex);
+  pthread_mutex_destroy(&gcs.mutex);
   //pthread_mutex_destroy(&adaptR.mutex);
   //pthread_mutex_destroy(&adaptP.mutex);
   //pthread_mutex_destroy(&ekf.mutex);
-  //pthread_mutex_destroy(&gcs.mutex);
   //pthread_mutex_destroy(&gps.mutex);
 
   // Exit GCSRX thread

@@ -9,7 +9,7 @@
 #include <sys/types.h>
 
 
-#define GCS_DEBUG        false
+#define GCS_DEBUG        true
 
 #define GCS_SYSID        01
 
@@ -17,58 +17,48 @@
 #define GCS_PARAM        02
 #define GCS_MISSION      03
 
-#define GCS_IMUA_RAW     11
-#define GCS_IMUA_SCALED  12
-#define GCS_IMUA_FILTER  13
+//#define GCS_IMUA_RAW     11
+//#define GCS_IMUA_SCALED  12
+//#define GCS_IMUA_FILTER  13
 
-#define GCS_IMUB_RAW     21
-#define GCS_IMUB_SCALED  22
-#define GCS_IMUB_FILTER  23
+//#define GCS_IMUB_RAW     21
+//#define GCS_IMUB_SCALED  22
+//#define GCS_IMUB_FILTER  23
 
-#define GCS_IMU          30
-#define GCS_ATT          40
-#define GCS_INPUT        50
-#define GCS_OUTPUT       60
-#define GCS_GPS          70
-#define GCS_GAINS       120
+//#define GCS_IMU          30
+//#define GCS_ATT          40
+//#define GCS_INPUT        50
+//#define GCS_OUTPUT       60
+//#define GCS_GPS          70
+//#define GCS_GAINS       120
 
-#define GCS_INPUT_ENABLED        true
-#define GCS_OUTPUT_ENABLED       true
-#define GCS_IMUA_RAW_ENABLED     false
-#define GCS_IMUA_SCALED_ENABLED  true
-#define GCS_IMUA_FILTER_ENABLED  true
-#define GCS_IMUB_RAW_ENABLED     false
-#define GCS_IMUB_SCALED_ENABLED  true
-#define GCS_IMUB_FILTER_ENABLED  true
-#define GCS_COMP_ENABLED         true
-#define GCS_AHRS_EUL_ENABLED     false
-#define GCS_AHRS_QUAT_ENABLED    false
-#define GCS_GPS_ENABLED          false
+//#define GCS_INPUT_ENABLED        true
+//#define GCS_OUTPUT_ENABLED       true
+//#define GCS_IMUA_RAW_ENABLED     false
+//#define GCS_IMUA_SCALED_ENABLED  true
+//#define GCS_IMUA_FILTER_ENABLED  true
+//#define GCS_IMUB_RAW_ENABLED     false
+//#define GCS_IMUB_SCALED_ENABLED  true
+//#define GCS_IMUB_FILTER_ENABLED  true
+//#define GCS_COMP_ENABLED         true
+//#define GCS_AHRS_EUL_ENABLED     false
+//#define GCS_AHRS_QUAT_ENABLED    false
+//#define GCS_GPS_ENABLED          false
 
 
 enum param_index {
 
-  // LPF cutoff freq
-  //lpf_freq_gyr = 0,
-  //lpf_freq_acc,
-  //lpf_freq_mag,
-
-  // LPF sample history
-  //lpf_hist_gyr,
-  //lpf_hist_acc,
-  //lpf_hist_mag,
-
-  // Roll gains
+  // Roll PID gains
   X_Kp = 0,
   X_Ki,
   X_Kd,
 
-  // Pitch gains
+  // Pitch PID gains
   Y_Kp,
   Y_Ki,
   Y_Kd,
 
-  // Yaw gains
+  // Yaw PID gains
   Z_Kp,
   Z_Ki,
   Z_Kd,
