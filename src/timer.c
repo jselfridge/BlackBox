@@ -88,15 +88,15 @@ void tmr_setup ( void )  {
   tmr_imu.prio = PRIO_IMU;
   tmr_imu.per  = 1000000 / HZ_IMU_FAST;
 
-  // AHRS timer
-  tmr_ahrs.name = "ahrs";
-  tmr_ahrs.prio = PRIO_AHRS;
-  tmr_ahrs.per  = 1000000 / HZ_AHRS;
-
   // Stabilization timer
   tmr_stab.name = "stab";
   tmr_stab.prio = PRIO_STAB;
   tmr_stab.per  = 1000000 / HZ_STAB;
+
+  // AHRS timer
+  //tmr_ahrs.name = "ahrs";
+  //tmr_ahrs.prio = PRIO_AHRS;
+  //tmr_ahrs.per  = 1000000 / HZ_AHRS;
 
   // EKF timer
   //tmr_ekf.name  = "ekf";
@@ -168,7 +168,6 @@ void tmr_begin ( pthread_attr_t *attr )  {
   tmr_thread( &tmr_io,    attr, fcn_io    );  usleep(100000);
   tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(100000);
   tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);
-  tmr_thread( &tmr_ahrs,  attr, fcn_ahrs  );  usleep(100000);
   tmr_thread( &tmr_stab,  attr, fcn_stab  );  usleep(100000);
   //tmr_thread( &tmr_ekf,   attr, fcn_ekf   );  usleep(100000);
   //tmr_thread( &tmr_gps,   attr, fcn_gps   );  usleep(100000);
@@ -240,11 +239,6 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_stab.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'stab' thread. \n" );
   if(DEBUG)  printf( "stab " );
-
-  // Exit AHRS thread
-  if( pthread_join ( tmr_ahrs.id, NULL ) )
-    printf( "Error (tmr_exit): Failed to exit 'ahrs' thread. \n" );
-  if(DEBUG)  printf( "ahrs " );
 
   // Exit IMU thread
   if( pthread_join ( tmr_imu.id, NULL ) )
@@ -437,13 +431,13 @@ void *fcn_imu (  )  {
   while (running) {
     tmr_start(&tmr_imu);
     if (!datalog.saving) {  
-      if (IMUA_ENABLED)  imu_update(&imuA);
-      if (IMUB_ENABLED)  imu_update(&imuB);
+      if (IMUA_ENABLED)  {  imu_update(&imuA);  ahrs_update( &ahrsA, &imuA );  }
+      if (IMUB_ENABLED)  {  imu_update(&imuB);  ahrs_update( &ahrsB, &imuB );  }
     }
     tmr_finish(&tmr_imu);
     if (datalog.enabled) {
-      if (IMUA_ENABLED)  log_record(LOG_IMUA);
-      if (IMUB_ENABLED)  log_record(LOG_IMUB);
+      if (IMUA_ENABLED)  {  log_record(LOG_IMUA);  log_record(LOG_AHRSA);  }
+      if (IMUB_ENABLED)  {  log_record(LOG_IMUB);  log_record(LOG_AHRSB);  }
     }
     tmr_pause(&tmr_imu);
   }
@@ -456,6 +450,7 @@ void *fcn_imu (  )  {
  *  fcn_ahrs
  *  Function handler for the AHRS timing thread.
  */
+/*
 void *fcn_ahrs (  )  {
   tmr_create(&tmr_ahrs);
   while (running) {
@@ -474,7 +469,7 @@ void *fcn_ahrs (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_stab

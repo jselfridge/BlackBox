@@ -43,7 +43,7 @@ void ahrs_setup ( ahrs_struct *ahrs )  {
   ahrs->dquat[0] = 0.0;
   ahrs->fx       = 1.0;
   ahrs->fz       = -0.006;
-  ahrs->dt       = 1.0 / HZ_AHRS;
+  ahrs->dt       = 1.0 / HZ_IMU_FAST;
 
   // Assign AHRS offset
   FILE *f;

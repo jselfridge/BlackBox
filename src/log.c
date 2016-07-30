@@ -41,12 +41,12 @@ void log_init ( void )  {
   log_accA.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_magA.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
   log_compA.limit   =  LOG_MAX_DUR * HZ_IMU_FAST;
-  log_ahrsA.limit   =  LOG_MAX_DUR * HZ_AHRS;
+  log_ahrsA.limit   =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_gyrB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_accB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_magB.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
   log_compB.limit   =  LOG_MAX_DUR * HZ_IMU_FAST;
-  log_ahrsB.limit   =  LOG_MAX_DUR * HZ_AHRS;
+  log_ahrsB.limit   =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_stab.limit    =  LOG_MAX_DUR * HZ_STAB;
   //log_ekf.limit     =  LOG_MAX_DUR * HZ_EKF;
   //log_gps.limit     =  LOG_MAX_DUR * HZ_GPS;
@@ -744,12 +744,12 @@ void log_record ( enum log_index index )  {
   // Record AHRSA data
   case LOG_AHRSA :
 
-    timestamp = (float) ( tmr_ahrs.start_sec + ( tmr_ahrs.start_usec / 1000000.0f ) ) - datalog.offset;
+    timestamp = (float) ( tmr_imu.start_sec + ( tmr_imu.start_usec / 1000000.0f ) ) - datalog.offset;
 
     if ( log_ahrsA.count < log_ahrsA.limit ) {
       row = log_ahrsA.count;
       log_ahrsA.time[row] = timestamp;
-      log_ahrsA.dur[row]  = tmr_ahrs.dur;
+      log_ahrsA.dur[row]  = tmr_imu.dur;
       pthread_mutex_lock(&ahrsA.mutex);
       for ( i=0; i<4; i++ )  log_ahrsA.quat  [ row*4 +i ] = ahrsA.quat  [i];
       for ( i=0; i<4; i++ )  log_ahrsA.dquat [ row*4 +i ] = ahrsA.dquat [i];
@@ -768,12 +768,12 @@ void log_record ( enum log_index index )  {
   // Record AHRSB data
   case LOG_AHRSB :
 
-    timestamp = (float) ( tmr_ahrs.start_sec + ( tmr_ahrs.start_usec / 1000000.0f ) ) - datalog.offset;
+    timestamp = (float) ( tmr_imu.start_sec + ( tmr_imu.start_usec / 1000000.0f ) ) - datalog.offset;
 
     if ( log_ahrsB.count < log_ahrsB.limit ) {
       row = log_ahrsB.count;
       log_ahrsB.time[row] = timestamp;
-      log_ahrsB.dur[row]  = tmr_ahrs.dur;
+      log_ahrsB.dur[row]  = tmr_imu.dur;
       pthread_mutex_lock(&ahrsB.mutex);
       for ( i=0; i<4; i++ )  log_ahrsB.quat  [ row*4 +i ] = ahrsB.quat  [i];
       for ( i=0; i<4; i++ )  log_ahrsB.dquat [ row*4 +i ] = ahrsB.dquat [i];

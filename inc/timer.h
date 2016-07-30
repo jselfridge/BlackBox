@@ -9,7 +9,6 @@
 
 
 #define PRIO_IMU    96
-#define PRIO_AHRS   94
 //#define PRIO_EKF    92
 #define PRIO_IO     90
 #define PRIO_STAB   88
@@ -21,7 +20,6 @@
 
 #define HZ_IMU_FAST    200
 #define HZ_IMU_SLOW    100
-#define HZ_AHRS        100
 //#define HZ_EKF          10
 #define HZ_IO          100
 #define HZ_STAB        100
@@ -53,7 +51,6 @@ typedef struct timer_struct {
 timer_struct tmr_io;
 timer_struct tmr_flag;
 timer_struct tmr_imu;
-timer_struct tmr_ahrs;
 timer_struct tmr_stab;
 //timer_struct tmr_ekf;
 //timer_struct tmr_gps;
@@ -78,7 +75,6 @@ void  tmr_finish ( timer_struct *tmr );
 void *fcn_io     (  );
 void *fcn_flag   (  );
 void *fcn_imu    (  );
-void *fcn_ahrs   (  );
 void *fcn_stab   (  );
 //void *fcn_ekf    (  );
 //void *fcn_gps    (  );
