@@ -41,14 +41,14 @@ void stab_init ( void )  {
   stab.off[9] = -1.0;
 
   // Reference ranges (TODO: Move into radio or transmitter function)
-  stab.range[CH_R] = 0.0;
-  stab.range[CH_P] = 0.0;
-  stab.range[CH_Y] = 0.0;
-  stab.range[CH_T] = 0.0;
+  stab.range[CH_R] = 0.5;
+  stab.range[CH_P] = 0.5;
+  stab.range[CH_Y] = 1.5;
+  stab.range[CH_T] = 0.5;
 
   // Throttle values (TODO: Move into radio or transmitter function)
-  stab.thrl[0] =  0.0;  // Tmin
-  stab.thrl[1] =  0.0;  // Tmax
+  stab.thrl[0] = -0.1;  // Tmin
+  stab.thrl[1] =  0.2;  // Tmax
   stab.thrl[2] =  0.0;  // Ttilt
 
   // Wrap values of pi
@@ -112,6 +112,11 @@ void stab_quad ( void )  {
   double state[6], in[4], ref[4], cmd[4], out[4];
   double trange, tmin, tmax, tilt, heading, dial;
 
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // MOVE TO ATTITUDE ESTIMATION PAGE 
+  //
+
   // Zero out states
   for ( i=0; i<6; i++ )  state[i] = 0.0;
 
@@ -174,6 +179,11 @@ void stab_quad ( void )  {
   // Correction b/c comp filter has no yaw value  
   state[2] *= 2.0; 
 
+  //
+  // MOVE TO ATTITUDE ESTIMATION PAGE 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
   // Obtain inputs
   pthread_mutex_lock(&input.mutex);
   for ( i=0; i<4; i++ )  in[i] = input.norm[i];
@@ -196,40 +206,6 @@ void stab_quad ( void )  {
   if ( in[CH_T] > -0.9 && fabs(in[CH_Y]) > 0.1 )  heading += ref[CH_Y] * stab.dt;
   while ( heading >   M_PI )  heading -= 2.0 * M_PI;
   while ( heading <= -M_PI )  heading += 2.0 * M_PI;
-
-  /*
-  // Determine roll (X) adjustment
-  perr[x] = -eul[x] + ref[CH_R];
-  derr[x] = -deul[x];
-  reset = ( in[CH_R] < -IRESET || in[CH_R] > IRESET );
-  if (reset)  ierr[x] = 0.0;
-  else        ierr[x] += perr[x] * stab.dt;
-  cmd[x] = perr[x] * stab.pgain[x] +
-           ierr[x] * stab.igain[x] +
-           derr[x] * stab.dgain[x];
-
-  // Determine pitch (Y) adjustment
-  perr[y] = -eul[y] + ref[CH_P];
-  derr[y] = -deul[y];
-  reset = ( in[CH_P] < -IRESET || in[CH_P] > IRESET );
-  if (reset)  ierr[y] = 0.0; 
-  else        ierr[y] += perr[y] * stab.dt;
-  cmd[y] = perr[y] * stab.pgain[y] + 
-           ierr[y] * stab.igain[y] + 
-           derr[y] * stab.dgain[y];
-
-  // Determine yaw (Z) adjustment
-  perr[z] = -eul[z] + heading;
-  while ( perr[z] >   M_PI )  perr[z] -= 2.0 * M_PI;
-  while ( perr[z] <= -M_PI )  perr[z] += 2.0 * M_PI;
-  derr[z] = -deul[z];
-  reset = ( in[CH_Y] < -IRESET || in[CH_Y] > IRESET );
-  if (reset)  ierr[z] = 0.0; 
-  else        ierr[z] += perr[z] * stab.dt;
-  cmd[z] = perr[z] * stab.pgain[z] + 
-           ierr[z] * stab.igain[z] + 
-           derr[z] * stab.dgain[z];
-  */
 
   // Apply PID on attitude
   cmd[x] = stab_pid( &pidX, state[0], state[3], ref[CH_R], ( in[CH_R] < -IRESET || in[CH_R] > IRESET ) );

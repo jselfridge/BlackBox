@@ -27,6 +27,7 @@ static void  gcs_set_param_value  ( uint index, double val );
 
 static void  gcs_input        ( void );
 static void  gcs_output       ( void );
+static void  gcs_att          ( void );
 //static void  gcs_imuA_raw     ( void );
 //static void  gcs_imuA_scaled  ( void );
 //static void  gcs_imuA_filter  ( void );
@@ -163,8 +164,10 @@ void gcs_tx ( void)  {
     if (GCS_IMUB_SCALED_ENABLED)  gcs_imuB_scaled();
     if (GCS_IMUB_FILTER_ENABLED)  gcs_imuB_filter();
   }
+  */
 
-  if (GCS_COMP_ENABLED)           gcs_comp();
+  if (GCS_ATT_ENABLED)            gcs_att();
+  //if (GCS_COMP_ENABLED)           gcs_comp();
 
   // Send attitude/heading data
   //if (GCS_AHRS_EUL_ENABLED)       gcs_ahrs_eul();
@@ -172,7 +175,6 @@ void gcs_tx ( void)  {
 
   // Send GPS data
   //if (GCS_GPS_ENABLED)            gcs_gps();
-  */
 
   if(GCS_DEBUG)  {  printf("\n");  fflush(stdout);  }
 
@@ -1016,6 +1018,52 @@ static void gcs_output ( void )  {
   */
 //  return;
 //}
+
+
+/**
+ *  gcs_att
+ *  Sends the attitude states of the system.
+ */
+static void gcs_att ( void )  {
+
+  // Initialize the required buffers
+  mavlink_message_t msg;
+  uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+
+  // Clear the message and buffer
+  memset( &msg, 0, sizeof(&msg) );
+  memset( &buf, 0, sizeof(&buf) );
+
+  // Collect the data
+  uint32_t time_boot_ms = 0;
+  pthread_mutex_lock(&stab.mutex);
+  float roll       = (float) stab.state[0];
+  float pitch      = (float) stab.state[1];
+  float yaw        = (float) stab.state[2];
+  float rollspeed  = (float) stab.state[3];
+  float pitchspeed = (float) stab.state[4];
+  float yawspeed   = (float) stab.state[5];
+  pthread_mutex_unlock(&stab.mutex);
+
+  // Pack the attitude message 
+  mavlink_msg_attitude_pack ( 
+    GCS_SYSID, GCS_ATT, &msg, time_boot_ms, 
+    roll, pitch, yaw, 
+    rollspeed, pitchspeed, yawspeed
+    );
+
+  // Copy the heartbeat message to the send buffer
+  uint len = mavlink_msg_to_send_buffer( buf, &msg );
+
+  // Transmit the attitude data
+  pthread_mutex_lock(&gcs.mutex);
+  int w = write( gcs.fd, buf, len );
+  usleep( w * gcs.pause );
+  pthread_mutex_unlock(&gcs.mutex);
+
+  return;
+}
+
 
 
 /**

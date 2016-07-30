@@ -26,7 +26,7 @@
 //#define GCS_IMUB_FILTER  23
 
 //#define GCS_IMU          30
-//#define GCS_ATT          40
+#define GCS_ATT          40
 #define GCS_INPUT        50
 #define GCS_OUTPUT       60
 //#define GCS_GPS          70
@@ -34,6 +34,7 @@
 
 #define GCS_INPUT_ENABLED        true
 #define GCS_OUTPUT_ENABLED       true
+#define GCS_ATT_ENABLED          true
 //#define GCS_IMUA_RAW_ENABLED     false
 //#define GCS_IMUA_SCALED_ENABLED  true
 //#define GCS_IMUA_FILTER_ENABLED  true
