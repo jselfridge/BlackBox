@@ -152,6 +152,7 @@ void log_init ( void )  {
   // Stabilization setup
   log_stab.time     =  malloc( sizeof(float)  * log_stab.limit     );
   log_stab.dur      =  malloc( sizeof(ulong)  * log_stab.limit     );
+  log_stab.state    =  malloc( sizeof(float)  * log_stab.limit * 6 );
   log_stab.cmd      =  malloc( sizeof(float)  * log_stab.limit * 4 );
 
   // PID stabilization
@@ -297,6 +298,7 @@ void log_exit ( void )  {
   // Stabilization memory
   free(log_stab.time);
   free(log_stab.dur);
+  free(log_stab.state);
   free(log_stab.cmd);
 
   // PID stabilization memory
@@ -514,7 +516,10 @@ void log_start ( void )  {
   sprintf( file, "%sstab.txt", datalog.path );
   datalog.stab = fopen( file, "w" );
   if( datalog.stab == NULL )  printf( "Error (log_init): Cannot generate 'stab' file. \n" );
-  fprintf( datalog.stab, "    stabtime  stabdur         cmdX     cmdY     cmdZ     cmdT        " );
+  fprintf( datalog.stab, 
+    "    stabtime  stabdur     \
+    attX     attY     attZ         angX     angY     angZ     \
+    cmdX     cmdY     cmdZ     cmdT        " );
   fprintf( datalog.stab, "Xperr    Xierr    Xzerr        Yperr    Yierr    Yderr        Zperr    Zierr    Zderr " );  
 
   // Extended Kalman Filter datalog file
@@ -796,7 +801,8 @@ void log_record ( enum log_index index )  {
 
       // Stabilization values
       pthread_mutex_lock(&stab.mutex);
-      for ( i=0; i<4; i++ )  log_stab.cmd [ row*4 +i ] = stab.cmd[i];
+      for ( i=0; i<6; i++ )  log_stab.state [ row*6 +i ] = stab.state[i];
+      for ( i=0; i<4; i++ )  log_stab.cmd   [ row*4 +i ] = stab.cmd[i];
       pthread_mutex_unlock(&stab.mutex);
 
       // Roll PID values
@@ -1038,7 +1044,9 @@ static void log_save ( void )  {
   // Stabilization data
   for ( row = 0; row < log_stab.count; row++ )  {
     fprintf( datalog.stab, "\n %011.6f   %06ld      ", log_stab.time[row], log_stab.dur[row] );
-    for ( i=0; i<4; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.cmd [ row*4 +i ] );   fprintf( datalog.stab, "    " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.state [ row*6 +i   ] );   fprintf( datalog.stab, "    " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.state [ row*6 +i+3 ] );   fprintf( datalog.stab, "    " );
+    for ( i=0; i<4; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.cmd   [ row*4 +i   ] );   fprintf( datalog.stab, "    " );
     fprintf( datalog.stab, "%07.4f  ",  log_pidX.perr[row] );
     fprintf( datalog.stab, "%07.4f  ",  log_pidX.ierr[row] );
     fprintf( datalog.stab, "%07.4f  ",  log_pidX.derr[row] );

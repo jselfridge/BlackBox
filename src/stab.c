@@ -107,63 +107,76 @@ void stab_quad ( void )  {
 
   // Local variables
   //bool reset;
-  ushort ch;
+  ushort i;
   ushort x=0, y=1, z=2, t=3;
-  double eul[3], deul[3], in[4], ref[4], cmd[4], out[4];
+  double state[6], in[4], ref[4], cmd[4], out[4];
   double trange, tmin, tmax, tilt, heading, dial;
-  //static double perr[3] = { 0.0, 0.0, 0.0 };
-  //static double ierr[3] = { 0.0, 0.0, 0.0 };
-  //static double derr[3] = { 0.0, 0.0, 0.0 };
 
-  // Obtain states
-  for ( ch=0; ch<3; ch++ )  {  eul[ch] = 0.0;  deul[ch] = 0.0;  }
+  // Zero out states
+  for ( i=0; i<6; i++ )  state[i] = 0.0;
+
+  // IMUA states
   if (IMUA_ENABLED)  {
-    pthread_mutex_lock(&ahrsA.mutex);
-    for ( ch=0; ch<3; ch++ )  {
-      eul[ch]  += ahrsA.eul[ch];
-      deul[ch] += ahrsA.deul[ch];
+
+    // Comp filter values (no yaw value)
+    pthread_mutex_lock(&imuA.mutex);
+    state[0] += imuA.roll;
+    state[1] += imuA.pitch;
+    pthread_mutex_unlock(&imuA.mutex);
+
+    // Loop through states
+    for ( i=0; i<3; i++ )  {
+
+      // LPF gyro values
+      pthread_mutex_lock(&gyrA.mutex);
+      state[i+3] += gyrA.filter[i];
+      pthread_mutex_unlock(&gyrA.mutex);
+
+      // AHRS values
+      pthread_mutex_lock(&ahrsA.mutex);
+      state[i]   += ahrsA.eul[i];
+      state[i+3] += ahrsA.deul[i];
+      pthread_mutex_unlock(&ahrsA.mutex);
+
     }
-    pthread_mutex_unlock(&ahrsA.mutex);
   }
+
+  // IMUB states
   if (IMUB_ENABLED)  {
-    pthread_mutex_lock(&ahrsB.mutex);
-    for ( ch=0; ch<3; ch++ )  {
-      eul[ch]  += ahrsB.eul[ch];
-      deul[ch] += ahrsB.deul[ch];
+
+    // Comp filter values (no yaw value)
+    pthread_mutex_lock(&imuB.mutex);
+    state[0] += imuB.roll;
+    state[1] += imuB.pitch;
+    pthread_mutex_unlock(&imuB.mutex);
+
+    // Loop through states
+    for ( i=0; i<3; i++ )  {
+
+      // LPF gyro values
+      pthread_mutex_lock(&gyrB.mutex);
+      state[i+3] += gyrB.filter[i];
+      pthread_mutex_unlock(&gyrB.mutex);
+
+      // AHRS values
+      pthread_mutex_lock(&ahrsB.mutex);
+      state[i]   += ahrsB.eul[i];
+      state[i+3] += ahrsB.deul[i];
+      pthread_mutex_unlock(&ahrsB.mutex);
+
     }
-    pthread_mutex_unlock(&ahrsB.mutex);
-  }
-  if ( IMUA_ENABLED && IMUB_ENABLED )  {
-    for ( ch=0; ch<3; ch++ )  {  eul[ch] /= 2.0;  deul[ch] /= 2.0;  }
   }
 
-  // Obtain attitude states
-  //eul[x] = 0.0;  eul[y] = 0.0;  eul[z] = 0.0;
-  //pthread_mutex_lock(&comp.mutex);
-  //eul[x] = comp.roll;
-  //eul[y] = comp.pitch;
-  //eul[z] = 0.0;
-  //pthread_mutex_unlock(&comp.mutex);
+  // Average all the data sources
+  if ( IMUA_ENABLED && IMUB_ENABLED )  {  for ( i=0; i<6; i++ )  state[i] /= 4.0;  }
+  else                                 {  for ( i=0; i<6; i++ )  state[i] /= 2.0;  }
 
-  // Obtain gyro states
-  //for ( ch=0; ch<3; ch++ )  deul[ch] = 0.0;
-  //if (IMUA_ENABLED)  {
-    //pthread_mutex_lock(&gyrA.mutex);
-    //for ( ch=0; ch<3; ch++ )  deul[ch] += gyrA.filter[ch];
-    //pthread_mutex_unlock(&gyrA.mutex);
-  //}
-  //if (IMUB_ENABLED)  {
-    //pthread_mutex_lock(&gyrB.mutex);
-    //for ( ch=0; ch<3; ch++ )  deul[ch] += gyrB.filter[ch];
-    //pthread_mutex_unlock(&gyrB.mutex);
-  //}
-  //if ( IMUA_ENABLED && IMUB_ENABLED )  {
-    //for ( ch=0; ch<3; ch++ )  deul[ch] /= 2.0;
-  //}
+  // Correction b/c comp filter has no yaw value  
+  state[2] *= 2.0; 
 
   // Obtain inputs
   pthread_mutex_lock(&input.mutex);
-  for ( ch=0; ch<4; ch++ )  in[ch] = input.norm[ch];
+  for ( i=0; i<4; i++ )  in[i] = input.norm[i];
   dial = input.norm[CH_D];
   pthread_mutex_unlock(&input.mutex);
 
@@ -177,7 +190,7 @@ void stab_quad ( void )  {
   pthread_mutex_unlock(&stab.mutex);
 
   // Calculate reference signals
-  for ( ch=0; ch<4; ch++ )  ref[ch] = in[ch] * stab.range[ch];
+  for ( i=0; i<4; i++ )  ref[i] = in[i] * stab.range[i];
 
   // Determine desired heading
   if ( in[CH_T] > -0.9 && fabs(in[CH_Y]) > 0.1 )  heading += ref[CH_Y] * stab.dt;
@@ -219,12 +232,12 @@ void stab_quad ( void )  {
   */
 
   // Apply PID on attitude
-  cmd[x] = stab_pid( &pidX, eul[x], deul[x], ref[CH_R], ( in[CH_R] < -IRESET || in[CH_R] > IRESET ) );
-  cmd[y] = stab_pid( &pidY, eul[y], deul[y], ref[CH_P], ( in[CH_P] < -IRESET || in[CH_P] > IRESET ) );
-  cmd[z] = stab_pid( &pidZ, eul[z], deul[z], heading,   ( in[CH_Y] < -IRESET || in[CH_Y] > IRESET ) );
+  cmd[x] = stab_pid( &pidX, state[0], state[3], ref[CH_R], ( in[CH_R] < -IRESET || in[CH_R] > IRESET ) );
+  cmd[y] = stab_pid( &pidY, state[1], state[4], ref[CH_P], ( in[CH_P] < -IRESET || in[CH_P] > IRESET ) );
+  cmd[z] = stab_pid( &pidZ, state[2], state[5], heading,   ( in[CH_Y] < -IRESET || in[CH_Y] > IRESET ) );
 
   // Determine throttle adjustment
-  double tilt_adj = ( 1 - ( cos(eul[x]) * cos(eul[y]) ) ) * tilt;
+  double tilt_adj = ( 1 - ( cos(state[0]) * cos(state[1]) ) ) * tilt;
   double thresh = ( 0.5 * ( dial + 1.0 ) * ( tmax - tmin ) ) + tmin - trange;
   if ( in[CH_T] <= -0.6 )  cmd[t] = ( 2.50 * ( in[CH_T] + 1.0 ) * ( thresh + 1.0 ) ) - 1.0 + tilt_adj;
   else                     cmd[t] = ( 1.25 * ( in[CH_T] + 0.6 ) * trange ) + thresh + tilt_adj; 
@@ -244,12 +257,8 @@ void stab_quad ( void )  {
 
   // Push control data
   pthread_mutex_lock(&stab.mutex);
-  //for ( ch=0; ch<3; ch++ )  {
-  //  stab.perr[ch] = perr[ch];
-  //  stab.ierr[ch] = ierr[ch];
-  //  stab.derr[ch] = derr[ch];
-  //}
-  for ( ch=0; ch<4; ch++ )  stab.cmd[ch] = cmd[ch];
+  for ( i=0; i<6; i++ )  stab.state[i] = state[i];
+  for ( i=0; i<4; i++ )  stab.cmd[i]   = cmd[i];
   stab.heading = heading;
   pthread_mutex_unlock(&stab.mutex);
 

@@ -107,8 +107,8 @@ void gcs_init ( void )  {
 
   // Assign conditional values
   gcs.sendhb      = true;
-  gcs.sendparam   = true;
-  gcs.sendmission = true;
+  gcs.sendparam   = false;
+  gcs.sendmission = false;
 
   // Assign pause for serial stream
   gcs.pause = 100;
@@ -134,7 +134,7 @@ void gcs_exit ( void )  {
  */
 void gcs_tx ( void)  {
 
-  if(GCS_DEBUG)  printf("  TX:  ");
+  if(GCS_DEBUG)  printf("TX:  ");
 
   static int count = 0;
   if ( count < HZ_GCSTX )  {  count++;  }
@@ -186,7 +186,8 @@ void gcs_tx ( void)  {
  */
 void gcs_rx ( void)  {
 
-  if(GCS_DEBUG)  printf("  RX:  ");
+  // Debugging statement
+  if(GCS_DEBUG)  printf("RX:  ");
 
   // Local variables
   mavlink_message_t msg;
@@ -198,6 +199,7 @@ void gcs_rx ( void)  {
 
     uint8_t c;
 
+    // Read serial input
     pthread_mutex_lock(&gcs.mutex);
     int r = read( gcs.fd, &c, 1 );
     pthread_mutex_unlock(&gcs.mutex);
@@ -213,66 +215,66 @@ void gcs_rx ( void)  {
         // ID: #0
         case MAVLINK_MSG_ID_HEARTBEAT:
           // Reset fail safe timer
-	  if (GCS_DEBUG)  { printf("(00) Heartbeat    ");  fflush(stdout); }
+	  if (GCS_DEBUG)  printf("(00) Heartbeat  ");
         break;
 
         // ID: #20
         case MAVLINK_MSG_ID_PARAM_REQUEST_READ:
 	  gcs.sendparam = true;
-	  if (GCS_DEBUG)  { printf("(20) ParamReqRead    ");  fflush(stdout); }
+	  if (GCS_DEBUG)  printf("(20) ParamReqRead  ");
         break;
 
         // ID: #21
         case MAVLINK_MSG_ID_PARAM_REQUEST_LIST:
 	  gcs.sendparam = true;
-	  if (GCS_DEBUG)  { printf("(21) ParamReqList    ");  fflush(stdout); }
+	  if (GCS_DEBUG)  printf("(21) ParamReqList  ");
         break;
 
         // ID: #23
         case MAVLINK_MSG_ID_PARAM_SET:
           gcs_get_param_value(&msg);
           if (datalog.enabled)  log_record(LOG_PARAM);
-	  if (GCS_DEBUG)  { printf("(23) ParamSet    ");  fflush(stdout); }
+	  if (GCS_DEBUG)  printf("(23) ParamSet  ");
         break;
 
         // ID: #43
         case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
 	  gcs.sendmission = true;
-	  if (GCS_DEBUG)  { printf("(43) MisReqList    ");  fflush(stdout); }
+	  if (GCS_DEBUG)  printf("(43) MisReqList  ");
         break;
 
         // ID: #47
         case MAVLINK_MSG_ID_MISSION_ACK:
 	  // Add "Mission Acknowledge" code...
-	  if (GCS_DEBUG)  { printf("(47) MisAck    ");  fflush(stdout); }
+	  if (GCS_DEBUG)  printf("(47) MisAck  ");
         break;
 
         // ID: #75
         case MAVLINK_MSG_ID_COMMAND_INT:
 	  // Add "Command Int" code...
-	  if (GCS_DEBUG)  { printf("(75) CmdInt    ");  fflush(stdout); }
+	  if (GCS_DEBUG)  printf("(75) CmdInt  ");
         break;
 
         // ID: #76
         case MAVLINK_MSG_ID_COMMAND_LONG:
 	  // Add "Command Long" code...
-	  if (GCS_DEBUG)  { printf("(76) CmdLong    ");  fflush(stdout); }
+	  if (GCS_DEBUG)  printf("(76) CmdLong  ");
         break;
 
         // ID: #???
         default:
           // Add unknown ID code...
-	  if (GCS_DEBUG)  { printf("(?\?) Unknown    ");  fflush(stdout); }
+	  if (GCS_DEBUG)  printf("(?\?) Unknown  ");
         break;
 
       }
-
     }
   }
 
   // Update global packet drops counter
   //packet_drops += status.packet_rx_drop_count;
 
+  // Debugging statement
   if(GCS_DEBUG)  {  printf("\n");  fflush(stdout);  }
 
   return;
@@ -378,7 +380,6 @@ static void gcs_missionlist ( void)  {
   // Debugging statement
   if(GCS_DEBUG)  printf("ML  ");
 
-  /*
   // Local variables
   int len, w;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
@@ -390,8 +391,8 @@ static void gcs_missionlist ( void)  {
     GCS_SYSID, 
     GCS_MISSION,
     &msg,
-    0, 
-    0, 
+    GCS_SYSID, 
+    GCS_MISSION, 
     0
   );
 
@@ -404,8 +405,6 @@ static void gcs_missionlist ( void)  {
   w = write( gcs.fd, buf, len );
   usleep( w * gcs.pause );
   pthread_mutex_unlock(&gcs.mutex);
-
-  */
 
   // Reset conditional flag
   gcs.sendmission = false;

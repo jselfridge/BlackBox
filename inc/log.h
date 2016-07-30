@@ -96,6 +96,7 @@ typedef struct log_stab_struct {
   ulong  limit;
   float  *time;
   ulong  *dur;
+  float  *state;
   float  *cmd;
 } log_stab_struct;
 log_stab_struct log_stab;

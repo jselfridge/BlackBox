@@ -23,6 +23,7 @@ typedef struct stab_struct {
   double  off   [10];
   double  range [4];
   double  thrl  [3];
+  double  state [6];
   double  cmd   [4];
   double  heading;
   pthread_mutex_t mutex;

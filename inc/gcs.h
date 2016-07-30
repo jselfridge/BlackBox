@@ -9,7 +9,7 @@
 #include <sys/types.h>
 
 
-#define GCS_DEBUG        true
+#define GCS_DEBUG        false
 
 #define GCS_SYSID        01
 

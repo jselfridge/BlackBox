@@ -1,4 +1,5 @@
-stab.c:270:8:stab_pid	88	static
-stab.c:21:6:stab_init	32	static
+stab.c:279:8:stab_pid	88	static
+stab.c:106:6:stab_quad	288	dynamic,bounded
+stab.c:21:6:stab_init	24	static
 stab.c:82:6:stab_exit	0	static
-stab.c:93:6:stab_update	272	static
+stab.c:93:6:stab_update	8	static

@@ -87,7 +87,7 @@ void sys_exit ( void )  {
     printf( "Error (sys_exit): Function 'sigaction' failed. \n" );
   if ( munlockall() )
     printf( "Error (sys_exit): Failed to unlock memory. \n" );
-  if(!DEBUG)  system("shutdown -h now");
+  if(SYS_EXIT)  system("shutdown -h now");
   kill( 0, SIGINT );
   return;
 }
