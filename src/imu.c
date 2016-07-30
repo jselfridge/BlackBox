@@ -41,9 +41,9 @@ void imu_init ( void )  {
     imuA.getmag = false;
 
     // Low pass filter values
-    imuA.gyr  = &gyrA;  imuA.gyr->lpf[0] = 1.00;  imuA.gyr->lpf[1] = 1.00;  imuA.gyr->lpf[2] = 1.00;    // 0.32
-    imuA.acc  = &accA;  imuA.acc->lpf[0] = 1.00;  imuA.acc->lpf[1] = 1.00;  imuA.acc->lpf[2] = 1.00;    // 0.08
-    imuA.mag  = &magA;  imuA.mag->lpf[0] = 1.00;  imuA.mag->lpf[1] = 1.00;  imuA.mag->lpf[2] = 1.00;    // ????
+    imuA.gyr  = &gyrA;  imuA.gyr->lpf[0] = 0.50;  imuA.gyr->lpf[1] = 0.50;  imuA.gyr->lpf[2] = 0.50;
+    imuA.acc  = &accA;  imuA.acc->lpf[0] = 0.10;  imuA.acc->lpf[1] = 0.10;  imuA.acc->lpf[2] = 0.10;
+    imuA.mag  = &magA;  imuA.mag->lpf[0] = 0.50;  imuA.mag->lpf[1] = 0.50;  imuA.mag->lpf[2] = 0.50;
 
     // Complimentary filter values
     imuA.comp  = 0.95;
@@ -71,9 +71,9 @@ void imu_init ( void )  {
     imuB.getmag = false;
 
     // Low pass filter values
-    imuB.gyr  = &gyrB;  imuB.gyr->lpf[0] = 1.00;  imuB.gyr->lpf[1] = 1.00;  imuB.gyr->lpf[2] = 1.00;    // 0.32
-    imuB.acc  = &accB;  imuB.acc->lpf[0] = 1.00;  imuB.acc->lpf[1] = 1.00;  imuB.acc->lpf[2] = 1.00;    // 0.08
-    imuB.mag  = &magB;  imuB.mag->lpf[0] = 1.00;  imuB.mag->lpf[1] = 1.00;  imuB.mag->lpf[2] = 1.00;    // ????
+    imuB.gyr  = &gyrB;  imuB.gyr->lpf[0] = 0.50;  imuB.gyr->lpf[1] = 0.50;  imuB.gyr->lpf[2] = 0.50;
+    imuB.acc  = &accB;  imuB.acc->lpf[0] = 0.10;  imuB.acc->lpf[1] = 0.10;  imuB.acc->lpf[2] = 0.10;
+    imuB.mag  = &magB;  imuB.mag->lpf[0] = 0.50;  imuB.mag->lpf[1] = 0.50;  imuB.mag->lpf[2] = 0.50;
 
     // Complimentary filter values
     imuB.comp  = 0.95;
