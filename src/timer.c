@@ -94,15 +94,15 @@ void tmr_setup ( void )  {
   tmr_stab.prio = PRIO_STAB;
   tmr_stab.per  = 1000000 / HZ_STAB;
 
-  // EKF timer
-  //tmr_ekf.name  = "ekf";
-  //tmr_ekf.prio  = PRIO_EKF;
-  //tmr_ekf.per   = 1000000 / HZ_EKF;
-
   // GPS timer
   //tmr_gps.name = "gps";
   //tmr_gps.prio = PRIO_GPS;
   //tmr_gps.per  = 1000000 / HZ_GPS;
+
+  // EKF timer
+  //tmr_ekf.name  = "ekf";
+  //tmr_ekf.prio  = PRIO_EKF;
+  //tmr_ekf.per   = 1000000 / HZ_EKF;
 
   // GCSTX timer
   tmr_gcstx.name = "gcstx";
@@ -165,8 +165,8 @@ void tmr_begin ( pthread_attr_t *attr )  {
   tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(100000);
   tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);
   tmr_thread( &tmr_stab,  attr, fcn_stab  );  usleep(100000);
-  //tmr_thread( &tmr_ekf,   attr, fcn_ekf   );  usleep(100000);
   //tmr_thread( &tmr_gps,   attr, fcn_gps   );  usleep(100000);
+  //tmr_thread( &tmr_ekf,   attr, fcn_ekf   );  usleep(100000);
   tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
   tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(100000);
 
@@ -222,15 +222,15 @@ void tmr_exit ( void )  {
     printf( "Error (tmr_exit): Failed to exit 'gcstx' thread. \n" );
   if(DEBUG)  printf( "gcstx " );
 
-  // Exit GPS thread
-  //if( pthread_join ( tmr_gps.id, NULL ) )
-  //  printf( "Error (tmr_exit): Failed to exit 'gps' thread. \n" );
-  //if(DEBUG)  printf( "gps " );
-
   // Exit EKF thread
   //if( pthread_join ( tmr_ekf.id, NULL ) )
   //  printf( "Error (tmr_exit): Failed to exit 'ekf' thread. \n" );
   //if(DEBUG)  printf( "ekf " ); 
+
+  // Exit GPS thread
+  //if( pthread_join ( tmr_gps.id, NULL ) )
+  //  printf( "Error (tmr_exit): Failed to exit 'gps' thread. \n" );
+  //if(DEBUG)  printf( "gps " );
 
   // Exit stabilization thread
   if( pthread_join ( tmr_stab.id, NULL ) )
@@ -427,7 +427,7 @@ void *fcn_imu (  )  {
   tmr_create(&tmr_imu);
   while (running) {
     tmr_start(&tmr_imu);
-    if (!datalog.saving) {  // Move AHRS into IMU code...
+    if (!datalog.saving) {
       if (IMUA_ENABLED)  {  imu_update(&imuA);  ahrs_update( &ahrsA, &imuA );  }
       if (IMUB_ENABLED)  {  imu_update(&imuB);  ahrs_update( &ahrsB, &imuB );  }
       imu_state();
@@ -463,25 +463,6 @@ void *fcn_stab (  )  {
 
 
 /**
- *  fcn_ekf
- *  Function handler for the Extended Kalman Filter timing thread.
- */
-/*
-void *fcn_ekf (  )  {
-  tmr_create(&tmr_ekf);
-  while (running) {
-    tmr_start(&tmr_ekf);
-    if (!datalog.saving)  ekf_update();
-    tmr_finish(&tmr_ekf);
-    if (datalog.enabled)  log_record(LOG_EKF);
-    tmr_pause(&tmr_ekf);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
-*/
-
-/**
  *  fcn_gps
  *  Function handler for the GPS timing thread.
  */
@@ -494,6 +475,25 @@ void *fcn_gps (  )  {
     tmr_finish(&tmr_gps);
     if (datalog.enabled)  log_record(LOG_GPS);
     tmr_pause(&tmr_gps);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+*/
+
+/**
+ *  fcn_ekf
+ *  Function handler for the Extended Kalman Filter timing thread.
+ */
+/*
+void *fcn_ekf (  )  {
+  tmr_create(&tmr_ekf);
+  while (running) {
+    tmr_start(&tmr_ekf);
+    if (!datalog.saving)  ekf_update();
+    tmr_finish(&tmr_ekf);
+    if (datalog.enabled)  log_record(LOG_EKF);
+    tmr_pause(&tmr_ekf);
   }
   pthread_exit(NULL);
   return NULL;

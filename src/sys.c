@@ -154,11 +154,11 @@ static void sys_io ( void )  {
   pthread_mutex_unlock(&input.mutex);
 
   // Output signals
-  //pthread_mutex_lock(&output.mutex);
+  pthread_mutex_lock(&output.mutex);
   //for ( i=0; i<4; i++ )  printf("%5d ",   output.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%4d ",   output.pwm[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%5.2f ", output.norm[i] );  printf("   ");  fflush(stdout);
-  //pthread_mutex_unlock(&output.mutex);
+  pthread_mutex_unlock(&output.mutex);
 
   // Quadrotor output signals
   pthread_mutex_lock(&output.mutex);
@@ -208,9 +208,9 @@ static void sys_imu ( void )  {
 
   // Complimentry filter data
   pthread_mutex_lock(&imuA.mutex);
-  double Ra = imuA.roll  * ( 180.0 / PI );
-  double Pa = imuA.pitch * ( 180.0 / PI );
-  printf("%6.3f %6.3f ", Ra, Pa );  printf("   ");  fflush(stdout);
+  //double Ra = imuA.roll  * ( 180.0 / PI );
+  //double Pa = imuA.pitch * ( 180.0 / PI );
+  //printf("%6.3f %6.3f ", Ra, Pa );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&imuA.mutex);
 
   }
@@ -241,9 +241,9 @@ static void sys_imu ( void )  {
 
   // Complimentry filter data
   pthread_mutex_lock(&imuB.mutex);
-  double Rb = imuB.roll  * ( 180.0 / PI );
-  double Pb = imuB.pitch * ( 180.0 / PI );
-  printf("%6.3f %6.3f ", Rb, Pb );  printf("   ");  fflush(stdout);
+  //double Rb = imuB.roll  * ( 180.0 / PI );
+  //double Pb = imuB.pitch * ( 180.0 / PI );
+  //printf("%6.3f %6.3f ", Rb, Pb );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&imuB.mutex);
 
   }
@@ -297,9 +297,10 @@ static void sys_stab ( void )  {
   // Stabilization signals
   pthread_mutex_lock(&stab.mutex);
   for ( i=0; i<4; i++ )  printf("%5.2f ", stab.cmd[i]  );  printf("   ");  fflush(stdout);
-  //printf("%5.2f ", stab.bank    *(180.0/PI) );  printf("   ");  fflush(stdout);
-  //printf("%5.2f ", stab.climb   *(180.0/PI) );  printf("   ");  fflush(stdout);
-  printf("%5.2f ", stab.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
+  //printf("%5.2f ", stab.bank    *(180.0/PI) );  printf("   ");
+  //printf("%5.2f ", stab.climb   *(180.0/PI) );  printf("   ");
+  printf("%5.2f ", stab.heading *(180.0/PI) );  printf("   ");
+  fflush(stdout);
   pthread_mutex_unlock(&stab.mutex);
 
   // Roll PID
