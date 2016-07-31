@@ -53,6 +53,7 @@ void tmr_mutex ( void )  {
   pthread_mutex_init( &accB.mutex,   NULL );
   pthread_mutex_init( &magB.mutex,   NULL );
   pthread_mutex_init( &ahrsB.mutex,  NULL );
+  pthread_mutex_init( &rot.mutex,    NULL );
   pthread_mutex_init( &stab.mutex,   NULL );
   pthread_mutex_init( &pidX.mutex,   NULL );
   pthread_mutex_init( &pidY.mutex,   NULL );
@@ -92,11 +93,6 @@ void tmr_setup ( void )  {
   tmr_stab.name = "stab";
   tmr_stab.prio = PRIO_STAB;
   tmr_stab.per  = 1000000 / HZ_STAB;
-
-  // AHRS timer
-  //tmr_ahrs.name = "ahrs";
-  //tmr_ahrs.prio = PRIO_AHRS;
-  //tmr_ahrs.per  = 1000000 / HZ_AHRS;
 
   // EKF timer
   //tmr_ekf.name  = "ekf";
@@ -205,6 +201,7 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&accB.mutex);
   pthread_mutex_destroy(&magB.mutex);
   pthread_mutex_destroy(&ahrsB.mutex);
+  pthread_mutex_destroy(&rot.mutex);
   pthread_mutex_destroy(&stab.mutex);
   pthread_mutex_destroy(&pidX.mutex);
   pthread_mutex_destroy(&pidY.mutex);
@@ -430,9 +427,10 @@ void *fcn_imu (  )  {
   tmr_create(&tmr_imu);
   while (running) {
     tmr_start(&tmr_imu);
-    if (!datalog.saving) {  
+    if (!datalog.saving) {  // Move AHRS into IMU code...
       if (IMUA_ENABLED)  {  imu_update(&imuA);  ahrs_update( &ahrsA, &imuA );  }
       if (IMUB_ENABLED)  {  imu_update(&imuB);  ahrs_update( &ahrsB, &imuB );  }
+      imu_state();
     }
     tmr_finish(&tmr_imu);
     if (datalog.enabled) {
@@ -445,31 +443,6 @@ void *fcn_imu (  )  {
   return NULL;
 }
 
-
-/**
- *  fcn_ahrs
- *  Function handler for the AHRS timing thread.
- */
-/*
-void *fcn_ahrs (  )  {
-  tmr_create(&tmr_ahrs);
-  while (running) {
-    tmr_start(&tmr_ahrs);
-    if (!datalog.saving) {
-      if (IMUA_ENABLED)  ahrs_update( &ahrsA, &imuA );
-      if (IMUB_ENABLED)  ahrs_update( &ahrsB, &imuB );
-    }
-    tmr_finish(&tmr_ahrs);
-    if (datalog.enabled) {
-      if (IMUA_ENABLED)  log_record(LOG_AHRSA);
-      if (IMUB_ENABLED)  log_record(LOG_AHRSB);
-    }
-    tmr_pause(&tmr_ahrs);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
-*/
 
 /**
  *  fcn_stab

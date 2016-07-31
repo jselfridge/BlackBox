@@ -295,12 +295,12 @@ static void sys_stab ( void )  {
   ushort i;
 
   // Stabilization signals
-  //pthread_mutex_lock(&stab.mutex);
+  pthread_mutex_lock(&stab.mutex);
   for ( i=0; i<4; i++ )  printf("%5.2f ", stab.cmd[i]  );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", stab.bank    *(180.0/PI) );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", stab.climb   *(180.0/PI) );  printf("   ");  fflush(stdout);
   printf("%5.2f ", stab.heading *(180.0/PI) );  printf("   ");  fflush(stdout);
-  //pthread_mutex_unlock(&stab.mutex);
+  pthread_mutex_unlock(&stab.mutex);
 
   // Roll PID
   pthread_mutex_lock(&pidX.mutex);

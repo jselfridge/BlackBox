@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include "ahrs.h"
 #include "i2c.h"
 #include "led.h"
 #include "mpu.h"
@@ -354,6 +355,88 @@ void imu_update ( imu_struct *imu )  {
   imu->roll  = R;
   imu->pitch = P;
   pthread_mutex_unlock( &(imu->mutex) );
+
+  return;
+}
+
+
+/**
+ *  imu_state
+ *  Calculate the rotational state from various signals and filters
+ */
+void imu_state ( void )  {
+
+  // Local variables
+  ushort i;
+  double state[6];
+
+  // Zero out states
+  for ( i=0; i<6; i++ )  state[i] = 0.0;
+
+  // IMUA states
+  if (IMUA_ENABLED)  {
+
+    // Comp filter values (no yaw value)
+    pthread_mutex_lock(&imuA.mutex);
+    state[0] += imuA.roll;
+    state[1] += imuA.pitch;
+    pthread_mutex_unlock(&imuA.mutex);
+
+    // Loop through states
+    for ( i=0; i<3; i++ )  {
+
+      // LPF gyro values
+      pthread_mutex_lock(&gyrA.mutex);
+      state[i+3] += gyrA.filter[i];
+      pthread_mutex_unlock(&gyrA.mutex);
+
+      // AHRS values
+      pthread_mutex_lock(&ahrsA.mutex);
+      state[i]   += ahrsA.eul[i];
+      state[i+3] += ahrsA.deul[i];
+      pthread_mutex_unlock(&ahrsA.mutex);
+
+    }
+  }
+
+  // IMUB states
+  if (IMUB_ENABLED)  {
+
+    // Comp filter values (no yaw value)
+    pthread_mutex_lock(&imuB.mutex);
+    state[0] += imuB.roll;
+    state[1] += imuB.pitch;
+    pthread_mutex_unlock(&imuB.mutex);
+
+    // Loop through states
+    for ( i=0; i<3; i++ )  {
+
+      // LPF gyro values
+      pthread_mutex_lock(&gyrB.mutex);
+      state[i+3] += gyrB.filter[i];
+      pthread_mutex_unlock(&gyrB.mutex);
+
+      // AHRS values
+      pthread_mutex_lock(&ahrsB.mutex);
+      state[i]   += ahrsB.eul[i];
+      state[i+3] += ahrsB.deul[i];
+      pthread_mutex_unlock(&ahrsB.mutex);
+
+    }
+  }
+
+  // Average all the data sources
+  if ( IMUA_ENABLED && IMUB_ENABLED )  {  for ( i=0; i<6; i++ )  state[i] /= 4.0;  }
+  else                                 {  for ( i=0; i<6; i++ )  state[i] /= 2.0;  }
+
+  // Correction b/c comp filter has no yaw value  
+  state[2] *= 2.0; 
+
+  // Push to data structure
+  pthread_mutex_lock(&rot.mutex);
+  for ( i=0; i<3; i++ ) rot.att[i] = state[i];
+  for ( i=0; i<3; i++ ) rot.ang[i] = state[i+3];
+  pthread_mutex_unlock(&rot.mutex);
 
   return;
 }

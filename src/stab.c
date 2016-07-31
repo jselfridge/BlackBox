@@ -57,9 +57,9 @@ void stab_init ( void )  {
   pidZ.wrap = true;
 
   // P gain values
-  pidX.pgain = 0.00;
-  pidY.pgain = 0.00;
-  pidZ.pgain = 0.00;
+  pidX.pgain = 0.12;
+  pidY.pgain = 0.12;
+  pidZ.pgain = 0.12;
 
   // I gain values
   pidX.igain = 0.00;
@@ -67,9 +67,9 @@ void stab_init ( void )  {
   pidZ.igain = 0.00;
 
   // D gain values
-  pidX.dgain = 0.00;
-  pidY.dgain = 0.00;
-  pidZ.dgain = 0.00;
+  pidX.dgain = 0.56;
+  pidY.dgain = 0.56;
+  pidZ.dgain = 0.10;
 
   return;
 }
@@ -104,85 +104,17 @@ void stab_update ( void )  {
  *  Apply stabilization control to quadrotor system.
  */
 void stab_quad ( void )  {
-
+ 
   // Local variables
-  //bool reset;
   ushort i;
   ushort x=0, y=1, z=2, t=3;
   double state[6], in[4], ref[4], cmd[4], out[4];
-  double trange, tmin, tmax, tilt, heading, dial;
+  double dt, trange, tmin, tmax, tilt, heading, dial;
 
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // MOVE TO ATTITUDE ESTIMATION PAGE 
-  //
-
-  // Zero out states
-  for ( i=0; i<6; i++ )  state[i] = 0.0;
-
-  // IMUA states
-  if (IMUA_ENABLED)  {
-
-    // Comp filter values (no yaw value)
-    pthread_mutex_lock(&imuA.mutex);
-    state[0] += imuA.roll;
-    state[1] += imuA.pitch;
-    pthread_mutex_unlock(&imuA.mutex);
-
-    // Loop through states
-    for ( i=0; i<3; i++ )  {
-
-      // LPF gyro values
-      pthread_mutex_lock(&gyrA.mutex);
-      state[i+3] += gyrA.filter[i];
-      pthread_mutex_unlock(&gyrA.mutex);
-
-      // AHRS values
-      pthread_mutex_lock(&ahrsA.mutex);
-      state[i]   += ahrsA.eul[i];
-      state[i+3] += ahrsA.deul[i];
-      pthread_mutex_unlock(&ahrsA.mutex);
-
-    }
-  }
-
-  // IMUB states
-  if (IMUB_ENABLED)  {
-
-    // Comp filter values (no yaw value)
-    pthread_mutex_lock(&imuB.mutex);
-    state[0] += imuB.roll;
-    state[1] += imuB.pitch;
-    pthread_mutex_unlock(&imuB.mutex);
-
-    // Loop through states
-    for ( i=0; i<3; i++ )  {
-
-      // LPF gyro values
-      pthread_mutex_lock(&gyrB.mutex);
-      state[i+3] += gyrB.filter[i];
-      pthread_mutex_unlock(&gyrB.mutex);
-
-      // AHRS values
-      pthread_mutex_lock(&ahrsB.mutex);
-      state[i]   += ahrsB.eul[i];
-      state[i+3] += ahrsB.deul[i];
-      pthread_mutex_unlock(&ahrsB.mutex);
-
-    }
-  }
-
-  // Average all the data sources
-  if ( IMUA_ENABLED && IMUB_ENABLED )  {  for ( i=0; i<6; i++ )  state[i] /= 4.0;  }
-  else                                 {  for ( i=0; i<6; i++ )  state[i] /= 2.0;  }
-
-  // Correction b/c comp filter has no yaw value  
-  state[2] *= 2.0; 
-
-  //
-  // MOVE TO ATTITUDE ESTIMATION PAGE 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+  // Obtain states
+  pthread_mutex_lock(&rot.mutex);
+  for ( i=0; i<3; i++ )  {  state[i] = rot.att[i];  state[i+3] = rot.ang[i];  }
+  pthread_mutex_unlock(&rot.mutex);
 
   // Obtain inputs
   pthread_mutex_lock(&input.mutex);
@@ -190,8 +122,9 @@ void stab_quad ( void )  {
   dial = input.norm[CH_D];
   pthread_mutex_unlock(&input.mutex);
 
-  // Obtain ctrl parameters
+  // Obtain stabilization parameters
   pthread_mutex_lock(&stab.mutex);
+  dt      = stab.dt;
   tmin    = stab.thrl[0];
   tmax    = stab.thrl[1];
   tilt    = stab.thrl[2];
@@ -203,7 +136,7 @@ void stab_quad ( void )  {
   for ( i=0; i<4; i++ )  ref[i] = in[i] * stab.range[i];
 
   // Determine desired heading
-  if ( in[CH_T] > -0.9 && fabs(in[CH_Y]) > 0.1 )  heading += ref[CH_Y] * stab.dt;
+  if ( in[CH_T] > -0.9 && fabs(in[CH_Y]) > 0.1 )  heading += ref[CH_Y] * dt;
   while ( heading >   M_PI )  heading -= 2.0 * M_PI;
   while ( heading <= -M_PI )  heading += 2.0 * M_PI;
 
@@ -233,7 +166,6 @@ void stab_quad ( void )  {
 
   // Push control data
   pthread_mutex_lock(&stab.mutex);
-  for ( i=0; i<6; i++ )  stab.state[i] = state[i];
   for ( i=0; i<4; i++ )  stab.cmd[i]   = cmd[i];
   stab.heading = heading;
   pthread_mutex_unlock(&stab.mutex);

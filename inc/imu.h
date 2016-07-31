@@ -55,11 +55,20 @@ imu_struct imuA;
 imu_struct imuB;
 
 
+typedef struct rot_state_struct {
+  double att [3];
+  double ang [3];
+  pthread_mutex_t mutex;
+} rot_state_struct;
+rot_state_struct rot;
+
+
 void  imu_init    ( void );
 void  imu_exit    ( void );
 void  imu_param   ( imu_struct *imu );
 void  imu_getcal  ( imu_struct *imu );
 void  imu_update  ( imu_struct *imu );
+void  imu_state   ( void );
 
 
 #endif

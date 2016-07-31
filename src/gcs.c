@@ -9,7 +9,7 @@
 //#include "ahrs.h"
 //#include "comp.h"
 //#include "ctrl.h"
-//#include "imu.h"
+#include "imu.h"
 #include "io.h"
 #include "log.h"
 //#include "lpf.h"
@@ -1036,14 +1036,14 @@ static void gcs_att ( void )  {
 
   // Collect the data
   uint32_t time_boot_ms = 0;
-  pthread_mutex_lock(&stab.mutex);
-  float roll       = (float) stab.state[0];
-  float pitch      = (float) stab.state[1];
-  float yaw        = (float) stab.state[2];
-  float rollspeed  = (float) stab.state[3];
-  float pitchspeed = (float) stab.state[4];
-  float yawspeed   = (float) stab.state[5];
-  pthread_mutex_unlock(&stab.mutex);
+  pthread_mutex_lock(&rot.mutex);
+  float roll       = (float) rot.att[0];
+  float pitch      = (float) rot.att[1];
+  float yaw        = (float) rot.att[2];
+  float rollspeed  = (float) rot.ang[0];
+  float pitchspeed = (float) rot.ang[1];
+  float yawspeed   = (float) rot.ang[2];
+  pthread_mutex_unlock(&rot.mutex);
 
   // Pack the attitude message 
   mavlink_msg_attitude_pack ( 
