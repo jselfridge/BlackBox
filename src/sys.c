@@ -208,9 +208,9 @@ static void sys_imu ( void )  {
 
   // Complimentry filter data
   pthread_mutex_lock(&imuA.mutex);
-  //double Ra = imuA.roll  * ( 180.0 / PI );
-  //double Pa = imuA.pitch * ( 180.0 / PI );
-  //printf("%6.3f %6.3f ", Ra, Pa );  printf("   ");  fflush(stdout);
+  double Ra = imuA.roll  * ( 180.0 / PI );
+  double Pa = imuA.pitch * ( 180.0 / PI );
+  printf("%6.3f %6.3f ", Ra, Pa );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&imuA.mutex);
 
   }
@@ -241,9 +241,9 @@ static void sys_imu ( void )  {
 
   // Complimentry filter data
   pthread_mutex_lock(&imuB.mutex);
-  //double Rb = imuB.roll  * ( 180.0 / PI );
-  //double Pb = imuB.pitch * ( 180.0 / PI );
-  //printf("%6.3f %6.3f ", Rb, Pb );  printf("   ");  fflush(stdout);
+  double Rb = imuB.roll  * ( 180.0 / PI );
+  double Pb = imuB.pitch * ( 180.0 / PI );
+  printf("%6.3f %6.3f ", Rb, Pb );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&imuB.mutex);
 
   }
@@ -267,7 +267,7 @@ static void sys_ahrs ( void )  {
   //for ( i=0; i<4; i++ )  printf("%7.4f ", ahrsA.quat[i]  );              printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%7.4f ", ahrsA.dquat[i] );              printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsA.eul[i]  * (180.0/PI) );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsA.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsA.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&ahrsA.mutex);
   }
 
@@ -277,7 +277,7 @@ static void sys_ahrs ( void )  {
   //for ( i=0; i<4; i++ )  printf("%7.4f ", ahrsB.quat[i]  );              printf("   ");  fflush(stdout);
   //for ( i=0; i<4; i++ )  printf("%7.4f ", ahrsB.dquat[i] );              printf("   ");  fflush(stdout);
   for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsB.eul[i]  * (180.0/PI) );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsB.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsB.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&ahrsB.mutex);
   }
 

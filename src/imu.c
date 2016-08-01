@@ -42,9 +42,9 @@ void imu_init ( void )  {
     imuA.getmag = false;
 
     // Low pass filter values
-    imuA.gyr  = &gyrA;  imuA.gyr->lpf[0] = 0.50;  imuA.gyr->lpf[1] = 0.50;  imuA.gyr->lpf[2] = 0.50;
-    imuA.acc  = &accA;  imuA.acc->lpf[0] = 0.10;  imuA.acc->lpf[1] = 0.10;  imuA.acc->lpf[2] = 0.10;
-    imuA.mag  = &magA;  imuA.mag->lpf[0] = 0.50;  imuA.mag->lpf[1] = 0.50;  imuA.mag->lpf[2] = 0.50;
+    imuA.gyr  = &gyrA;  imuA.gyr->lpf[0] = 1.00;  imuA.gyr->lpf[1] = 1.00;  imuA.gyr->lpf[2] = 1.00;    // 0.50
+    imuA.acc  = &accA;  imuA.acc->lpf[0] = 1.00;  imuA.acc->lpf[1] = 1.00;  imuA.acc->lpf[2] = 1.00;    // 0.10
+    imuA.mag  = &magA;  imuA.mag->lpf[0] = 1.00;  imuA.mag->lpf[1] = 1.00;  imuA.mag->lpf[2] = 1.00;    // 0.80
 
     // Complimentary filter values
     imuA.comp  = 0.95;
@@ -72,9 +72,9 @@ void imu_init ( void )  {
     imuB.getmag = false;
 
     // Low pass filter values
-    imuB.gyr  = &gyrB;  imuB.gyr->lpf[0] = 0.50;  imuB.gyr->lpf[1] = 0.50;  imuB.gyr->lpf[2] = 0.50;
-    imuB.acc  = &accB;  imuB.acc->lpf[0] = 0.10;  imuB.acc->lpf[1] = 0.10;  imuB.acc->lpf[2] = 0.10;
-    imuB.mag  = &magB;  imuB.mag->lpf[0] = 0.50;  imuB.mag->lpf[1] = 0.50;  imuB.mag->lpf[2] = 0.50;
+    imuB.gyr  = &gyrB;  imuB.gyr->lpf[0] = 1.00;  imuB.gyr->lpf[1] = 1.00;  imuB.gyr->lpf[2] = 1.00;    // 0.50
+    imuB.acc  = &accB;  imuB.acc->lpf[0] = 1.00;  imuB.acc->lpf[1] = 1.00;  imuB.acc->lpf[2] = 1.00;    // 0.10
+    imuB.mag  = &magB;  imuB.mag->lpf[0] = 1.00;  imuB.mag->lpf[1] = 1.00;  imuB.mag->lpf[2] = 1.00;    // 0.80
 
     // Complimentary filter values
     imuB.comp  = 0.95;
@@ -368,18 +368,19 @@ void imu_state ( void )  {
 
   // Local variables
   ushort i;
-  double state[6];
+  double att[3];
+  double ang[3];
 
   // Zero out states
-  for ( i=0; i<6; i++ )  state[i] = 0.0;
+  for ( i=0; i<3; i++ )  {  att[i] = 0.0;  ang[i] = 0.0;  }
 
   // IMUA states
   if (IMUA_ENABLED)  {
 
     // Comp filter values (no yaw value)
     pthread_mutex_lock(&imuA.mutex);
-    state[0] += imuA.roll;
-    state[1] += imuA.pitch;
+    att[0] += imuA.roll;
+    att[1] += imuA.pitch;
     pthread_mutex_unlock(&imuA.mutex);
 
     // Loop through states
@@ -387,13 +388,13 @@ void imu_state ( void )  {
 
       // LPF gyro values
       pthread_mutex_lock(&gyrA.mutex);
-      state[i+3] += gyrA.filter[i];
+      ang[i] += gyrA.filter[i];
       pthread_mutex_unlock(&gyrA.mutex);
 
       // AHRS values
       pthread_mutex_lock(&ahrsA.mutex);
-      state[i]   += ahrsA.eul[i];
-      state[i+3] += ahrsA.deul[i];
+      att[i] += ahrsA.eul[i];
+      ang[i] += ahrsA.deul[i];
       pthread_mutex_unlock(&ahrsA.mutex);
 
     }
@@ -404,8 +405,8 @@ void imu_state ( void )  {
 
     // Comp filter values (no yaw value)
     pthread_mutex_lock(&imuB.mutex);
-    state[0] += imuB.roll;
-    state[1] += imuB.pitch;
+    att[0] += imuB.roll;
+    att[1] += imuB.pitch;
     pthread_mutex_unlock(&imuB.mutex);
 
     // Loop through states
@@ -413,29 +414,29 @@ void imu_state ( void )  {
 
       // LPF gyro values
       pthread_mutex_lock(&gyrB.mutex);
-      state[i+3] += gyrB.filter[i];
+      ang[i] += gyrB.filter[i];
       pthread_mutex_unlock(&gyrB.mutex);
 
       // AHRS values
       pthread_mutex_lock(&ahrsB.mutex);
-      state[i]   += ahrsB.eul[i];
-      state[i+3] += ahrsB.deul[i];
+      att[i] += ahrsB.eul[i];
+      ang[i] += ahrsB.deul[i];
       pthread_mutex_unlock(&ahrsB.mutex);
 
     }
   }
 
   // Average all the data sources
-  if ( IMUA_ENABLED && IMUB_ENABLED )  {  for ( i=0; i<6; i++ )  state[i] /= 4.0;  }
-  else                                 {  for ( i=0; i<6; i++ )  state[i] /= 2.0;  }
+  if ( IMUA_ENABLED && IMUB_ENABLED )  {  for ( i=0; i<3; i++ )  {  att[i] /= 4.0;  ang[i] /= 4.0;  }  }
+  else                                 {  for ( i=0; i<3; i++ )  {  att[i] /= 2.0;  ang[i] /= 2.0;  }  }
 
   // Correction b/c comp filter has no yaw value  
-  state[2] *= 2.0; 
+  att[2] *= 2.0; 
 
   // Push to data structure
   pthread_mutex_lock(&rot.mutex);
-  for ( i=0; i<3; i++ ) rot.att[i] = state[i];
-  for ( i=0; i<3; i++ ) rot.ang[i] = state[i+3];
+  for ( i=0; i<3; i++ ) rot.att[i] = att[i];
+  for ( i=0; i<3; i++ ) rot.ang[i] = ang[i];
   pthread_mutex_unlock(&rot.mutex);
 
   return;

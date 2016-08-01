@@ -41,8 +41,8 @@ void stab_init ( void )  {
   stab.off[9] = -1.0;
 
   // Reference ranges (TODO: Move into radio or transmitter function)
-  stab.range[CH_R] = 0.5;
-  stab.range[CH_P] = 0.5;
+  stab.range[CH_R] = 1.0;
+  stab.range[CH_P] = 1.0;
   stab.range[CH_Y] = 1.5;
   stab.range[CH_T] = 0.5;
 
@@ -59,7 +59,7 @@ void stab_init ( void )  {
   // P gain values
   pidX.pgain = 0.12;
   pidY.pgain = 0.12;
-  pidZ.pgain = 0.12;
+  pidZ.pgain = 0.00;
 
   // I gain values
   pidX.igain = 0.00;
@@ -67,9 +67,9 @@ void stab_init ( void )  {
   pidZ.igain = 0.00;
 
   // D gain values
-  pidX.dgain = 0.56;
-  pidY.dgain = 0.56;
-  pidZ.dgain = 0.10;
+  pidX.dgain = 0.056;
+  pidY.dgain = 0.056;
+  pidZ.dgain = 0.010;
 
   return;
 }
