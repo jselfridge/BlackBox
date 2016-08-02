@@ -57,8 +57,8 @@ void stab_init ( void )  {
   pidZ.wrap = true;
 
   // P gain values
-  pidX.pgain = 0.12;
-  pidY.pgain = 0.12;
+  pidX.pgain = 0.00;
+  pidY.pgain = 0.00;
   pidZ.pgain = 0.00;
 
   // I gain values
@@ -67,9 +67,9 @@ void stab_init ( void )  {
   pidZ.igain = 0.00;
 
   // D gain values
-  pidX.dgain = 0.056;
-  pidY.dgain = 0.056;
-  pidZ.dgain = 0.010;
+  pidX.dgain = 0.00;
+  pidY.dgain = 0.00;
+  pidZ.dgain = 0.00;
 
   return;
 }
@@ -108,12 +108,13 @@ void stab_quad ( void )  {
   // Local variables
   ushort i;
   ushort x=0, y=1, z=2, t=3;
-  double state[6], in[4], ref[4], cmd[4], out[4];
+  double att[3], ang[3], in[4], ref[4], cmd[4], out[4];
   double dt, trange, tmin, tmax, tilt, heading, dial;
+  bool reset;
 
   // Obtain states
   pthread_mutex_lock(&rot.mutex);
-  for ( i=0; i<3; i++ )  {  state[i] = rot.att[i];  state[i+3] = rot.ang[i];  }
+  for ( i=0; i<3; i++ )  {  att[i] = rot.att[i];  ang[i] = rot.ang[i];  }
   pthread_mutex_unlock(&rot.mutex);
 
   // Obtain inputs
@@ -141,12 +142,15 @@ void stab_quad ( void )  {
   while ( heading <= -M_PI )  heading += 2.0 * M_PI;
 
   // Apply PID on attitude
-  cmd[x] = stab_pid( &pidX, state[0], state[3], ref[CH_R], ( in[CH_R] < -IRESET || in[CH_R] > IRESET ) );
-  cmd[y] = stab_pid( &pidY, state[1], state[4], ref[CH_P], ( in[CH_P] < -IRESET || in[CH_P] > IRESET ) );
-  cmd[z] = stab_pid( &pidZ, state[2], state[5], heading,   ( in[CH_Y] < -IRESET || in[CH_Y] > IRESET ) );
+  reset = ( in[CH_R] < -IRESET || in[CH_R] > IRESET || in[CH_T] < -0.9 );
+  cmd[x] = stab_pid( &pidX, att[0], ang[0], ref[CH_R], reset );
+  reset = ( in[CH_P] < -IRESET || in[CH_P] > IRESET || in[CH_T] < -0.9 );
+  cmd[y] = stab_pid( &pidY, att[1], ang[1], ref[CH_P], reset );
+  reset = ( in[CH_Y] < -IRESET || in[CH_Y] > IRESET || in[CH_T] < -0.9 );
+  cmd[z] = stab_pid( &pidZ, att[2], ang[2], heading,   reset );
 
   // Determine throttle adjustment
-  double tilt_adj = ( 1 - ( cos(state[0]) * cos(state[1]) ) ) * tilt;
+  double tilt_adj = ( 1 - ( cos(att[0]) * cos(att[1]) ) ) * tilt;
   double thresh = ( 0.5 * ( dial + 1.0 ) * ( tmax - tmin ) ) + tmin - trange;
   if ( in[CH_T] <= -0.6 )  cmd[t] = ( 2.50 * ( in[CH_T] + 1.0 ) * ( thresh + 1.0 ) ) - 1.0 + tilt_adj;
   else                     cmd[t] = ( 1.25 * ( in[CH_T] + 0.6 ) * trange ) + thresh + tilt_adj; 
@@ -166,7 +170,7 @@ void stab_quad ( void )  {
 
   // Push control data
   pthread_mutex_lock(&stab.mutex);
-  for ( i=0; i<4; i++ )  stab.cmd[i]   = cmd[i];
+  for ( i=0; i<4; i++ )  stab.cmd[i] = cmd[i];
   stab.heading = heading;
   pthread_mutex_unlock(&stab.mutex);
 

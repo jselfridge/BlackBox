@@ -5,12 +5,9 @@
 #include <stdio.h>
 #include <sys/timerfd.h>
 #include <unistd.h>
-//#include "adapt.h"
 #include "ahrs.h"
-//#include "ekf.h"
 #include "flag.h"
 #include "gcs.h"
-//#include "gps.h"
 #include "imu.h"
 #include "io.h"
 #include "log.h"
@@ -59,10 +56,6 @@ void tmr_mutex ( void )  {
   pthread_mutex_init( &pidY.mutex,   NULL );
   pthread_mutex_init( &pidZ.mutex,   NULL );
   pthread_mutex_init( &gcs.mutex,    NULL );
-  //pthread_mutex_init( &adaptR.mutex, NULL );
-  //pthread_mutex_init( &adaptP.mutex, NULL );
-  //pthread_mutex_init( &ekf.mutex,    NULL );
-  //pthread_mutex_init( &gps.mutex,    NULL );
   return;
 }
 
@@ -93,16 +86,6 @@ void tmr_setup ( void )  {
   tmr_stab.name = "stab";
   tmr_stab.prio = PRIO_STAB;
   tmr_stab.per  = 1000000 / HZ_STAB;
-
-  // GPS timer
-  //tmr_gps.name = "gps";
-  //tmr_gps.prio = PRIO_GPS;
-  //tmr_gps.per  = 1000000 / HZ_GPS;
-
-  // EKF timer
-  //tmr_ekf.name  = "ekf";
-  //tmr_ekf.prio  = PRIO_EKF;
-  //tmr_ekf.per   = 1000000 / HZ_EKF;
 
   // GCSTX timer
   tmr_gcstx.name = "gcstx";
@@ -161,14 +144,12 @@ void tmr_attr ( pthread_attr_t *attr )  {
 void tmr_begin ( pthread_attr_t *attr )  {
   if(DEBUG)  printf("  Begin timing threads:  ");
 
-  tmr_thread( &tmr_io,    attr, fcn_io    );  usleep(100000);
-  tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(100000);
-  tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);
-  tmr_thread( &tmr_stab,  attr, fcn_stab  );  usleep(100000);
-  //tmr_thread( &tmr_gps,   attr, fcn_gps   );  usleep(100000);
-  //tmr_thread( &tmr_ekf,   attr, fcn_ekf   );  usleep(100000);
-  tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
-  tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(100000);
+  tmr_thread( &tmr_io,    attr, fcn_io    );  usleep(1000);
+  tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(1000);
+  tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(1000);
+  tmr_thread( &tmr_stab,  attr, fcn_stab  );  usleep(1000);
+  tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(1000);
+  tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(1000);
 
   if(DEBUG) {
     tmr_thread( &tmr_debug, attr, fcn_debug );
@@ -207,10 +188,6 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&pidY.mutex);
   pthread_mutex_destroy(&pidZ.mutex);
   pthread_mutex_destroy(&gcs.mutex);
-  //pthread_mutex_destroy(&adaptR.mutex);
-  //pthread_mutex_destroy(&adaptP.mutex);
-  //pthread_mutex_destroy(&ekf.mutex);
-  //pthread_mutex_destroy(&gps.mutex);
 
   // Exit GCSRX thread
   if( pthread_join ( tmr_gcsrx.id, NULL ) )
@@ -221,16 +198,6 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_gcstx.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gcstx' thread. \n" );
   if(DEBUG)  printf( "gcstx " );
-
-  // Exit EKF thread
-  //if( pthread_join ( tmr_ekf.id, NULL ) )
-  //  printf( "Error (tmr_exit): Failed to exit 'ekf' thread. \n" );
-  //if(DEBUG)  printf( "ekf " ); 
-
-  // Exit GPS thread
-  //if( pthread_join ( tmr_gps.id, NULL ) )
-  //  printf( "Error (tmr_exit): Failed to exit 'gps' thread. \n" );
-  //if(DEBUG)  printf( "gps " );
 
   // Exit stabilization thread
   if( pthread_join ( tmr_stab.id, NULL ) )
@@ -461,44 +428,6 @@ void *fcn_stab (  )  {
   return NULL;
 }
 
-
-/**
- *  fcn_gps
- *  Function handler for the GPS timing thread.
- */
-/*
-void *fcn_gps (  )  {
-  tmr_create(&tmr_gps);
-  while (running) {
-    tmr_start(&tmr_gps);
-    gps_update();
-    tmr_finish(&tmr_gps);
-    if (datalog.enabled)  log_record(LOG_GPS);
-    tmr_pause(&tmr_gps);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
-*/
-
-/**
- *  fcn_ekf
- *  Function handler for the Extended Kalman Filter timing thread.
- */
-/*
-void *fcn_ekf (  )  {
-  tmr_create(&tmr_ekf);
-  while (running) {
-    tmr_start(&tmr_ekf);
-    if (!datalog.saving)  ekf_update();
-    tmr_finish(&tmr_ekf);
-    if (datalog.enabled)  log_record(LOG_EKF);
-    tmr_pause(&tmr_ekf);
-  }
-  pthread_exit(NULL);
-  return NULL;
-}
-*/
 
 /**
  *  fcn_gcstx

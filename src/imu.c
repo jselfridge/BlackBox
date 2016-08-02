@@ -47,7 +47,7 @@ void imu_init ( void )  {
     imuA.mag  = &magA;  imuA.mag->lpf[0] = 1.00;  imuA.mag->lpf[1] = 1.00;  imuA.mag->lpf[2] = 1.00;    // 0.80
 
     // Complimentary filter values
-    imuA.comp  = 0.95;
+    imuA.comp  = 0.99;
     imuA.roll  = 0.00;
     imuA.pitch = 0.00; 
 
@@ -77,7 +77,7 @@ void imu_init ( void )  {
     imuB.mag  = &magB;  imuB.mag->lpf[0] = 1.00;  imuB.mag->lpf[1] = 1.00;  imuB.mag->lpf[2] = 1.00;    // 0.80
 
     // Complimentary filter values
-    imuB.comp  = 0.95;
+    imuB.comp  = 0.99;
     imuB.roll  = 0.00;
     imuB.pitch = 0.00; 
 
@@ -392,10 +392,10 @@ void imu_state ( void )  {
       pthread_mutex_unlock(&gyrA.mutex);
 
       // AHRS values
-      pthread_mutex_lock(&ahrsA.mutex);
-      att[i] += ahrsA.eul[i];
-      ang[i] += ahrsA.deul[i];
-      pthread_mutex_unlock(&ahrsA.mutex);
+      //pthread_mutex_lock(&ahrsA.mutex);
+      //att[i] += ahrsA.eul[i];
+      //ang[i] += ahrsA.deul[i];
+      //pthread_mutex_unlock(&ahrsA.mutex);
 
     }
   }
@@ -418,20 +418,21 @@ void imu_state ( void )  {
       pthread_mutex_unlock(&gyrB.mutex);
 
       // AHRS values
-      pthread_mutex_lock(&ahrsB.mutex);
-      att[i] += ahrsB.eul[i];
-      ang[i] += ahrsB.deul[i];
-      pthread_mutex_unlock(&ahrsB.mutex);
+      //pthread_mutex_lock(&ahrsB.mutex);
+      //att[i] += ahrsB.eul[i];
+      //ang[i] += ahrsB.deul[i];
+      //pthread_mutex_unlock(&ahrsB.mutex);
 
     }
   }
 
   // Average all the data sources
-  if ( IMUA_ENABLED && IMUB_ENABLED )  {  for ( i=0; i<3; i++ )  {  att[i] /= 4.0;  ang[i] /= 4.0;  }  }
-  else                                 {  for ( i=0; i<3; i++ )  {  att[i] /= 2.0;  ang[i] /= 2.0;  }  }
+  //if ( IMUA_ENABLED && IMUB_ENABLED )  {  for ( i=0; i<3; i++ )  {  att[i] /= 4.0;  ang[i] /= 4.0;  }  }
+  //else                                 {  for ( i=0; i<3; i++ )  {  att[i] /= 2.0;  ang[i] /= 2.0;  }  }
+  for ( i=0; i<3; i++ )  {  att[i] /= 2.0;  ang[i] /= 2.0;  }
 
   // Correction b/c comp filter has no yaw value  
-  att[2] *= 2.0; 
+  //att[2] *= 2.0; 
 
   // Push to data structure
   pthread_mutex_lock(&rot.mutex);

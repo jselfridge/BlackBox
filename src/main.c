@@ -17,9 +17,6 @@ int main ( void )  {
   imu_init();
   ahrs_init();
   stab_init();
-  //ekf_init();
-  //gps_init();
-  //adapt_init();
   gcs_init();
   log_init();
   tmr_init();
@@ -42,9 +39,6 @@ int main ( void )  {
   tmr_exit();
   log_exit();
   gcs_exit();
-  //adapt_exit();
-  //gps_exit();
-  //ekf_exit();
   stab_exit();
   ahrs_exit();
   imu_exit();

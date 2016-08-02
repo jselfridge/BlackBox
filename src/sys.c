@@ -8,10 +8,7 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <unistd.h>
-//#include "adapt.h"
 #include "ahrs.h"
-//#include "ekf.h"
-//#include "gps.h"
 #include "imu.h"
 #include "io.h"
 #include "led.h"
@@ -25,8 +22,6 @@ static void sys_io    ( void );
 static void sys_imu   ( void );
 static void sys_ahrs  ( void );
 static void sys_stab  ( void );
-//static void sys_ekf   ( void );
-//static void sys_gps   ( void );
 
 
 /**
@@ -127,8 +122,6 @@ void sys_update ( void )  {
   if(SYS_IMU)    sys_imu();
   if(SYS_AHRS)   sys_ahrs();
   if(SYS_STAB)   sys_stab();
-  //if(SYS_EKF)    sys_ekf();
-  //if(SYS_GPS)    sys_gps();
 
   // Complete debugging display 
   printf("  "); fflush(stdout);
@@ -180,7 +173,7 @@ static void sys_io ( void )  {
 static void sys_imu ( void )  {
 
   // Loop counter
-  //ushort i;
+  ushort i;
 
   // Check that IMUA is in use
   if (IMUA_ENABLED) {
@@ -189,7 +182,7 @@ static void sys_imu ( void )  {
   pthread_mutex_lock(&gyrA.mutex);
   //for ( i=0; i<3; i++ )  printf("%6d ",   gyrA.raw[i]    );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.scaled[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.filter[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&gyrA.mutex);
 
   // Accelerometer data
@@ -222,7 +215,7 @@ static void sys_imu ( void )  {
   pthread_mutex_lock(&gyrB.mutex);
   //for ( i=0; i<3; i++ )  printf("%6d ",   gyrB.raw[i]    );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.scaled[i] );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.filter[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&gyrB.mutex);
 
   // Accelerometer data
@@ -247,6 +240,12 @@ static void sys_imu ( void )  {
   pthread_mutex_unlock(&imuB.mutex);
 
   }
+
+  // Rotational state values
+  pthread_mutex_lock(&rot.mutex);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", rot.att[i] * ( 180.0 / PI ) );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", rot.ang[i] );                   printf("   ");  fflush(stdout);
+  pthread_mutex_unlock(&rot.mutex);
 
   return;
 }

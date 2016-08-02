@@ -8,17 +8,14 @@
 #include <unistd.h>
 
 
-//#include "adapt.h"
 #include "ahrs.h"
-//#include "ekf.h"
 #include "flag.h"
 #include "gcs.h"
-//#include "gps.h"
 #include "imu.h"
 #include "io.h"
 #include "log.h"
-#include "stab.h"
 #include "sys.h"
+#include "stab.h"
 #include "timer.h"
 
 
