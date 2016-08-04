@@ -64,14 +64,6 @@ typedef struct adapt_struct {
   double kxp_prev;
   double kxd_prev;
   double kref_prev;
-  //double  dt;
-  //bool    wrap;
-  //double  pgain;
-  //double  igain;
-  //double  dgain;
-  //double  perr;
-  //double  ierr;
-  //double  derr;
   pthread_mutex_t mutex;
 } adapt_struct;
 adapt_struct adaptX;

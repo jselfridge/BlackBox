@@ -1,4 +1,4 @@
-stab.c:197:8:stab_pid	88	static
+stab.c:214:8:stab_pid	88	static
 stab.c:22:6:stab_init	32	static
-stab.c:83:6:stab_exit	0	static
-stab.c:94:6:stab_update	304	static
+stab.c:100:6:stab_exit	0	static
+stab.c:111:6:stab_update	376	static

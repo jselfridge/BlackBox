@@ -111,6 +111,21 @@ log_pid_struct log_pidY;
 log_pid_struct log_pidZ;
 
 
+typedef struct log_adapt_struct {
+  double *cmd;
+  double *xp;
+  double *xd;
+  double *ref;
+  double *kxp;
+  double *kxd;
+  double *kref;
+  double *k;
+} log_adapt_struct;
+log_adapt_struct log_adaptX;
+log_adapt_struct log_adaptY;
+log_adapt_struct log_adaptZ;
+
+
 typedef struct datalog_struct {
   bool   enabled;
   bool   setup;

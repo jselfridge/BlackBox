@@ -72,6 +72,23 @@ void stab_init ( void )  {
   pidY.dgain = 0.056;
   pidZ.dgain = 0.000;
 
+  // Roll adaptation gains
+  adaptX.Gxp  = 0.0;
+  adaptX.Gxd  = 0.0;
+  adaptX.Gref = 0.0;
+  adaptX.G    = 0.0;
+
+  // Roll state feedback gains
+  adaptX.kxp  = 0.0;
+  adaptX.kxd  = 0.0;
+  adaptX.kref = 0.0;
+  adaptX.k    = 0.0;
+
+  // Roll previous state feedback gains
+  adaptX.kxp_prev  = adaptX.kxp;
+  adaptX.kxd_prev  = adaptX.kxd;
+  adaptX.kref_prev = adaptX.kref;
+
   return;
 }
 
@@ -244,28 +261,33 @@ double stab_pid ( pid_struct *pid, double xp, double xd, double ref, bool reset 
  */
 double stab_adapt ( adapt_struct *adapt, double xp, double xd, double ref )  {
 
-  // Get adaptive law gains
+  // Local variables
   double Gxp, Gxd, Gref, G;
+  double kxp, kxd, kref, k;
+  double xp_prev,  xd_prev,  ref_prev;
+  double kxp_prev, kxd_prev, kref_prev;
+
+  // Lock struct while pulling data
+  pthread_mutex_lock(&adapt->mutex);
+
+  // Get adaptive law gains
   Gxp  = adapt->Gxp;
   Gxd  = adapt->Gxd;
   Gref = adapt->Gref;
   G    = adapt->G;
 
   // Get current state feedback gains
-  double kxp, kxd, kref, k;
   kxp  = adapt->kxp;
   kxd  = adapt->kxd;
   kref = adapt->kref;
   k    = adapt->k;
 
   // Get previous states
-  double xp_prev, xd_prev, ref_prev;
   xp_prev  = adapt->xp;
   xd_prev  = adapt->xd;
   ref_prev = adapt->ref;
 
   // Get previous state feedback gains
-  double kxp_prev, kxd_prev, kref_prev;
   kxp_prev  = adapt->kxp_prev;
   kxd_prev  = adapt->kxd_prev;
   kref_prev = adapt->kref_prev;
@@ -275,6 +297,9 @@ double stab_adapt ( adapt_struct *adapt, double xp, double xd, double ref )  {
   adapt->kxd_prev  = kxd;
   adapt->kref_prev = kref;
 
+  // Unlock data structure
+  pthread_mutex_unlock(&adapt->mutex);
+
   // Control input 
   double cmd = kxp * xp + kxd * xd + kref * ref;
 
@@ -283,7 +308,7 @@ double stab_adapt ( adapt_struct *adapt, double xp, double xd, double ref )  {
   double eps = ( xp - ref_prev ) + ( k * xi );
 
   // Normalizing signal
-  double m = 1 + xp * xp + xd * xd + ref * ref + xi * xi;
+  double m = 1 + xp_prev * xp_prev + xd_prev * xd_prev + ref_prev * ref_prev + xi * xi;
   double n = eps / m;
 
   // Adaptive laws
@@ -291,6 +316,9 @@ double stab_adapt ( adapt_struct *adapt, double xp, double xd, double ref )  {
   kxd  -= Gxd  * xd_prev  * n;
   kref -= Gref * ref_prev * n;
   k    -= G    * xi       * n;
+
+  // Lock struct while pushing data
+  pthread_mutex_lock(&adapt->mutex);
 
   // Update states
   adapt->xp  = xp;
@@ -303,6 +331,9 @@ double stab_adapt ( adapt_struct *adapt, double xp, double xd, double ref )  {
   adapt->kxd  = kxd;
   adapt->kref = kref;
   adapt->k    = k;
+
+  // Unlock data structure
+  pthread_mutex_unlock(&adapt->mutex);
 
   return cmd;
 }
