@@ -48,6 +48,37 @@ pid_struct pidY;
 pid_struct pidZ;
 
 
+typedef struct adapt_struct {
+  double cmd;
+  double xp;
+  double xd;
+  double ref;
+  double Gxp;
+  double Gxd;
+  double Gref;
+  double G;
+  double kxp;
+  double kxd;
+  double kref;
+  double k;
+  double kxp_prev;
+  double kxd_prev;
+  double kref_prev;
+  //double  dt;
+  //bool    wrap;
+  //double  pgain;
+  //double  igain;
+  //double  dgain;
+  //double  perr;
+  //double  ierr;
+  //double  derr;
+  pthread_mutex_t mutex;
+} adapt_struct;
+adapt_struct adaptX;
+adapt_struct adaptY;
+adapt_struct adaptZ;
+
+
 void    stab_init    ( void );
 void    stab_exit    ( void );
 void    stab_update  ( void );

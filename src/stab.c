@@ -11,6 +11,7 @@
 
 static void    stab_quad    ( void );
 static double  stab_pid     ( pid_struct *pid, double xp, double xd, double ref, bool reset );
+static double  stab_adapt   ( adapt_struct *adapt, double xp, double xd, double ref );
 static void    stab_disarm  ( void );
 
 
@@ -44,7 +45,7 @@ void stab_init ( void )  {
   stab.range[CH_R] = 1.0;
   stab.range[CH_P] = 1.0;
   stab.range[CH_Y] = 1.5;
-  stab.range[CH_T] = 0.5;
+  stab.range[CH_T] = 0.4;
 
   // Throttle values (TODO: Move into radio or transmitter function)
   stab.thrl[0] = -0.1;  // Tmin
@@ -57,19 +58,19 @@ void stab_init ( void )  {
   pidZ.wrap = true;
 
   // P gain values
-  pidX.pgain = 0.00;
-  pidY.pgain = 0.00;
-  pidZ.pgain = 0.00;
+  pidX.pgain = 0.085;
+  pidY.pgain = 0.085;
+  pidZ.pgain = 0.085;
 
   // I gain values
-  pidX.igain = 0.00;
-  pidY.igain = 0.00;
-  pidZ.igain = 0.00;
+  pidX.igain = 0.000;
+  pidY.igain = 0.000;
+  pidZ.igain = 0.000;
 
   // D gain values
-  pidX.dgain = 0.00;
-  pidY.dgain = 0.00;
-  pidZ.dgain = 0.00;
+  pidX.dgain = 0.056;
+  pidY.dgain = 0.056;
+  pidZ.dgain = 0.000;
 
   return;
 }
@@ -141,13 +142,18 @@ void stab_quad ( void )  {
   while ( heading >   M_PI )  heading -= 2.0 * M_PI;
   while ( heading <= -M_PI )  heading += 2.0 * M_PI;
 
-  // Apply PID on attitude
-  reset = ( in[CH_R] < -IRESET || in[CH_R] > IRESET || in[CH_T] < -0.9 );
-  cmd[x] = stab_pid( &pidX, att[0], ang[0], ref[CH_R], reset );
+  // Calculate Roll command
+  //reset = ( in[CH_R] < -IRESET || in[CH_R] > IRESET || in[CH_T] < -0.9 );
+  //cmd[x] = stab_pid( &pidX, att[0], ang[0], ref[CH_R], reset );
+  cmd[x] = stab_adapt( &adaptX, att[0], ang[0], ref[CH_R] );
+
+  // Calculate Pitch command
   reset = ( in[CH_P] < -IRESET || in[CH_P] > IRESET || in[CH_T] < -0.9 );
   cmd[y] = stab_pid( &pidY, att[1], ang[1], ref[CH_P], reset );
+
+  // Calculate Yaw command
   reset = ( in[CH_Y] < -IRESET || in[CH_Y] > IRESET || in[CH_T] < -0.9 );
-  cmd[z] = stab_pid( &pidZ, att[2], ang[2], heading,   reset );
+  cmd[z] = stab_pid( &pidZ, ang[2],      0, ref[CH_Y], reset );  // DEBUGGING - P gain on angular rate only //
 
   // Determine throttle adjustment
   double tilt_adj = ( 1 - ( cos(att[0]) * cos(att[1]) ) ) * tilt;
@@ -227,6 +233,76 @@ double stab_pid ( pid_struct *pid, double xp, double xd, double ref, bool reset 
   pid->ierr = ierr;
   pid->derr = derr;
   pthread_mutex_unlock(&pid->mutex);
+
+  return cmd;
+}
+
+
+/**
+ *  stab_adapt
+ *  Apply adaptive contorl loop
+ */
+double stab_adapt ( adapt_struct *adapt, double xp, double xd, double ref )  {
+
+  // Get adaptive law gains
+  double Gxp, Gxd, Gref, G;
+  Gxp  = adapt->Gxp;
+  Gxd  = adapt->Gxd;
+  Gref = adapt->Gref;
+  G    = adapt->G;
+
+  // Get current state feedback gains
+  double kxp, kxd, kref, k;
+  kxp  = adapt->kxp;
+  kxd  = adapt->kxd;
+  kref = adapt->kref;
+  k    = adapt->k;
+
+  // Get previous states
+  double xp_prev, xd_prev, ref_prev;
+  xp_prev  = adapt->xp;
+  xd_prev  = adapt->xd;
+  ref_prev = adapt->ref;
+
+  // Get previous state feedback gains
+  double kxp_prev, kxd_prev, kref_prev;
+  kxp_prev  = adapt->kxp_prev;
+  kxd_prev  = adapt->kxd_prev;
+  kref_prev = adapt->kref_prev;
+
+  // Assign previous state gains (before they are updated)
+  adapt->kxp_prev  = kxp;
+  adapt->kxd_prev  = kxd;
+  adapt->kref_prev = kref;
+
+  // Control input 
+  double cmd = kxp * xp + kxd * xd + kref * ref;
+
+  // Auxilliary signals
+  double xi =  ( kxp - kxp_prev ) * xp_prev  + ( kxd - kxd_prev ) * xd_prev  + ( kref - kref_prev ) * ref_prev;
+  double eps = ( xp - ref_prev ) + ( k * xi );
+
+  // Normalizing signal
+  double m = 1 + xp * xp + xd * xd + ref * ref + xi * xi;
+  double n = eps / m;
+
+  // Adaptive laws
+  kxp  -= Gxp  * xp_prev  * n;
+  kxd  -= Gxd  * xd_prev  * n;
+  kref -= Gref * ref_prev * n;
+  k    -= G    * xi       * n;
+
+  // Update states
+  adapt->xp  = xp;
+  adapt->xd  = xd;
+  adapt->ref = ref;
+  adapt->cmd = cmd;
+
+  // Update current gains
+  adapt->kxp  = kxp;
+  adapt->kxd  = kxd;
+  adapt->kref = kref;
+  adapt->k    = k;
 
   return cmd;
 }

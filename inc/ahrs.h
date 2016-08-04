@@ -8,8 +8,9 @@
 #include "imu.h"
 
 
-#define IMU_BETA   ( sqrt( 3.0f / 4.0f ) * ( PI / 180.0 ) * 5.0f )
-#define IMU_ZETA   ( sqrt( 3.0f / 4.0f ) * ( PI / 180.0 ) * 0.2f )
+// B: 5.0  Z: 0.2
+#define IMU_BETA   ( sqrt( 3.0f / 4.0f ) * ( PI / 180.0 ) * 2.0f )
+#define IMU_ZETA   ( sqrt( 3.0f / 4.0f ) * ( PI / 180.0 ) * 0.0f )
 
 
 typedef struct ahrs_struct {

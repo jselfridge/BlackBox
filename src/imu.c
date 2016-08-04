@@ -42,14 +42,14 @@ void imu_init ( void )  {
     imuA.getmag = false;
 
     // Low pass filter values
-    imuA.gyr  = &gyrA;  imuA.gyr->lpf[0] = 1.00;  imuA.gyr->lpf[1] = 1.00;  imuA.gyr->lpf[2] = 1.00;    // 0.50
-    imuA.acc  = &accA;  imuA.acc->lpf[0] = 1.00;  imuA.acc->lpf[1] = 1.00;  imuA.acc->lpf[2] = 1.00;    // 0.10
-    imuA.mag  = &magA;  imuA.mag->lpf[0] = 1.00;  imuA.mag->lpf[1] = 1.00;  imuA.mag->lpf[2] = 1.00;    // 0.80
+    imuA.gyr  = &gyrA;  imuA.gyr->lpf[0] = 1.00;  imuA.gyr->lpf[1] = 1.00;  imuA.gyr->lpf[2] = 1.00;
+    imuA.acc  = &accA;  imuA.acc->lpf[0] = 0.30;  imuA.acc->lpf[1] = 0.30;  imuA.acc->lpf[2] = 0.30;
+    imuA.mag  = &magA;  imuA.mag->lpf[0] = 1.00;  imuA.mag->lpf[1] = 1.00;  imuA.mag->lpf[2] = 1.00;
 
     // Complimentary filter values
-    imuA.comp  = 0.99;
-    imuA.roll  = 0.00;
-    imuA.pitch = 0.00; 
+    imuA.comp  = 0.985;
+    imuA.roll  = 0.0;
+    imuA.pitch = 0.0; 
 
     // Setup functions
     i2c_init( &(imuA.fd), imuA.bus, imuA.addr );
@@ -72,14 +72,14 @@ void imu_init ( void )  {
     imuB.getmag = false;
 
     // Low pass filter values
-    imuB.gyr  = &gyrB;  imuB.gyr->lpf[0] = 1.00;  imuB.gyr->lpf[1] = 1.00;  imuB.gyr->lpf[2] = 1.00;    // 0.50
-    imuB.acc  = &accB;  imuB.acc->lpf[0] = 1.00;  imuB.acc->lpf[1] = 1.00;  imuB.acc->lpf[2] = 1.00;    // 0.10
-    imuB.mag  = &magB;  imuB.mag->lpf[0] = 1.00;  imuB.mag->lpf[1] = 1.00;  imuB.mag->lpf[2] = 1.00;    // 0.80
+    imuB.gyr  = &gyrB;  imuB.gyr->lpf[0] = 1.00;  imuB.gyr->lpf[1] = 1.00;  imuB.gyr->lpf[2] = 1.00;
+    imuB.acc  = &accB;  imuB.acc->lpf[0] = 0.30;  imuB.acc->lpf[1] = 0.30;  imuB.acc->lpf[2] = 0.30;
+    imuB.mag  = &magB;  imuB.mag->lpf[0] = 1.00;  imuB.mag->lpf[1] = 1.00;  imuB.mag->lpf[2] = 1.00;
 
     // Complimentary filter values
-    imuB.comp  = 0.99;
-    imuB.roll  = 0.00;
-    imuB.pitch = 0.00; 
+    imuB.comp  = 0.985;
+    imuB.roll  = 0.0;
+    imuB.pitch = 0.0; 
 
     // Setup functions
     i2c_init( &(imuB.fd), imuB.bus, imuB.addr );
@@ -318,8 +318,8 @@ void imu_update ( imu_struct *imu )  {
   pthread_mutex_unlock( &(imu->mutex) );
 
   // Complimentary filter attitude angles
-  R = gain * ( R + Gs[0] * dt ) + ( 1.0 - gain ) * atan2( -As[1], -As[2] );
-  P = gain * ( P + Gs[1] * dt ) + ( 1.0 - gain ) * atan2(  As[0], -As[2] );
+  R = gain * ( R + Gf[0] * dt ) + ( 1.0 - gain ) * atan2( -Af[1], -Af[2] );
+  P = gain * ( P + Gf[1] * dt ) + ( 1.0 - gain ) * atan2(  Af[0], -Af[2] );
 
   // Push gyroscope values to data structure
   pthread_mutex_lock( &(imu->gyr->mutex) );
