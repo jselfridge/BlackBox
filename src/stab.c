@@ -65,8 +65,8 @@ void stab_init ( void )  {
   adaptX.Gd  = 0.0;
   //adaptX.Gr  = 0.0;
   adaptX.G   = 0.0;
-  adaptX.kp  = -pidX.pgain;
-  adaptX.kd  = -pidX.dgain;
+  adaptX.kp  = pidX.pgain;
+  adaptX.kd  = pidX.dgain;
   //adaptX.kr  =  pidX.pgain;
   adaptX.k   = 0.0;
   adaptX.kp_prev = adaptX.kp;
