@@ -11,7 +11,7 @@
 
 static void    stab_quad    ( void );
 static double  stab_pid     ( pid_struct *pid, double xp, double xd, double ref, bool reset );
-static double  stab_adapt   ( adapt_struct *adapt, double p, double d, double r );
+static double  stab_adapt   ( adapt_struct *adapt, double p, double d, double r, bool areset );
 static void    stab_disarm  ( void );
 
 
@@ -156,7 +156,8 @@ void stab_quad ( void )  {
   // Calculate Roll command
   //reset = ( in[CH_R] < -IRESET || in[CH_R] > IRESET || in[CH_T] < -0.9 );
   //cmd[x] = stab_pid( &pidX, att[0], ang[0], ref[CH_R], reset );
-  cmd[x] = stab_adapt( &adaptX, att[0], ang[0], ref[CH_R] );
+  reset = ( in[CH_T] < -0.2 );
+  cmd[x] = stab_adapt( &adaptX, att[0], ang[0], ref[CH_R], reset );
 
   // Calculate Pitch command
   reset = ( in[CH_P] < -IRESET || in[CH_P] > IRESET || in[CH_T] < -0.9 );
@@ -253,7 +254,7 @@ double stab_pid ( pid_struct *pid, double xp, double xd, double ref, bool reset 
  *  stab_adapt
  *  Apply adaptive contorl loop
  */
-double stab_adapt ( adapt_struct *adapt, double p, double d, double r )  {
+double stab_adapt ( adapt_struct *adapt, double p, double d, double r, bool areset )  {
 
   // Local variables
   double Gp, Gd, Gr, G;
@@ -293,6 +294,14 @@ double stab_adapt ( adapt_struct *adapt, double p, double d, double r )  {
 
   // Unlock data structure
   pthread_mutex_unlock(&adapt->mutex);
+
+  // Cancel adaptation
+  if ( areset )  {
+    Gp = 0.0;
+    Gd = 0.0;
+    Gr = 0.0;
+    G  = 0.0;
+  }
 
   // Control input 
   double u = kp * p + kd * d + kr * r;

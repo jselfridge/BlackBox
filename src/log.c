@@ -498,7 +498,7 @@ void log_start ( void )  {
     "    stabtime  stabdur     \
     attX     attY     attZ         angX     angY     angZ     \
     cmdX     cmdY     cmdZ     cmdT        " );
-  fprintf( datalog.stab, "Xperr    Xierr    Xzerr        Yperr    Yierr    Yderr        Zperr    Zierr    Zderr " );  
+  fprintf( datalog.stab, "Xperr    Xierr    Xzerr        Yperr    Yierr    Yderr        Zperr    Zierr    Zderr         " );  
   fprintf( datalog.stab, "acXu     acXp     acXd     acXr         acXkp    acXkd    acXkr    acXk ");
 
   // Determine start second
