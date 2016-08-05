@@ -49,21 +49,21 @@ pid_struct pidZ;
 
 
 typedef struct adapt_struct {
-  double cmd;
-  double xp;
-  double xd;
-  double ref;
-  double Gxp;
-  double Gxd;
-  double Gref;
+  double u;
+  double p;
+  double d;
+  double r;
+  double Gp;
+  double Gd;
+  double Gr;
   double G;
-  double kxp;
-  double kxd;
-  double kref;
+  double kp;
+  double kd;
+  double kr;
   double k;
-  double kxp_prev;
-  double kxd_prev;
-  double kref_prev;
+  double kp_prev;
+  double kd_prev;
+  double kr_prev;
   pthread_mutex_t mutex;
 } adapt_struct;
 adapt_struct adaptX;

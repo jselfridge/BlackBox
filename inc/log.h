@@ -112,13 +112,13 @@ log_pid_struct log_pidZ;
 
 
 typedef struct log_adapt_struct {
-  double *cmd;
-  double *xp;
-  double *xd;
-  double *ref;
-  double *kxp;
-  double *kxd;
-  double *kref;
+  double *u;
+  double *p;
+  double *d;
+  double *r;
+  double *kp;
+  double *kd;
+  double *kr;
   double *k;
 } log_adapt_struct;
 log_adapt_struct log_adaptX;

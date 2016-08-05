@@ -49,17 +49,21 @@
 
 enum param_index {
 
-  // Roll PID gains
+  // Roll gains
   X_Kp = 0,
   X_Ki,
   X_Kd,
+  X_Gp,
+  X_Gd,
+  X_Gr,
+  X_G,
 
-  // Pitch PID gains
+  // Pitch gains
   Y_Kp,
   Y_Ki,
   Y_Kd,
 
-  // Yaw PID gains
+  // Yaw gains
   Z_Kp,
   Z_Ki,
   Z_Kd,
@@ -74,6 +78,8 @@ enum param_index {
   Y_Range,
   Z_Range,
   T_Range,
+
+  // Roll adaptive gains
 
   // Number of elements
   param_count
