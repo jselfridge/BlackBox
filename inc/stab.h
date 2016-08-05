@@ -55,15 +55,15 @@ typedef struct adapt_struct {
   double r;
   double Gp;
   double Gd;
-  double Gr;
+  //double Gr;
   double G;
   double kp;
   double kd;
-  double kr;
+  //double kr;
   double k;
   double kp_prev;
   double kd_prev;
-  double kr_prev;
+  //double kr_prev;
   pthread_mutex_t mutex;
 } adapt_struct;
 adapt_struct adaptX;

@@ -170,7 +170,7 @@ void log_init ( void )  {
   log_adaptX.r      =  malloc( sizeof(float)  * log_stab.limit );
   log_adaptX.kp     =  malloc( sizeof(float)  * log_stab.limit );
   log_adaptX.kd     =  malloc( sizeof(float)  * log_stab.limit );
-  log_adaptX.kr     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_adaptX.kr     =  malloc( sizeof(float)  * log_stab.limit );
   log_adaptX.k      =  malloc( sizeof(float)  * log_stab.limit );
 
   return;
@@ -307,7 +307,7 @@ void log_exit ( void )  {
   free(log_adaptX.r);
   free(log_adaptX.kp);
   free(log_adaptX.kd);
-  free(log_adaptX.kr);
+  //free(log_adaptX.kr);
   free(log_adaptX.k);
 
   return;
@@ -499,7 +499,7 @@ void log_start ( void )  {
     attX     attY     attZ         angX     angY     angZ     \
     cmdX     cmdY     cmdZ     cmdT        " );
   fprintf( datalog.stab, "Xperr    Xierr    Xzerr        Yperr    Yierr    Yderr        Zperr    Zierr    Zderr         " );  
-  fprintf( datalog.stab, "acXu     acXp     acXd     acXr         acXkp    acXkd    acXkr    acXk ");
+  fprintf( datalog.stab, "acXu     acXp     acXd     acXr         acXkp    acXkd    acXk ");
 
   // Determine start second
   struct timespec timeval;
@@ -795,7 +795,7 @@ void log_record ( enum log_index index )  {
       log_adaptX.r  [row] = adaptX.r;
       log_adaptX.kp [row] = adaptX.kp;
       log_adaptX.kd [row] = adaptX.kd;
-      log_adaptX.kr [row] = adaptX.kr;
+      //log_adaptX.kr [row] = adaptX.kr;
       log_adaptX.k  [row] = adaptX.k;
       pthread_mutex_unlock(&adaptX.mutex);
 
@@ -987,7 +987,7 @@ static void log_save ( void )  {
     fprintf( datalog.stab, "    " );
     fprintf( datalog.stab, "%07.4f  ",  log_adaptX.kp[row] );
     fprintf( datalog.stab, "%07.4f  ",  log_adaptX.kd[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_adaptX.kr[row] );
+    //fprintf( datalog.stab, "%07.4f  ",  log_adaptX.kr[row] );
     fprintf( datalog.stab, "%07.4f  ",  log_adaptX.k[row]  );
     fprintf( datalog.stab, "    " );
   }

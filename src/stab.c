@@ -63,15 +63,15 @@ void stab_init ( void )  {
   pidX.dgain = 0.056;
   adaptX.Gp  = 0.0;
   adaptX.Gd  = 0.0;
-  adaptX.Gr  = 0.0;
+  //adaptX.Gr  = 0.0;
   adaptX.G   = 0.0;
   adaptX.kp  = -pidX.pgain;
   adaptX.kd  = -pidX.dgain;
-  adaptX.kr  =  pidX.pgain;
+  //adaptX.kr  =  pidX.pgain;
   adaptX.k   = 0.0;
   adaptX.kp_prev = adaptX.kp;
   adaptX.kd_prev = adaptX.kd;
-  adaptX.kr_prev = adaptX.kr;
+  //adaptX.kr_prev = adaptX.kr;
 
   // Pitch (Y) gain values
   pidY.pgain = 0.085;
@@ -257,10 +257,10 @@ double stab_pid ( pid_struct *pid, double xp, double xd, double ref, bool reset 
 double stab_adapt ( adapt_struct *adapt, double p, double d, double r, bool areset )  {
 
   // Local variables
-  double Gp, Gd, Gr, G;
-  double kp, kd, kr, k;
-  double p_prev,  d_prev,  r_prev;
-  double kp_prev, kd_prev, kr_prev;
+  double Gp, Gd, G;
+  double kp, kd, k;
+  double p_prev,  d_prev, r_prev;
+  double kp_prev, kd_prev;
 
   // Lock struct while pulling data
   pthread_mutex_lock(&adapt->mutex);
@@ -268,13 +268,13 @@ double stab_adapt ( adapt_struct *adapt, double p, double d, double r, bool ares
   // Get adaptive law gains
   Gp = adapt->Gp;
   Gd = adapt->Gd;
-  Gr = adapt->Gr;
+  //Gr = adapt->Gr;
   G  = adapt->G;
 
   // Get current state feedback gains
   kp = adapt->kp;
   kd = adapt->kd;
-  kr = adapt->kr;
+  //kr = adapt->kr;
   k  = adapt->k;
 
   // Get previous states
@@ -285,12 +285,12 @@ double stab_adapt ( adapt_struct *adapt, double p, double d, double r, bool ares
   // Get previous state feedback gains
   kp_prev = adapt->kp_prev;
   kd_prev = adapt->kd_prev;
-  kr_prev = adapt->kr_prev;
+  //kr_prev = adapt->kr_prev;
 
   // Assign previous state gains (before they are updated)
   adapt->kp_prev = kp;
   adapt->kd_prev = kd;
-  adapt->kr_prev = kr;
+  //adapt->kr_prev = kr;
 
   // Unlock data structure
   pthread_mutex_unlock(&adapt->mutex);
@@ -299,15 +299,22 @@ double stab_adapt ( adapt_struct *adapt, double p, double d, double r, bool ares
   if ( areset )  {
     Gp = 0.0;
     Gd = 0.0;
-    Gr = 0.0;
+    //Gr = 0.0;
     G  = 0.0;
   }
 
+  // Scale down adaptive gains
+  else {
+    Gp /= 1000.0;
+    Gd /= 1000.0;
+    G  /= 1000.0;
+  }
+
   // Control input 
-  double u = kp * p + kd * d + kr * r;
+  double u = - kp * p - kd * d + kp * r;
 
   // Auxilliary signals
-  double xi =  ( kp - kp_prev ) * p_prev  + ( kd - kd_prev ) * d_prev  + ( kr - kr_prev ) * r_prev;
+  double xi =  - ( kp - kp_prev ) * p_prev  - ( kd - kd_prev ) * d_prev  + ( kp - kp_prev ) * r_prev;
   double eps = ( p - r_prev ) + ( k * xi );
 
   // Normalizing signal
@@ -315,9 +322,9 @@ double stab_adapt ( adapt_struct *adapt, double p, double d, double r, bool ares
   double n = eps / m;
 
   // Adaptive laws
-  kp -= Gp * p_prev * n;
-  kd -= Gd * d_prev * n;
-  kr -= Gr * r_prev * n;
+  kp += Gp * p_prev * n;
+  kd += Gd * d_prev * n;
+  //kr -= Gr * r_prev * n;
   k  -= G  * xi     * n;
 
   // Lock struct while pushing data
@@ -332,7 +339,7 @@ double stab_adapt ( adapt_struct *adapt, double p, double d, double r, bool ares
   // Update current gains
   adapt->kp = kp;
   adapt->kd = kd;
-  adapt->kr = kr;
+  //adapt->kr = kr;
   adapt->k  = k;
 
   // Unlock data structure

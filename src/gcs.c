@@ -83,7 +83,7 @@ void gcs_init ( void )  {
   strcpy( param.name[X_Kd], "X_Kd" );  param.val[X_Kd] = pidX.dgain;
   strcpy( param.name[X_Gp], "X_Gp" );  param.val[X_Gp] = adaptX.Gp;
   strcpy( param.name[X_Gd], "X_Gd" );  param.val[X_Gd] = adaptX.Gd;
-  strcpy( param.name[X_Gr], "X_Gr" );  param.val[X_Gr] = adaptX.Gr;
+  //strcpy( param.name[X_Gr], "X_Gr" );  param.val[X_Gr] = adaptX.Gr;
   strcpy( param.name[X_G ], "X_G"  );  param.val[X_G ] = adaptX.G;
 
   // Pitch (Y) gains
@@ -516,8 +516,8 @@ static void gcs_set_param_value ( uint index, double val )  {
     pidX.pgain = val;
     pthread_mutex_unlock(&pidX.mutex);
     pthread_mutex_lock(&adaptX.mutex);
-    adaptX.kp = -val;          //--- TODO: Get rid of negative signs ---//
-    adaptX.kp_prev = -val;
+    adaptX.kp = val;
+    adaptX.kp_prev = val;
     pthread_mutex_unlock(&adaptX.mutex);
     break;
   case X_Ki :
@@ -530,8 +530,8 @@ static void gcs_set_param_value ( uint index, double val )  {
     pidX.dgain = val;
     pthread_mutex_unlock(&pidX.mutex);
     pthread_mutex_lock(&adaptX.mutex);
-    adaptX.kd = -val;          //--- TODO: Get rid of negative signs ---//
-    adaptX.kd_prev = -val;
+    adaptX.kd = val;
+    adaptX.kd_prev = val;
     pthread_mutex_unlock(&adaptX.mutex);
     break;
   case X_Gp :
@@ -544,11 +544,11 @@ static void gcs_set_param_value ( uint index, double val )  {
     adaptX.Gd = val;
     pthread_mutex_unlock(&adaptX.mutex);
     break;
-  case X_Gr :
-    pthread_mutex_lock(&adaptX.mutex);
-    adaptX.Gr = val;
-    pthread_mutex_unlock(&adaptX.mutex);
-    break;
+  //case X_Gr :
+    //pthread_mutex_lock(&adaptX.mutex);
+    //adaptX.Gr = val;
+    //pthread_mutex_unlock(&adaptX.mutex);
+    //break;
   case X_G :
     pthread_mutex_lock(&adaptX.mutex);
     adaptX.G = val;

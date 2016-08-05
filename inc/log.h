@@ -118,7 +118,7 @@ typedef struct log_adapt_struct {
   double *r;
   double *kp;
   double *kd;
-  double *kr;
+  //double *kr;
   double *k;
 } log_adapt_struct;
 log_adapt_struct log_adaptX;
