@@ -53,10 +53,10 @@ enum param_index {
   X_Kp = 0,
   X_Ki,
   X_Kd,
-  X_Gp,
-  X_Gd,
-  X_Gr,
-  X_G,
+  //X_Gp,
+  //X_Gd,
+  //X_Gr,
+  //X_G,
 
   // Pitch gains
   Y_Kp,

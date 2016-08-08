@@ -162,7 +162,7 @@ void log_init ( void )  {
   log_pidZ.perr     =  malloc( sizeof(float)  * log_stab.limit );
   log_pidZ.ierr     =  malloc( sizeof(float)  * log_stab.limit );
   log_pidZ.derr     =  malloc( sizeof(float)  * log_stab.limit );
-
+  /*
   // Adaptive roll stabilization
   log_adaptX.u      =  malloc( sizeof(float)  * log_stab.limit );
   log_adaptX.p      =  malloc( sizeof(float)  * log_stab.limit );
@@ -172,6 +172,7 @@ void log_init ( void )  {
   log_adaptX.kd     =  malloc( sizeof(float)  * log_stab.limit );
   //log_adaptX.kr     =  malloc( sizeof(float)  * log_stab.limit );
   log_adaptX.k      =  malloc( sizeof(float)  * log_stab.limit );
+  */
 
   return;
 }
@@ -299,7 +300,7 @@ void log_exit ( void )  {
   free(log_pidZ.perr);
   free(log_pidZ.ierr);
   free(log_pidZ.derr);
-
+  /*
   // Adaptive roll stabilization
   free(log_adaptX.u);
   free(log_adaptX.p);
@@ -309,6 +310,7 @@ void log_exit ( void )  {
   free(log_adaptX.kd);
   //free(log_adaptX.kr);
   free(log_adaptX.k);
+  */
 
   return;
 }
@@ -499,7 +501,7 @@ void log_start ( void )  {
     attX     attY     attZ         angX     angY     angZ     \
     cmdX     cmdY     cmdZ     cmdT        " );
   fprintf( datalog.stab, "Xperr    Xierr    Xzerr        Yperr    Yierr    Yderr        Zperr    Zierr    Zderr         " );  
-  fprintf( datalog.stab, "acXu     acXp     acXd     acXr         acXkp    acXkd    acXk ");
+  //fprintf( datalog.stab, "acXu     acXp     acXd     acXr         acXkp    acXkd    acXk ");
 
   // Determine start second
   struct timespec timeval;
@@ -787,6 +789,7 @@ void log_record ( enum log_index index )  {
       log_pidZ.derr [row] = pidZ.derr;
       pthread_mutex_unlock(&pidZ.mutex);
 
+      /*
       // Roll adaptive values
       pthread_mutex_lock(&adaptX.mutex);
       log_adaptX.u  [row] = adaptX.u;
@@ -798,6 +801,7 @@ void log_record ( enum log_index index )  {
       //log_adaptX.kr [row] = adaptX.kr;
       log_adaptX.k  [row] = adaptX.k;
       pthread_mutex_unlock(&adaptX.mutex);
+      */
 
       log_stab.count++;
     }
@@ -980,6 +984,7 @@ static void log_save ( void )  {
     fprintf( datalog.stab, "%07.4f  ",  log_pidZ.ierr[row] );
     fprintf( datalog.stab, "%07.4f  ",  log_pidZ.derr[row] );
     fprintf( datalog.stab, "    " );
+    /*
     fprintf( datalog.stab, "%07.4f  ",  log_adaptX.u[row] );
     fprintf( datalog.stab, "%07.4f  ",  log_adaptX.p[row] );
     fprintf( datalog.stab, "%07.4f  ",  log_adaptX.d[row] );
@@ -990,6 +995,7 @@ static void log_save ( void )  {
     //fprintf( datalog.stab, "%07.4f  ",  log_adaptX.kr[row] );
     fprintf( datalog.stab, "%07.4f  ",  log_adaptX.k[row]  );
     fprintf( datalog.stab, "    " );
+    */
   }
 
   return;

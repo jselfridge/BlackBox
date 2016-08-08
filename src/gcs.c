@@ -81,10 +81,10 @@ void gcs_init ( void )  {
   strcpy( param.name[X_Kp], "X_Kp" );  param.val[X_Kp] = pidX.pgain;
   strcpy( param.name[X_Ki], "X_Ki" );  param.val[X_Ki] = pidX.igain;
   strcpy( param.name[X_Kd], "X_Kd" );  param.val[X_Kd] = pidX.dgain;
-  strcpy( param.name[X_Gp], "X_Gp" );  param.val[X_Gp] = adaptX.Gp;
-  strcpy( param.name[X_Gd], "X_Gd" );  param.val[X_Gd] = adaptX.Gd;
+  //strcpy( param.name[X_Gp], "X_Gp" );  param.val[X_Gp] = adaptX.Gp;
+  //strcpy( param.name[X_Gd], "X_Gd" );  param.val[X_Gd] = adaptX.Gd;
   //strcpy( param.name[X_Gr], "X_Gr" );  param.val[X_Gr] = adaptX.Gr;
-  strcpy( param.name[X_G ], "X_G"  );  param.val[X_G ] = adaptX.G;
+  //strcpy( param.name[X_G ], "X_G"  );  param.val[X_G ] = adaptX.G;
 
   // Pitch (Y) gains
   strcpy( param.name[Y_Kp], "Y_Kp" );  param.val[Y_Kp] = pidY.pgain;
@@ -515,10 +515,10 @@ static void gcs_set_param_value ( uint index, double val )  {
     pthread_mutex_lock(&pidX.mutex);
     pidX.pgain = val;
     pthread_mutex_unlock(&pidX.mutex);
-    pthread_mutex_lock(&adaptX.mutex);
-    adaptX.kp = val;
-    adaptX.kp_prev = val;
-    pthread_mutex_unlock(&adaptX.mutex);
+    //pthread_mutex_lock(&adaptX.mutex);
+    //adaptX.kp = val;
+    //adaptX.kp_prev = val;
+    //pthread_mutex_unlock(&adaptX.mutex);
     break;
   case X_Ki :
     pthread_mutex_lock(&pidX.mutex);
@@ -529,31 +529,31 @@ static void gcs_set_param_value ( uint index, double val )  {
     pthread_mutex_lock(&pidX.mutex);
     pidX.dgain = val;
     pthread_mutex_unlock(&pidX.mutex);
-    pthread_mutex_lock(&adaptX.mutex);
-    adaptX.kd = val;
-    adaptX.kd_prev = val;
-    pthread_mutex_unlock(&adaptX.mutex);
+    //pthread_mutex_lock(&adaptX.mutex);
+    //adaptX.kd = val;
+    //adaptX.kd_prev = val;
+    //pthread_mutex_unlock(&adaptX.mutex);
     break;
-  case X_Gp :
-    pthread_mutex_lock(&adaptX.mutex);
-    adaptX.Gp = val;
-    pthread_mutex_unlock(&adaptX.mutex);
-    break;
-  case X_Gd :
-    pthread_mutex_lock(&adaptX.mutex);
-    adaptX.Gd = val;
-    pthread_mutex_unlock(&adaptX.mutex);
-    break;
+  //case X_Gp :
+    //pthread_mutex_lock(&adaptX.mutex);
+    //adaptX.Gp = val;
+    //pthread_mutex_unlock(&adaptX.mutex);
+    //break;
+  //case X_Gd :
+    //pthread_mutex_lock(&adaptX.mutex);
+    //adaptX.Gd = val;
+    //pthread_mutex_unlock(&adaptX.mutex);
+    //break;
   //case X_Gr :
     //pthread_mutex_lock(&adaptX.mutex);
     //adaptX.Gr = val;
     //pthread_mutex_unlock(&adaptX.mutex);
     //break;
-  case X_G :
-    pthread_mutex_lock(&adaptX.mutex);
-    adaptX.G = val;
-    pthread_mutex_unlock(&adaptX.mutex);
-    break;
+  //case X_G :
+    //pthread_mutex_lock(&adaptX.mutex);
+    //adaptX.G = val;
+    //pthread_mutex_unlock(&adaptX.mutex);
+    //break;
 
   // Pitch (Y) Gains
   case Y_Kp :

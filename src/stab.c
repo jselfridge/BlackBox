@@ -11,7 +11,7 @@
 
 static void    stab_quad    ( void );
 static double  stab_pid     ( pid_struct *pid, double xp, double xd, double ref, bool reset );
-static double  stab_adapt   ( adapt_struct *adapt, double p, double d, double r, bool areset );
+//static double  stab_adapt   ( adapt_struct *adapt, double p, double d, double r, bool areset );
 static void    stab_disarm  ( void );
 
 
@@ -61,6 +61,7 @@ void stab_init ( void )  {
   pidX.pgain = 0.085;
   pidX.igain = 0.000;
   pidX.dgain = 0.056;
+  /*
   adaptX.Gp  = 0.0;
   adaptX.Gd  = 0.0;
   //adaptX.Gr  = 0.0;
@@ -72,6 +73,7 @@ void stab_init ( void )  {
   adaptX.kp_prev = adaptX.kp;
   adaptX.kd_prev = adaptX.kd;
   //adaptX.kr_prev = adaptX.kr;
+  */
 
   // Pitch (Y) gain values
   pidY.pgain = 0.085;
@@ -154,10 +156,10 @@ void stab_quad ( void )  {
   while ( heading <= -M_PI )  heading += 2.0 * M_PI;
 
   // Calculate Roll command
-  //reset = ( in[CH_R] < -IRESET || in[CH_R] > IRESET || in[CH_T] < -0.9 );
-  //cmd[x] = stab_pid( &pidX, att[0], ang[0], ref[CH_R], reset );
-  reset = ( in[CH_T] < -0.2 );
-  cmd[x] = stab_adapt( &adaptX, att[0], ang[0], ref[CH_R], reset );
+  reset = ( in[CH_R] < -IRESET || in[CH_R] > IRESET || in[CH_T] < -0.9 );
+  cmd[x] = stab_pid( &pidX, att[0], ang[0], ref[CH_R], reset );
+  //reset = ( in[CH_T] < -0.2 );
+  //cmd[x] = stab_adapt( &adaptX, att[0], ang[0], ref[CH_R], reset );
 
   // Calculate Pitch command
   reset = ( in[CH_P] < -IRESET || in[CH_P] > IRESET || in[CH_T] < -0.9 );
@@ -254,6 +256,7 @@ double stab_pid ( pid_struct *pid, double xp, double xd, double ref, bool reset 
  *  stab_adapt
  *  Apply adaptive contorl loop
  */
+/*
 double stab_adapt ( adapt_struct *adapt, double p, double d, double r, bool areset )  {
 
   // Local variables
@@ -347,7 +350,7 @@ double stab_adapt ( adapt_struct *adapt, double p, double d, double r, bool ares
 
   return u;
 }
-
+*/
 
 /**
  *  stab_disarm

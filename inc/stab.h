@@ -47,7 +47,7 @@ pid_struct pidX;
 pid_struct pidY;
 pid_struct pidZ;
 
-
+/*
 typedef struct adapt_struct {
   double u;
   double p;
@@ -69,7 +69,7 @@ typedef struct adapt_struct {
 adapt_struct adaptX;
 adapt_struct adaptY;
 adapt_struct adaptZ;
-
+*/
 
 void    stab_init    ( void );
 void    stab_exit    ( void );
