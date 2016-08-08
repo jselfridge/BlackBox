@@ -14,9 +14,9 @@
 
 
 // WORK IN PROGRESS
-extern int instability_fix;
-extern volatile float beta;            // algorithm gain
-extern volatile float q0, q1, q2, q3;  // quaternion of sensor frame relative to auxiliary frame
+//extern int instability_fix;
+//extern volatile float beta;            // algorithm gain
+//extern volatile float q0, q1, q2, q3;  // quaternion of sensor frame relative to auxiliary frame
 
 
 typedef struct ahrs_struct {
@@ -43,8 +43,8 @@ void  ahrs_update  ( ahrs_struct *ahrs, imu_struct *imu );
 
 // WORK IN PROGRESS
 void MadgwickAHRSupdate     ( );  //float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz);
-void MadgwickAHRSupdateIMU  ( );  //float gx, float gy, float gz, float ax, float ay, float az);
-
+void MadgwickAHRSupdateIMU  ( ahrs_struct *ahrs, imu_struct *imu );
+float invSqrt(float x); 
 
 #endif
 

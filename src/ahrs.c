@@ -88,13 +88,14 @@ void ahrs_exit ( void )  {
 void ahrs_update ( ahrs_struct *ahrs, imu_struct *imu )  {
 
   // Local variables
-  ushort i;
-  double norm;
+  //ushort i;
+  //double norm;
 
   // Quaternion index
-  ushort w=0, x=1, y=2, z=3;
-  ushort X=0, Y=1, Z=2;
+  //ushort w=0, x=1, y=2, z=3;
+  //ushort X=0, Y=1, Z=2;
 
+  /*
   // Get values from AHRS data structure
   double q[4], b[3], fx, fz, dt;
   pthread_mutex_lock(&ahrs->mutex);
@@ -121,7 +122,9 @@ void ahrs_update ( ahrs_struct *ahrs, imu_struct *imu )  {
   pthread_mutex_lock(&(imu->mag->mutex));
   for ( i=0; i<3; i++ )  m[i] = imu->mag->filter[i];
   pthread_mutex_unlock(&(imu->mag->mutex));
+  */
 
+  /*
   // Normalize magnetometer
   norm = 0.0;
   for ( i=0; i<3; i++ )  norm += m[i] * m[i];
@@ -244,7 +247,12 @@ void ahrs_update ( ahrs_struct *ahrs, imu_struct *imu )  {
   e[X] = atan2 ( ( 2.0 * ( qwx + qyz ) ), ( 1.0 - 2.0 * ( qxx + qyy ) ) ) - ahrs->orient[X];
   e[Y] = asin  (   2.0 * ( qwy - qxz ) )                                  - ahrs->orient[Y];
   e[Z] = atan2 ( ( 2.0 * ( qwz + qxy ) ), ( 1.0 - 2.0 * ( qyy + qzz ) ) ) - ahrs->orient[Z];
+  */
 
+  MadgwickAHRSupdateIMU( ahrs, imu );
+
+
+  /*
   // Push AHRS data to struct
   pthread_mutex_lock(&ahrs->mutex);
   for ( i=0; i<4; i++ )  {
@@ -258,6 +266,7 @@ void ahrs_update ( ahrs_struct *ahrs, imu_struct *imu )  {
   }
   ahrs->fx = fx;  ahrs->fz = fz;
   pthread_mutex_unlock(&ahrs->mutex);
+  */
 
   return;
 }
@@ -391,9 +400,37 @@ void MadgwickAHRSupdate( ) { //float gx, float gy, float gz, float ax, float ay,
 
 //---------------------------------------------------------------------------------------------------
 // IMU algorithm update
-void MadgwickAHRSupdateIMU( ) { //float gx, float gy, float gz, float ax, float ay, float az) {
+void MadgwickAHRSupdateIMU( ahrs_struct *ahrs, imu_struct *imu ) {
 
-  /*
+  // Define beta gain (move to GCS???)
+  float beta = 0.1;
+
+  // Get values from AHRS data structure
+  double q0, q1, q2, q3;
+  pthread_mutex_lock(&ahrs->mutex);
+  q0 = ahrs->quat[0];
+  q1 = ahrs->quat[1];
+  q2 = ahrs->quat[2];
+  q3 = ahrs->quat[3];
+  pthread_mutex_unlock(&ahrs->mutex);
+
+  // Get gyr IMU data
+  float gx, gy, gz;
+  pthread_mutex_lock(&(imu->gyr->mutex));
+  gx = imu->gyr->filter[0];
+  gy = imu->gyr->filter[1];
+  gz = imu->gyr->filter[2];
+  pthread_mutex_unlock(&(imu->gyr->mutex));
+
+  // Get acc IMU data
+  float ax, ay, az;
+  pthread_mutex_lock(&(imu->acc->mutex));
+  ax = -imu->acc->filter[0];
+  ay = -imu->acc->filter[1];
+  az = -imu->acc->filter[2];
+  pthread_mutex_unlock(&(imu->acc->mutex));
+
+  // Local variables
   float recipNorm;
   float s0, s1, s2, s3;
   float qDot1, qDot2, qDot3, qDot4;
@@ -447,11 +484,11 @@ void MadgwickAHRSupdateIMU( ) { //float gx, float gy, float gz, float ax, float 
     qDot4 -= beta * s3;
   }
 
-  // Integrate rate of change of quaternion to yield quaternion
-  q0 += qDot1 * (1.0f / sampleFreq);
-  q1 += qDot2 * (1.0f / sampleFreq);
-  q2 += qDot3 * (1.0f / sampleFreq);
-  q3 += qDot4 * (1.0f / sampleFreq);
+  // Integrate rate of change of quaternion to yield quaternion  // Orig: sampleFreq
+  q0 += qDot1 * (1.0f / HZ_IMU_FAST );
+  q1 += qDot2 * (1.0f / HZ_IMU_FAST );
+  q2 += qDot3 * (1.0f / HZ_IMU_FAST );
+  q3 += qDot4 * (1.0f / HZ_IMU_FAST );
 
   // Normalise quaternion
   recipNorm = invSqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
@@ -459,13 +496,27 @@ void MadgwickAHRSupdateIMU( ) { //float gx, float gy, float gz, float ax, float 
   q1 *= recipNorm;
   q2 *= recipNorm;
   q3 *= recipNorm;
-  */
+
+  // Calculate Euler angles
+  float ex, ey, ez;
+  ex = atan2 ( ( 2.0 * ( q0*q1 + q2*q3 ) ), ( 1.0 - 2.0 * ( q1*q1 + q2*q2 ) ) );  //- ahrs->orient[X];
+  ey = asin  (   2.0 * ( q0*q2 - q1*q3 ) );                                       //- ahrs->orient[Y];
+  ez = atan2 ( ( 2.0 * ( q0*q3 + q1*q2 ) ), ( 1.0 - 2.0 * ( q2*q2 + q3*q3 ) ) );  //- ahrs->orient[Z];
+
+  // Push values to AHRS data structure
+  pthread_mutex_lock(&ahrs->mutex);
+  ahrs->quat[0] = q0;
+  ahrs->quat[1] = q1;
+  ahrs->quat[2] = q2;
+  ahrs->quat[3] = q3;
+  ahrs->eul[0]  = ex;
+  ahrs->eul[1]  = ey;
+  ahrs->eul[2]  = ez;
+  pthread_mutex_unlock(&ahrs->mutex);
 
   return;
 }
 
-
-//int instability_fix = 1;
 
 //---------------------------------------------------------------------------------------------------
 // Fast inverse square-root
@@ -478,9 +529,11 @@ float invSqrt(float x) {
       // original code
       float halfx = 0.5f * x;
       float y = x;
-      long i = *(long*)&y;
+      //long i = *(long*)&y;  // Original
+      long i = (union { float f; long l; }) {y} .l;  // Revised
       i = 0x5f3759df - (i>>1);
-      y = *(float*)&i;
+      //y = *(float*)&i;  // Original
+      y = (union { long l; float f; }) {i} .f;
       y = y * (1.5f - (halfx * y * y));
       return y;
     }
@@ -493,12 +546,13 @@ float invSqrt(float x) {
     }
   else
     {
+  */
       // optimal but expensive method:
       return 1.0f / sqrtf(x);
-    }
-  */
+      //}
 
-  return 0.0;
+
+      //return 0.0;
 }
 
 
