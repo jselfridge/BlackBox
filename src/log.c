@@ -95,10 +95,7 @@ void log_init ( void )  {
   log_ahrsA.quat    =  malloc( sizeof(float)  * log_ahrsA.limit * 4 );
   log_ahrsA.dquat   =  malloc( sizeof(float)  * log_ahrsA.limit * 4 );
   log_ahrsA.eul     =  malloc( sizeof(float)  * log_ahrsA.limit * 3 );
-  log_ahrsA.deul    =  malloc( sizeof(float)  * log_ahrsA.limit * 3 );
-  log_ahrsA.bias    =  malloc( sizeof(float)  * log_ahrsA.limit * 3 );
-  log_ahrsA.fx      =  malloc( sizeof(float)  * log_ahrsA.limit     );
-  log_ahrsA.fz      =  malloc( sizeof(float)  * log_ahrsA.limit     );
+  //log_ahrsA.deul    =  malloc( sizeof(float)  * log_ahrsA.limit * 3 );
 
   }
 
@@ -138,10 +135,7 @@ void log_init ( void )  {
   log_ahrsB.quat    =  malloc( sizeof(float)  * log_ahrsB.limit * 4 );
   log_ahrsB.dquat   =  malloc( sizeof(float)  * log_ahrsB.limit * 4 );
   log_ahrsB.eul     =  malloc( sizeof(float)  * log_ahrsB.limit * 3 );
-  log_ahrsB.deul    =  malloc( sizeof(float)  * log_ahrsB.limit * 3 );
-  log_ahrsB.bias    =  malloc( sizeof(float)  * log_ahrsB.limit * 3 );
-  log_ahrsB.fx      =  malloc( sizeof(float)  * log_ahrsB.limit     );
-  log_ahrsB.fz      =  malloc( sizeof(float)  * log_ahrsB.limit     );
+  //log_ahrsB.deul    =  malloc( sizeof(float)  * log_ahrsB.limit * 3 );
 
   }
 
@@ -162,6 +156,7 @@ void log_init ( void )  {
   log_pidZ.perr     =  malloc( sizeof(float)  * log_stab.limit );
   log_pidZ.ierr     =  malloc( sizeof(float)  * log_stab.limit );
   log_pidZ.derr     =  malloc( sizeof(float)  * log_stab.limit );
+
   /*
   // Adaptive roll stabilization
   log_adaptX.u      =  malloc( sizeof(float)  * log_stab.limit );
@@ -233,10 +228,7 @@ void log_exit ( void )  {
   free(log_ahrsA.quat);
   free(log_ahrsA.dquat);
   free(log_ahrsA.eul);
-  free(log_ahrsA.deul);
-  free(log_ahrsA.bias);
-  free(log_ahrsA.fx);
-  free(log_ahrsA.fz);
+  //free(log_ahrsA.deul);
 
   }
 
@@ -276,10 +268,7 @@ void log_exit ( void )  {
   free(log_ahrsB.quat);
   free(log_ahrsB.dquat);
   free(log_ahrsB.eul);
-  free(log_ahrsB.deul);
-  free(log_ahrsB.bias);
-  free(log_ahrsB.fx);
-  free(log_ahrsB.fz);
+  //free(log_ahrsB.deul);
 
   }
 
@@ -300,6 +289,7 @@ void log_exit ( void )  {
   free(log_pidZ.perr);
   free(log_pidZ.ierr);
   free(log_pidZ.derr);
+
   /*
   // Adaptive roll stabilization
   free(log_adaptX.u);
@@ -432,9 +422,7 @@ void log_start ( void )  {
     QuatAw   QuatAx   QuatAy   QuatAz  \
     dQuatAw  dQuatAx  dQuatAy  dQuatAz    \
     EulAx    EulAy    EulAz   \
-    dEulAx   dEulAy   dEulAz   \
-    biasAx   biasAy   biasAz   \
-    fluxAx   fluxAz");
+    dEulAx   dEulAy   dEulAz");
 
   }
 
@@ -486,9 +474,7 @@ void log_start ( void )  {
     QuatBw   QuatBx   QuatBy   QuatBz  \
     dQuatBw  dQuatBx  dQuatBy  dQuatBz    \
     EulBx    EulBy    EulBz   \
-    dEulBx   dEulBy   dEulBz   \
-    biasBx   biasBy   biasBz   \
-    fluxBx   fluxBz");
+    dEulBx   dEulBy   dEulBz");
 
   }
 
@@ -712,10 +698,7 @@ void log_record ( enum log_index index )  {
       for ( i=0; i<4; i++ )  log_ahrsA.quat  [ row*4 +i ] = ahrsA.quat  [i];
       for ( i=0; i<4; i++ )  log_ahrsA.dquat [ row*4 +i ] = ahrsA.dquat [i];
       for ( i=0; i<3; i++ )  log_ahrsA.eul   [ row*3 +i ] = ahrsA.eul   [i];
-      for ( i=0; i<3; i++ )  log_ahrsA.deul  [ row*3 +i ] = ahrsA.deul  [i];
-      for ( i=0; i<3; i++ )  log_ahrsA.bias  [ row*3 +i ] = ahrsA.bias  [i];
-                             log_ahrsA.fx    [ row      ] = ahrsA.fx;
-                             log_ahrsA.fz    [ row      ] = ahrsA.fz;
+      //for ( i=0; i<3; i++ )  log_ahrsA.deul  [ row*3 +i ] = ahrsA.deul  [i];
       pthread_mutex_unlock(&ahrsA.mutex);
       log_ahrsA.count++;
     }
@@ -736,10 +719,7 @@ void log_record ( enum log_index index )  {
       for ( i=0; i<4; i++ )  log_ahrsB.quat  [ row*4 +i ] = ahrsB.quat  [i];
       for ( i=0; i<4; i++ )  log_ahrsB.dquat [ row*4 +i ] = ahrsB.dquat [i];
       for ( i=0; i<3; i++ )  log_ahrsB.eul   [ row*3 +i ] = ahrsB.eul   [i];
-      for ( i=0; i<3; i++ )  log_ahrsB.deul  [ row*3 +i ] = ahrsB.deul  [i];
-      for ( i=0; i<3; i++ )  log_ahrsB.bias  [ row*3 +i ] = ahrsB.bias  [i];
-                             log_ahrsB.fx    [ row      ] = ahrsB.fx;
-                             log_ahrsB.fz    [ row      ] = ahrsB.fz;
+      //for ( i=0; i<3; i++ )  log_ahrsB.deul  [ row*3 +i ] = ahrsB.deul  [i];
       pthread_mutex_unlock(&ahrsB.mutex);
       log_ahrsB.count++;
     }
@@ -908,10 +888,7 @@ static void log_save ( void )  {
     for ( i=0; i<4; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.quat   [ row*4 +i ] );  fprintf( datalog.ahrsA, "    " );
     for ( i=0; i<4; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.dquat  [ row*4 +i ] );  fprintf( datalog.ahrsA, "    " );
     for ( i=0; i<3; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.eul    [ row*3 +i ] );  fprintf( datalog.ahrsA, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.deul   [ row*3 +i ] );  fprintf( datalog.ahrsA, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.bias   [ row*3 +i ] );  fprintf( datalog.ahrsA, "    " );
-    fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.fx[row] );
-    fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.fz[row] );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.deul   [ row*3 +i ] );  fprintf( datalog.ahrsA, "    " );
     fprintf( datalog.ahrsA, "   " );
   }
 
@@ -957,10 +934,7 @@ static void log_save ( void )  {
     for ( i=0; i<4; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.quat   [ row*4 +i ] );  fprintf( datalog.ahrsB, "    " );
     for ( i=0; i<4; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.dquat  [ row*4 +i ] );  fprintf( datalog.ahrsB, "    " );
     for ( i=0; i<3; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.eul    [ row*3 +i ] );  fprintf( datalog.ahrsB, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.deul   [ row*3 +i ] );  fprintf( datalog.ahrsB, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.bias   [ row*3 +i ] );  fprintf( datalog.ahrsB, "    " );
-    fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.fx[row] );
-    fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.fz[row] );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.deul   [ row*3 +i ] );  fprintf( datalog.ahrsB, "    " );
     fprintf( datalog.ahrsB, "   " );
   }
 

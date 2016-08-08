@@ -9,8 +9,8 @@
 
 
 // B: 5.0  Z: 0.2
-#define IMU_BETA   ( sqrt( 3.0f / 4.0f ) * ( PI / 180.0 ) * 2.0f )
-#define IMU_ZETA   ( sqrt( 3.0f / 4.0f ) * ( PI / 180.0 ) * 0.0f )
+//#define IMU_BETA   ( sqrt( 3.0f / 4.0f ) * ( PI / 180.0 ) * 2.0f )
+//#define IMU_ZETA   ( sqrt( 3.0f / 4.0f ) * ( PI / 180.0 ) * 0.0f )
 
 
 // WORK IN PROGRESS
@@ -25,11 +25,8 @@ typedef struct ahrs_struct {
   double  quat   [4];
   double  dquat  [4];
   double  eul    [3];
-  double  deul   [3];
-  double  bias   [3];
+  //double  deul   [3];
   double  orient [3];
-  double  fx;
-  double  fz;
   pthread_mutex_t mutex;
 } ahrs_struct;
 ahrs_struct ahrsA;
@@ -43,9 +40,9 @@ void  ahrs_update  ( ahrs_struct *ahrs, imu_struct *imu );
 
 
 // WORK IN PROGRESS
-void  MadgwickAHRSupdate     ( ahrs_struct *ahrs, imu_struct *imu );
-void  MadgwickAHRSupdateIMU  ( ahrs_struct *ahrs, imu_struct *imu );
-float invSqrt                ( float x ); 
+void  ahrs_marg    ( ahrs_struct *ahrs, imu_struct *imu );
+void  ahrs_imu     ( ahrs_struct *ahrs, imu_struct *imu );
+float invSqrt      ( float x ); 
 
 #endif
 

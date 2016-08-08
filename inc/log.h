@@ -81,9 +81,6 @@ typedef struct log_ahrs_struct {
   float *dquat;
   float *eul;
   float *deul;
-  float *bias;
-  float *fx;
-  float *fz;
 } log_ahrs_struct;
 log_ahrs_struct log_ahrsA;
 log_ahrs_struct log_ahrsB;
