@@ -1,7 +1,7 @@
 ahrs.c:27:6:ahrs_setup	96	static
 ahrs.c:15:6:ahrs_init	8	static
 ahrs.c:77:6:ahrs_exit	0	static
-ahrs.c:299:6:MadgwickAHRSupdate	0	static
-ahrs.c:403:6:MadgwickAHRSupdateIMU	136	static
+ahrs.c:456:6:MadgwickAHRSupdateIMU	136	static
+ahrs.c:299:6:MadgwickAHRSupdate	200	static
 ahrs.c:88:6:ahrs_update	0	static
-ahrs.c:524:7:invSqrt	8	static
+ahrs.c:577:7:invSqrt	8	static

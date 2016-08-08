@@ -41,10 +41,11 @@ void  ahrs_setup   ( ahrs_struct *ahrs );
 void  ahrs_exit    ( void );
 void  ahrs_update  ( ahrs_struct *ahrs, imu_struct *imu );
 
+
 // WORK IN PROGRESS
-void MadgwickAHRSupdate     ( );  //float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz);
-void MadgwickAHRSupdateIMU  ( ahrs_struct *ahrs, imu_struct *imu );
-float invSqrt(float x); 
+void  MadgwickAHRSupdate     ( ahrs_struct *ahrs, imu_struct *imu );
+void  MadgwickAHRSupdateIMU  ( ahrs_struct *ahrs, imu_struct *imu );
+float invSqrt                ( float x ); 
 
 #endif
 
