@@ -41,14 +41,14 @@ void stab_init ( void )  {
   stab.off[9] = -1.0;
 
   // Reference ranges (TODO: Move into radio or transmitter function)
-  stab.range[CH_R] = 1.0;
-  stab.range[CH_P] = 1.0;
+  stab.range[CH_R] = 0.7;
+  stab.range[CH_P] = 0.7;
   stab.range[CH_Y] = 1.5;
-  stab.range[CH_T] = 0.4;
+  stab.range[CH_T] = 0.3;
 
   // Throttle values (TODO: Move into radio or transmitter function)
-  stab.thrl[0] = -0.1;  // Tmin
-  stab.thrl[1] =  0.2;  // Tmax
+  stab.thrl[0] = -0.35;  // Tmin
+  stab.thrl[1] = -0.15;  // Tmax
   stab.thrl[2] =  0.0;  // Ttilt
 
   // Wrap values of pi
@@ -80,9 +80,9 @@ void stab_init ( void )  {
   pidY.dgain = 0.056;
 
   // Yaw (Z) gain values
-  pidZ.pgain = 0.085;
+  pidZ.pgain = 0.080;
   pidZ.igain = 0.000;
-  pidZ.dgain = 0.000;
+  pidZ.dgain = 0.080;
 
   return;
 }
@@ -166,7 +166,7 @@ void stab_quad ( void )  {
 
   // Calculate Yaw command
   reset = ( in[CH_Y] < -IRESET || in[CH_Y] > IRESET || in[CH_T] < -0.9 );
-  cmd[z] = stab_pid( &pidZ, ang[2],      0, ref[CH_Y], reset );  // DEBUGGING - P gain on angular rate only //
+  cmd[z] = stab_pid( &pidZ, att[2], ang[2], ref[CH_Y], reset );
 
   // Determine throttle adjustment
   double tilt_adj = ( 1 - ( cos(att[0]) * cos(att[1]) ) ) * tilt;
