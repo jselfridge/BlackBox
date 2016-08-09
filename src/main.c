@@ -11,9 +11,6 @@ int main ( void )  {
 
   // Begin program
   if(DEBUG)  printf("\n--- Begin BlackBox program ---\n");
-
-  printf("invSqrt 2: %f \n", invSqrt(2.0) );
-
   sys_init();
   io_init();
   flag_init();
