@@ -2,7 +2,7 @@ imu.c:148:6:imu_exit	8	static
 imu.c:161:6:imu_param	16	static
 imu.c:198:6:imu_getcal	104	static
 imu.c:19:6:imu_init	48	static
-imu.c:289:6:imu_update	456	static
-imu.c:589:6:imu_6DOF	328	static
-imu.c:432:6:imu_9DOF	456	static
-imu.c:696:6:imu_state	96	static
+imu.c:583:6:imu_6DOF	328	static
+imu.c:426:6:imu_9DOF	456	static
+imu.c:289:6:imu_update	424	static
+imu.c:690:6:imu_state	120	static

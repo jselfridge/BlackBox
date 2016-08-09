@@ -353,12 +353,6 @@ void imu_update ( imu_struct *imu )  {
   pthread_mutex_unlock( &(imu->mag->mutex) );
   }
 
-  // Get offset values
-  double off[3];
-  pthread_mutex_lock(&(imu->ahrs->mutex));
-  for ( i=0; i<3; i++ )  off[i] = imu->offset[i];
-  pthread_mutex_unlock(&(imu->ahrs->mutex));
-
   // Low pass filter
   for ( i=0; i<3; i++ )  {
     Gf[i] = Gp[i] + Gg[i] * ( Gs[i] - Gp[i] );
@@ -380,11 +374,11 @@ void imu_update ( imu_struct *imu )  {
   pthread_mutex_unlock( &(imu->mutex) );
 
   // Complimentary filter attitude angles
-  R = gain * ( R + Gf[0] * dt ) + ( 1.0 - gain ) * atan2( -Af[1], -Af[2] ) - off[0];
-  P = gain * ( P + Gf[1] * dt ) + ( 1.0 - gain ) * atan2(  Af[0], -Af[2] ) - off[1];
+  R = gain * ( R + Gf[0] * dt ) + ( 1.0 - gain ) * atan2( -Af[1], -Af[2] );
+  P = gain * ( P + Gf[1] * dt ) + ( 1.0 - gain ) * atan2(  Af[0], -Af[2] );
 
   // AHRS data fusion
-
+  imu_9DOF( imu );
 
   // Push gyroscope values to data structure
   pthread_mutex_lock( &(imu->gyr->mutex) );
@@ -697,8 +691,7 @@ void imu_state ( void )  {
 
   // Local variables
   ushort i;
-  double att[3];
-  double ang[3];
+  double att[3], ang[3], off[3];
 
   // Zero out states
   for ( i=0; i<3; i++ )  {  att[i] = 0.0;  ang[i] = 0.0;  }
@@ -706,10 +699,15 @@ void imu_state ( void )  {
   // IMUA states
   if (IMUA_ENABLED)  {
 
+    // Get offset values
+    pthread_mutex_lock(&ahrsA.mutex);
+    for ( i=0; i<3; i++ )  off[i] = imuA.offset[i];
+    pthread_mutex_unlock(&ahrsA.mutex);
+
     // Comp filter values (no yaw value)
     pthread_mutex_lock(&imuA.mutex);
-    att[0] += imuA.roll;
-    att[1] += imuA.pitch;
+    att[0] += imuA.roll  - off[0];
+    att[1] += imuA.pitch - off[1];
     pthread_mutex_unlock(&imuA.mutex);
 
     // Loop through states
@@ -721,10 +719,10 @@ void imu_state ( void )  {
       pthread_mutex_unlock(&gyrA.mutex);
 
       // AHRS values
-      //pthread_mutex_lock(&ahrsA.mutex);
-      //att[i] += ahrsA.eul[i];
+      pthread_mutex_lock(&ahrsA.mutex);
+      att[i] += ahrsA.eul[i];
       //ang[i] += ahrsA.deul[i];
-      //pthread_mutex_unlock(&ahrsA.mutex);
+      pthread_mutex_unlock(&ahrsA.mutex);
 
     }
   }
@@ -732,10 +730,15 @@ void imu_state ( void )  {
   // IMUB states
   if (IMUB_ENABLED)  {
 
+    // Get offset values
+    pthread_mutex_lock(&ahrsB.mutex);
+    for ( i=0; i<3; i++ )  off[i] = imuB.offset[i];
+    pthread_mutex_unlock(&ahrsB.mutex);
+
     // Comp filter values (no yaw value)
     pthread_mutex_lock(&imuB.mutex);
-    att[0] += imuB.roll;
-    att[1] += imuB.pitch;
+    att[0] += imuB.roll  - off[0];
+    att[1] += imuB.pitch - off[1];
     pthread_mutex_unlock(&imuB.mutex);
 
     // Loop through states
@@ -747,10 +750,10 @@ void imu_state ( void )  {
       pthread_mutex_unlock(&gyrB.mutex);
 
       // AHRS values
-      //pthread_mutex_lock(&ahrsB.mutex);
-      //att[i] += ahrsB.eul[i];
+      pthread_mutex_lock(&ahrsB.mutex);
+      att[i] += ahrsB.eul[i];
       //ang[i] += ahrsB.deul[i];
-      //pthread_mutex_unlock(&ahrsB.mutex);
+      pthread_mutex_unlock(&ahrsB.mutex);
 
     }
   }
@@ -758,7 +761,7 @@ void imu_state ( void )  {
   // Average all the data sources
   //if ( IMUA_ENABLED && IMUB_ENABLED )  {  for ( i=0; i<3; i++ )  {  att[i] /= 4.0;  ang[i] /= 4.0;  }  }
   //else                                 {  for ( i=0; i<3; i++ )  {  att[i] /= 2.0;  ang[i] /= 2.0;  }  }
-  for ( i=0; i<3; i++ )  {  att[i] /= 2.0;  ang[i] /= 2.0;  }
+  for ( i=0; i<3; i++ )  {  att[i] /= 4.0;  ang[i] /= 2.0;  }
 
   // Correction b/c comp filter has no yaw value  
   //att[2] *= 2.0; 

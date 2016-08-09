@@ -8,7 +8,6 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <unistd.h>
-//#include "ahrs.h"
 #include "imu.h"
 #include "io.h"
 #include "led.h"
@@ -182,7 +181,7 @@ static void sys_imu ( void )  {
   pthread_mutex_lock(&gyrA.mutex);
   //for ( i=0; i<3; i++ )  printf("%6d ",   gyrA.raw[i]    );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.scaled[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.filter[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&gyrA.mutex);
 
   // Accelerometer data
@@ -215,7 +214,7 @@ static void sys_imu ( void )  {
   pthread_mutex_lock(&gyrB.mutex);
   //for ( i=0; i<3; i++ )  printf("%6d ",   gyrB.raw[i]    );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.scaled[i] );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.filter[i] );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.filter[i] );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&gyrB.mutex);
 
   // Accelerometer data
@@ -256,7 +255,7 @@ static void sys_imu ( void )  {
  *  Prints AHRS debugging messages to the terminal.
  */
 static void sys_ahrs ( void )  {
-  /*
+
   // Loop counter
   ushort i;
 
@@ -279,7 +278,7 @@ static void sys_ahrs ( void )  {
   //for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsB.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&ahrsB.mutex);
   }
-  */
+
   return;
 }
 
