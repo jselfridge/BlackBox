@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <sys/timerfd.h>
 #include <unistd.h>
-#include "ahrs.h"
 #include "flag.h"
 #include "gcs.h"
 #include "imu.h"
@@ -401,14 +400,14 @@ void *fcn_imu (  )  {
   while (running) {
     tmr_start(&tmr_imu);
     if (!datalog.saving) {
-      if (IMUA_ENABLED)  {  imu_update(&imuA);  ahrs_update( &ahrsA, &imuA );  }
-      if (IMUB_ENABLED)  {  imu_update(&imuB);  ahrs_update( &ahrsB, &imuB );  }
+      if (IMUA_ENABLED)  imu_update(&imuA);
+      if (IMUB_ENABLED)  imu_update(&imuB);
       imu_state();
     }
     tmr_finish(&tmr_imu);
     if (datalog.enabled) {
-      if (IMUA_ENABLED)  {  log_record(LOG_IMUA);  log_record(LOG_AHRSA);  }
-      if (IMUB_ENABLED)  {  log_record(LOG_IMUB);  log_record(LOG_AHRSB);  }
+      if (IMUA_ENABLED)  log_record(LOG_IMUA);
+      if (IMUB_ENABLED)  log_record(LOG_IMUB);
     }
     tmr_pause(&tmr_imu);
   }

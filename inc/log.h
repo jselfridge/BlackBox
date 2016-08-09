@@ -18,8 +18,6 @@ enum log_index {
   LOG_IO,
   LOG_IMUA,
   LOG_IMUB,
-  LOG_AHRSA,
-  LOG_AHRSB,
   LOG_STAB
 } log_index;
 

@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <termios.h>
 #include <unistd.h>
-#include "ahrs.h"
 #include "imu.h"
 #include "io.h"
 #include "log.h"

@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include "ahrs.h"
 #include "gcs.h"
 #include "imu.h"
 #include "io.h"
@@ -623,6 +622,20 @@ void log_record ( enum log_index index )  {
     }
     pthread_mutex_unlock(&imuA.mutex);
 
+    // AHRS A data
+    if ( log_ahrsA.count < log_ahrsA.limit ) {
+      row = log_ahrsA.count;
+      log_ahrsA.time[row] = timestamp;
+      log_ahrsA.dur[row]  = tmr_imu.dur;
+      pthread_mutex_lock(&ahrsA.mutex);
+      for ( i=0; i<4; i++ )  log_ahrsA.quat  [ row*4 +i ] = ahrsA.quat  [i];
+      for ( i=0; i<4; i++ )  log_ahrsA.dquat [ row*4 +i ] = ahrsA.dquat [i];
+      for ( i=0; i<3; i++ )  log_ahrsA.eul   [ row*3 +i ] = ahrsA.eul   [i];
+      for ( i=0; i<3; i++ )  log_ahrsA.deul  [ row*3 +i ] = ahrsA.deul  [i];
+      pthread_mutex_unlock(&ahrsA.mutex);
+      log_ahrsA.count++;
+    }
+
     return;
 
 
@@ -682,35 +695,7 @@ void log_record ( enum log_index index )  {
     }
     pthread_mutex_unlock(&imuB.mutex);
 
-    return;
-
-
-  // Record AHRSA data
-  case LOG_AHRSA :
-
-    timestamp = (float) ( tmr_imu.start_sec + ( tmr_imu.start_usec / 1000000.0f ) ) - datalog.offset;
-
-    if ( log_ahrsA.count < log_ahrsA.limit ) {
-      row = log_ahrsA.count;
-      log_ahrsA.time[row] = timestamp;
-      log_ahrsA.dur[row]  = tmr_imu.dur;
-      pthread_mutex_lock(&ahrsA.mutex);
-      for ( i=0; i<4; i++ )  log_ahrsA.quat  [ row*4 +i ] = ahrsA.quat  [i];
-      for ( i=0; i<4; i++ )  log_ahrsA.dquat [ row*4 +i ] = ahrsA.dquat [i];
-      for ( i=0; i<3; i++ )  log_ahrsA.eul   [ row*3 +i ] = ahrsA.eul   [i];
-      for ( i=0; i<3; i++ )  log_ahrsA.deul  [ row*3 +i ] = ahrsA.deul  [i];
-      pthread_mutex_unlock(&ahrsA.mutex);
-      log_ahrsA.count++;
-    }
-
-    return;
-
-
-  // Record AHRSB data
-  case LOG_AHRSB :
-
-    timestamp = (float) ( tmr_imu.start_sec + ( tmr_imu.start_usec / 1000000.0f ) ) - datalog.offset;
-
+    // AHRS B data
     if ( log_ahrsB.count < log_ahrsB.limit ) {
       row = log_ahrsB.count;
       log_ahrsB.time[row] = timestamp;

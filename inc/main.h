@@ -8,7 +8,6 @@
 #include <unistd.h>
 
 
-#include "ahrs.h"
 #include "flag.h"
 #include "gcs.h"
 #include "imu.h"

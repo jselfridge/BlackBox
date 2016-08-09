@@ -12,6 +12,7 @@
 #define IMUA_ENABLED   true
 #define IMUB_ENABLED   true
 
+#define IMU_GAIN   0.1f
 #define GYR_FSR    500
 #define ACC_FSR    4
 #define GYR_SCALE  ( 500.0 / 32768.0 ) * ( PI / 180.0 )
@@ -35,6 +36,18 @@ imu_data_struct accB;
 imu_data_struct magB;
 
 
+typedef struct imu_ahrs_struct {
+  char    id;
+  double  quat   [4];
+  double  dquat  [4];
+  double  eul    [3];
+  double  deul   [3];
+  pthread_mutex_t mutex;
+} imu_ahrs_struct;
+imu_ahrs_struct ahrsA;
+imu_ahrs_struct ahrsB;
+
+
 typedef struct imu_struct {
   int    fd;
   char   id;
@@ -46,9 +59,11 @@ typedef struct imu_struct {
   double comp;
   double roll;
   double pitch;
+  double offset [3];
   imu_data_struct *gyr;
   imu_data_struct *acc;
   imu_data_struct *mag;
+  imu_ahrs_struct *ahrs;
   pthread_mutex_t mutex;
 } imu_struct;
 imu_struct imuA;
@@ -68,6 +83,8 @@ void  imu_exit    ( void );
 void  imu_param   ( imu_struct *imu );
 void  imu_getcal  ( imu_struct *imu );
 void  imu_update  ( imu_struct *imu );
+void  imu_9DOF    ( imu_struct *imu );
+void  imu_6DOF    ( imu_struct *imu );
 void  imu_state   ( void );
 
 

@@ -8,7 +8,7 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <unistd.h>
-#include "ahrs.h"
+//#include "ahrs.h"
 #include "imu.h"
 #include "io.h"
 #include "led.h"
@@ -256,7 +256,7 @@ static void sys_imu ( void )  {
  *  Prints AHRS debugging messages to the terminal.
  */
 static void sys_ahrs ( void )  {
-
+  /*
   // Loop counter
   ushort i;
 
@@ -279,7 +279,7 @@ static void sys_ahrs ( void )  {
   //for ( i=0; i<3; i++ )  printf("%7.2f ", ahrsB.deul[i] * (180.0/PI) );  printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&ahrsB.mutex);
   }
-
+  */
   return;
 }
 

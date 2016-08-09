@@ -2,8 +2,8 @@
 
 #include "flag.h"
 #include <stdio.h>
-#include "ahrs.h"
 #include "io.h"
+#include "imu.h"
 #include "led.h"
 #include "log.h"
 #include "stab.h"
