@@ -8,7 +8,7 @@
 #include "imu.h"
 
 
-#define AHRS_GAIN    0.08
+#define AHRS_GAIN    0.10
 
 
 typedef struct ahrs_struct {
@@ -18,7 +18,7 @@ typedef struct ahrs_struct {
   double  dquat  [4];
   double  eul    [3];
   double  deul   [3];
-  double  orient [3];
+  double  offset [3];
   pthread_mutex_t mutex;
 } ahrs_struct;
 ahrs_struct ahrsA;

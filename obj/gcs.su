@@ -6,6 +6,6 @@ gcs.c:1057:13:gcs_att	664	dynamic,bounded
 gcs.c:694:13:gcs_output	656	dynamic,bounded
 gcs.c:645:13:gcs_input	680	dynamic,bounded
 gcs.c:44:6:gcs_init	112	dynamic,bounded
-gcs.c:126:6:gcs_exit	0	static
+gcs.c:126:6:gcs_exit	8	static
 gcs.c:137:6:gcs_tx	8	static
 gcs.c:190:6:gcs_rx	336	dynamic,bounded

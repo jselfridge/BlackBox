@@ -1,4 +1,5 @@
+ahrs.c:110:6:ahrs_marg	688	static
 ahrs.c:31:6:ahrs_setup	96	static
 ahrs.c:19:6:ahrs_init	8	static
 ahrs.c:89:6:ahrs_exit	0	static
-ahrs.c:100:6:ahrs_update	408	static
+ahrs.c:100:6:ahrs_update	0	static

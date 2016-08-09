@@ -95,7 +95,7 @@ void log_init ( void )  {
   log_ahrsA.quat    =  malloc( sizeof(float)  * log_ahrsA.limit * 4 );
   log_ahrsA.dquat   =  malloc( sizeof(float)  * log_ahrsA.limit * 4 );
   log_ahrsA.eul     =  malloc( sizeof(float)  * log_ahrsA.limit * 3 );
-  //log_ahrsA.deul    =  malloc( sizeof(float)  * log_ahrsA.limit * 3 );
+  log_ahrsA.deul    =  malloc( sizeof(float)  * log_ahrsA.limit * 3 );
 
   }
 
@@ -135,7 +135,7 @@ void log_init ( void )  {
   log_ahrsB.quat    =  malloc( sizeof(float)  * log_ahrsB.limit * 4 );
   log_ahrsB.dquat   =  malloc( sizeof(float)  * log_ahrsB.limit * 4 );
   log_ahrsB.eul     =  malloc( sizeof(float)  * log_ahrsB.limit * 3 );
-  //log_ahrsB.deul    =  malloc( sizeof(float)  * log_ahrsB.limit * 3 );
+  log_ahrsB.deul    =  malloc( sizeof(float)  * log_ahrsB.limit * 3 );
 
   }
 
@@ -228,7 +228,7 @@ void log_exit ( void )  {
   free(log_ahrsA.quat);
   free(log_ahrsA.dquat);
   free(log_ahrsA.eul);
-  //free(log_ahrsA.deul);
+  free(log_ahrsA.deul);
 
   }
 
@@ -268,7 +268,7 @@ void log_exit ( void )  {
   free(log_ahrsB.quat);
   free(log_ahrsB.dquat);
   free(log_ahrsB.eul);
-  //free(log_ahrsB.deul);
+  free(log_ahrsB.deul);
 
   }
 
@@ -698,7 +698,7 @@ void log_record ( enum log_index index )  {
       for ( i=0; i<4; i++ )  log_ahrsA.quat  [ row*4 +i ] = ahrsA.quat  [i];
       for ( i=0; i<4; i++ )  log_ahrsA.dquat [ row*4 +i ] = ahrsA.dquat [i];
       for ( i=0; i<3; i++ )  log_ahrsA.eul   [ row*3 +i ] = ahrsA.eul   [i];
-      //for ( i=0; i<3; i++ )  log_ahrsA.deul  [ row*3 +i ] = ahrsA.deul  [i];
+      for ( i=0; i<3; i++ )  log_ahrsA.deul  [ row*3 +i ] = ahrsA.deul  [i];
       pthread_mutex_unlock(&ahrsA.mutex);
       log_ahrsA.count++;
     }
@@ -719,7 +719,7 @@ void log_record ( enum log_index index )  {
       for ( i=0; i<4; i++ )  log_ahrsB.quat  [ row*4 +i ] = ahrsB.quat  [i];
       for ( i=0; i<4; i++ )  log_ahrsB.dquat [ row*4 +i ] = ahrsB.dquat [i];
       for ( i=0; i<3; i++ )  log_ahrsB.eul   [ row*3 +i ] = ahrsB.eul   [i];
-      //for ( i=0; i<3; i++ )  log_ahrsB.deul  [ row*3 +i ] = ahrsB.deul  [i];
+      for ( i=0; i<3; i++ )  log_ahrsB.deul  [ row*3 +i ] = ahrsB.deul  [i];
       pthread_mutex_unlock(&ahrsB.mutex);
       log_ahrsB.count++;
     }
@@ -888,7 +888,7 @@ static void log_save ( void )  {
     for ( i=0; i<4; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.quat   [ row*4 +i ] );  fprintf( datalog.ahrsA, "    " );
     for ( i=0; i<4; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.dquat  [ row*4 +i ] );  fprintf( datalog.ahrsA, "    " );
     for ( i=0; i<3; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.eul    [ row*3 +i ] );  fprintf( datalog.ahrsA, "    " );
-    //for ( i=0; i<3; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.deul   [ row*3 +i ] );  fprintf( datalog.ahrsA, "    " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.deul   [ row*3 +i ] );  fprintf( datalog.ahrsA, "    " );
     fprintf( datalog.ahrsA, "   " );
   }
 
@@ -934,7 +934,7 @@ static void log_save ( void )  {
     for ( i=0; i<4; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.quat   [ row*4 +i ] );  fprintf( datalog.ahrsB, "    " );
     for ( i=0; i<4; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.dquat  [ row*4 +i ] );  fprintf( datalog.ahrsB, "    " );
     for ( i=0; i<3; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.eul    [ row*3 +i ] );  fprintf( datalog.ahrsB, "    " );
-    //for ( i=0; i<3; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.deul   [ row*3 +i ] );  fprintf( datalog.ahrsB, "    " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.deul   [ row*3 +i ] );  fprintf( datalog.ahrsB, "    " );
     fprintf( datalog.ahrsB, "   " );
   }
 
