@@ -199,17 +199,6 @@ void ekf_update ( void )  {
   P = mat_mul( tmpNN, T );
   mat_sym( P, 0.00001 );
 
-  // Debugging
-  mat_set( P, 1,1, 11.0 );  mat_set( P, 1,2, 12.0 );
-  mat_set( P, 2,1, 21.0 );  mat_set( P, 2,2, 22.0 );
-  // Debugging
-  mat_set( T, 1,1, 1.10 );  mat_set( T, 1,2, 1.20 );
-  mat_set( T, 2,1, 2.10 );  mat_set( T, 2,2, 2.20 );
-  // Debugging
-  mat_set( S, 1,1, 0.11 );  mat_set( S, 1,2, 0.12 );  mat_set( S, 1,3, 0.13 );
-  mat_set( S, 2,1, 0.21 );  mat_set( S, 2,2, 0.22 );  mat_set( S, 2,3, 0.23 );
-  mat_set( S, 3,1, 0.31 );  mat_set( S, 3,2, 0.32 );  mat_set( S, 3,3, 0.33 );
-
   // Push data to structure
   pthread_mutex_lock(&ekf.mutex);
   ekf.x = mat_copy(x);
@@ -284,8 +273,8 @@ void ekf_gain ( void )  {
   //K = mat_mul( tmp, inv );
 
   // Debugging
-  mat_set( K, 1,1, 0.011 );  mat_set( K, 1,2, 0.012 );  mat_set( K, 1,3, 0.013 );
-  mat_set( K, 2,1, 0.021 );  mat_set( K, 2,2, 0.022 );  mat_set( K, 2,3, 0.023 );
+  mat_set( K, 1, 1, 0 );  mat_set( K, 1, 2, 0 );
+  mat_set( K, 2, 1, 0 );  mat_set( K, 2, 2, 0 );
 
   // Push data to structure
   pthread_mutex_lock(&ekf.mutex);
