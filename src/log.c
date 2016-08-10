@@ -45,6 +45,7 @@ void log_init ( void )  {
   log_compB.limit   =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_ahrsB.limit   =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_stab.limit    =  LOG_MAX_DUR * HZ_STAB;
+  log_ins.limit     =  LOG_MAX_DUR * HZ_INS;
 
   // Parameter value setup
   log_param.time    =  malloc( sizeof(float)  * log_param.limit               );
@@ -155,6 +156,10 @@ void log_init ( void )  {
   log_pidZ.perr     =  malloc( sizeof(float)  * log_stab.limit );
   log_pidZ.ierr     =  malloc( sizeof(float)  * log_stab.limit );
   log_pidZ.derr     =  malloc( sizeof(float)  * log_stab.limit );
+
+  // INS setup
+  log_ins.time      =  malloc( sizeof(float)  * log_ins.limit );
+  log_ins.dur       =  malloc( sizeof(ulong)  * log_ins.limit );
 
   /*
   // Adaptive roll stabilization
@@ -289,6 +294,10 @@ void log_exit ( void )  {
   free(log_pidZ.ierr);
   free(log_pidZ.derr);
 
+  // INS memory
+  free(log_ins.time);
+  free(log_ins.dur);
+
   /*
   // Adaptive roll stabilization
   free(log_adaptX.u);
@@ -326,6 +335,7 @@ void log_start ( void )  {
   log_compB.count  = 0;
   log_ahrsB.count  = 0;
   log_stab.count   = 0;
+  log_ins.count    = 0;
 
   // Allocate dir/path/file memory
   datalog.dir  = malloc(16);
@@ -487,6 +497,13 @@ void log_start ( void )  {
     cmdX     cmdY     cmdZ     cmdT        " );
   fprintf( datalog.stab, "Xperr    Xierr    Xzerr        Yperr    Yierr    Yderr        Zperr    Zierr    Zderr         " );  
   //fprintf( datalog.stab, "acXu     acXp     acXd     acXr         acXkp    acXkd    acXk ");
+
+  // INS datalog file
+  sprintf( file, "%sins.txt", datalog.path );
+  datalog.ins = fopen( file, "w" );
+  if( datalog.ins == NULL )  printf( "Error (log_init): Cannot generate 'ins' file. \n" );
+  fprintf( datalog.ins, 
+    "     instime   insdur " );
 
   // Determine start second
   struct timespec timeval;
@@ -774,6 +791,24 @@ void log_record ( enum log_index index )  {
     return;
 
 
+  // Record INS data
+  case LOG_INS :
+
+    timestamp = (float) ( tmr_ins.start_sec + ( tmr_ins.start_usec / 1000000.0f ) ) - datalog.offset;
+
+    if ( log_ins.count < log_ins.limit ) {
+      row = log_ins.count;
+      log_ins.time[row] = timestamp;
+      log_ins.dur[row]  = tmr_ins.dur;
+
+      // Insert data
+
+      log_ins.count++;
+    }
+
+    return;
+
+
   default :
     return;
 
@@ -957,6 +992,12 @@ static void log_save ( void )  {
     */
   }
 
+  // Inertial Navigation System data
+  for ( row = 0; row < log_ins.count; row++ )  {
+    fprintf( datalog.ins, "\n %011.6f   %06ld      ", log_ins.time[row], log_ins.dur[row] );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.ins, "%07.4f  ",  log_ins.XXX [ row*3 +i ] );   fprintf( datalog.ins, "    " );
+  }
+
   return;
 }
 
@@ -988,6 +1029,7 @@ static void log_close ( void )  {
   }
 
   fclose(datalog.stab);
+  fclose(datalog.ins);
 
   return;
 }

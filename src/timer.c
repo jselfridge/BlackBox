@@ -86,6 +86,11 @@ void tmr_setup ( void )  {
   tmr_stab.prio = PRIO_STAB;
   tmr_stab.per  = 1000000 / HZ_STAB;
 
+  // Inertial Navigation System timer
+  tmr_ins.name = "ins";
+  tmr_ins.prio = PRIO_INS;
+  tmr_ins.per  = 1000000 / HZ_INS;
+
   // GCSTX timer
   tmr_gcstx.name = "gcstx";
   tmr_gcstx.prio = PRIO_GCSTX;
@@ -147,6 +152,7 @@ void tmr_begin ( pthread_attr_t *attr )  {
   tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(1000);
   tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(1000);
   tmr_thread( &tmr_stab,  attr, fcn_stab  );  usleep(1000);
+  tmr_thread( &tmr_ins,   attr, fcn_ins   );  usleep(1000);
   tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(1000);
   tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(1000);
 
@@ -197,6 +203,11 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_gcstx.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gcstx' thread. \n" );
   if(DEBUG)  printf( "gcstx " );
+
+  // Exit INS thread
+  if( pthread_join ( tmr_ins.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'ins' thread. \n" );
+  if(DEBUG)  printf( "ins " );
 
   // Exit stabilization thread
   if( pthread_join ( tmr_stab.id, NULL ) )
@@ -422,6 +433,24 @@ void *fcn_stab (  )  {
     tmr_finish(&tmr_stab);
     if (datalog.enabled)  log_record(LOG_STAB);
     tmr_pause(&tmr_stab);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+
+
+/**
+ *  fcn_ins
+ *  Function handler for the inertial navigation system timing thread.
+ */
+void *fcn_ins (  )  {
+  tmr_create(&tmr_ins);
+  while (running) {
+    tmr_start(&tmr_ins);
+    //XXX_update();
+    tmr_finish(&tmr_ins);
+    if (datalog.enabled)  log_record(LOG_INS);
+    tmr_pause(&tmr_ins);
   }
   pthread_exit(NULL);
   return NULL;

@@ -18,7 +18,8 @@ enum log_index {
   LOG_IO,
   LOG_IMUA,
   LOG_IMUB,
-  LOG_STAB
+  LOG_STAB,
+  LOG_INS
 } log_index;
 
 
@@ -105,6 +106,15 @@ log_pid_struct log_pidX;
 log_pid_struct log_pidY;
 log_pid_struct log_pidZ;
 
+
+typedef struct log_ins_struct {
+  ulong  count;
+  ulong  limit;
+  float  *time;
+  ulong  *dur;
+} log_ins_struct;
+log_ins_struct log_ins;
+
 /*
 typedef struct log_adapt_struct {
   double *u;
@@ -142,6 +152,7 @@ typedef struct datalog_struct {
   FILE   *compB;
   FILE   *ahrsB;
   FILE   *stab;
+  FILE   *ins;
 } datalog_struct;
 datalog_struct datalog;
 
