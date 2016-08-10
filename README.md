@@ -6,6 +6,21 @@ Develops a cape for a BeagleBone Black to enable "Black
 Box" functionality for research and development.
 
 
+Current Tasks
+-------------
+The current task is to clean up the state estimation through an Extended Kalman filter.
+
+<b> Extended Kalman Filter </b>
+<ul>
+  <li> Created module for Extended Kalman Filter (EKF). </li>
+  <li> Setup timing thread for the EKF. </li>
+  <li> Added simple matrix math functionality. </li>
+  <li> Incorporated a simple Cholesky decomposition for symmetric PSD matrix inverse. </li>
+  <li> Investigating LU and QR factorizations for matrix inverse. </li>
+  <li> Currently limited by the speed of the matrix inverse calculation. </li>
+</ul>
+
+
 v0.1.6 - Revised AHRS code
 --------------------------
 <ul>
@@ -150,16 +165,6 @@ simple quadrotor system into the air.
 Pending Work
 ------------
 The following list outlines some proposed upcoming change.
-
-<b> Extended Kalman Filter - WIP </b>
-<ul>
-  <li> Created module for Extended Kalman Filter (EKF). </li>
-  <li> Setup timing thread for the EKF. </li>
-  <li> Added simple matrix math functionality. </li>
-  <li> Incorporated a simple Cholesky decomposition for symmetric PSD matrix inverse. </li>
-  <li> Investigating LU and QR factorizations for matrix inverse. </li>
-  <li> Currently limited by the speed of the matrix inverse calculation. </li>
-</ul>
 
 <b> Adaptive Control - WIP </b>
 <ul>
