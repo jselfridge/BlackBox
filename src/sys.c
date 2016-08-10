@@ -198,11 +198,11 @@ static void sys_imu ( void )  {
   //pthread_mutex_unlock(&magA.mutex);
 
   // Complimentry filter data
-  pthread_mutex_lock(&imuA.mutex);
-  double Ra = imuA.roll  * ( 180.0 / PI );
-  double Pa = imuA.pitch * ( 180.0 / PI );
-  printf("%6.3f %6.3f ", Ra, Pa );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&imuA.mutex);
+  //pthread_mutex_lock(&imuA.mutex);
+  //double Ra = imuA.roll  * ( 180.0 / PI );
+  //double Pa = imuA.pitch * ( 180.0 / PI );
+  //printf("%6.3f %6.3f ", Ra, Pa );  printf("   ");  fflush(stdout);
+  //pthread_mutex_unlock(&imuA.mutex);
 
   }
 
@@ -231,18 +231,18 @@ static void sys_imu ( void )  {
   //pthread_mutex_unlock(&magB.mutex);
 
   // Complimentry filter data
-  pthread_mutex_lock(&imuB.mutex);
-  double Rb = imuB.roll  * ( 180.0 / PI );
-  double Pb = imuB.pitch * ( 180.0 / PI );
-  printf("%6.3f %6.3f ", Rb, Pb );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&imuB.mutex);
+  //pthread_mutex_lock(&imuB.mutex);
+  //double Rb = imuB.roll  * ( 180.0 / PI );
+  //double Pb = imuB.pitch * ( 180.0 / PI );
+  //printf("%6.3f %6.3f ", Rb, Pb );  printf("   ");  fflush(stdout);
+  //pthread_mutex_unlock(&imuB.mutex);
 
   }
 
   // Rotational state values
   pthread_mutex_lock(&rot.mutex);
   for ( i=0; i<3; i++ )  printf("%6.3f ", rot.att[i] * ( 180.0 / PI ) );  printf("   ");  fflush(stdout);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", rot.ang[i] );                   printf("   ");  fflush(stdout);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", rot.ang[i] );                   printf("   ");  fflush(stdout);
   pthread_mutex_unlock(&rot.mutex);
 
   return;
@@ -293,7 +293,7 @@ static void sys_stab ( void )  {
 
   // Stabilization signals
   pthread_mutex_lock(&stab.mutex);
-  for ( i=0; i<4; i++ )  printf("%5.2f ", stab.cmd[i]  );  printf("   ");  fflush(stdout);
+  //for ( i=0; i<4; i++ )  printf("%5.2f ", stab.cmd[i]  );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", stab.bank    *(180.0/PI) );  printf("   ");
   //printf("%5.2f ", stab.climb   *(180.0/PI) );  printf("   ");
   printf("%5.2f ", stab.heading *(180.0/PI) );  printf("   ");
@@ -301,22 +301,22 @@ static void sys_stab ( void )  {
   pthread_mutex_unlock(&stab.mutex);
 
   // Roll values
-  pthread_mutex_lock(&pidX.mutex);
+  //pthread_mutex_lock(&pidX.mutex);
   //printf("%5.2f %5.2f %5.2f   ", pidX.pgain, pidX.igain, pidX.dgain );  fflush(stdout);
-  printf("%5.2f %5.2f %5.2f   ", pidX.perr,  pidX.ierr,  pidX.derr  );  fflush(stdout);
-  pthread_mutex_unlock(&pidX.mutex);
+  //printf("%5.2f %5.2f %5.2f   ", pidX.perr,  pidX.ierr,  pidX.derr  );  fflush(stdout);
+  //pthread_mutex_unlock(&pidX.mutex);
 
   // Pitch values
-  pthread_mutex_lock(&pidY.mutex);
+  //pthread_mutex_lock(&pidY.mutex);
   //printf("%5.2f %5.2f %5.2f   ", pidY.pgain, pidY.igain, pidY.dgain );  fflush(stdout);
-  printf("%5.2f %5.2f %5.2f   ", pidY.perr,  pidY.ierr,  pidY.derr  );  fflush(stdout);
-  pthread_mutex_unlock(&pidY.mutex);
+  //printf("%5.2f %5.2f %5.2f   ", pidY.perr,  pidY.ierr,  pidY.derr  );  fflush(stdout);
+  //pthread_mutex_unlock(&pidY.mutex);
 
   // Yaw values
-  pthread_mutex_lock(&pidZ.mutex);
+  //pthread_mutex_lock(&pidZ.mutex);
   //printf("%5.2f %5.2f %5.2f   ", pidZ.pgain, pidZ.igain, pidZ.dgain );  fflush(stdout);
-  printf("%5.2f %5.2f %5.2f   ", pidZ.perr,  pidZ.ierr,  pidZ.derr  );  fflush(stdout);
-  pthread_mutex_unlock(&pidZ.mutex);
+  //printf("%5.2f %5.2f %5.2f   ", pidZ.perr,  pidZ.ierr,  pidZ.derr  );  fflush(stdout);
+  //pthread_mutex_unlock(&pidZ.mutex);
 
   return;
 }

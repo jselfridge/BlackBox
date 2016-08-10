@@ -759,9 +759,8 @@ void imu_state ( void )  {
   }
 
   // Average all the data sources
-  //if ( IMUA_ENABLED && IMUB_ENABLED )  {  for ( i=0; i<3; i++ )  {  att[i] /= 4.0;  ang[i] /= 4.0;  }  }
-  //else                                 {  for ( i=0; i<3; i++ )  {  att[i] /= 2.0;  ang[i] /= 2.0;  }  }
-  for ( i=0; i<3; i++ )  {  att[i] /= 4.0;  ang[i] /= 2.0;  }
+  if ( IMUA_ENABLED && IMUB_ENABLED )  {  for ( i=0; i<3; i++ )  {  att[i] /= 4.0;  ang[i] /= 2.0;  }  }
+  else                                 {  for ( i=0; i<3; i++ )  {  att[i] /= 2.0;  ang[i] /= 1.0;  }  }
 
   // Correction b/c comp filter has no yaw value  
   att[2] *= 2.0; 
