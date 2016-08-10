@@ -170,6 +170,7 @@ The following list outlines some proposed upcoming change.
   <li> Added functionality within the stabilization thread. </li>
 </ul>
 
+<b> Other tasks </b>
 <ul>
 <li><b> Top Priority </b></li>
 <ul>
