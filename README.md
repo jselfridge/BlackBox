@@ -179,10 +179,10 @@ The following list outlines some proposed upcoming change.
 </ul>
 <li><b> Controls </b></li>
 <ul>
-  <li> Generic PID function <li>
-  <li> Generic state feedback (SISO) functions <li>
-  <li> Generic state feedback (MIMO) functions <li>
-  <li> Multisine signal generator <li>
+  <li> Generic PID function </li>
+  <li> Generic state feedback (SISO) functions </li>
+  <li> Generic state feedback (MIMO) functions </li>
+  <li> Multisine signal generator </li>
   <li> System ID quad </li>
   <li> SISO MRAC quad </li>
   <li> MIMO MRAC quad </li>
