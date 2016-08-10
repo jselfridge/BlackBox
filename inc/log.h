@@ -107,11 +107,28 @@ log_pid_struct log_pidY;
 log_pid_struct log_pidZ;
 
 
+typedef struct log_ekf_struct {
+  ulong  count;
+  ulong  limit;
+  float  *time;
+  ulong  *dur;
+  float  *x;
+  float  *z;
+  float  *f;
+  float  *h;
+  float  *P;
+  float  *T;
+  float  *S;
+} log_ekf_struct;
+log_ekf_struct log_ekf;
+
+
 typedef struct log_ins_struct {
   ulong  count;
   ulong  limit;
   float  *time;
   ulong  *dur;
+  float  *K;
 } log_ins_struct;
 log_ins_struct log_ins;
 
@@ -152,6 +169,7 @@ typedef struct datalog_struct {
   FILE   *compB;
   FILE   *ahrsB;
   FILE   *stab;
+  FILE   *ekf;
   FILE   *ins;
 } datalog_struct;
 datalog_struct datalog;

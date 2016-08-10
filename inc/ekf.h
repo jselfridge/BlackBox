@@ -10,7 +10,7 @@
 
 //#define EKF_ENABLED true
 #define EKF_N   2
-#define EKF_M   2
+#define EKF_M   3
 
 
 typedef struct ekf_struct {

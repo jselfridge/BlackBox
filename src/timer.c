@@ -433,6 +433,7 @@ void *fcn_stab (  )  {
   while (running) {
     tmr_start(&tmr_stab);
     stab_update();
+    ekf_update();
     tmr_finish(&tmr_stab);
     if (datalog.enabled)  log_record(LOG_STAB);
     tmr_pause(&tmr_stab);
@@ -450,7 +451,7 @@ void *fcn_ins (  )  {
   tmr_create(&tmr_ins);
   while (running) {
     tmr_start(&tmr_ins);
-    //XXX_update();
+    ekf_gain();
     tmr_finish(&tmr_ins);
     if (datalog.enabled)  log_record(LOG_INS);
     tmr_pause(&tmr_ins);

@@ -289,7 +289,7 @@ static void sys_ahrs ( void )  {
 static void sys_stab ( void )  {
 
   // Loop counter
-  ushort i;
+  //ushort i;
 
   // Stabilization signals
   pthread_mutex_lock(&stab.mutex);
