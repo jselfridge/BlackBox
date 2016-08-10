@@ -6,19 +6,16 @@ Develops a cape for a BeagleBone Black to enable "Black
 Box" functionality for research and development.
 
 
-Current Tasks
--------------
-This software version focuses on expanding the minimum working 
-software set, to include features that are needed for inner loop 
-stabilization, outer loop navigation, and autonomous capabilities.
 
-<b> Extended Kalman Filter </b>
+
+v0.1.6 - Revised AHRS code
+--------------------------
 <ul>
-  <li> Created module for Extended Kalman Filter (EKF). </li>
-  <li> Setup timing thread for the EKF. </li>
-  <li> Added simple matrix math functionality. </li>
-  <li> Incorporated a simple Cholesky decomposition for symmetric PSD matrix inverse. </li>
-  <li> Starting with nine states (pos,vel,acc for attitude) and three measurements (filtered rate gyros). </li>
+  <li> Merged AHRS into IMU source code. </li>
+  <li> Added both 6DOF (gyr/acc) and 9DOF (gyr/acc/mag) solutions. </li>
+  <li> Includes only one tuning (weighting) parameter. </li>
+  <li> Added complimentary filters for roll and pitch states. </li>
+  <li> Crude state estimation is the average of all att and ang states. </li>
 </ul>
 
 
@@ -155,6 +152,23 @@ simple quadrotor system into the air.
 Pending Work
 ------------
 The following list outlines some proposed upcoming change.
+
+<b> Extended Kalman Filter - WIP </b>
+<ul>
+  <li> Created module for Extended Kalman Filter (EKF). </li>
+  <li> Setup timing thread for the EKF. </li>
+  <li> Added simple matrix math functionality. </li>
+  <li> Incorporated a simple Cholesky decomposition for symmetric PSD matrix inverse. </li>
+  <li> Investigating LU and QR factorizations for matrix inverse. </li>
+  <li> Currently limited by the speed of the matrix inverse calculation. </li>
+</ul>
+
+<b> Adaptive Control - WIP </b>
+<ul>
+  <li> Created data structure for adaptive control terms. </li>
+  <li> Hard coded a second order SISO algorithm. </li>
+  <li> Added functionality within the stabilization thread. </li>
+</ul>
 
 <ul>
 <li><b> Top Priority </b></li>
