@@ -42,8 +42,8 @@ void imu_init ( void )  {
 
     // Low pass filter values
     imuA.gyr  = &gyrA;  imuA.gyr->lpf[0] = 1.00;  imuA.gyr->lpf[1] = 1.00;  imuA.gyr->lpf[2] = 1.00;
-    imuA.acc  = &accA;  imuA.acc->lpf[0] = 0.20;  imuA.acc->lpf[1] = 0.20;  imuA.acc->lpf[2] = 0.20;
-    imuA.mag  = &magA;  imuA.mag->lpf[0] = 0.05;  imuA.mag->lpf[1] = 0.05;  imuA.mag->lpf[2] = 0.05;
+    imuA.acc  = &accA;  imuA.acc->lpf[0] = 0.50;  imuA.acc->lpf[1] = 0.50;  imuA.acc->lpf[2] = 0.50;
+    imuA.mag  = &magA;  imuA.mag->lpf[0] = 0.20;  imuA.mag->lpf[1] = 0.20;  imuA.mag->lpf[2] = 0.20;
     imuA.ahrs = &ahrsA;
 
     // Complimentary filter values
@@ -95,8 +95,8 @@ void imu_init ( void )  {
 
     // Low pass filter values
     imuB.gyr  = &gyrB;  imuB.gyr->lpf[0] = 1.00;  imuB.gyr->lpf[1] = 1.00;  imuB.gyr->lpf[2] = 1.00;
-    imuB.acc  = &accB;  imuB.acc->lpf[0] = 0.20;  imuB.acc->lpf[1] = 0.20;  imuB.acc->lpf[2] = 0.20;
-    imuB.mag  = &magB;  imuB.mag->lpf[0] = 0.05;  imuB.mag->lpf[1] = 0.05;  imuB.mag->lpf[2] = 0.05;
+    imuB.acc  = &accB;  imuB.acc->lpf[0] = 0.50;  imuB.acc->lpf[1] = 0.50;  imuB.acc->lpf[2] = 0.50;
+    imuB.mag  = &magB;  imuB.mag->lpf[0] = 0.20;  imuB.mag->lpf[1] = 0.20;  imuB.mag->lpf[2] = 0.20;
     imuB.ahrs = &ahrsB;
 
     // Complimentary filter values
@@ -274,7 +274,7 @@ void imu_getcal ( imu_struct *imu )  {
       printf( "%4d    ",   imu->mag->bias[i]  );
       printf( "%4d     ",  imu->mag->range[i] );
       printf( "%4d    ",   imu->gyr->bias[i]  );
-      printf( "%4.2f  \n",   imu->offset[i]  );
+      printf( "%4.2f  \n", imu->offset[i]  );
     } 
   }
 
@@ -430,9 +430,9 @@ void imu_9DOF ( imu_struct *imu )  {
   double dt, recipNorm;
   double q[4], dq[4], g[3], a[3], m[3], s[4], e[3], de[3], off[3];
   double hx, hy;
-  double _2q0mx, _2q0my, _2q0mz, _2q1mx, _2bx, _2bz, _4bx, _4bz;
-  double _2q0, _2q1, _2q2, _2q3, _2q0q2, _2q2q3;
-  double  q0q0, q0q1, q0q2, q0q3, q1q1, q1q2, q1q3, q2q2, q2q3, q3q3;
+  double _2qWmx, _2qWmy, _2qWmz, _2qXmx, _2bx, _2bz, _4bx, _4bz;
+  double _2qW, _2qX, _2qY, _2qZ, _2qWqY, _2qYqZ;
+  double  qWqW, qWqX, qWqY, qWqZ, qXqX, qXqY, qXqZ, qYqY, qYqZ, qZqZ;
 
   // Local index
   ushort x=0, y=1, z=2;
@@ -486,58 +486,58 @@ void imu_9DOF ( imu_struct *imu )  {
     for ( i=0; i<3; i++ )  m[i] *= recipNorm;
 
     // Auxiliary variables to avoid repeated arithmetic
-    _2q0mx  = 2.0f * q[W] * m[x];
-    _2q0my  = 2.0f * q[W] * m[y];
-    _2q0mz  = 2.0f * q[W] * m[z];
-    _2q1mx  = 2.0f * q[X] * m[x];
-    _2q0    = 2.0f * q[W];
-    _2q1    = 2.0f * q[X];
-    _2q2    = 2.0f * q[Y];
-    _2q3    = 2.0f * q[Z];
-    _2q0q2  = 2.0f * q[W] * q[Y];
-    _2q2q3  = 2.0f * q[Y] * q[Z];
-    q0q0    = q[W] * q[W];
-    q0q1    = q[W] * q[X];
-    q0q2    = q[W] * q[Y];
-    q0q3    = q[W] * q[Z];
-    q1q1    = q[X] * q[X];
-    q1q2    = q[X] * q[Y];
-    q1q3    = q[X] * q[Z];
-    q2q2    = q[Y] * q[Y];
-    q2q3    = q[Y] * q[Z];
-    q3q3    = q[Z] * q[Z];
+    _2qWmx  = 2.0f * q[W] * m[x];
+    _2qWmy  = 2.0f * q[W] * m[y];
+    _2qWmz  = 2.0f * q[W] * m[z];
+    _2qXmx  = 2.0f * q[X] * m[x];
+    _2qW    = 2.0f * q[W];
+    _2qX    = 2.0f * q[X];
+    _2qY    = 2.0f * q[Y];
+    _2qZ    = 2.0f * q[Z];
+    _2qWqY  = 2.0f * q[W] * q[Y];
+    _2qYqZ  = 2.0f * q[Y] * q[Z];
+    qWqW    = q[W] * q[W];
+    qWqX    = q[W] * q[X];
+    qWqY    = q[W] * q[Y];
+    qWqZ    = q[W] * q[Z];
+    qXqX    = q[X] * q[X];
+    qXqY    = q[X] * q[Y];
+    qXqZ    = q[X] * q[Z];
+    qYqY    = q[Y] * q[Y];
+    qYqZ    = q[Y] * q[Z];
+    qZqZ    = q[Z] * q[Z];
 
     // Reference direction of Earth's magnetic field
-    hx = m[x] * q0q0 - _2q0my * q[Z] + _2q0mz * q[Y] + m[x] * q1q1 + _2q1 * m[y] * q[Y] + _2q1 * m[z] * q[Z] - m[x] * q2q2 - m[x] * q3q3;
-    hy = _2q0mx * q[Z] + m[y] * q0q0 - _2q0mz * q[X] + _2q1mx * q[Y] - m[y] * q1q1 + m[y] * q2q2 + _2q2 * m[z] * q[Z] - m[y] * q3q3;
+    hx = m[x] * qWqW - _2qWmy * q[Z] + _2qWmz * q[Y] + m[x] * qXqX + _2qX * m[y] * q[Y] + _2qX * m[z] * q[Z] - m[x] * qYqY - m[x] * qZqZ;
+    hy = _2qWmx * q[Z] + m[y] * qWqW - _2qWmz * q[X] + _2qXmx * q[Y] - m[y] * qXqX + m[y] * qYqY + _2qY * m[z] * q[Z] - m[y] * qZqZ;
     _2bx = sqrt( hx * hx + hy * hy );
-    _2bz = -_2q0mx * q[Y] + _2q0my * q[X] + m[z] * q0q0 + _2q1mx * q[Z] - m[z] * q1q1 + _2q2 * m[y] * q[Z] - m[z] * q2q2 + m[z] * q3q3;
+    _2bz = -_2qWmx * q[Y] + _2qWmy * q[X] + m[z] * qWqW + _2qXmx * q[Z] - m[z] * qXqX + _2qY * m[y] * q[Z] - m[z] * qYqY + m[z] * qZqZ;
     _4bx = 2.0f * _2bx;
     _4bz = 2.0f * _2bz;
 
     // Gradient descent algorithm corrective step
-    s[W] = -_2q2 * ( 2.0f * q1q3 - _2q0q2 - a[x] )
-      + _2q1 * ( 2.0f * q0q1 + _2q2q3 - a[y] )
-      - _2bz * q[Y] * ( _2bx * ( 0.5f - q2q2 - q3q3 ) + _2bz * ( q1q3 - q0q2 ) - m[x] )
-      + ( -_2bx * q[Z] + _2bz * q[X] ) * ( _2bx * ( q1q2 - q0q3 ) + _2bz * ( q0q1 + q2q3 ) - m[y] )
-      + _2bx * q[Y] * ( _2bx * ( q0q2 + q1q3 ) + _2bz * ( 0.5f - q1q1 - q2q2 ) - m[z] );
-    s[X] = _2q3 * ( 2.0f * q1q3 - _2q0q2 - a[x] )
-      + _2q0 * ( 2.0f * q0q1 + _2q2q3 - a[y] )
-      - 4.0f * q[X] * ( 1.0f - 2.0f * q1q1 - 2.0f * q2q2 - a[z] )
-      + _2bz * q[Z] * ( _2bx * ( 0.5f - q2q2 - q3q3 ) + _2bz * ( q1q3 - q0q2 ) - m[x] )
-      + ( _2bx * q[Y] + _2bz * q[W] ) * ( _2bx * ( q1q2 - q0q3 ) + _2bz * ( q0q1 + q2q3 ) - m[y] )
-      + ( _2bx * q[Z] - _4bz * q[X] ) * ( _2bx * ( q0q2 + q1q3 ) + _2bz * ( 0.5f - q1q1 - q2q2 ) - m[z] );
-    s[Y] = -_2q0 * ( 2.0f * q1q3 - _2q0q2 - a[x] )
-      + _2q3 * ( 2.0f * q0q1 + _2q2q3 - a[y] )
-      - 4.0f * q[Y] * ( 1.0f - 2.0f * q1q1 - 2.0f * q2q2 - a[z] )
-      + ( -_4bx * q[Y] - _2bz * q[W] ) * ( _2bx * ( 0.5f - q2q2 - q3q3 ) + _2bz * ( q1q3 - q0q2 ) - m[x] )
-      + ( _2bx * q[X] + _2bz * q[Z] ) * ( _2bx * ( q1q2 - q0q3 ) + _2bz * ( q0q1 + q2q3 ) - m[y] )
-      + ( _2bx * q[W] - _4bz * q[Y] ) * ( _2bx * ( q0q2 + q1q3 ) + _2bz * ( 0.5f - q1q1 - q2q2 ) - m[z] );
-    s[Z] = _2q1 * ( 2.0f * q1q3 - _2q0q2 - a[x] )
-      + _2q2 * ( 2.0f * q0q1 + _2q2q3 - a[y] )
-      + ( -_4bx * q[Z] + _2bz * q[X] ) * ( _2bx * ( 0.5f - q2q2 - q3q3 ) + _2bz * ( q1q3 - q0q2 ) - m[x] )
-      + ( -_2bx * q[W] + _2bz * q[Y] ) * ( _2bx * ( q1q2 - q0q3 ) + _2bz * ( q0q1 + q2q3 ) - m[y] )
-      + _2bx * q[X] * ( _2bx * ( q0q2 + q1q3 ) + _2bz * ( 0.5f - q1q1 - q2q2 ) - m[z] );
+    s[W] = - _2qY * ( 2.0f * qXqZ - _2qWqY - a[x] )
+         + _2qX * ( 2.0f * qWqX + _2qYqZ - a[y] )
+         - _2bz * q[Y] * ( _2bx * ( 0.5f - qYqY - qZqZ ) + _2bz * ( qXqZ - qWqY ) - m[x] )
+         + ( -_2bx * q[Z] + _2bz * q[X] ) * ( _2bx * ( qXqY - qWqZ ) + _2bz * ( qWqX + qYqZ ) - m[y] )
+         + _2bx * q[Y] * ( _2bx * ( qWqY + qXqZ ) + _2bz * ( 0.5f - qXqX - qYqY ) - m[z] );
+    s[X] = _2qZ * ( 2.0f * qXqZ - _2qWqY - a[x] )
+         + _2qW * ( 2.0f * qWqX + _2qYqZ - a[y] )
+         - 4.0f * q[X] * ( 1.0f - 2.0f * qXqX - 2.0f * qYqY - a[z] )
+         + _2bz * q[Z] * ( _2bx * ( 0.5f - qYqY - qZqZ ) + _2bz * ( qXqZ - qWqY ) - m[x] )
+         + ( _2bx * q[Y] + _2bz * q[W] ) * ( _2bx * ( qXqY - qWqZ ) + _2bz * ( qWqX + qYqZ ) - m[y] )
+         + ( _2bx * q[Z] - _4bz * q[X] ) * ( _2bx * ( qWqY + qXqZ ) + _2bz * ( 0.5f - qXqX - qYqY ) - m[z] );
+    s[Y] = - _2qW * ( 2.0f * qXqZ - _2qWqY - a[x] )
+         + _2qZ * ( 2.0f * qWqX + _2qYqZ - a[y] )
+         - 4.0f * q[Y] * ( 1.0f - 2.0f * qXqX - 2.0f * qYqY - a[z] )
+         + ( -_4bx * q[Y] - _2bz * q[W] ) * ( _2bx * ( 0.5f - qYqY - qZqZ ) + _2bz * ( qXqZ - qWqY ) - m[x] )
+         + ( _2bx * q[X] + _2bz * q[Z] ) * ( _2bx * ( qXqY - qWqZ ) + _2bz * ( qWqX + qYqZ ) - m[y] )
+         + ( _2bx * q[W] - _4bz * q[Y] ) * ( _2bx * ( qWqY + qXqZ ) + _2bz * ( 0.5f - qXqX - qYqY ) - m[z] );
+    s[Z] = _2qX * ( 2.0f * qXqZ - _2qWqY - a[x] )
+         + _2qY * ( 2.0f * qWqX + _2qYqZ - a[y] )
+         + ( -_4bx * q[Z] + _2bz * q[X] ) * ( _2bx * ( 0.5f - qYqY - qZqZ ) + _2bz * ( qXqZ - qWqY ) - m[x] )
+         + ( -_2bx * q[W] + _2bz * q[Y] ) * ( _2bx * ( qXqY - qWqZ ) + _2bz * ( qWqX + qYqZ ) - m[y] )
+         + _2bx * q[X] * ( _2bx * ( qWqY + qXqZ ) + _2bz * ( 0.5f - qXqX - qYqY ) - m[z] );
 
     // Normalize step magnitude
     recipNorm = 1.0 / sqrt( s[W] * s[W] + s[X] * s[X] + s[Y] * s[Y] + s[Z] * s[Z] );
@@ -556,15 +556,15 @@ void imu_9DOF ( imu_struct *imu )  {
   for ( i=0; i<4; i++ )  q[i] *= recipNorm;
 
   // Calculate Euler angles
-  e[x] = atan2 ( ( 2.0 * ( q[W]*q[X] + q[Y]*q[Z] ) ), ( 1.0 - 2.0 * ( q[X]*q[X] + q[Y]*q[Y] ) ) ) - off[x];
-  e[y] = asin  (   2.0 * ( q[W]*q[Y] - q[X]*q[Z] ) )                                              - off[y];
-  e[z] = atan2 ( ( 2.0 * ( q[W]*q[Z] + q[X]*q[Y] ) ), ( 1.0 - 2.0 * ( q[Y]*q[Y] + q[Z]*q[Z] ) ) ) - off[z];
+  e[x] = atan2 ( ( 2.0f * ( q[W]*q[X] + q[Y]*q[Z] ) ), ( 1.0f - 2.0f * ( q[X]*q[X] + q[Y]*q[Y] ) ) ) - off[x];
+  e[y] = asin  (   2.0f * ( q[W]*q[Y] - q[X]*q[Z] ) )                                                - off[y];
+  e[z] = atan2 ( ( 2.0f * ( q[W]*q[Z] + q[X]*q[Y] ) ), ( 1.0f - 2.0f * ( q[Y]*q[Y] + q[Z]*q[Z] ) ) ) - off[z];
 
   // Calculate Euler derivatives
   de[x] = - q[X] * dq[W] + q[W] * dq[X] + q[Z] * dq[Y] - q[Y] * dq[Z];
   de[y] = - q[Y] * dq[W] - q[Z] * dq[X] + q[W] * dq[Y] + q[X] * dq[Z];
   de[z] = - q[Z] * dq[W] + q[Y] * dq[X] - q[X] * dq[Y] + q[W] * dq[Z];
-  for ( i=0; i<3; i++ )  de[i] *= 2.0;
+  for ( i=0; i<3; i++ )  de[i] *= 2.0f;
 
   // Push values to AHRS data structure
   pthread_mutex_lock(&(imu->ahrs->mutex));
@@ -586,8 +586,8 @@ void imu_6DOF ( imu_struct *imu )  {
   ushort i;
   double dt, recipNorm;
   double q[4], dq[4], g[3], a[3], s[4], e[3], de[3], off[3];
-  double _2q0, _2q1, _2q2, _2q3, _4q0, _4q1, _4q2 ,_8q1, _8q2;
-  double q0q0, q1q1, q2q2, q3q3;
+  double _2qW, _2qX, _2qY, _2qZ, _4qW, _4qX, _4qY ,_8qX, _8qY;
+  double qWqW, qXqX, qYqY, qZqZ;
 
   // Local index
   ushort x=0, y=1, z=2;
@@ -626,25 +626,25 @@ void imu_6DOF ( imu_struct *imu )  {
     for ( i=0; i<3; i++ )  a[i] *= recipNorm;
 
     // Auxiliary variables to avoid repeated arithmetic
-    _2q0 = 2.0f * q[W];
-    _2q1 = 2.0f * q[X];
-    _2q2 = 2.0f * q[Y];
-    _2q3 = 2.0f * q[Z];
-    _4q0 = 4.0f * q[W];
-    _4q1 = 4.0f * q[X];
-    _4q2 = 4.0f * q[Y];
-    _8q1 = 8.0f * q[X];
-    _8q2 = 8.0f * q[Y];
-    q0q0 = q[W] * q[W];
-    q1q1 = q[X] * q[X];
-    q2q2 = q[Y] * q[Y];
-    q3q3 = q[Z] * q[Z];
+    _2qW = 2.0f * q[W];
+    _2qX = 2.0f * q[X];
+    _2qY = 2.0f * q[Y];
+    _2qZ = 2.0f * q[Z];
+    _4qW = 4.0f * q[W];
+    _4qX = 4.0f * q[X];
+    _4qY = 4.0f * q[Y];
+    _8qX = 8.0f * q[X];
+    _8qY = 8.0f * q[Y];
+    qWqW = q[W] * q[W];
+    qXqX = q[X] * q[X];
+    qYqY = q[Y] * q[Y];
+    qZqZ = q[Z] * q[Z];
 
     // Gradient decent algorithm corrective step
-    s[W] = _4q0 * q2q2 + _2q2 * a[x] + _4q0 * q1q1 - _2q1 * a[y];
-    s[X] = _4q1 * q3q3 - _2q3 * a[x] + 4.0f * q0q0 * q[X] - _2q0 * a[y] - _4q1 + _8q1 * q1q1 + _8q1 * q2q2 + _4q1 * a[z];
-    s[Y] = 4.0f * q0q0 * q[Y] + _2q0 * a[x] + _4q2 * q3q3 - _2q3 * a[y] - _4q2 + _8q2 * q1q1 + _8q2 * q2q2 + _4q2 * a[z];
-    s[Z] = 4.0f * q1q1 * q[Z] - _2q1 * a[x] + 4.0f * q2q2 * q[Z] - _2q2 * a[y];
+    s[W] = _4qW * qYqY + _2qY * a[x] + _4qW * qXqX - _2qX * a[y];
+    s[X] = _4qX * qZqZ - _2qZ * a[x] + 4.0f * qWqW * q[X] - _2qW * a[y] - _4qX + _8qX * qXqX + _8qX * qYqY + _4qX * a[z];
+    s[Y] = 4.0f * qWqW * q[Y] + _2qW * a[x] + _4qY * qZqZ - _2qZ * a[y] - _4qY + _8qY * qXqX + _8qY * qYqY + _4qY * a[z];
+    s[Z] = 4.0f * qXqX * q[Z] - _2qX * a[x] + 4.0f * qYqY * q[Z] - _2qY * a[y];
 
     // Normalise step magnitude
     recipNorm = 1.0 / sqrt( s[W] * s[W] + s[X] * s[X] + s[Y] * s[Y] + s[Z] * s[Z] );
@@ -663,9 +663,9 @@ void imu_6DOF ( imu_struct *imu )  {
   for ( i=0; i<4; i++ )  q[i] *= recipNorm;
 
   // Calculate Euler angles
-  e[x] = atan2 ( ( 2.0 * ( q[W]*q[X] + q[Y]*q[Z] ) ), ( 1.0 - 2.0 * ( q[X]*q[X] + q[Y]*q[Y] ) ) ) - off[x];
-  e[y] = asin  (   2.0 * ( q[W]*q[Y] - q[X]*q[Z] ) )                                              - off[y];
-  e[z] = atan2 ( ( 2.0 * ( q[W]*q[Z] + q[X]*q[Y] ) ), ( 1.0 - 2.0 * ( q[Y]*q[Y] + q[Z]*q[Z] ) ) ) - off[z];
+  e[x] = atan2 ( ( 2.0f * ( q[W]*q[X] + q[Y]*q[Z] ) ), ( 1.0f - 2.0f * ( q[X]*q[X] + q[Y]*q[Y] ) ) ) - off[x];
+  e[y] = asin  (   2.0f * ( q[W]*q[Y] - q[X]*q[Z] ) )                                                - off[y];
+  e[z] = atan2 ( ( 2.0f * ( q[W]*q[Z] + q[X]*q[Y] ) ), ( 1.0f - 2.0f * ( q[Y]*q[Y] + q[Z]*q[Z] ) ) ) - off[z];
 
   // Calculate Euler derivatives
   de[x] = - q[X] * dq[W] + q[W] * dq[X] + q[Z] * dq[Y] - q[Y] * dq[Z];
@@ -764,7 +764,7 @@ void imu_state ( void )  {
   for ( i=0; i<3; i++ )  {  att[i] /= 4.0;  ang[i] /= 2.0;  }
 
   // Correction b/c comp filter has no yaw value  
-  //att[2] *= 2.0; 
+  att[2] *= 2.0; 
 
   // Push to data structure
   pthread_mutex_lock(&rot.mutex);

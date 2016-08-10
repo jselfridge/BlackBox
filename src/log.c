@@ -951,7 +951,7 @@ static void log_save ( void )  {
     fprintf( datalog.stab, "    " );
     fprintf( datalog.stab, "%07.4f  ",  log_adaptX.kp[row] );
     fprintf( datalog.stab, "%07.4f  ",  log_adaptX.kd[row] );
-    //fprintf( datalog.stab, "%07.4f  ",  log_adaptX.kr[row] );
+    fprintf( datalog.stab, "%07.4f  ",  log_adaptX.kr[row] );
     fprintf( datalog.stab, "%07.4f  ",  log_adaptX.k[row]  );
     fprintf( datalog.stab, "    " );
     */

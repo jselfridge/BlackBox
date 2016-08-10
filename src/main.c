@@ -10,7 +10,7 @@
 int main ( void )  {
 
   // Begin program
-  if(DEBUG)  printf("\n--- Begin BlackBox program ---\n");
+  if (DEBUG)  printf("\n--- Begin BlackBox program ---\n");
   sys_init();
   io_init();
   flag_init();
@@ -20,14 +20,13 @@ int main ( void )  {
   log_init();
   tmr_init();
 
-
   // Run program
   if (DEBUG)  {  log_start();  datalog.enabled = true;  }
   while(running)  usleep(100000);
   if (DEBUG)  {  datalog.enabled = false;  log_finish();  }
 
   // Exit program
-  if(DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
+  if (DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   tmr_exit();
   log_exit();
   gcs_exit();
