@@ -8,6 +8,7 @@
 #include <unistd.h>
 
 
+#include "ekf.h"
 #include "flag.h"
 #include "gcs.h"
 #include "imu.h"

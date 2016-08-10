@@ -1,4 +1,4 @@
-ekf.c:36:6:ekf_init	0	static
-ekf.c:100:6:ekf_exit	0	static
-ekf.c:116:6:ekf_update	0	static
-ekf.c:315:6:ekf_gain	0	static
+ekf.c:35:6:ekf_init	24	static
+ekf.c:93:6:ekf_exit	0	static
+ekf.c:109:6:ekf_update	120	static
+ekf.c:247:6:ekf_gain	48	static
