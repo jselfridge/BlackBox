@@ -1,14 +1,11 @@
 
 
 #include "ekf.h"
-//#include <math.h>
-//#include <pthread.h>
 #include <stdio.h>
-//#include <stdlib.h>
-#include "ahrs.h"
-#include "imu.h"
+//#include "ahrs.h"
+//#include "imu.h"
 #include "sys.h"
-#include "timer.h"
+//#include "timer.h"
 
 
 /**
@@ -38,7 +35,7 @@
  */
 void ekf_init ( void )  {
   if (DEBUG)  printf( "Initializing EKF \n" );
-
+  /*
   // Local variables
   uint n  = EKF_N;
   uint m  = EKF_M;
@@ -92,7 +89,7 @@ void ekf_init ( void )  {
     printf("F  ");  mat_print(ekf.F);
     printf("H  ");  mat_print(ekf.H);
   }
-
+  */
   return;
 }
 
@@ -116,8 +113,9 @@ void ekf_exit ( void )  {
  * @param z array of measurement (observation) values
  * @return 0 on success, -1 on failure caused by non-positive-definite matrix.
  */
-int ekf_update ( void )  {
+void ekf_update ( void )  {
 
+  /*
   uint debug = 0;
 
   // Define local dimension sizes and counters
@@ -305,8 +303,18 @@ int ekf_update ( void )  {
   mat_clear(tmpMN);
   mat_clear(tmpN);
   mat_clear(tmpM);
+  */
 
-  return 0;
+  return;
+}
+
+
+/**
+ *
+ */
+void ekf_gain ( void )  {
+
+  return;
 }
 
 
