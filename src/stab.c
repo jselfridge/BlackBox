@@ -41,13 +41,13 @@ void stab_init ( void )  {
   stab.off[9] = -1.0;
 
   // Reference ranges (TODO: Move into radio or transmitter function)
-  stab.range[CH_R] = 0.7;
-  stab.range[CH_P] = 0.7;
-  stab.range[CH_Y] = 1.5;
+  stab.range[CH_R] = 0.6;
+  stab.range[CH_P] = 0.6;
+  stab.range[CH_Y] = 2.0;
   stab.range[CH_T] = 0.3;
 
   // Throttle values (TODO: Move into radio or transmitter function)
-  stab.thrl[0] = -0.35;  // Tmin
+  stab.thrl[0] = -0.30;  // Tmin
   stab.thrl[1] = -0.15;  // Tmax
   stab.thrl[2] =  0.00;  // Ttilt
 
@@ -57,9 +57,9 @@ void stab_init ( void )  {
   pidZ.wrap = true;
 
   // Roll (X) gain values
-  pidX.pgain = 0.082;
+  pidX.pgain = 0.085;
   pidX.igain = 0.000;
-  pidX.dgain = 0.056;
+  pidX.dgain = 0.055;
   /*
   adaptX.Gp  = 0.0;
   adaptX.Gd  = 0.0;
@@ -75,14 +75,14 @@ void stab_init ( void )  {
   */
 
   // Pitch (Y) gain values
-  pidY.pgain = 0.082;
+  pidY.pgain = 0.085;
   pidY.igain = 0.000;
-  pidY.dgain = 0.056;
+  pidY.dgain = 0.055;
 
   // Yaw (Z) gain values
-  pidZ.pgain = 0.080;
+  pidZ.pgain = 0.085;
   pidZ.igain = 0.000;
-  pidZ.dgain = 0.080;
+  pidZ.dgain = 0.055;
 
   return;
 }
