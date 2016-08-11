@@ -6,18 +6,16 @@ Develops a cape for a BeagleBone Black to enable "Black
 Box" functionality for research and development.
 
 
-Current Tasks
--------------
-The current task is to clean up the state estimation through an Extended Kalman filter.
-
-<b> Extended Kalman Filter </b>
+v0.1.7 - Extended Kalman Filter (EKF) Development
+-------------------------------------------------
 <ul>
   <li> Created module for Extended Kalman Filter (EKF). </li>
-  <li> Setup timing thread for the EKF. </li>
+  <li> Doing a fast update within the stabilization thread. </li>
+  <li> Setup slower timing thread for the EKF gain update. </li>
   <li> Added library for matrix math functionality. </li>
-  <li> WIP: Investigating Chol, LU, and QR factorizations for matrix inverse. </li>
-  <li> WIP: Adjust timing thread start delays </li>
-  <li> Currently limited by the speed of the matrix inverse calculation. </li>
+  <li> Investigating Chol, LU, and QR factorizations for matrix inverse. </li>
+  <li> TODO: Limited by matrix inverse calculation; currently fixed gain. </li>
+  <li> TODO: Revise Jacobian (F matrix) at each update; currently static matrix. </li>
 </ul>
 
 
