@@ -6,6 +6,23 @@ Develops a cape for a BeagleBone Black to enable "Black
 Box" functionality for research and development.
 
 
+Current Tasks
+-------------
+The current effort takes the fixed PID control structure, and will modify the 
+algorithms to implement adaptive state feedback control.
+
+<b> Adaptive Control - WIP </b>
+<ul>
+  <li> WIP - Add adaptive control terms to data structure. </li>
+  <li> WIP - Modify function call to include adaptive parameters. </li>
+  <li> WIP - Hard code a second order SISO algorithm. </li>
+  <li> WIP - Run control law within the stabilization thread. </li>
+  <li> WIP - Implement data logging. </li>
+  <li> WIP - Add parameters to GCS interface. </li> 
+  <li> WIP - Bench test and flight test experimental code. </li>
+</ul>
+
+
 v0.1.7 - Extended Kalman Filter (EKF) Development
 -------------------------------------------------
 <ul>
@@ -44,8 +61,8 @@ v0.1.5 - Signal filtering and parameter tuning
 </ul>
 
 
-v0.1.4 - Ground Control Station
--------------------------------
+v0.1.4 - Ground Control Station (GCS)
+-------------------------------------
 <ul> 
   <li> Set up timing thread code for GCS and send generic msg </li>
   <li> Read transmission through external USB/FTDI cable </li>
@@ -163,13 +180,6 @@ simple quadrotor system into the air.
 Pending Work
 ------------
 The following list outlines some proposed upcoming change.
-
-<b> Adaptive Control - WIP </b>
-<ul>
-  <li> Created data structure for adaptive control terms. </li>
-  <li> Hard coded a second order SISO algorithm. </li>
-  <li> Added functionality within the stabilization thread. </li>
-</ul>
 
 <b> Other tasks </b>
 <ul>
