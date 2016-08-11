@@ -54,16 +54,16 @@ void ekf_init ( void )  {
   ekf.K = mat_init(n,m);
 
   // Assign plant covariance values
-  mat_set( ekf.Q, 1, 1, 0.00 );
-  mat_set( ekf.Q, 2, 2, 0.00 );
+  mat_set( ekf.Q, 1, 1, 0.01 );
+  mat_set( ekf.Q, 2, 2, 0.01 );
 
   // Assign measurement covariance values
-  mat_set( ekf.R, 1, 1, 0.00 );
-  mat_set( ekf.R, 2, 2, 0.00 );
+  mat_set( ekf.R, 1, 1, 0.01 );
+  mat_set( ekf.R, 2, 2, 0.01 );
 
   // Initialize prediction matrix
-  mat_set( ekf.P, 1, 1, 0.00 );
-  mat_set( ekf.P, 2, 2, 0.00 );
+  mat_set( ekf.P, 1, 1, 0.01 );
+  mat_set( ekf.P, 2, 2, 0.01 );
 
   // Static F matrix    //--- TODO: Adaptively updated from MRAC or L1 ---//
   double dt  = 1.0 / HZ_STAB;
@@ -159,13 +159,13 @@ void ekf_update ( void )  {
 
   // Obtain AHRS A measurements
   pthread_mutex_lock(&ahrsA.mutex);
-  double R_ahrsa = ahrsA.eul[0];
+  double R_ahrsA = ahrsA.eul[0];
   //double P_ahrsa = ahrsA.eul[1];
   //double Y_ahrsa = ahrsA.eul[2];
   pthread_mutex_unlock(&ahrsA.mutex);
 
   // Populate measurement vector
-  mat_set( z, 1, 1,  R_ahrsa );
+  mat_set( z, 1, 1,  R_ahrsA );
   mat_set( z, 2, 1,  dR_gyrA );
 
   // Evaluate derivatives
@@ -266,15 +266,22 @@ void ekf_gain ( void )  {
   S = mat_copy(ekf.S);
   pthread_mutex_unlock(&ekf.mutex);
 
-  // K = T Ht S^{-1}
-  //Ht = mat_trans(H);
-  //tmp = mat_mul( T, Ht );
-  //inv = mat_inv(S);
-  //K = mat_mul( tmp, inv );
+  // Manual matrix inverse
+  double a = mat_get(S,1,1);
+  double b = mat_get(S,1,2);
+  double c = mat_get(S,2,1);
+  double d = mat_get(S,2,2);
+  double det = a * d - b * c;
+  mat_set( inv, 1,1,  d/det );
+  mat_set( inv, 1,2, -b/det );
+  mat_set( inv, 2,1, -c/det );
+  mat_set( inv, 2,2,  a/det );
 
-  // Debugging
-  mat_set( K, 1, 1, 0 );  mat_set( K, 1, 2, 0 );
-  mat_set( K, 2, 1, 0 );  mat_set( K, 2, 2, 0 );
+  // K = T Ht S^{-1}
+  Ht = mat_trans(H);
+  tmp = mat_mul( T, Ht );
+  //inv = mat_inv(S);
+  K = mat_mul( tmp, inv );
 
   // Push data to structure
   pthread_mutex_lock(&ekf.mutex);
