@@ -116,6 +116,7 @@ typedef struct log_ekf_struct {
   float  *z;
   float  *f;
   float  *h;
+  float  *F;
   float  *P;
   float  *T;
   float  *S;

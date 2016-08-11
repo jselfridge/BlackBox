@@ -167,6 +167,7 @@ void log_init ( void )  {
   log_ekf.z         =  malloc( sizeof(float)  * log_ekf.limit *  m  );
   log_ekf.f         =  malloc( sizeof(float)  * log_ekf.limit *  n  );
   log_ekf.h         =  malloc( sizeof(float)  * log_ekf.limit *  m  );
+  log_ekf.F         =  malloc( sizeof(float)  * log_ekf.limit * n*n );
   log_ekf.P         =  malloc( sizeof(float)  * log_ekf.limit * n*n );
   log_ekf.T         =  malloc( sizeof(float)  * log_ekf.limit * n*n );
   log_ekf.S         =  malloc( sizeof(float)  * log_ekf.limit * m*m );
@@ -316,6 +317,7 @@ void log_exit ( void )  {
   free(log_ekf.z);
   free(log_ekf.f);
   free(log_ekf.h);
+  free(log_ekf.F);
   free(log_ekf.P);
   free(log_ekf.T);
   free(log_ekf.S);
@@ -536,6 +538,7 @@ void log_start ( void )  {
   for ( r=1; r<=m; r++ )  fprintf( datalog.ekf, "      z%02d", r );  fprintf( datalog.ekf, "    " );
   for ( r=1; r<=n; r++ )  fprintf( datalog.ekf, "      f%02d", r );  fprintf( datalog.ekf, "    " );
   for ( r=1; r<=m; r++ )  fprintf( datalog.ekf, "      h%02d", r );  fprintf( datalog.ekf, "    " );
+  for ( r=1; r<=n; r++ )  for ( c=1; c<=n; c++ )  fprintf( datalog.ekf, "    F%02d%02d", r, c );  fprintf( datalog.ekf, "    " );
   //for ( r=1; r<=n; r++ )  for ( c=1; c<=n; c++ )  fprintf( datalog.ekf, "    P%02d%02d", r, c );  fprintf( datalog.ekf, "    " );
   //for ( r=1; r<=n; r++ )  for ( c=1; c<=n; c++ )  fprintf( datalog.ekf, "    T%02d%02d", r, c );  fprintf( datalog.ekf, "    " );
   //for ( r=1; r<=m; r++ )  for ( c=1; c<=m; c++ )  fprintf( datalog.ekf, "    S%02d%02d", r, c );  fprintf( datalog.ekf, "    " );
@@ -821,6 +824,7 @@ void log_record ( enum log_index index )  {
       for ( r=0; r<m; r++ )                         log_ekf.z [ row*m        +r ] = mat_get( ekf.z, r+1,   1 );
       for ( r=0; r<n; r++ )                         log_ekf.f [ row*n        +r ] = mat_get( ekf.f, r+1,   1 );
       for ( r=0; r<m; r++ )                         log_ekf.h [ row*m        +r ] = mat_get( ekf.h, r+1,   1 );
+      for ( r=0; r<n; r++ )  for ( c=0; c<n; c++ )  log_ekf.F [ row*n*n +r*n +c ] = mat_get( ekf.F, r+1, c+1 );
       //for ( r=0; r<n; r++ )  for ( c=0; c<n; c++ )  log_ekf.P [ row*n*n +r*n +c ] = mat_get( ekf.P, r+1, c+1 );
       //for ( r=0; r<n; r++ )  for ( c=0; c<n; c++ )  log_ekf.T [ row*n*n +r*n +c ] = mat_get( ekf.T, r+1, c+1 );
       //for ( r=0; r<m; r++ )  for ( c=0; c<m; c++ )  log_ekf.S [ row*m*m +r*m +c ] = mat_get( ekf.S, r+1, c+1 );
@@ -1059,6 +1063,7 @@ static void log_save ( void )  {
     for ( i=0; i<m;   i++ )  fprintf( datalog.ekf, "%07.4f  ",  log_ekf.z [ row*m   +i ] );   fprintf( datalog.ekf, "    " );
     for ( i=0; i<n;   i++ )  fprintf( datalog.ekf, "%07.4f  ",  log_ekf.f [ row*n   +i ] );   fprintf( datalog.ekf, "    " );
     for ( i=0; i<m;   i++ )  fprintf( datalog.ekf, "%07.4f  ",  log_ekf.h [ row*m   +i ] );   fprintf( datalog.ekf, "    " );
+    for ( i=0; i<n*n; i++ )  fprintf( datalog.ekf, "%07.4f  ",  log_ekf.F [ row*n*n +i ] );   fprintf( datalog.ekf, "    " );
     //for ( i=0; i<n*n; i++ )  fprintf( datalog.ekf, "%07.4f  ",  log_ekf.P [ row*n*n +i ] );   fprintf( datalog.ekf, "    " );
     //for ( i=0; i<n*n; i++ )  fprintf( datalog.ekf, "%07.4f  ",  log_ekf.T [ row*n*n +i ] );   fprintf( datalog.ekf, "    " );
     //for ( i=0; i<m*m; i++ )  fprintf( datalog.ekf, "%07.4f  ",  log_ekf.S [ row*m*m +i ] );   fprintf( datalog.ekf, "    " );

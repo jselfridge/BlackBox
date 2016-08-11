@@ -77,14 +77,14 @@ void ekf_init ( void )  {
   mat_set( ekf.P, 5, 5, 0.1 );
   mat_set( ekf.P, 6, 6, 0.1 );
 
-  // Static F matrix    //--- TODO: Adaptively updated from MRAC or L1 ---//
+  // Static F matrix
   double dt  = 1.0 / HZ_STAB;
   ekf.F = mat_eye(n);
   mat_set( ekf.F, 1,4, dt );
   mat_set( ekf.F, 2,5, dt );
   mat_set( ekf.F, 3,6, dt );
 
-  // Static H matrix   //--- TODO: Adaptively updated from MRAC or L1 ---//
+  // Static H matrix
   ekf.H = mat_eye(n);
 
   // Display EKF settings
@@ -121,9 +121,11 @@ void ekf_exit ( void )  {
  */
 void ekf_update ( void )  {
 
-  // Define local dimension sizes
+  // Define local variables
+  ushort r, c;
   ushort n = EKF_N;
   ushort m = EKF_M;
+  double val;
 
   // Initialize local EKF arrays
   matrix *x = mat_init(n,1);
@@ -155,7 +157,6 @@ void ekf_update ( void )  {
   // Obtain EKF values
   pthread_mutex_lock(&ekf.mutex);
   x = mat_copy(ekf.x);
-  F = mat_copy(ekf.F);
   H = mat_copy(ekf.H);
   Q = mat_copy(ekf.Q);
   R = mat_copy(ekf.R);
@@ -170,13 +171,6 @@ void ekf_update ( void )  {
   double dYa = gyrA.filter[2];
   pthread_mutex_unlock(&gyrA.mutex);
 
-  // Obtain gyro B measurements
-  //pthread_mutex_lock(&gyrB.mutex);
-  //double dR_gyrb = gyrB.filter[0];
-  //double dP_gyrb = gyrB.filter[1];
-  //double dY_gyrb = gyrB.filter[2];
-  //pthread_mutex_unlock(&gyrB.mutex);
-
   // Obtain AHRS A measurements
   pthread_mutex_lock(&ahrsA.mutex);
   double Ra = ahrsA.eul[0];
@@ -184,12 +178,15 @@ void ekf_update ( void )  {
   double Ya = ahrsA.eul[2];
   pthread_mutex_unlock(&ahrsA.mutex);
 
-  // Obtain AHRS B measurements
-  //pthread_mutex_lock(&ahrsB.mutex);
-  //double R_ahrsb = ahrsB.eul[0];
-  //double P_ahrsb = ahrsB.eul[1];
-  //double Y_ahrsb = ahrsB.eul[2];
-  //pthread_mutex_unlock(&ahrsB.mutex);
+  // Calculate F matrix
+  for ( r=1; r<=n; r++ )  {
+    for ( c=1; c<=n; c++ )  {
+      val = 0.0;
+      mat_set( F,r,c, val );
+    }
+  }
+  for ( r=1; r<=6; r++ )  mat_set( F,r,r,   1.00   );
+  for ( r=1; r<=3; r++ )  mat_set( F,r,r+3, 0.01*r );
 
   // Populate measurement vector
   mat_set( z, 1,1,  Ra );
@@ -236,6 +233,7 @@ void ekf_update ( void )  {
   ekf.z = mat_copy(z);
   ekf.f = mat_copy(f);
   ekf.h = mat_copy(h);  
+  ekf.P = mat_copy(F);
   ekf.P = mat_copy(P);
   ekf.T = mat_copy(T);
   ekf.S = mat_copy(S);
@@ -296,23 +294,12 @@ void ekf_gain ( void )  {
   T = mat_copy(ekf.T);
   S = mat_copy(ekf.S);
   pthread_mutex_unlock(&ekf.mutex);
-  /*
-  // Manual matrix inverse
-  double a = mat_get(S,1,1);
-  double b = mat_get(S,1,2);
-  double c = mat_get(S,2,1);
-  double d = mat_get(S,2,2);
-  double det = a * d - b * c;
-  mat_set( inv, 1,1,  d/det );
-  mat_set( inv, 1,2, -b/det );
-  mat_set( inv, 2,1, -c/det );
-  mat_set( inv, 2,2,  a/det );
-  */
+
   // K = T Ht S^{-1}
   Ht = mat_trans(H);
   tmp = mat_mul( T, Ht );
-  inv = mat_inv(S);
-  K = mat_mul( tmp, inv );
+  //inv = mat_inv(S);
+  //K = mat_mul( tmp, inv );
 
   // Push data to structure
   pthread_mutex_lock(&ekf.mutex);
