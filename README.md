@@ -14,9 +14,9 @@ The current task is to clean up the state estimation through an Extended Kalman 
 <ul>
   <li> Created module for Extended Kalman Filter (EKF). </li>
   <li> Setup timing thread for the EKF. </li>
-  <li> Added simple matrix math functionality. </li>
-  <li> Incorporated a simple Cholesky decomposition for symmetric PSD matrix inverse. </li>
-  <li> Investigating LU and QR factorizations for matrix inverse. </li>
+  <li> Added library for matrix math functionality. </li>
+  <li> WIP: Investigating Chol, LU, and QR factorizations for matrix inverse. </li>
+  <li> WIP: Adjust timing thread start delays </li>
   <li> Currently limited by the speed of the matrix inverse calculation. </li>
 </ul>
 

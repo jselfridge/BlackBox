@@ -150,13 +150,13 @@ void tmr_attr ( pthread_attr_t *attr )  {
 void tmr_begin ( pthread_attr_t *attr )  {
   if(DEBUG)  printf("  Begin timing threads:  ");
 
-  tmr_thread( &tmr_io,    attr, fcn_io    );  usleep(1000);
-  tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(1000);
-  tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(1000);
-  tmr_thread( &tmr_stab,  attr, fcn_stab  );  usleep(1000);
-  tmr_thread( &tmr_ins,   attr, fcn_ins   );  usleep(1000);
-  tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(1000);
-  tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(1000);
+  tmr_thread( &tmr_io,    attr, fcn_io    );  usleep(100);
+  tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(100);
+  tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100);
+  tmr_thread( &tmr_stab,  attr, fcn_stab  );  usleep(100);
+  tmr_thread( &tmr_ins,   attr, fcn_ins   );  usleep(100);
+  tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100);
+  tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(100);
 
   if(DEBUG) {
     tmr_thread( &tmr_debug, attr, fcn_debug );
@@ -291,7 +291,7 @@ void tmr_create ( timer_struct *tmr )  {
 
   // Set start value
   itval.it_value.tv_sec  = 0;
-  itval.it_value.tv_nsec = 200 * 1000 * 1000;
+  itval.it_value.tv_nsec = 10 * 1000 * 1000;
 
   // Enable the timer
   if( timerfd_settime ( tmr->fd, 0, &itval, NULL ) )

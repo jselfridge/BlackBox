@@ -54,25 +54,38 @@ void ekf_init ( void )  {
   ekf.K = mat_init(n,m);
 
   // Assign plant covariance values
-  mat_set( ekf.Q, 1, 1, 0.01 );
-  mat_set( ekf.Q, 2, 2, 0.01 );
+  mat_set( ekf.Q, 1, 1, 0.1 );
+  mat_set( ekf.Q, 2, 2, 0.1 );
+  mat_set( ekf.Q, 3, 3, 0.1 );
+  mat_set( ekf.Q, 4, 4, 0.1 );
+  mat_set( ekf.Q, 5, 5, 0.1 );
+  mat_set( ekf.Q, 6, 6, 0.1 );
 
   // Assign measurement covariance values
-  mat_set( ekf.R, 1, 1, 0.01 );
-  mat_set( ekf.R, 2, 2, 0.01 );
+  mat_set( ekf.R, 1, 1, 0.1 );
+  mat_set( ekf.R, 2, 2, 0.1 );
+  mat_set( ekf.R, 3, 3, 0.1 );
+  mat_set( ekf.R, 4, 4, 0.1 );
+  mat_set( ekf.R, 5, 5, 0.1 );
+  mat_set( ekf.R, 6, 6, 0.1 );
 
   // Initialize prediction matrix
-  mat_set( ekf.P, 1, 1, 0.01 );
-  mat_set( ekf.P, 2, 2, 0.01 );
+  mat_set( ekf.P, 1, 1, 0.1 );
+  mat_set( ekf.P, 2, 2, 0.1 );
+  mat_set( ekf.P, 3, 3, 0.1 );
+  mat_set( ekf.P, 4, 4, 0.1 );
+  mat_set( ekf.P, 5, 5, 0.1 );
+  mat_set( ekf.P, 6, 6, 0.1 );
 
   // Static F matrix    //--- TODO: Adaptively updated from MRAC or L1 ---//
   double dt  = 1.0 / HZ_STAB;
-  mat_set( ekf.F, 1, 1, 1.0 );  mat_set( ekf.F, 1, 2, dt  );
-  mat_set( ekf.F, 2, 1, 0.0 );  mat_set( ekf.F, 2, 2, 1.0 );
-  
+  ekf.F = mat_eye(n);
+  mat_set( ekf.F, 1,4, dt );
+  mat_set( ekf.F, 2,5, dt );
+  mat_set( ekf.F, 3,6, dt );
+
   // Static H matrix   //--- TODO: Adaptively updated from MRAC or L1 ---//
-  mat_set( ekf.H, 1, 1, 1.0 );  mat_set( ekf.H, 1, 2, 0.0 );
-  mat_set( ekf.H, 2, 1, 0.0 );  mat_set( ekf.H, 2, 2, 1.0 );
+  ekf.H = mat_eye(n);
 
   // Display EKF settings
   if (DEBUG) {
@@ -152,21 +165,39 @@ void ekf_update ( void )  {
 
   // Obtain gyro A measurements
   pthread_mutex_lock(&gyrA.mutex);
-  double dR_gyrA = gyrA.filter[0];
-  //double dP_gyrA = gyrA.filter[1];
-  //double dY_gyrA = gyrA.filter[2];
+  double dRa = gyrA.filter[0];
+  double dPa = gyrA.filter[1];
+  double dYa = gyrA.filter[2];
   pthread_mutex_unlock(&gyrA.mutex);
+
+  // Obtain gyro B measurements
+  //pthread_mutex_lock(&gyrB.mutex);
+  //double dR_gyrb = gyrB.filter[0];
+  //double dP_gyrb = gyrB.filter[1];
+  //double dY_gyrb = gyrB.filter[2];
+  //pthread_mutex_unlock(&gyrB.mutex);
 
   // Obtain AHRS A measurements
   pthread_mutex_lock(&ahrsA.mutex);
-  double R_ahrsA = ahrsA.eul[0];
-  //double P_ahrsa = ahrsA.eul[1];
-  //double Y_ahrsa = ahrsA.eul[2];
+  double Ra = ahrsA.eul[0];
+  double Pa = ahrsA.eul[1];
+  double Ya = ahrsA.eul[2];
   pthread_mutex_unlock(&ahrsA.mutex);
 
+  // Obtain AHRS B measurements
+  //pthread_mutex_lock(&ahrsB.mutex);
+  //double R_ahrsb = ahrsB.eul[0];
+  //double P_ahrsb = ahrsB.eul[1];
+  //double Y_ahrsb = ahrsB.eul[2];
+  //pthread_mutex_unlock(&ahrsB.mutex);
+
   // Populate measurement vector
-  mat_set( z, 1, 1,  R_ahrsA );
-  mat_set( z, 2, 1,  dR_gyrA );
+  mat_set( z, 1,1,  Ra );
+  mat_set( z, 2,1,  Pa );
+  mat_set( z, 3,1,  Ya );
+  mat_set( z, 4,1, dRa );
+  mat_set( z, 5,1, dPa );
+  mat_set( z, 6,1, dYa );
 
   // Evaluate derivatives
   f = mat_mul( F, x );
@@ -265,7 +296,7 @@ void ekf_gain ( void )  {
   T = mat_copy(ekf.T);
   S = mat_copy(ekf.S);
   pthread_mutex_unlock(&ekf.mutex);
-
+  /*
   // Manual matrix inverse
   double a = mat_get(S,1,1);
   double b = mat_get(S,1,2);
@@ -276,11 +307,11 @@ void ekf_gain ( void )  {
   mat_set( inv, 1,2, -b/det );
   mat_set( inv, 2,1, -c/det );
   mat_set( inv, 2,2,  a/det );
-
+  */
   // K = T Ht S^{-1}
   Ht = mat_trans(H);
   tmp = mat_mul( T, Ht );
-  //inv = mat_inv(S);
+  inv = mat_inv(S);
   K = mat_mul( tmp, inv );
 
   // Push data to structure
