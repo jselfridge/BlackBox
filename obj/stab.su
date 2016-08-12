@@ -1,3 +1,4 @@
-stab.c:21:6:stab_init	32	static
-stab.c:95:6:stab_exit	0	static
-stab.c:106:6:stab_update	208	static
+stab.c:120:6:stab_refmdl	56	static
+stab.c:23:6:stab_init	88	static
+stab.c:109:6:stab_exit	0	static
+stab.c:161:6:stab_update	264	static

@@ -1,6 +1,7 @@
 
 
 #include "stab.h"
+#include <math.h>
 #include <stdio.h>
 #include "imu.h"
 #include "io.h"
@@ -8,6 +9,7 @@
 #include "timer.h"
 
 
+static void    stab_refmdl  ( sf_struct *sf );
 static void    stab_quad    ( void );
 //static double  stab_pid     ( pid_struct *pid, double xp, double xd, double ref, bool reset );
 //static double  stab_adapt   ( adapt_struct *adapt, double p, double d, double r, bool areset );
@@ -56,6 +58,18 @@ void stab_init ( void )  {
   sfY.wrap = true;
   sfZ.wrap = true;
 
+  // Assign desired characteristics
+  sfX.ts = 0.10;  sfX.po = 15.0;  stab_refmdl( &sfX );
+  sfY.ts = 0.30;  sfY.po = 10.0;  stab_refmdl( &sfY );
+  sfZ.ts = 0.46;  sfZ.po = 04.3;  stab_refmdl( &sfZ );
+  if (DEBUG)  {
+    printf("          Ts    Po    zeta  nfreq    sigma  dfreq          kp      kd  \n" );
+    printf("  X:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f  \n", sfX.ts, sfX.po, sfX.zeta, sfX.nfreq, sfX.sigma, sfX.dfreq, sfX.kp, sfX.kd );
+    printf("  Y:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f  \n", sfY.ts, sfY.po, sfY.zeta, sfY.nfreq, sfY.sigma, sfY.dfreq, sfY.kp, sfY.kd );
+    printf("  Z:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f  \n", sfZ.ts, sfZ.po, sfZ.zeta, sfZ.nfreq, sfZ.sigma, sfZ.dfreq, sfZ.kp, sfZ.kd );
+    fflush(stdout);
+  }
+
   /*  -- ORIGINAL --
   // Roll (X) gain values
   pidX.pgain = 0.085;
@@ -95,6 +109,47 @@ void stab_init ( void )  {
 void stab_exit ( void )  {
   if (DEBUG)  printf("Close stabilization \n");
   // Add exit code as needed...
+  return;
+}
+
+
+/**
+ *  stab_refmdl
+ *  Take desired system char and determine reference model
+ */
+void stab_refmdl ( sf_struct *sf )  {
+
+  // Local variables
+  double ts, po, ln;
+  double sigma, zeta;
+  double nfreq, dfreq;
+  double kp, kd;
+
+  // Get desired system characteristics
+  pthread_mutex_lock(&sf->mutex);
+  ts = sf->ts;
+  po = sf->po / 100.0;
+  pthread_mutex_unlock(&sf->mutex);
+
+  // Calculate parameters
+  sigma = 4.6 / ts;
+  ln = log(po) * log(po);
+  zeta = sqrt( ln / ( M_PI * M_PI + ln ) );
+  nfreq = sigma / zeta;
+  dfreq = nfreq * sqrt( 1 - zeta * zeta );
+  kp = nfreq * nfreq;
+  kd = 2.0 * zeta * nfreq;
+
+  // Assign reference model parameters
+  pthread_mutex_lock(&sf->mutex);
+  sf->sigma = sigma;
+  sf->zeta  = zeta;
+  sf->nfreq = nfreq;
+  sf->dfreq = dfreq;
+  sf->kp    = kp;
+  sf->kd    = kd;
+  pthread_mutex_unlock(&sf->mutex);
+
   return;
 }
 
@@ -157,9 +212,9 @@ void stab_quad ( void )  {
 
 
 
-  cmd[x] = 0.0;
-  cmd[y] = 0.0;
-  cmd[z] = 0.0;
+  cmd[x] = att[0] * ang[0] * 0.0;
+  cmd[y] = att[1] * ang[1] * 0.0;
+  cmd[z] = att[2] * ang[2] * 0.0;
 
 
   // -- ORIGINAL -- //

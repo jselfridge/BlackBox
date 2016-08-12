@@ -16,6 +16,7 @@ int main ( void )  {
   flag_init();
   imu_init();
   stab_init();
+  /*
   ekf_init();
   gcs_init();
   log_init();
@@ -32,6 +33,7 @@ int main ( void )  {
   log_exit();
   gcs_exit();
   ekf_exit();
+  */
   stab_exit();
   imu_exit();
   flag_exit();

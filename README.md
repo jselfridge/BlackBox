@@ -13,6 +13,7 @@ algorithms to implement adaptive state feedback control.
 
 <b> State Feedback Adaptive Control - WIP </b>
 <ul>
+  <li> WIP - Create desired ref model from rise time and percent overshoot. </li>
   <li> WIP - Revised data structure. </li>
   <li> WIP - Develop reference model signals. </li>
   <li> WIP - Modify function call to include adaptive parameters. </li>
