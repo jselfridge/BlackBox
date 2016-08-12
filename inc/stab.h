@@ -39,8 +39,8 @@ typedef struct sf_struct {
   double  zeta;
   double  nfreq;
   double  dfreq;
-  double  kp;
-  double  kd;
+  double  ap;
+  double  ad;
   double  r;
   double  xp;
   double  xd;

@@ -9,8 +9,7 @@
 #include "timer.h"
 
 
-// Debugging
-#include "log.h"
+/* Debugging */ #include "log.h"
 
 
 static void    stab_refmdl  ( sf_struct *sf );
@@ -69,14 +68,17 @@ void stab_init ( void )  {
   sfZ.wrap = true;
 
   // Assign desired characteristics
-  sfX.ts = 0.10;  sfX.mp = 15.0;  stab_refmdl( &sfX );
-  sfY.ts = 0.30;  sfY.mp = 10.0;  stab_refmdl( &sfY );
+  sfX.ts = 1.00;  sfX.mp = 15.0;  stab_refmdl( &sfX );
+  sfY.ts = 3.00;  sfY.mp = 10.0;  stab_refmdl( &sfY );
   sfZ.ts = 0.46;  sfZ.mp = 04.3;  stab_refmdl( &sfZ );
   if (DEBUG)  {
-    printf("          Ts    Mp    zeta  nfreq    sigma  dfreq          kp      kd  \n" );
-    printf("  X:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f  \n", sfX.ts, sfX.mp, sfX.zeta, sfX.nfreq, sfX.sigma, sfX.dfreq, sfX.kp, sfX.kd );
-    printf("  Y:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f  \n", sfY.ts, sfY.mp, sfY.zeta, sfY.nfreq, sfY.sigma, sfY.dfreq, sfY.kp, sfY.kd );
-    printf("  Z:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f  \n", sfZ.ts, sfZ.mp, sfZ.zeta, sfZ.nfreq, sfZ.sigma, sfZ.dfreq, sfZ.kp, sfZ.kd );
+    printf("          Ts    Mp    zeta  nfreq    sigma  dfreq          ap      ad  \n" );
+    printf("  X:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f  \n", 
+      sfX.ts, sfX.mp, sfX.zeta, sfX.nfreq, sfX.sigma, sfX.dfreq, sfX.ap, sfX.ad );
+    printf("  Y:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f  \n", 
+      sfY.ts, sfY.mp, sfY.zeta, sfY.nfreq, sfY.sigma, sfY.dfreq, sfY.ap, sfY.ad );
+    printf("  Z:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f  \n", 
+      sfZ.ts, sfZ.mp, sfZ.zeta, sfZ.nfreq, sfZ.sigma, sfZ.dfreq, sfZ.ap, sfZ.ad );
     fflush(stdout);
   }
 
@@ -133,7 +135,7 @@ void stab_refmdl ( sf_struct *sf )  {
   double ts, mp, ln;
   double sigma, zeta;
   double nfreq, dfreq;
-  double kp, kd;
+  double ap, ad;
 
   // Get desired system characteristics
   pthread_mutex_lock(&sf->mutex);
@@ -147,8 +149,8 @@ void stab_refmdl ( sf_struct *sf )  {
   zeta = sqrt( ln / ( M_PI * M_PI + ln ) );
   nfreq = sigma / zeta;
   dfreq = nfreq * sqrt( 1 - zeta * zeta );
-  kp = nfreq * nfreq;
-  kd = 2.0 * zeta * nfreq;
+  ap = nfreq * nfreq;
+  ad = 2.0 * zeta * nfreq;
 
   // Assign reference model parameters
   pthread_mutex_lock(&sf->mutex);
@@ -156,8 +158,8 @@ void stab_refmdl ( sf_struct *sf )  {
   sf->zeta  = zeta;
   sf->nfreq = nfreq;
   sf->dfreq = dfreq;
-  sf->kp    = kp;
-  sf->kd    = kd;
+  sf->ap    = ap;
+  sf->ad    = ad;
   pthread_mutex_unlock(&sf->mutex);
 
   return;
@@ -224,10 +226,12 @@ void stab_quad ( void )  {
   if ( timestamp <= 2.0 || timestamp >= 6.0 )  for ( i=0; i<3; i++ )  ref[i] = 0.0;
   else  {  ref[x] = 3.0;  ref[y] = 2.0;  ref[z] = 1.0;  }
 
+  // Apply state feedback function
   stab_sf( &sfX, ref[x] );
   stab_sf( &sfY, ref[y] );
   stab_sf( &sfZ, ref[z] );
 
+  // Debugging torque commands
   cmd[x] = att[0] * ang[0] * 0.0;
   cmd[y] = att[1] * ang[1] * 0.0;
   cmd[z] = att[2] * ang[2] * 0.0;
@@ -288,19 +292,27 @@ void stab_quad ( void )  {
 void stab_sf ( sf_struct *sf, double r )  {
 
   // Local variables
-  //double xp, xd;
+  double dt, ap, ad, xp, xd, xa;
 
   // Pull data from structure
-  //pthread_mutex_lock(&sf->mutex);
-  //xp    = sf->xp;
-  //xd    = sf->xd;
-  //pthread_mutex_unlock(&sf->mutex);
+  pthread_mutex_lock(&sf->mutex);
+  dt = sf->dt;
+  ap = sf->ap;
+  ad = sf->ad;
+  xp = sf->xp;
+  xd = sf->xd;
+  pthread_mutex_unlock(&sf->mutex);
 
-
+  // Determine referenace states
+  xa  = r * ap - xp * ap - xd * ad;
+  xd += dt * xa;
+  xp += dt * xd + 0.5 * dt * dt * xa;
 
   // Push data to structure
   pthread_mutex_lock(&sf->mutex);
-  sf->r = r;
+  sf->r  = r;
+  sf->xp = xp;
+  sf->xd = xd;
   pthread_mutex_unlock(&sf->mutex);
 
 

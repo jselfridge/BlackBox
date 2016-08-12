@@ -46,8 +46,8 @@ void log_init ( void )  {
   log_compB.limit   =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_ahrsB.limit   =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_stab.limit    =  LOG_MAX_DUR * HZ_STAB;
-  log_ekf.limit     =  LOG_MAX_DUR * HZ_STAB;
-  log_ins.limit     =  LOG_MAX_DUR * HZ_INS;
+  //log_ekf.limit     =  LOG_MAX_DUR * HZ_STAB;
+  //log_ins.limit     =  LOG_MAX_DUR * HZ_INS;
 
   // Parameter value setup
   log_param.time    =  malloc( sizeof(float)  * log_param.limit               );
@@ -148,17 +148,22 @@ void log_init ( void )  {
   //log_stab.ang      =  malloc( sizeof(float)  * log_stab.limit * 3 );
   //log_stab.cmd      =  malloc( sizeof(float)  * log_stab.limit * 4 );
 
-  // PID stabilization
-  //log_pidX.perr     =  malloc( sizeof(float)  * log_stab.limit );
-  //log_pidX.ierr     =  malloc( sizeof(float)  * log_stab.limit );
-  //log_pidX.derr     =  malloc( sizeof(float)  * log_stab.limit );
-  //log_pidY.perr     =  malloc( sizeof(float)  * log_stab.limit );
-  //log_pidY.ierr     =  malloc( sizeof(float)  * log_stab.limit );
-  //log_pidY.derr     =  malloc( sizeof(float)  * log_stab.limit );
-  //log_pidZ.perr     =  malloc( sizeof(float)  * log_stab.limit );
-  //log_pidZ.ierr     =  malloc( sizeof(float)  * log_stab.limit );
-  //log_pidZ.derr     =  malloc( sizeof(float)  * log_stab.limit );
+  // SF roll stabilization
+  log_sfX.r         =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfX.xp        =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfX.xd        =  malloc( sizeof(float)  * log_stab.limit );
 
+  // SF pitch stabilization
+  log_sfY.r         =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfY.xp        =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfY.xd        =  malloc( sizeof(float)  * log_stab.limit );
+
+  // SF yaw stabilization
+  log_sfZ.r         =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfZ.xp        =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfZ.xd        =  malloc( sizeof(float)  * log_stab.limit );
+
+  /*
   // EKF setup
   ushort n = EKF_N, m = EKF_M;
   log_ekf.time      =  malloc( sizeof(float)  * log_ekf.limit       );
@@ -171,22 +176,12 @@ void log_init ( void )  {
   log_ekf.P         =  malloc( sizeof(float)  * log_ekf.limit * n*n );
   log_ekf.T         =  malloc( sizeof(float)  * log_ekf.limit * n*n );
   log_ekf.S         =  malloc( sizeof(float)  * log_ekf.limit * m*m );
-
+  */
+  /*
   // INS setup
   log_ins.time      =  malloc( sizeof(float)  * log_ins.limit       );
   log_ins.dur       =  malloc( sizeof(ulong)  * log_ins.limit       );
   log_ins.K         =  malloc( sizeof(float)  * log_ins.limit * n*m );
-
-  /*
-  // Adaptive roll stabilization
-  log_adaptX.u      =  malloc( sizeof(float)  * log_stab.limit );
-  log_adaptX.p      =  malloc( sizeof(float)  * log_stab.limit );
-  log_adaptX.d      =  malloc( sizeof(float)  * log_stab.limit );
-  log_adaptX.r      =  malloc( sizeof(float)  * log_stab.limit );
-  log_adaptX.kp     =  malloc( sizeof(float)  * log_stab.limit );
-  log_adaptX.kd     =  malloc( sizeof(float)  * log_stab.limit );
-  //log_adaptX.kr     =  malloc( sizeof(float)  * log_stab.limit );
-  log_adaptX.k      =  malloc( sizeof(float)  * log_stab.limit );
   */
 
   return;
@@ -299,17 +294,23 @@ void log_exit ( void )  {
   //free(log_stab.ang);
   //free(log_stab.cmd);
 
-  // PID stabilization memory
-  //free(log_pidX.perr);
-  //free(log_pidX.ierr);
-  //free(log_pidX.derr);
-  //free(log_pidY.perr);
-  //free(log_pidY.ierr);
-  //free(log_pidY.derr);
-  //free(log_pidZ.perr);
-  //free(log_pidZ.ierr);
-  //free(log_pidZ.derr);
+  // SF roll stab memory
+  free(log_sfX.r);
+  free(log_sfX.xp);
+  free(log_sfX.xd);
 
+  // SF pitch stab memory
+  free(log_sfY.r);
+  free(log_sfY.xp);
+  free(log_sfY.xd);
+
+  // SF yaw stab memory
+  free(log_sfZ.r);
+  free(log_sfZ.xp);
+  free(log_sfZ.xd);
+
+
+  /*
   // EKF memory
   free(log_ekf.time);
   free(log_ekf.dur);
@@ -321,12 +322,13 @@ void log_exit ( void )  {
   free(log_ekf.P);
   free(log_ekf.T);
   free(log_ekf.S);
-
+  */
+  /*
   // INS memory
   free(log_ins.time);
   free(log_ins.dur);
   free(log_ins.K);
-
+  */
   /*
   // Adaptive roll stabilization
   free(log_adaptX.u);
@@ -364,8 +366,8 @@ void log_start ( void )  {
   log_compB.count  = 0;
   log_ahrsB.count  = 0;
   log_stab.count   = 0;
-  log_ekf.count    = 0;
-  log_ins.count    = 0;
+  //log_ekf.count    = 0;
+  //log_ins.count    = 0;
 
   // Allocate dir/path/file memory
   datalog.dir  = malloc(16);
@@ -373,7 +375,7 @@ void log_start ( void )  {
   char *file   = malloc(64);
 
   // Find next available log directory
-  ushort i = 0, r, c;
+  ushort i = 0; // r, c;
   while (true) {
     i++;
     if      ( i<10   )  sprintf( datalog.dir, "00%d", i );
@@ -522,12 +524,12 @@ void log_start ( void )  {
   datalog.stab = fopen( file, "w" );
   if( datalog.stab == NULL )  printf( "Error (log_init): Cannot generate 'stab' file. \n" );
   fprintf( datalog.stab, 
-    "    stabtime  stabdur     " );
-  //  attX     attY     attZ         angX     angY     angZ     
-  //  cmdX     cmdY     cmdZ     cmdT        " );
-  //fprintf( datalog.stab, "Xperr    Xierr    Xzerr        Yperr    Yierr    Yderr        Zperr    Zierr    Zderr         " );  
-  //fprintf( datalog.stab, "acXu     acXp     acXd     acXr         acXkp    acXkd    acXk ");
+    "    stabtime  stabdur      \
+    X_r     X_xp     X_xd      \
+    Y_r     Y_xp     Y_xd      \
+    Z_r     Z_xp     Z_xd " );
 
+  /*
   // EKF datalog file
   ushort n = EKF_N, m = EKF_M;
   sprintf( file, "%sekf.txt", datalog.path );
@@ -542,13 +544,15 @@ void log_start ( void )  {
   //for ( r=1; r<=n; r++ )  for ( c=1; c<=n; c++ )  fprintf( datalog.ekf, "    P%02d%02d", r, c );  fprintf( datalog.ekf, "    " );
   //for ( r=1; r<=n; r++ )  for ( c=1; c<=n; c++ )  fprintf( datalog.ekf, "    T%02d%02d", r, c );  fprintf( datalog.ekf, "    " );
   //for ( r=1; r<=m; r++ )  for ( c=1; c<=m; c++ )  fprintf( datalog.ekf, "    S%02d%02d", r, c );  fprintf( datalog.ekf, "    " );
-
+  */
+  /*
   // INS datalog file
   sprintf( file, "%sins.txt", datalog.path );
   datalog.ins = fopen( file, "w" );
   if( datalog.ins == NULL )  printf( "Error (log_init): Cannot generate 'ins' file. \n" );
   fprintf( datalog.ins, "     instime   insdur    " );
   for ( r=1; r<=n; r++ )  for ( c=1; c<=m; c++ )  fprintf( datalog.ins, "    K%02d%02d", r, c );  fprintf( datalog.ins, "    " );
+  */
 
   // Determine start second
   struct timespec timeval;
@@ -795,27 +799,28 @@ void log_record ( enum log_index index )  {
       //for ( i=0; i<4; i++ )  log_stab.cmd   [ row*4 +i ] = stab.cmd[i];
       pthread_mutex_unlock(&stab.mutex);
 
-      // Roll PID values
-      //pthread_mutex_lock(&pidX.mutex);
-      //log_pidX.perr [row] = pidX.perr;
-      //log_pidX.ierr [row] = pidX.ierr;
-      //log_pidX.derr [row] = pidX.derr;
-      //pthread_mutex_unlock(&pidX.mutex);
+      // Roll SF values
+      pthread_mutex_lock(&sfX.mutex);
+      log_sfX.r  [row] = sfX.r;
+      log_sfX.xp [row] = sfX.xp;
+      log_sfX.xd [row] = sfX.xd;
+      pthread_mutex_unlock(&sfX.mutex);
 
-      // Pitch PID values
-      //pthread_mutex_lock(&pidY.mutex);
-      //log_pidY.perr [row] = pidY.perr;
-      //log_pidY.ierr [row] = pidY.ierr;
-      //log_pidY.derr [row] = pidY.derr;
-      //pthread_mutex_unlock(&pidY.mutex);
+      // Pitch SF values
+      pthread_mutex_lock(&sfY.mutex);
+      log_sfY.r  [row] = sfY.r;
+      log_sfY.xp [row] = sfY.xp;
+      log_sfY.xd [row] = sfY.xd;
+      pthread_mutex_unlock(&sfY.mutex);
 
-      // Yaw PID values
-      //pthread_mutex_lock(&pidZ.mutex);
-      //log_pidZ.perr [row] = pidZ.perr;
-      //log_pidZ.ierr [row] = pidZ.ierr;
-      //log_pidZ.derr [row] = pidZ.derr;
-      //pthread_mutex_unlock(&pidZ.mutex);
+      // Yaw SF values
+      pthread_mutex_lock(&sfZ.mutex);
+      log_sfZ.r  [row] = sfZ.r;
+      log_sfZ.xp [row] = sfZ.xp;
+      log_sfZ.xd [row] = sfZ.xd;
+      pthread_mutex_unlock(&sfZ.mutex);
 
+      /*
       // EKF values
       ushort r, c;
       ushort n = EKF_N, m = EKF_M;
@@ -829,19 +834,6 @@ void log_record ( enum log_index index )  {
       //for ( r=0; r<n; r++ )  for ( c=0; c<n; c++ )  log_ekf.T [ row*n*n +r*n +c ] = mat_get( ekf.T, r+1, c+1 );
       //for ( r=0; r<m; r++ )  for ( c=0; c<m; c++ )  log_ekf.S [ row*m*m +r*m +c ] = mat_get( ekf.S, r+1, c+1 );
       pthread_mutex_unlock(&ekf.mutex);
-
-      /*
-      // Roll adaptive values
-      pthread_mutex_lock(&adaptX.mutex);
-      log_adaptX.u  [row] = adaptX.u;
-      log_adaptX.p  [row] = adaptX.p;
-      log_adaptX.d  [row] = adaptX.d;
-      log_adaptX.r  [row] = adaptX.r;
-      log_adaptX.kp [row] = adaptX.kp;
-      log_adaptX.kd [row] = adaptX.kd;
-      //log_adaptX.kr [row] = adaptX.kr;
-      log_adaptX.k  [row] = adaptX.k;
-      pthread_mutex_unlock(&adaptX.mutex);
       */
 
       log_stab.count++;
@@ -849,7 +841,7 @@ void log_record ( enum log_index index )  {
 
     return;
 
-
+    /*
   // Record INS data
   case LOG_INS :
 
@@ -870,7 +862,7 @@ void log_record ( enum log_index index )  {
     }
 
     return;
-
+    */
 
   default :
     return;
@@ -1029,32 +1021,21 @@ static void log_save ( void )  {
     //for ( i=0; i<3; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.att [ row*3 +i ] );   fprintf( datalog.stab, "    " );
     //for ( i=0; i<3; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.ang [ row*3 +i ] );   fprintf( datalog.stab, "    " );
     //for ( i=0; i<4; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.cmd [ row*4 +i ] );   fprintf( datalog.stab, "    " );
-    //fprintf( datalog.stab, "%07.4f  ",  log_pidX.perr[row] );
-    //fprintf( datalog.stab, "%07.4f  ",  log_pidX.ierr[row] );
-    //fprintf( datalog.stab, "%07.4f  ",  log_pidX.derr[row] );
-    //fprintf( datalog.stab, "    " );
-    //fprintf( datalog.stab, "%07.4f  ",  log_pidY.perr[row] );
-    //fprintf( datalog.stab, "%07.4f  ",  log_pidY.ierr[row] );
-    //fprintf( datalog.stab, "%07.4f  ",  log_pidY.derr[row] );
-    //fprintf( datalog.stab, "    " );
-    //fprintf( datalog.stab, "%07.4f  ",  log_pidZ.perr[row] );
-    //fprintf( datalog.stab, "%07.4f  ",  log_pidZ.ierr[row] );
-    //fprintf( datalog.stab, "%07.4f  ",  log_pidZ.derr[row] );
-    //fprintf( datalog.stab, "    " );
-    /*
-    fprintf( datalog.stab, "%07.4f  ",  log_adaptX.u[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_adaptX.p[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_adaptX.d[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_adaptX.r[row] );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfX.r[row] );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfX.xp[row] );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfX.xd[row] );
     fprintf( datalog.stab, "    " );
-    fprintf( datalog.stab, "%07.4f  ",  log_adaptX.kp[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_adaptX.kd[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_adaptX.kr[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_adaptX.k[row]  );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfY.r[row] );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfY.xp[row] );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfY.xd[row] );
     fprintf( datalog.stab, "    " );
-    */
+    fprintf( datalog.stab, "%07.4f  ",  log_sfZ.r[row] );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfZ.xp[row] );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfZ.xd[row] );
+    fprintf( datalog.stab, "    " );
   }
 
+  /*
   // Extended Kalman Filter data
   ushort n = EKF_N, m = EKF_M;
   for ( row = 0; row < log_stab.count; row++ )  {
@@ -1069,12 +1050,14 @@ static void log_save ( void )  {
     //for ( i=0; i<m*m; i++ )  fprintf( datalog.ekf, "%07.4f  ",  log_ekf.S [ row*m*m +i ] );   fprintf( datalog.ekf, "    " );
 
   }
-
+  */
+  /*
   // Inertial Navigation System data
   for ( row = 0; row < log_ins.count; row++ )  {
     fprintf( datalog.ins, "\n %011.6f   %06ld      ", log_ins.time[row], log_ins.dur[row] );
     for ( i=0; i<n*m; i++ )  fprintf( datalog.ins, "%07.4f  ",  log_ins.K [ row*n*m +i ] );   fprintf( datalog.ins, "    " );
   }
+  */
 
   return;
 }
@@ -1107,8 +1090,8 @@ static void log_close ( void )  {
   }
 
   fclose(datalog.stab);
-  fclose(datalog.ekf);
-  fclose(datalog.ins);
+  //fclose(datalog.ekf);
+  //fclose(datalog.ins);
 
   return;
 }

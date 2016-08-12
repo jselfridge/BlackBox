@@ -55,7 +55,7 @@ void tmr_mutex ( void )  {
   pthread_mutex_init( &sfX.mutex,    NULL );
   pthread_mutex_init( &sfY.mutex,    NULL );
   pthread_mutex_init( &sfZ.mutex,    NULL );
-  pthread_mutex_init( &ekf.mutex,    NULL );
+  //pthread_mutex_init( &ekf.mutex,    NULL );
   pthread_mutex_init( &gcs.mutex,    NULL );
   return;
 }
@@ -89,9 +89,9 @@ void tmr_setup ( void )  {
   tmr_stab.per  = 1000000 / HZ_STAB;
 
   // Inertial Navigation System timer
-  tmr_ins.name = "ins";
-  tmr_ins.prio = PRIO_INS;
-  tmr_ins.per  = 1000000 / HZ_INS;
+  //tmr_ins.name = "ins";
+  //tmr_ins.prio = PRIO_INS;
+  //tmr_ins.per  = 1000000 / HZ_INS;
 
   // GCSTX timer
   tmr_gcstx.name = "gcstx";
@@ -154,7 +154,7 @@ void tmr_begin ( pthread_attr_t *attr )  {
   tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(1000);
   tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(1000);
   tmr_thread( &tmr_stab,  attr, fcn_stab  );  usleep(1000);
-  tmr_thread( &tmr_ins,   attr, fcn_ins   );  usleep(1000);
+  //tmr_thread( &tmr_ins,   attr, fcn_ins   );  usleep(1000);
   tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(1000);
   tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(1000);
 
@@ -194,7 +194,7 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&sfX.mutex);
   pthread_mutex_destroy(&sfY.mutex);
   pthread_mutex_destroy(&sfZ.mutex);
-  pthread_mutex_destroy(&ekf.mutex);
+  //pthread_mutex_destroy(&ekf.mutex);
   pthread_mutex_destroy(&gcs.mutex);
 
   // Exit GCSRX thread
@@ -208,9 +208,9 @@ void tmr_exit ( void )  {
   if(DEBUG)  printf( "gcstx " );
 
   // Exit INS thread
-  if( pthread_join ( tmr_ins.id, NULL ) )
-    printf( "Error (tmr_exit): Failed to exit 'ins' thread. \n" );
-  if(DEBUG)  printf( "ins " );
+  //if( pthread_join ( tmr_ins.id, NULL ) )
+    //printf( "Error (tmr_exit): Failed to exit 'ins' thread. \n" );
+  //if(DEBUG)  printf( "ins " );
 
   // Exit stabilization thread
   if( pthread_join ( tmr_stab.id, NULL ) )
@@ -433,7 +433,6 @@ void *fcn_stab (  )  {
   while (running) {
     tmr_start(&tmr_stab);
     stab_update();
-    ekf_update();
     tmr_finish(&tmr_stab);
     if (datalog.enabled)  log_record(LOG_STAB);
     tmr_pause(&tmr_stab);
@@ -447,6 +446,7 @@ void *fcn_stab (  )  {
  *  fcn_ins
  *  Function handler for the inertial navigation system timing thread.
  */
+/*
 void *fcn_ins (  )  {
   tmr_create(&tmr_ins);
   while (running) {
@@ -459,7 +459,7 @@ void *fcn_ins (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_gcstx

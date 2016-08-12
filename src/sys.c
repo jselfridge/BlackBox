@@ -302,17 +302,17 @@ static void sys_stab ( void )  {
 
   // Roll state feedback values
   pthread_mutex_lock(&sfX.mutex);
-  printf("%5.2f %5.2f %5.2f   ", sfX.r, sfX.xp, sfX.xd );  fflush(stdout);
+  printf("%6.3f %6.3f %6.3f   ", sfX.r, sfX.xp, sfX.xd );  fflush(stdout);
   pthread_mutex_unlock(&sfX.mutex);
 
   // Pitch state feedback values
   pthread_mutex_lock(&sfY.mutex);
-  printf("%5.2f %5.2f %5.2f   ", sfY.r, sfY.xp, sfY.xd );  fflush(stdout);
+  printf("%6.3f %6.3f %6.3f   ", sfY.r, sfY.xp, sfY.xd );  fflush(stdout);
   pthread_mutex_unlock(&sfY.mutex);
 
   // Yaw state feedback values
   pthread_mutex_lock(&sfZ.mutex);
-  printf("%5.2f %5.2f %5.2f   ", sfZ.r, sfZ.xp, sfZ.xd );  fflush(stdout);
+  printf("%6.3f %6.3f %6.3f   ", sfZ.r, sfZ.xp, sfZ.xd );  fflush(stdout);
   pthread_mutex_unlock(&sfZ.mutex);
 
   return;
