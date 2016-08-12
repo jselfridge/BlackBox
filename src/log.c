@@ -144,20 +144,20 @@ void log_init ( void )  {
   // Stabilization setup
   log_stab.time     =  malloc( sizeof(float)  * log_stab.limit     );
   log_stab.dur      =  malloc( sizeof(ulong)  * log_stab.limit     );
-  log_stab.att      =  malloc( sizeof(float)  * log_stab.limit * 3 );
-  log_stab.ang      =  malloc( sizeof(float)  * log_stab.limit * 3 );
-  log_stab.cmd      =  malloc( sizeof(float)  * log_stab.limit * 4 );
+  //log_stab.att      =  malloc( sizeof(float)  * log_stab.limit * 3 );
+  //log_stab.ang      =  malloc( sizeof(float)  * log_stab.limit * 3 );
+  //log_stab.cmd      =  malloc( sizeof(float)  * log_stab.limit * 4 );
 
   // PID stabilization
-  log_pidX.perr     =  malloc( sizeof(float)  * log_stab.limit );
-  log_pidX.ierr     =  malloc( sizeof(float)  * log_stab.limit );
-  log_pidX.derr     =  malloc( sizeof(float)  * log_stab.limit );
-  log_pidY.perr     =  malloc( sizeof(float)  * log_stab.limit );
-  log_pidY.ierr     =  malloc( sizeof(float)  * log_stab.limit );
-  log_pidY.derr     =  malloc( sizeof(float)  * log_stab.limit );
-  log_pidZ.perr     =  malloc( sizeof(float)  * log_stab.limit );
-  log_pidZ.ierr     =  malloc( sizeof(float)  * log_stab.limit );
-  log_pidZ.derr     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_pidX.perr     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_pidX.ierr     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_pidX.derr     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_pidY.perr     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_pidY.ierr     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_pidY.derr     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_pidZ.perr     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_pidZ.ierr     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_pidZ.derr     =  malloc( sizeof(float)  * log_stab.limit );
 
   // EKF setup
   ushort n = EKF_N, m = EKF_M;
@@ -295,20 +295,20 @@ void log_exit ( void )  {
   // Stabilization memory
   free(log_stab.time);
   free(log_stab.dur);
-  free(log_stab.att);
-  free(log_stab.ang);
-  free(log_stab.cmd);
+  //free(log_stab.att);
+  //free(log_stab.ang);
+  //free(log_stab.cmd);
 
   // PID stabilization memory
-  free(log_pidX.perr);
-  free(log_pidX.ierr);
-  free(log_pidX.derr);
-  free(log_pidY.perr);
-  free(log_pidY.ierr);
-  free(log_pidY.derr);
-  free(log_pidZ.perr);
-  free(log_pidZ.ierr);
-  free(log_pidZ.derr);
+  //free(log_pidX.perr);
+  //free(log_pidX.ierr);
+  //free(log_pidX.derr);
+  //free(log_pidY.perr);
+  //free(log_pidY.ierr);
+  //free(log_pidY.derr);
+  //free(log_pidZ.perr);
+  //free(log_pidZ.ierr);
+  //free(log_pidZ.derr);
 
   // EKF memory
   free(log_ekf.time);
@@ -522,10 +522,10 @@ void log_start ( void )  {
   datalog.stab = fopen( file, "w" );
   if( datalog.stab == NULL )  printf( "Error (log_init): Cannot generate 'stab' file. \n" );
   fprintf( datalog.stab, 
-    "    stabtime  stabdur     \
-    attX     attY     attZ         angX     angY     angZ     \
-    cmdX     cmdY     cmdZ     cmdT        " );
-  fprintf( datalog.stab, "Xperr    Xierr    Xzerr        Yperr    Yierr    Yderr        Zperr    Zierr    Zderr         " );  
+    "    stabtime  stabdur     " );
+  //  attX     attY     attZ         angX     angY     angZ     
+  //  cmdX     cmdY     cmdZ     cmdT        " );
+  //fprintf( datalog.stab, "Xperr    Xierr    Xzerr        Yperr    Yierr    Yderr        Zperr    Zierr    Zderr         " );  
   //fprintf( datalog.stab, "acXu     acXp     acXd     acXr         acXkp    acXkd    acXk ");
 
   // EKF datalog file
@@ -786,35 +786,35 @@ void log_record ( enum log_index index )  {
 
       // Rotational state values
       pthread_mutex_lock(&rot.mutex);
-      for ( i=0; i<3; i++ )  log_stab.att [ row*3 +i ] = rot.att[i];
-      for ( i=0; i<3; i++ )  log_stab.ang [ row*3 +i ] = rot.ang[i];
+      //for ( i=0; i<3; i++ )  log_stab.att [ row*3 +i ] = rot.att[i];
+      //for ( i=0; i<3; i++ )  log_stab.ang [ row*3 +i ] = rot.ang[i];
       pthread_mutex_unlock(&rot.mutex);
 
       // Stabilization values
       pthread_mutex_lock(&stab.mutex);
-      for ( i=0; i<4; i++ )  log_stab.cmd   [ row*4 +i ] = stab.cmd[i];
+      //for ( i=0; i<4; i++ )  log_stab.cmd   [ row*4 +i ] = stab.cmd[i];
       pthread_mutex_unlock(&stab.mutex);
 
       // Roll PID values
-      pthread_mutex_lock(&pidX.mutex);
-      log_pidX.perr [row] = pidX.perr;
-      log_pidX.ierr [row] = pidX.ierr;
-      log_pidX.derr [row] = pidX.derr;
-      pthread_mutex_unlock(&pidX.mutex);
+      //pthread_mutex_lock(&pidX.mutex);
+      //log_pidX.perr [row] = pidX.perr;
+      //log_pidX.ierr [row] = pidX.ierr;
+      //log_pidX.derr [row] = pidX.derr;
+      //pthread_mutex_unlock(&pidX.mutex);
 
       // Pitch PID values
-      pthread_mutex_lock(&pidY.mutex);
-      log_pidY.perr [row] = pidY.perr;
-      log_pidY.ierr [row] = pidY.ierr;
-      log_pidY.derr [row] = pidY.derr;
-      pthread_mutex_unlock(&pidY.mutex);
+      //pthread_mutex_lock(&pidY.mutex);
+      //log_pidY.perr [row] = pidY.perr;
+      //log_pidY.ierr [row] = pidY.ierr;
+      //log_pidY.derr [row] = pidY.derr;
+      //pthread_mutex_unlock(&pidY.mutex);
 
       // Yaw PID values
-      pthread_mutex_lock(&pidZ.mutex);
-      log_pidZ.perr [row] = pidZ.perr;
-      log_pidZ.ierr [row] = pidZ.ierr;
-      log_pidZ.derr [row] = pidZ.derr;
-      pthread_mutex_unlock(&pidZ.mutex);
+      //pthread_mutex_lock(&pidZ.mutex);
+      //log_pidZ.perr [row] = pidZ.perr;
+      //log_pidZ.ierr [row] = pidZ.ierr;
+      //log_pidZ.derr [row] = pidZ.derr;
+      //pthread_mutex_unlock(&pidZ.mutex);
 
       // EKF values
       ushort r, c;
@@ -1026,21 +1026,21 @@ static void log_save ( void )  {
   // Stabilization data
   for ( row = 0; row < log_stab.count; row++ )  {
     fprintf( datalog.stab, "\n %011.6f   %06ld      ", log_stab.time[row], log_stab.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.att [ row*3 +i ] );   fprintf( datalog.stab, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.ang [ row*3 +i ] );   fprintf( datalog.stab, "    " );
-    for ( i=0; i<4; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.cmd [ row*4 +i ] );   fprintf( datalog.stab, "    " );
-    fprintf( datalog.stab, "%07.4f  ",  log_pidX.perr[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_pidX.ierr[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_pidX.derr[row] );
-    fprintf( datalog.stab, "    " );
-    fprintf( datalog.stab, "%07.4f  ",  log_pidY.perr[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_pidY.ierr[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_pidY.derr[row] );
-    fprintf( datalog.stab, "    " );
-    fprintf( datalog.stab, "%07.4f  ",  log_pidZ.perr[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_pidZ.ierr[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_pidZ.derr[row] );
-    fprintf( datalog.stab, "    " );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.att [ row*3 +i ] );   fprintf( datalog.stab, "    " );
+    //for ( i=0; i<3; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.ang [ row*3 +i ] );   fprintf( datalog.stab, "    " );
+    //for ( i=0; i<4; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.cmd [ row*4 +i ] );   fprintf( datalog.stab, "    " );
+    //fprintf( datalog.stab, "%07.4f  ",  log_pidX.perr[row] );
+    //fprintf( datalog.stab, "%07.4f  ",  log_pidX.ierr[row] );
+    //fprintf( datalog.stab, "%07.4f  ",  log_pidX.derr[row] );
+    //fprintf( datalog.stab, "    " );
+    //fprintf( datalog.stab, "%07.4f  ",  log_pidY.perr[row] );
+    //fprintf( datalog.stab, "%07.4f  ",  log_pidY.ierr[row] );
+    //fprintf( datalog.stab, "%07.4f  ",  log_pidY.derr[row] );
+    //fprintf( datalog.stab, "    " );
+    //fprintf( datalog.stab, "%07.4f  ",  log_pidZ.perr[row] );
+    //fprintf( datalog.stab, "%07.4f  ",  log_pidZ.ierr[row] );
+    //fprintf( datalog.stab, "%07.4f  ",  log_pidZ.derr[row] );
+    //fprintf( datalog.stab, "    " );
     /*
     fprintf( datalog.stab, "%07.4f  ",  log_adaptX.u[row] );
     fprintf( datalog.stab, "%07.4f  ",  log_adaptX.p[row] );

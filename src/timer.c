@@ -52,9 +52,9 @@ void tmr_mutex ( void )  {
   pthread_mutex_init( &ahrsB.mutex,  NULL );
   pthread_mutex_init( &rot.mutex,    NULL );
   pthread_mutex_init( &stab.mutex,   NULL );
-  pthread_mutex_init( &pidX.mutex,   NULL );
-  pthread_mutex_init( &pidY.mutex,   NULL );
-  pthread_mutex_init( &pidZ.mutex,   NULL );
+  pthread_mutex_init( &sfX.mutex,    NULL );
+  pthread_mutex_init( &sfY.mutex,    NULL );
+  pthread_mutex_init( &sfZ.mutex,    NULL );
   pthread_mutex_init( &ekf.mutex,    NULL );
   pthread_mutex_init( &gcs.mutex,    NULL );
   return;
@@ -191,9 +191,9 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&ahrsB.mutex);
   pthread_mutex_destroy(&rot.mutex);
   pthread_mutex_destroy(&stab.mutex);
-  pthread_mutex_destroy(&pidX.mutex);
-  pthread_mutex_destroy(&pidY.mutex);
-  pthread_mutex_destroy(&pidZ.mutex);
+  pthread_mutex_destroy(&sfX.mutex);
+  pthread_mutex_destroy(&sfY.mutex);
+  pthread_mutex_destroy(&sfZ.mutex);
   pthread_mutex_destroy(&ekf.mutex);
   pthread_mutex_destroy(&gcs.mutex);
 

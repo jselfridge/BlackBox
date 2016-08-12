@@ -76,24 +76,28 @@ void gcs_init ( void )  {
   // Load parameters
   if (DEBUG)  printf( "  Loading %d parameters \n", param_count );
 
+
+
+  strcpy( param.name[Blah], "Blah" );  param.val[Blah] = 0.0;
+
   // Roll (X) gains
-  strcpy( param.name[X_Kp], "X_Kp" );  param.val[X_Kp] = pidX.pgain;
-  strcpy( param.name[X_Ki], "X_Ki" );  param.val[X_Ki] = pidX.igain;
-  strcpy( param.name[X_Kd], "X_Kd" );  param.val[X_Kd] = pidX.dgain;
+  //strcpy( param.name[X_Kp], "X_Kp" );  param.val[X_Kp] = pidX.pgain;
+  //strcpy( param.name[X_Ki], "X_Ki" );  param.val[X_Ki] = pidX.igain;
+  //strcpy( param.name[X_Kd], "X_Kd" );  param.val[X_Kd] = pidX.dgain;
   //strcpy( param.name[X_Gp], "X_Gp" );  param.val[X_Gp] = adaptX.Gp;
   //strcpy( param.name[X_Gd], "X_Gd" );  param.val[X_Gd] = adaptX.Gd;
   //strcpy( param.name[X_Gr], "X_Gr" );  param.val[X_Gr] = adaptX.Gr;
   //strcpy( param.name[X_G ], "X_G"  );  param.val[X_G ] = adaptX.G;
 
   // Pitch (Y) gains
-  strcpy( param.name[Y_Kp], "Y_Kp" );  param.val[Y_Kp] = pidY.pgain;
-  strcpy( param.name[Y_Ki], "Y_Ki" );  param.val[Y_Ki] = pidY.igain;
-  strcpy( param.name[Y_Kd], "Y_Kd" );  param.val[Y_Kd] = pidY.dgain;
+  //strcpy( param.name[Y_Kp], "Y_Kp" );  param.val[Y_Kp] = pidY.pgain;
+  //strcpy( param.name[Y_Ki], "Y_Ki" );  param.val[Y_Ki] = pidY.igain;
+  //strcpy( param.name[Y_Kd], "Y_Kd" );  param.val[Y_Kd] = pidY.dgain;
 
   // Yaw (Z) gains
-  strcpy( param.name[Z_Kp], "Z_Kp" );  param.val[Z_Kp] = pidZ.pgain;
-  strcpy( param.name[Z_Ki], "Z_Ki" );  param.val[Z_Ki] = pidZ.igain;
-  strcpy( param.name[Z_Kd], "Z_Kd" );  param.val[Z_Kd] = pidZ.dgain;
+  //strcpy( param.name[Z_Kp], "Z_Kp" );  param.val[Z_Kp] = pidZ.pgain;
+  //strcpy( param.name[Z_Ki], "Z_Ki" );  param.val[Z_Ki] = pidZ.igain;
+  //strcpy( param.name[Z_Kd], "Z_Kd" );  param.val[Z_Kd] = pidZ.dgain;
 
   // Throttle values
   strcpy( param.name[T_min],  "T_min"  );  param.val[T_min]  = stab.thrl[0];
@@ -509,84 +513,87 @@ static void gcs_set_param_value ( uint index, double val )  {
   // Jump to parameter
   switch (index)  {
 
+  case Blah :
+  break;
+
   // Roll (X) Gains
-  case X_Kp :
-    pthread_mutex_lock(&pidX.mutex);
-    pidX.pgain = val;
-    pthread_mutex_unlock(&pidX.mutex);
+  //case X_Kp :
+    //pthread_mutex_lock(&pidX.mutex);
+    //pidX.pgain = val;
+    //pthread_mutex_unlock(&pidX.mutex);
     //pthread_mutex_lock(&adaptX.mutex);
     //adaptX.kp = val;
     //adaptX.kp_prev = val;
     //pthread_mutex_unlock(&adaptX.mutex);
-    break;
-  case X_Ki :
-    pthread_mutex_lock(&pidX.mutex);
-    pidX.igain = val;
-    pthread_mutex_unlock(&pidX.mutex);
-    break;
-  case X_Kd :
-    pthread_mutex_lock(&pidX.mutex);
-    pidX.dgain = val;
-    pthread_mutex_unlock(&pidX.mutex);
+  //break;
+  //case X_Ki :
+    //pthread_mutex_lock(&pidX.mutex);
+    //pidX.igain = val;
+    //pthread_mutex_unlock(&pidX.mutex);
+  //break;
+  //case X_Kd :
+    //pthread_mutex_lock(&pidX.mutex);
+    //pidX.dgain = val;
+    //pthread_mutex_unlock(&pidX.mutex);
     //pthread_mutex_lock(&adaptX.mutex);
     //adaptX.kd = val;
     //adaptX.kd_prev = val;
     //pthread_mutex_unlock(&adaptX.mutex);
-    break;
+  //break;
   //case X_Gp :
     //pthread_mutex_lock(&adaptX.mutex);
     //adaptX.Gp = val;
     //pthread_mutex_unlock(&adaptX.mutex);
-    //break;
+  //break;
   //case X_Gd :
     //pthread_mutex_lock(&adaptX.mutex);
     //adaptX.Gd = val;
     //pthread_mutex_unlock(&adaptX.mutex);
-    //break;
+  //break;
   //case X_Gr :
     //pthread_mutex_lock(&adaptX.mutex);
     //adaptX.Gr = val;
     //pthread_mutex_unlock(&adaptX.mutex);
-    //break;
+  //break;
   //case X_G :
     //pthread_mutex_lock(&adaptX.mutex);
     //adaptX.G = val;
     //pthread_mutex_unlock(&adaptX.mutex);
-    //break;
+  //break;
 
   // Pitch (Y) Gains
-  case Y_Kp :
-    pthread_mutex_lock(&pidY.mutex);
-    pidY.pgain = val;
-    pthread_mutex_unlock(&pidY.mutex);
-    break;
-  case Y_Ki :
-    pthread_mutex_lock(&pidY.mutex);
-    pidY.igain = val;
-    pthread_mutex_unlock(&pidY.mutex);
-    break;
-  case Y_Kd :
-    pthread_mutex_lock(&pidY.mutex);
-    pidY.dgain = val;
-    pthread_mutex_unlock(&pidY.mutex);
-    break;
+  //case Y_Kp :
+    //pthread_mutex_lock(&pidY.mutex);
+    //pidY.pgain = val;
+    //pthread_mutex_unlock(&pidY.mutex);
+  //break;
+  //case Y_Ki :
+    //pthread_mutex_lock(&pidY.mutex);
+    //pidY.igain = val;
+    //pthread_mutex_unlock(&pidY.mutex);
+  //break;
+  //case Y_Kd :
+    //pthread_mutex_lock(&pidY.mutex);
+    //pidY.dgain = val;
+    //pthread_mutex_unlock(&pidY.mutex);
+  //break;
 
   // Yaw (Z) Gains
-  case Z_Kp :
-    pthread_mutex_lock(&pidZ.mutex);
-    pidZ.pgain = val;
-    pthread_mutex_unlock(&pidZ.mutex);
-    break;
-  case Z_Ki :
-    pthread_mutex_lock(&pidZ.mutex);
-    pidZ.igain = val;
-    pthread_mutex_unlock(&pidZ.mutex);
-    break;
-  case Z_Kd :
-    pthread_mutex_lock(&pidZ.mutex);
-    pidZ.dgain = val;
-    pthread_mutex_unlock(&pidZ.mutex);
-    break;
+  //case Z_Kp :
+    //pthread_mutex_lock(&pidZ.mutex);
+    //pidZ.pgain = val;
+    //pthread_mutex_unlock(&pidZ.mutex);
+  //break;
+  //case Z_Ki :
+    //pthread_mutex_lock(&pidZ.mutex);
+    //pidZ.igain = val;
+    //pthread_mutex_unlock(&pidZ.mutex);
+  //break;
+  //case Z_Kd :
+    //pthread_mutex_lock(&pidZ.mutex);
+    //pidZ.dgain = val;
+    //pthread_mutex_unlock(&pidZ.mutex);
+  //break;
 
   // Throttle settings
   case T_min :

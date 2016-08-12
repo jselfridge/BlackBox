@@ -11,9 +11,10 @@ Current Tasks
 The current effort takes the fixed PID control structure, and will modify the 
 algorithms to implement adaptive state feedback control.
 
-<b> Adaptive Control - WIP </b>
+<b> State Feedback Adaptive Control - WIP </b>
 <ul>
-  <li> WIP - Add adaptive control terms to data structure. </li>
+  <li> WIP - Revised data structure. </li>
+  <li> WIP - Develop reference model signals. </li>
   <li> WIP - Modify function call to include adaptive parameters. </li>
   <li> WIP - Hard code a second order SISO algorithm. </li>
   <li> WIP - Run control law within the stabilization thread. </li>

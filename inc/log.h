@@ -90,21 +90,21 @@ typedef struct log_stab_struct {
   ulong  limit;
   float  *time;
   ulong  *dur;
-  float  *att;
-  float  *ang;
-  float  *cmd;
+  //float  *att;
+  //float  *ang;
+  //float  *cmd;
 } log_stab_struct;
 log_stab_struct log_stab;
 
 
-typedef struct log_pid_struct {
-  double *perr;
-  double *ierr;
-  double *derr;
-} log_pid_struct;
-log_pid_struct log_pidX;
-log_pid_struct log_pidY;
-log_pid_struct log_pidZ;
+typedef struct log_sf_struct {
+  //double *perr;
+  //double *ierr;
+  //double *derr;
+} log_sf_struct;
+log_sf_struct log_sfX;
+log_sf_struct log_sfY;
+log_sf_struct log_sfZ;
 
 
 typedef struct log_ekf_struct {

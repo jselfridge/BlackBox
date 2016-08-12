@@ -9,7 +9,7 @@
 
 
 static void    stab_quad    ( void );
-static double  stab_pid     ( pid_struct *pid, double xp, double xd, double ref, bool reset );
+//static double  stab_pid     ( pid_struct *pid, double xp, double xd, double ref, bool reset );
 //static double  stab_adapt   ( adapt_struct *adapt, double p, double d, double r, bool areset );
 static void    stab_disarm  ( void );
 
@@ -24,9 +24,9 @@ void stab_init ( void )  {
   // Set timing value
   double dt = 1.0 / HZ_STAB;;
   stab.dt = dt;
-  pidX.dt = dt;
-  pidY.dt = dt;
-  pidZ.dt = dt;
+  sfX.dt  = dt;
+  sfY.dt  = dt;
+  sfZ.dt  = dt;
 
   // Asign disarming array values
   stab.off[0] = -1.0;
@@ -52,15 +52,15 @@ void stab_init ( void )  {
   stab.thrl[2] =  0.00;  // Ttilt
 
   // Wrap values of pi
-  pidX.wrap = true;
-  pidY.wrap = true;
-  pidZ.wrap = true;
+  sfX.wrap = true;
+  sfY.wrap = true;
+  sfZ.wrap = true;
 
+  /*  -- ORIGINAL --
   // Roll (X) gain values
   pidX.pgain = 0.085;
   pidX.igain = 0.000;
   pidX.dgain = 0.055;
-  /*
   adaptX.Gp  = 0.0;
   adaptX.Gd  = 0.0;
   //adaptX.Gr  = 0.0;
@@ -72,7 +72,6 @@ void stab_init ( void )  {
   adaptX.kp_prev = adaptX.kp;
   adaptX.kd_prev = adaptX.kd;
   //adaptX.kr_prev = adaptX.kr;
-  */
 
   // Pitch (Y) gain values
   pidY.pgain = 0.085;
@@ -83,6 +82,7 @@ void stab_init ( void )  {
   pidZ.pgain = 0.085;
   pidZ.igain = 0.000;
   pidZ.dgain = 0.055;
+  */
 
   return;
 }
@@ -123,7 +123,7 @@ void stab_quad ( void )  {
   ushort x=0, y=1, z=2, t=3;
   double att[3], ang[3], in[4], ref[4], cmd[4], out[4];
   double dt, trange, tmin, tmax, tilt, heading, dial;
-  bool reset;
+  //bool reset;
 
   // Obtain states
   pthread_mutex_lock(&rot.mutex);
@@ -154,19 +154,26 @@ void stab_quad ( void )  {
   while ( heading >   M_PI )  heading -= 2.0 * M_PI;
   while ( heading <= -M_PI )  heading += 2.0 * M_PI;
 
+
+
+
+  cmd[x] = 0.0;
+  cmd[y] = 0.0;
+  cmd[z] = 0.0;
+
+
+  // -- ORIGINAL -- //
   // Calculate Roll command
-  reset = ( in[CH_R] < -IRESET || in[CH_R] > IRESET || in[CH_T] < -0.9 );
-  cmd[x] = stab_pid( &pidX, att[0], ang[0], ref[CH_R], reset );
+  //reset = ( in[CH_R] < -IRESET || in[CH_R] > IRESET || in[CH_T] < -0.9 );
+  //cmd[x] = stab_pid( &pidX, att[0], ang[0], ref[CH_R], reset );
   //reset = ( in[CH_T] < -0.2 );
   //cmd[x] = stab_adapt( &adaptX, att[0], ang[0], ref[CH_R], reset );
-
   // Calculate Pitch command
-  reset = ( in[CH_P] < -IRESET || in[CH_P] > IRESET || in[CH_T] < -0.9 );
-  cmd[y] = stab_pid( &pidY, att[1], ang[1], ref[CH_P], reset );
-
+  //reset = ( in[CH_P] < -IRESET || in[CH_P] > IRESET || in[CH_T] < -0.9 );
+  //cmd[y] = stab_pid( &pidY, att[1], ang[1], ref[CH_P], reset );
   // Calculate Yaw command
-  reset = ( in[CH_Y] < -IRESET || in[CH_Y] > IRESET || in[CH_T] < -0.9 );
-  cmd[z] = stab_pid( &pidZ, att[2], ang[2], heading, reset );
+  //reset = ( in[CH_Y] < -IRESET || in[CH_Y] > IRESET || in[CH_T] < -0.9 );
+  //cmd[z] = stab_pid( &pidZ, att[2], ang[2], heading, reset );
 
   // Determine throttle adjustment
   double tilt_adj = ( 1 - ( cos(att[0]) * cos(att[1]) ) ) * tilt;
@@ -207,6 +214,7 @@ void stab_quad ( void )  {
  *  stab_pid
  *  Apply PID contorl loop
  */
+/*
 double stab_pid ( pid_struct *pid, double xp, double xd, double ref, bool reset )  {
 
   // Local variables
@@ -249,7 +257,7 @@ double stab_pid ( pid_struct *pid, double xp, double xd, double ref, bool reset 
 
   return cmd;
 }
-
+*/
 
 /**
  *  stab_adapt
