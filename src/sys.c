@@ -300,23 +300,20 @@ static void sys_stab ( void )  {
   //fflush(stdout);
   //pthread_mutex_unlock(&stab.mutex);
 
-  // Roll values
-  //pthread_mutex_lock(&pidX.mutex);
-  //printf("%5.2f %5.2f %5.2f   ", pidX.pgain, pidX.igain, pidX.dgain );  fflush(stdout);
-  //printf("%5.2f %5.2f %5.2f   ", pidX.perr,  pidX.ierr,  pidX.derr  );  fflush(stdout);
-  //pthread_mutex_unlock(&pidX.mutex);
+  // Roll state feedback values
+  pthread_mutex_lock(&sfX.mutex);
+  printf("%5.2f %5.2f %5.2f   ", sfX.r, sfX.xp, sfX.xd );  fflush(stdout);
+  pthread_mutex_unlock(&sfX.mutex);
 
-  // Pitch values
-  //pthread_mutex_lock(&pidY.mutex);
-  //printf("%5.2f %5.2f %5.2f   ", pidY.pgain, pidY.igain, pidY.dgain );  fflush(stdout);
-  //printf("%5.2f %5.2f %5.2f   ", pidY.perr,  pidY.ierr,  pidY.derr  );  fflush(stdout);
-  //pthread_mutex_unlock(&pidY.mutex);
+  // Pitch state feedback values
+  pthread_mutex_lock(&sfY.mutex);
+  printf("%5.2f %5.2f %5.2f   ", sfY.r, sfY.xp, sfY.xd );  fflush(stdout);
+  pthread_mutex_unlock(&sfY.mutex);
 
-  // Yaw values
-  //pthread_mutex_lock(&pidZ.mutex);
-  //printf("%5.2f %5.2f %5.2f   ", pidZ.pgain, pidZ.igain, pidZ.dgain );  fflush(stdout);
-  //printf("%5.2f %5.2f %5.2f   ", pidZ.perr,  pidZ.ierr,  pidZ.derr  );  fflush(stdout);
-  //pthread_mutex_unlock(&pidZ.mutex);
+  // Yaw state feedback values
+  pthread_mutex_lock(&sfZ.mutex);
+  printf("%5.2f %5.2f %5.2f   ", sfZ.r, sfZ.xp, sfZ.xd );  fflush(stdout);
+  pthread_mutex_unlock(&sfZ.mutex);
 
   return;
 }

@@ -34,13 +34,16 @@ typedef struct sf_struct {
   double  dt;
   bool    wrap;
   double  ts;
-  double  po;
+  double  mp;
   double  sigma;
   double  zeta;
   double  nfreq;
   double  dfreq;
   double  kp;
   double  kd;
+  double  r;
+  double  xp;
+  double  xd;
   pthread_mutex_t mutex;
 } sf_struct;
 sf_struct sfX;
