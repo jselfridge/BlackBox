@@ -58,7 +58,7 @@ sf_struct sfZ;
 void    stab_init    ( void );
 void    stab_exit    ( void );
 void    stab_update  ( void );
-
+void    stab_refmdl  ( sf_struct *sf );
 
 #endif
 

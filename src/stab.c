@@ -9,7 +9,6 @@
 #include "timer.h"
 
 
-static void    stab_refmdl  ( sf_struct *sf );
 static void    stab_quad    ( void );
 static double  stab_sf      ( sf_struct *sf, double r, double zp, double zd );
 //static double  stab_pid     ( pid_struct *pid, double xp, double xd, double ref, bool reset );
@@ -65,9 +64,9 @@ void stab_init ( void )  {
   sfZ.wrap = true;
 
   // Assign desired characteristics
-  sfX.ts = 1.60;  sfX.mp = 0.0001;  sfX.b = 105.0;  stab_refmdl( &sfX );
-  sfY.ts = 1.60;  sfY.mp = 0.0001;  sfY.b = 105.0;  stab_refmdl( &sfY );
-  sfZ.ts = 1.60;  sfZ.mp = 0.0001;  sfZ.b = 105.0;  stab_refmdl( &sfZ );
+  sfX.ts = 1.60;  sfX.mp = 0.001;  sfX.b = 105.0;  stab_refmdl( &sfX );
+  sfY.ts = 1.60;  sfY.mp = 0.001;  sfY.b = 105.0;  stab_refmdl( &sfY );
+  sfZ.ts = 1.60;  sfZ.mp = 0.001;  sfZ.b = 105.0;  stab_refmdl( &sfZ );
   if (DEBUG)  {
     printf("          Ts    Mp    zeta  nfreq    sigma  dfreq          ap      ad        kp      kd  \n" );
     printf("  X:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f    %6.4f  %6.4f  \n", 

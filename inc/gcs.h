@@ -49,26 +49,20 @@
 
 enum param_index {
 
-  Blah = 0,
+  // Roll stabilization
+  X_ts = 0,
+  X_mp,
+  X_b,
 
-  // Roll gains
-  //X_Kp = 0,
-  //X_Ki,
-  //X_Kd,
-  //X_Gp,
-  //X_Gd,
-  //X_Gr,
-  //X_G,
+  // Pitch stabilization
+  Y_ts,
+  Y_mp,
+  Y_b, 
 
-  // Pitch gains
-  //Y_Kp,
-  //Y_Ki,
-  //Y_Kd,
-
-  // Yaw gains
-  //Z_Kp,
-  //Z_Ki,
-  //Z_Kd,
+  // Yaw stabilization
+  Z_ts,
+  Z_mp,
+  Z_b, 
 
   // Thrl values
   T_min,
