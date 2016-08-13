@@ -268,17 +268,21 @@ void stab_quad ( void )  {
 double stab_sf ( sf_struct *sf, double r, double zp, double zd )  {
 
   // Local variables
-  double dt, ap, ad, kp, kd, xp, xd, xa, u;
+  double dt, ap, ad, b, kp, kd, xp, xd, xa, Gp, Gd, Gu, u;
 
   // Pull data from structure
   pthread_mutex_lock(&sf->mutex);
   dt = sf->dt;
   ap = sf->ap;
   ad = sf->ad;
+  b  = sf->b;
   kp = sf->kp;
   kd = sf->kd;
   xp = sf->xp;
   xd = sf->xd;
+  Gp = sf->Gp;
+  Gd = sf->Gd;
+  Gu = sf->Gu;
   pthread_mutex_unlock(&sf->mutex);
 
   // Determine referenace states
@@ -288,6 +292,8 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd )  {
 
   // Determine control input
   u = - kp * zp - kd * zd + kp * r;
+
+  // Adaptive update laws
 
   // Push data to structure
   pthread_mutex_lock(&sf->mutex);
