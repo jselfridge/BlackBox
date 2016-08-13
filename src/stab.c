@@ -68,6 +68,7 @@ void stab_init ( void )  {
   sfY.ts = 1.60;  sfY.mp = 0.001;  sfY.b = 105.0;  stab_refmdl( &sfY );
   sfZ.ts = 1.60;  sfZ.mp = 0.001;  sfZ.b = 105.0;  stab_refmdl( &sfZ );
   if (DEBUG)  {
+    printf("  Desired system response \n");
     printf("          Ts    Mp    zeta  nfreq    sigma  dfreq          ap      ad        kp      kd  \n" );
     printf("  X:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f    %6.4f  %6.4f  \n", 
       sfX.ts, sfX.mp, sfX.zeta, sfX.nfreq, sfX.sigma, sfX.dfreq, sfX.ap, sfX.ad, sfX.kp, sfX.kd );
@@ -75,6 +76,19 @@ void stab_init ( void )  {
       sfY.ts, sfY.mp, sfY.zeta, sfY.nfreq, sfY.sigma, sfY.dfreq, sfY.ap, sfY.ad, sfY.kp, sfY.kd );
     printf("  Z:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f    %6.4f  %6.4f  \n", 
       sfZ.ts, sfZ.mp, sfZ.zeta, sfZ.nfreq, sfZ.sigma, sfZ.dfreq, sfZ.ap, sfZ.ad, sfZ.kp, sfZ.kd );
+    fflush(stdout);
+  }
+
+  // Assign adaptive gains
+  sfX.Gp = 1.0;  sfX.Gd = 2.0;  sfX.Gu = 3.0;
+  sfY.Gp = 4.0;  sfY.Gd = 5.0;  sfY.Gu = 6.0;
+  sfZ.Gp = 7.0;  sfZ.Gd = 8.0;  sfZ.Gu = 9.0;
+  if (DEBUG)  {
+    printf("  Adaptive gain settings \n");
+    printf("       Gp   Gd   Gu  \n");
+    printf("  X:  %3.1f  %3.1f  %3.1f  \n", sfX.Gp, sfX.Gd, sfX.Gu );
+    printf("  Y:  %3.1f  %3.1f  %3.1f  \n", sfY.Gp, sfY.Gd, sfY.Gu );
+    printf("  Z:  %3.1f  %3.1f  %3.1f  \n", sfZ.Gp, sfZ.Gd, sfZ.Gu );
     fflush(stdout);
   }
 

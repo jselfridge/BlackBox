@@ -48,6 +48,9 @@ typedef struct sf_struct {
   double  xp;
   double  xd;
   double  u;
+  double  Gp;
+  double  Gd;
+  double  Gu;
   pthread_mutex_t mutex;
 } sf_struct;
 sf_struct sfX;

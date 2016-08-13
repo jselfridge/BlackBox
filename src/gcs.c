@@ -80,16 +80,25 @@ void gcs_init ( void )  {
   strcpy( param.name[X_ts], "X_ts" );  param.val[X_ts] = sfX.ts;
   strcpy( param.name[X_mp], "X_mp" );  param.val[X_mp] = sfX.mp;
   strcpy( param.name[X_b ], "X_b"  );  param.val[X_b]  = sfX.b;
+  strcpy( param.name[X_Gp], "X_Gp" );  param.val[X_Gp] = sfX.Gp;
+  strcpy( param.name[X_Gd], "X_Gd" );  param.val[X_Gd] = sfX.Gd;
+  strcpy( param.name[X_Gu], "X_Gu" );  param.val[X_Gu] = sfX.Gu;
 
   // Pitch (Y) stabilization paramters
   strcpy( param.name[Y_ts], "Y_ts" );  param.val[Y_ts] = sfY.ts;
   strcpy( param.name[Y_mp], "Y_mp" );  param.val[Y_mp] = sfY.mp;
   strcpy( param.name[Y_b],  "Y_b"  );  param.val[Y_b]  = sfY.b;
+  strcpy( param.name[Y_Gp], "Y_Gp" );  param.val[Y_Gp] = sfY.Gp;
+  strcpy( param.name[Y_Gd], "Y_Gd" );  param.val[Y_Gd] = sfY.Gd;
+  strcpy( param.name[Y_Gu], "Y_Gu" );  param.val[Y_Gu] = sfY.Gu;
 
   // Yaw (Z) stabilization parameters
   strcpy( param.name[Z_ts], "Z_ts" );  param.val[Z_ts] = sfZ.ts;
   strcpy( param.name[Z_mp], "Z_mp" );  param.val[Z_mp] = sfZ.mp;
   strcpy( param.name[Z_b],  "Z_b"  );  param.val[Z_b]  = sfZ.b;
+  strcpy( param.name[Z_Gp], "Z_Gp" );  param.val[Z_Gp] = sfZ.Gp;
+  strcpy( param.name[Z_Gd], "Z_Gd" );  param.val[Z_Gd] = sfZ.Gd;
+  strcpy( param.name[Z_Gu], "Z_Gu" );  param.val[Z_Gu] = sfZ.Gu;
 
   // Throttle values
   strcpy( param.name[T_min],  "T_min"  );  param.val[T_min]  = stab.thrl[0];
@@ -511,19 +520,34 @@ static void gcs_set_param_value ( uint index, double val )  {
     sfX.ts = val;
     pthread_mutex_unlock(&sfX.mutex);
     stab_refmdl( &sfX );
-  break;
+    break;
   case X_mp :
     pthread_mutex_lock(&sfX.mutex);
     sfX.mp = val;
     pthread_mutex_unlock(&sfX.mutex);
     stab_refmdl( &sfX );
-  break;
+    break;
   case X_b :
     pthread_mutex_lock(&sfX.mutex);
     sfX.b = val;
     pthread_mutex_unlock(&sfX.mutex);
     stab_refmdl( &sfX );
-  break;
+    break;
+  case X_Gp :
+    pthread_mutex_lock(&sfX.mutex);
+    sfX.Gp = val;
+    pthread_mutex_unlock(&sfX.mutex);
+    break;
+  case X_Gd :
+    pthread_mutex_lock(&sfX.mutex);
+    sfX.Gd = val;
+    pthread_mutex_unlock(&sfX.mutex);
+    break;
+  case X_Gu :
+    pthread_mutex_lock(&sfX.mutex);
+    sfX.Gu = val;
+    pthread_mutex_unlock(&sfX.mutex);
+    break;
 
   // Pitch (Y) Stabilization Parameters
   case Y_ts :
@@ -531,19 +555,34 @@ static void gcs_set_param_value ( uint index, double val )  {
     sfY.ts = val;
     pthread_mutex_unlock(&sfY.mutex);
     stab_refmdl( &sfY );
-  break;
+    break;
   case Y_mp :
     pthread_mutex_lock(&sfY.mutex);
     sfY.mp = val;
     pthread_mutex_unlock(&sfY.mutex);
     stab_refmdl( &sfY );
-  break;
+    break;
   case Y_b :
     pthread_mutex_lock(&sfY.mutex);
     sfY.b = val;
     pthread_mutex_unlock(&sfY.mutex);
     stab_refmdl( &sfY );
-  break;
+    break;
+  case Y_Gp :
+    pthread_mutex_lock(&sfY.mutex);
+    sfY.Gp = val;
+    pthread_mutex_unlock(&sfY.mutex);
+    break;
+  case Y_Gd :
+    pthread_mutex_lock(&sfY.mutex);
+    sfY.Gd = val;
+    pthread_mutex_unlock(&sfY.mutex);
+    break;
+  case Y_Gu :
+    pthread_mutex_lock(&sfY.mutex);
+    sfY.Gu = val;
+    pthread_mutex_unlock(&sfY.mutex);
+    break;
 
   // Yaw (Z) Stabilization Parameters
   case Z_ts :
@@ -551,19 +590,34 @@ static void gcs_set_param_value ( uint index, double val )  {
     sfZ.ts = val;
     pthread_mutex_unlock(&sfZ.mutex);
     stab_refmdl( &sfZ );
-  break;
+    break;
   case Z_mp :
     pthread_mutex_lock(&sfZ.mutex);
     sfZ.mp = val;
     pthread_mutex_unlock(&sfZ.mutex);
     stab_refmdl( &sfZ );
-  break;
+    break;
   case Z_b :
     pthread_mutex_lock(&sfZ.mutex);
     sfZ.b = val;
     pthread_mutex_unlock(&sfZ.mutex);
     stab_refmdl( &sfZ );
-  break;
+    break;
+  case Z_Gp :
+    pthread_mutex_lock(&sfZ.mutex);
+    sfZ.Gp = val;
+    pthread_mutex_unlock(&sfZ.mutex);
+    break;
+  case Z_Gd :
+    pthread_mutex_lock(&sfZ.mutex);
+    sfZ.Gd = val;
+    pthread_mutex_unlock(&sfZ.mutex);
+    break;
+  case Z_Gu :
+    pthread_mutex_lock(&sfZ.mutex);
+    sfZ.Gu = val;
+    pthread_mutex_unlock(&sfZ.mutex);
+    break;
 
   // Throttle settings
   case T_min :

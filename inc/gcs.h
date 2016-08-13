@@ -53,16 +53,25 @@ enum param_index {
   X_ts = 0,
   X_mp,
   X_b,
+  X_Gp,
+  X_Gd,
+  X_Gu,
 
   // Pitch stabilization
   Y_ts,
   Y_mp,
   Y_b, 
+  Y_Gp,
+  Y_Gd,
+  Y_Gu,
 
   // Yaw stabilization
   Z_ts,
   Z_mp,
   Z_b,
+  Z_Gp,
+  Z_Gd,
+  Z_Gu,
 
   // Thrl values
   T_min,
