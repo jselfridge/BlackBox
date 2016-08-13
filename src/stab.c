@@ -9,13 +9,9 @@
 #include "timer.h"
 
 
-/* Debugging */ 
-#include "log.h"
-
-
 static void    stab_refmdl  ( sf_struct *sf );
 static void    stab_quad    ( void );
-static void    stab_sf      ( sf_struct *sf, double r, double zp, double zd );
+static double  stab_sf      ( sf_struct *sf, double r, double zp, double zd );
 //static double  stab_pid     ( pid_struct *pid, double xp, double xd, double ref, bool reset );
 //static double  stab_adapt   ( adapt_struct *adapt, double p, double d, double r, bool areset );
 static void    stab_disarm  ( void );
@@ -199,21 +195,10 @@ void stab_quad ( void )  {
   while ( heading >   M_PI )  heading -= 2.0 * M_PI;
   while ( heading <= -M_PI )  heading += 2.0 * M_PI;
 
-  // Debugging reference command
-  //float timestamp = (float) ( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f ) - datalog.offset );  
-  //if ( timestamp <= 2.0 || timestamp >= 6.0 )  for ( i=0; i<3; i++ )  ref[i] = 0.0;
-  //else  {  ref[x] = 3.0;  ref[y] = 2.0;  ref[z] = 1.0;  }
-
   // Apply state feedback function
-  stab_sf( &sfX, ref[x], att[x],  ang[x] );
-  stab_sf( &sfY, ref[y], att[y],  ang[y] );
-  stab_sf( &sfZ, ref[z], heading, ang[z] );
-
-  // Debugging torque commands
-  cmd[x] = att[0] * ang[0] * 0.0;
-  cmd[y] = att[1] * ang[1] * 0.0;
-  cmd[z] = att[2] * ang[2] * 0.0;
-
+  cmd[x] = stab_sf( &sfX, ref[x], att[x],  ang[x] );
+  cmd[y] = stab_sf( &sfY, ref[y], att[y],  ang[y] );
+  cmd[z] = stab_sf( &sfZ, ref[z], heading, ang[z] );
 
   // -- ORIGINAL -- //
   // Calculate Roll command
@@ -267,12 +252,10 @@ void stab_quad ( void )  {
  *  stab_sf
  *  Apply state feedback control loop
  */
-void stab_sf ( sf_struct *sf, double r, double zp, double zd )  {
+double stab_sf ( sf_struct *sf, double r, double zp, double zd )  {
 
   // Local variables
-  double dt, ap, ad, xp, xd, xa, u;
-  double kp;
-  //double kd;
+  double dt, ap, ad, kp, kd, xp, xd, xa, u;
 
   // Pull data from structure
   pthread_mutex_lock(&sf->mutex);
@@ -280,7 +263,7 @@ void stab_sf ( sf_struct *sf, double r, double zp, double zd )  {
   ap = sf->ap;
   ad = sf->ad;
   kp = sf->kp;
-  //kd = sf->kd;
+  kd = sf->kd;
   xp = sf->xp;
   xd = sf->xd;
   pthread_mutex_unlock(&sf->mutex);
@@ -291,7 +274,7 @@ void stab_sf ( sf_struct *sf, double r, double zp, double zd )  {
   xp += dt * xd + 0.5 * dt * dt * xa;
 
   // Determine control input
-  u = - kp * xp; // - kd * xd + kr * r;
+  u = - kp * zp - kd * zd + kp * r;
 
   // Push data to structure
   pthread_mutex_lock(&sf->mutex);
@@ -301,7 +284,7 @@ void stab_sf ( sf_struct *sf, double r, double zp, double zd )  {
   sf->u  = u;
   pthread_mutex_unlock(&sf->mutex);
 
-  return;
+  return u;
 }
 
 
