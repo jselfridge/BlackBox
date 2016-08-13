@@ -15,7 +15,7 @@
 
 static void    stab_refmdl  ( sf_struct *sf );
 static void    stab_quad    ( void );
-static void    stab_sf      ( sf_struct *sf, double r );
+static void    stab_sf      ( sf_struct *sf, double r, double zp, double zd );
 //static double  stab_pid     ( pid_struct *pid, double xp, double xd, double ref, bool reset );
 //static double  stab_adapt   ( adapt_struct *adapt, double p, double d, double r, bool areset );
 static void    stab_disarm  ( void );
@@ -69,47 +69,19 @@ void stab_init ( void )  {
   sfZ.wrap = true;
 
   // Assign desired characteristics
-  sfX.ts = 0.50;  sfX.mp = 10.0;  stab_refmdl( &sfX );
-  sfY.ts = 0.50;  sfY.mp = 10.0;  stab_refmdl( &sfY );
-  sfZ.ts = 0.50;  sfZ.mp = 10.0;  stab_refmdl( &sfZ );
+  sfX.ts = 1.60;  sfX.mp = 0.0001;  sfX.b = 105.0;  stab_refmdl( &sfX );
+  sfY.ts = 1.60;  sfY.mp = 0.0001;  sfY.b = 105.0;  stab_refmdl( &sfY );
+  sfZ.ts = 1.60;  sfZ.mp = 0.0001;  sfZ.b = 105.0;  stab_refmdl( &sfZ );
   if (DEBUG)  {
-    printf("          Ts    Mp    zeta  nfreq    sigma  dfreq          ap      ad  \n" );
-    printf("  X:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f  \n", 
-      sfX.ts, sfX.mp, sfX.zeta, sfX.nfreq, sfX.sigma, sfX.dfreq, sfX.ap, sfX.ad );
-    printf("  Y:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f  \n", 
-      sfY.ts, sfY.mp, sfY.zeta, sfY.nfreq, sfY.sigma, sfY.dfreq, sfY.ap, sfY.ad );
-    printf("  Z:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f  \n", 
-      sfZ.ts, sfZ.mp, sfZ.zeta, sfZ.nfreq, sfZ.sigma, sfZ.dfreq, sfZ.ap, sfZ.ad );
+    printf("          Ts    Mp    zeta  nfreq    sigma  dfreq          ap      ad        kp      kd  \n" );
+    printf("  X:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f    %6.4f  %6.4f  \n", 
+      sfX.ts, sfX.mp, sfX.zeta, sfX.nfreq, sfX.sigma, sfX.dfreq, sfX.ap, sfX.ad, sfX.kp, sfX.kd );
+    printf("  Y:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f    %6.4f  %6.4f  \n", 
+      sfY.ts, sfY.mp, sfY.zeta, sfY.nfreq, sfY.sigma, sfY.dfreq, sfY.ap, sfY.ad, sfY.kp, sfY.kd );
+    printf("  Z:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f    %6.4f  %6.4f  \n", 
+      sfZ.ts, sfZ.mp, sfZ.zeta, sfZ.nfreq, sfZ.sigma, sfZ.dfreq, sfZ.ap, sfZ.ad, sfZ.kp, sfZ.kd );
     fflush(stdout);
   }
-
-  /*  -- ORIGINAL --
-  // Roll (X) gain values
-  pidX.pgain = 0.085;
-  pidX.igain = 0.000;
-  pidX.dgain = 0.055;
-  adaptX.Gp  = 0.0;
-  adaptX.Gd  = 0.0;
-  //adaptX.Gr  = 0.0;
-  adaptX.G   = 0.0;
-  adaptX.kp  = pidX.pgain;
-  adaptX.kd  = pidX.dgain;
-  //adaptX.kr  =  pidX.pgain;
-  adaptX.k   = 0.0;
-  adaptX.kp_prev = adaptX.kp;
-  adaptX.kd_prev = adaptX.kd;
-  //adaptX.kr_prev = adaptX.kr;
-
-  // Pitch (Y) gain values
-  pidY.pgain = 0.085;
-  pidY.igain = 0.000;
-  pidY.dgain = 0.055;
-
-  // Yaw (Z) gain values
-  pidZ.pgain = 0.085;
-  pidZ.igain = 0.000;
-  pidZ.dgain = 0.055;
-  */
 
   return;
 }
@@ -133,15 +105,16 @@ void stab_exit ( void )  {
 void stab_refmdl ( sf_struct *sf )  {
 
   // Local variables
-  double ts, mp, ln;
+  double ts, mp, ln, b;
   double sigma, zeta;
   double nfreq, dfreq;
-  double ap, ad;
+  double ap, ad, kp, kd;
 
   // Get desired system characteristics
   pthread_mutex_lock(&sf->mutex);
   ts = sf->ts;
   mp = sf->mp / 100.0;
+  b  = sf->b;
   pthread_mutex_unlock(&sf->mutex);
 
   // Calculate parameters
@@ -152,6 +125,8 @@ void stab_refmdl ( sf_struct *sf )  {
   dfreq = nfreq * sqrt( 1 - zeta * zeta );
   ap = nfreq * nfreq;
   ad = 2.0 * zeta * nfreq;
+  kp = ap / b;
+  kd = ad / b;
 
   // Assign reference model parameters
   pthread_mutex_lock(&sf->mutex);
@@ -161,6 +136,8 @@ void stab_refmdl ( sf_struct *sf )  {
   sf->dfreq = dfreq;
   sf->ap    = ap;
   sf->ad    = ad;
+  sf->kp    = kp;
+  sf->kd    = kd;
   pthread_mutex_unlock(&sf->mutex);
 
   return;
@@ -228,9 +205,9 @@ void stab_quad ( void )  {
   //else  {  ref[x] = 3.0;  ref[y] = 2.0;  ref[z] = 1.0;  }
 
   // Apply state feedback function
-  stab_sf( &sfX, ref[x] );
-  stab_sf( &sfY, ref[y] );
-  stab_sf( &sfZ, ref[z] );
+  stab_sf( &sfX, ref[x], att[x],  ang[x] );
+  stab_sf( &sfY, ref[y], att[y],  ang[y] );
+  stab_sf( &sfZ, ref[z], heading, ang[z] );
 
   // Debugging torque commands
   cmd[x] = att[0] * ang[0] * 0.0;
@@ -290,16 +267,20 @@ void stab_quad ( void )  {
  *  stab_sf
  *  Apply state feedback control loop
  */
-void stab_sf ( sf_struct *sf, double r )  {
+void stab_sf ( sf_struct *sf, double r, double zp, double zd )  {
 
   // Local variables
-  double dt, ap, ad, xp, xd, xa;
+  double dt, ap, ad, xp, xd, xa, u;
+  double kp;
+  //double kd;
 
   // Pull data from structure
   pthread_mutex_lock(&sf->mutex);
   dt = sf->dt;
   ap = sf->ap;
   ad = sf->ad;
+  kp = sf->kp;
+  //kd = sf->kd;
   xp = sf->xp;
   xd = sf->xd;
   pthread_mutex_unlock(&sf->mutex);
@@ -309,13 +290,16 @@ void stab_sf ( sf_struct *sf, double r )  {
   xd += dt * xa;
   xp += dt * xd + 0.5 * dt * dt * xa;
 
+  // Determine control input
+  u = - kp * xp; // - kd * xd + kr * r;
+
   // Push data to structure
   pthread_mutex_lock(&sf->mutex);
   sf->r  = r;
   sf->xp = xp;
   sf->xd = xd;
+  sf->u  = u;
   pthread_mutex_unlock(&sf->mutex);
-
 
   return;
 }
