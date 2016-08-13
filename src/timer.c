@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <sys/timerfd.h>
 #include <unistd.h>
-#include "ekf.h"
 #include "flag.h"
 #include "gcs.h"
 #include "imu.h"
@@ -55,7 +54,6 @@ void tmr_mutex ( void )  {
   pthread_mutex_init( &sfX.mutex,    NULL );
   pthread_mutex_init( &sfY.mutex,    NULL );
   pthread_mutex_init( &sfZ.mutex,    NULL );
-  //pthread_mutex_init( &ekf.mutex,    NULL );
   pthread_mutex_init( &gcs.mutex,    NULL );
   return;
 }
@@ -154,7 +152,6 @@ void tmr_begin ( pthread_attr_t *attr )  {
   tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(1000);
   tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(1000);
   tmr_thread( &tmr_stab,  attr, fcn_stab  );  usleep(1000);
-  //tmr_thread( &tmr_ins,   attr, fcn_ins   );  usleep(1000);
   tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(1000);
   tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(1000);
 
@@ -194,7 +191,6 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&sfX.mutex);
   pthread_mutex_destroy(&sfY.mutex);
   pthread_mutex_destroy(&sfZ.mutex);
-  //pthread_mutex_destroy(&ekf.mutex);
   pthread_mutex_destroy(&gcs.mutex);
 
   // Exit GCSRX thread

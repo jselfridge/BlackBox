@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include "ekf.h"
 #include "gcs.h"
 #include "imu.h"
 #include "io.h"
@@ -46,8 +45,6 @@ void log_init ( void )  {
   log_compB.limit   =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_ahrsB.limit   =  LOG_MAX_DUR * HZ_IMU_FAST;
   log_stab.limit    =  LOG_MAX_DUR * HZ_STAB;
-  //log_ekf.limit     =  LOG_MAX_DUR * HZ_STAB;
-  //log_ins.limit     =  LOG_MAX_DUR * HZ_INS;
 
   // Parameter value setup
   log_param.time    =  malloc( sizeof(float)  * log_param.limit               );
@@ -144,9 +141,6 @@ void log_init ( void )  {
   // Stabilization setup
   log_stab.time     =  malloc( sizeof(float)  * log_stab.limit     );
   log_stab.dur      =  malloc( sizeof(ulong)  * log_stab.limit     );
-  //log_stab.att      =  malloc( sizeof(float)  * log_stab.limit * 3 );
-  //log_stab.ang      =  malloc( sizeof(float)  * log_stab.limit * 3 );
-  //log_stab.cmd      =  malloc( sizeof(float)  * log_stab.limit * 4 );
 
   // SF roll stabilization
   log_sfX.r         =  malloc( sizeof(float)  * log_stab.limit );
@@ -177,6 +171,7 @@ void log_init ( void )  {
   log_ekf.T         =  malloc( sizeof(float)  * log_ekf.limit * n*n );
   log_ekf.S         =  malloc( sizeof(float)  * log_ekf.limit * m*m );
   */
+
   /*
   // INS setup
   log_ins.time      =  malloc( sizeof(float)  * log_ins.limit       );
@@ -290,9 +285,6 @@ void log_exit ( void )  {
   // Stabilization memory
   free(log_stab.time);
   free(log_stab.dur);
-  //free(log_stab.att);
-  //free(log_stab.ang);
-  //free(log_stab.cmd);
 
   // SF roll stab memory
   free(log_sfX.r);
@@ -309,7 +301,6 @@ void log_exit ( void )  {
   free(log_sfZ.xp);
   free(log_sfZ.xd);
 
-
   /*
   // EKF memory
   free(log_ekf.time);
@@ -323,22 +314,12 @@ void log_exit ( void )  {
   free(log_ekf.T);
   free(log_ekf.S);
   */
+
   /*
   // INS memory
   free(log_ins.time);
   free(log_ins.dur);
   free(log_ins.K);
-  */
-  /*
-  // Adaptive roll stabilization
-  free(log_adaptX.u);
-  free(log_adaptX.p);
-  free(log_adaptX.d);
-  free(log_adaptX.r);
-  free(log_adaptX.kp);
-  free(log_adaptX.kd);
-  //free(log_adaptX.kr);
-  free(log_adaptX.k);
   */
 
   return;
@@ -366,8 +347,6 @@ void log_start ( void )  {
   log_compB.count  = 0;
   log_ahrsB.count  = 0;
   log_stab.count   = 0;
-  //log_ekf.count    = 0;
-  //log_ins.count    = 0;
 
   // Allocate dir/path/file memory
   datalog.dir  = malloc(16);
@@ -545,6 +524,7 @@ void log_start ( void )  {
   //for ( r=1; r<=n; r++ )  for ( c=1; c<=n; c++ )  fprintf( datalog.ekf, "    T%02d%02d", r, c );  fprintf( datalog.ekf, "    " );
   //for ( r=1; r<=m; r++ )  for ( c=1; c<=m; c++ )  fprintf( datalog.ekf, "    S%02d%02d", r, c );  fprintf( datalog.ekf, "    " );
   */
+
   /*
   // INS datalog file
   sprintf( file, "%sins.txt", datalog.path );
@@ -788,17 +768,6 @@ void log_record ( enum log_index index )  {
       log_stab.time[row] = timestamp;
       log_stab.dur[row]  = tmr_stab.dur;
 
-      // Rotational state values
-      pthread_mutex_lock(&rot.mutex);
-      //for ( i=0; i<3; i++ )  log_stab.att [ row*3 +i ] = rot.att[i];
-      //for ( i=0; i<3; i++ )  log_stab.ang [ row*3 +i ] = rot.ang[i];
-      pthread_mutex_unlock(&rot.mutex);
-
-      // Stabilization values
-      pthread_mutex_lock(&stab.mutex);
-      //for ( i=0; i<4; i++ )  log_stab.cmd   [ row*4 +i ] = stab.cmd[i];
-      pthread_mutex_unlock(&stab.mutex);
-
       // Roll SF values
       pthread_mutex_lock(&sfX.mutex);
       log_sfX.r  [row] = sfX.r;
@@ -841,7 +810,7 @@ void log_record ( enum log_index index )  {
 
     return;
 
-    /*
+  /*
   // Record INS data
   case LOG_INS :
 
@@ -862,7 +831,7 @@ void log_record ( enum log_index index )  {
     }
 
     return;
-    */
+  */
 
   default :
     return;
@@ -1018,9 +987,6 @@ static void log_save ( void )  {
   // Stabilization data
   for ( row = 0; row < log_stab.count; row++ )  {
     fprintf( datalog.stab, "\n %011.6f   %06ld      ", log_stab.time[row], log_stab.dur[row] );
-    //for ( i=0; i<3; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.att [ row*3 +i ] );   fprintf( datalog.stab, "    " );
-    //for ( i=0; i<3; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.ang [ row*3 +i ] );   fprintf( datalog.stab, "    " );
-    //for ( i=0; i<4; i++ )  fprintf( datalog.stab, "%07.4f  ",  log_stab.cmd [ row*4 +i ] );   fprintf( datalog.stab, "    " );
     fprintf( datalog.stab, "%07.4f  ",  log_sfX.r[row] );
     fprintf( datalog.stab, "%07.4f  ",  log_sfX.xp[row] );
     fprintf( datalog.stab, "%07.4f  ",  log_sfX.xd[row] );
@@ -1051,6 +1017,7 @@ static void log_save ( void )  {
 
   }
   */
+
   /*
   // Inertial Navigation System data
   for ( row = 0; row < log_ins.count; row++ )  {
@@ -1090,8 +1057,6 @@ static void log_close ( void )  {
   }
 
   fclose(datalog.stab);
-  //fclose(datalog.ekf);
-  //fclose(datalog.ins);
 
   return;
 }
