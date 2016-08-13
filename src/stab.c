@@ -9,7 +9,8 @@
 #include "timer.h"
 
 
-/* Debugging */ #include "log.h"
+/* Debugging */ 
+#include "log.h"
 
 
 static void    stab_refmdl  ( sf_struct *sf );
@@ -68,9 +69,9 @@ void stab_init ( void )  {
   sfZ.wrap = true;
 
   // Assign desired characteristics
-  sfX.ts = 1.00;  sfX.mp = 15.0;  stab_refmdl( &sfX );
-  sfY.ts = 3.00;  sfY.mp = 10.0;  stab_refmdl( &sfY );
-  sfZ.ts = 0.46;  sfZ.mp = 04.3;  stab_refmdl( &sfZ );
+  sfX.ts = 0.50;  sfX.mp = 10.0;  stab_refmdl( &sfX );
+  sfY.ts = 0.50;  sfY.mp = 10.0;  stab_refmdl( &sfY );
+  sfZ.ts = 0.50;  sfZ.mp = 10.0;  stab_refmdl( &sfZ );
   if (DEBUG)  {
     printf("          Ts    Mp    zeta  nfreq    sigma  dfreq          ap      ad  \n" );
     printf("  X:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f  \n", 
@@ -222,9 +223,9 @@ void stab_quad ( void )  {
   while ( heading <= -M_PI )  heading += 2.0 * M_PI;
 
   // Debugging reference command
-  float timestamp = (float) ( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f ) - datalog.offset );  
-  if ( timestamp <= 2.0 || timestamp >= 6.0 )  for ( i=0; i<3; i++ )  ref[i] = 0.0;
-  else  {  ref[x] = 3.0;  ref[y] = 2.0;  ref[z] = 1.0;  }
+  //float timestamp = (float) ( tmr_debug.start_sec + ( tmr_debug.start_usec / 1000000.0f ) - datalog.offset );  
+  //if ( timestamp <= 2.0 || timestamp >= 6.0 )  for ( i=0; i<3; i++ )  ref[i] = 0.0;
+  //else  {  ref[x] = 3.0;  ref[y] = 2.0;  ref[z] = 1.0;  }
 
   // Apply state feedback function
   stab_sf( &sfX, ref[x] );
