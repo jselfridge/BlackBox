@@ -62,11 +62,11 @@ enum param_index {
   // Yaw stabilization
   Z_ts,
   Z_mp,
-  Z_b, 
+  Z_b,
 
   // Thrl values
   T_min,
-  T_max, 
+  T_max,
   T_tilt,
 
   // Range values

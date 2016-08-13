@@ -509,60 +509,60 @@ static void gcs_set_param_value ( uint index, double val )  {
   case X_ts :
     pthread_mutex_lock(&sfX.mutex);
     sfX.ts = val;
-    stab_refmdl( &sfX );
     pthread_mutex_unlock(&sfX.mutex);
+    stab_refmdl( &sfX );
   break;
   case X_mp :
     pthread_mutex_lock(&sfX.mutex);
     sfX.mp = val;
-    stab_refmdl( &sfX );
     pthread_mutex_unlock(&sfX.mutex);
+    stab_refmdl( &sfX );
   break;
   case X_b :
     pthread_mutex_lock(&sfX.mutex);
     sfX.b = val;
-    stab_refmdl( &sfX );
     pthread_mutex_unlock(&sfX.mutex);
+    stab_refmdl( &sfX );
   break;
 
   // Pitch (Y) Stabilization Parameters
   case Y_ts :
     pthread_mutex_lock(&sfY.mutex);
     sfY.ts = val;
-    stab_refmdl( &sfY );
     pthread_mutex_unlock(&sfY.mutex);
+    stab_refmdl( &sfY );
   break;
   case Y_mp :
     pthread_mutex_lock(&sfY.mutex);
     sfY.mp = val;
-    stab_refmdl( &sfY );
     pthread_mutex_unlock(&sfY.mutex);
+    stab_refmdl( &sfY );
   break;
   case Y_b :
     pthread_mutex_lock(&sfY.mutex);
     sfY.b = val;
-    stab_refmdl( &sfY );
     pthread_mutex_unlock(&sfY.mutex);
+    stab_refmdl( &sfY );
   break;
 
   // Yaw (Z) Stabilization Parameters
   case Z_ts :
     pthread_mutex_lock(&sfZ.mutex);
     sfZ.ts = val;
-    stab_refmdl( &sfZ );
     pthread_mutex_unlock(&sfZ.mutex);
+    stab_refmdl( &sfZ );
   break;
   case Z_mp :
     pthread_mutex_lock(&sfZ.mutex);
     sfZ.mp = val;
-    stab_refmdl( &sfZ );
     pthread_mutex_unlock(&sfZ.mutex);
+    stab_refmdl( &sfZ );
   break;
   case Z_b :
     pthread_mutex_lock(&sfZ.mutex);
     sfZ.b = val;
-    stab_refmdl( &sfZ );
     pthread_mutex_unlock(&sfZ.mutex);
+    stab_refmdl( &sfZ );
   break;
 
   // Throttle settings
