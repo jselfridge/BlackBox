@@ -1,12 +1,11 @@
 timer.c:36:6:tmr_mutex	8	static
-timer.c:66:6:tmr_setup	32	static
+timer.c:66:6:tmr_setup	24	static
 timer.c:117:6:tmr_attr	8	static
 timer.c:148:6:tmr_begin	24	static
 timer.c:21:6:tmr_init	64	static
 timer.c:171:6:tmr_exit	8	static
 timer.c:246:6:tmr_thread	32	static
 timer.c:269:6:tmr_create	40	static
-timer.c:498:7:fcn_debug	40	static
 timer.c:481:7:fcn_gcsrx	40	static
 timer.c:464:7:fcn_gcstx	40	static
 timer.c:427:7:fcn_stab	40	static
@@ -16,3 +15,4 @@ timer.c:367:7:fcn_io	40	static
 timer.c:304:6:tmr_pause	24	static
 timer.c:324:6:tmr_start	16	static
 timer.c:342:6:tmr_finish	24	static
+timer.c:498:7:fcn_debug	40	static

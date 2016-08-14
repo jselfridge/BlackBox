@@ -302,23 +302,23 @@ static void sys_stab ( void )  {
 
   // Roll state feedback values
   pthread_mutex_lock(&sfX.mutex);
-  //printf("%6.3f %6.3f %6.3f %6.3f   ", sfX.r, sfX.xp, sfX.xd, sfX.u );  fflush(stdout);
+  printf("%6.3f %6.3f %6.3f %6.3f   ", sfX.r, sfX.xp, sfX.xd, sfX.u );  fflush(stdout);
   //printf("%6.3f %6.3f %6.3f %6.3f   ", sfX.ap, sfX.ad, sfX.kp, sfX.kd );  fflush(stdout);
-  printf("%6.3f %6.3f %6.3f   ", sfX.Gp, sfX.Gd, sfX.Gu );  fflush(stdout);
+  //printf("%6.3f %6.3f %6.3f   ", sfX.Gp, sfX.Gd, sfX.Gu );  fflush(stdout);
   pthread_mutex_unlock(&sfX.mutex);
 
   // Pitch state feedback values
   pthread_mutex_lock(&sfY.mutex);
-  //printf("%6.3f %6.3f %6.3f %6.3f   ", sfY.r, sfY.xp, sfY.xd, sfY.u );  fflush(stdout);
+  printf("%6.3f %6.3f %6.3f %6.3f   ", sfY.r, sfY.xp, sfY.xd, sfY.u );  fflush(stdout);
   //printf("%6.3f %6.3f %6.3f %6.3f   ", sfY.ap, sfY.ad, sfY.kp, sfY.kd );  fflush(stdout);
-  printf("%6.3f %6.3f %6.3f   ", sfY.Gp, sfY.Gd, sfY.Gu );  fflush(stdout);
+  //printf("%6.3f %6.3f %6.3f   ", sfY.Gp, sfY.Gd, sfY.Gu );  fflush(stdout);
   pthread_mutex_unlock(&sfY.mutex);
 
   // Yaw state feedback values
   pthread_mutex_lock(&sfZ.mutex);
-  //printf("%6.3f %6.3f %6.3f %6.3f   ", sfZ.r, sfZ.xp, sfZ.xd, sfZ.u );  fflush(stdout);
+  printf("%6.3f %6.3f %6.3f %6.3f   ", sfZ.r, sfZ.xp, sfZ.xd, sfZ.u );  fflush(stdout);
   //printf("%6.3f %6.3f %6.3f %6.3f   ", sfZ.ap, sfZ.ad, sfZ.kp, sfZ.kd );  fflush(stdout);
-  printf("%6.3f %6.3f %6.3f   ", sfZ.Gp, sfZ.Gd, sfZ.Gu );  fflush(stdout);
+  //printf("%6.3f %6.3f %6.3f   ", sfZ.Gp, sfZ.Gd, sfZ.Gu );  fflush(stdout);
   pthread_mutex_unlock(&sfZ.mutex);
 
   return;

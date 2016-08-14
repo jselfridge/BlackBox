@@ -6,6 +6,6 @@ gcs.c:675:13:gcs_input	680	dynamic,bounded
 gcs.c:385:13:gcs_missionlist	632	dynamic,bounded
 gcs.c:295:13:gcs_heartbeat	640	dynamic,bounded
 gcs.c:43:6:gcs_init	112	dynamic,bounded
-gcs.c:130:6:gcs_exit	8	static
+gcs.c:130:6:gcs_exit	0	static
 gcs.c:141:6:gcs_tx	8	static
 gcs.c:194:6:gcs_rx	336	dynamic,bounded

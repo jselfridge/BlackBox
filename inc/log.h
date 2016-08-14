@@ -97,6 +97,10 @@ typedef struct log_sf_struct {
   double *r;
   double *xp;
   double *xd;
+  double *u;
+  double *kp;
+  double *kd;
+  double *ku;
 } log_sf_struct;
 log_sf_struct log_sfX;
 log_sf_struct log_sfY;

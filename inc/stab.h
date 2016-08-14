@@ -44,6 +44,7 @@ typedef struct sf_struct {
   double  b;
   double  kp;
   double  kd;
+  double  ku;
   double  r;
   double  xp;
   double  xd;

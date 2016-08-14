@@ -80,9 +80,9 @@ void stab_init ( void )  {
   }
 
   // Assign adaptive gains
-  sfX.Gp = 1.0;  sfX.Gd = 2.0;  sfX.Gu = 3.0;
-  sfY.Gp = 4.0;  sfY.Gd = 5.0;  sfY.Gu = 6.0;
-  sfZ.Gp = 7.0;  sfZ.Gd = 8.0;  sfZ.Gu = 9.0;
+  sfX.Gp = 0.0;  sfX.Gd = 0.0;  sfX.Gu = 0.0;
+  sfY.Gp = 0.0;  sfY.Gd = 0.0;  sfY.Gu = 0.0;
+  sfZ.Gp = 0.0;  sfZ.Gd = 0.0;  sfZ.Gu = 0.0;
   if (DEBUG)  {
     printf("  Adaptive gain settings \n");
     printf("       Gp   Gd   Gu  \n");
@@ -117,13 +117,14 @@ void stab_refmdl ( sf_struct *sf )  {
   double ts, mp, ln, b;
   double sigma, zeta;
   double nfreq, dfreq;
-  double ap, ad, kp, kd;
+  double ap, ad;
+  double kp, kd, ku;
 
   // Get desired system characteristics
   pthread_mutex_lock(&sf->mutex);
   ts = sf->ts;
   mp = sf->mp / 100.0;
-  b  = sf->b;
+  b  = sf->b;  // link with value of 'ku'
   pthread_mutex_unlock(&sf->mutex);
 
   // Calculate parameters
@@ -136,6 +137,7 @@ void stab_refmdl ( sf_struct *sf )  {
   ad = 2.0 * zeta * nfreq;
   kp = ap / b;
   kd = ad / b;
+  ku = 1.0;  // Link with value of 'b'
 
   // Assign reference model parameters
   pthread_mutex_lock(&sf->mutex);
@@ -147,6 +149,7 @@ void stab_refmdl ( sf_struct *sf )  {
   sf->ad    = ad;
   sf->kp    = kp;
   sf->kd    = kd;
+  sf->ku    = ku;
   pthread_mutex_unlock(&sf->mutex);
 
   return;
@@ -268,7 +271,12 @@ void stab_quad ( void )  {
 double stab_sf ( sf_struct *sf, double r, double zp, double zd )  {
 
   // Local variables
-  double dt, ap, ad, b, kp, kd, xp, xd, xa, Gp, Gd, Gu, u;
+  double dt, ap, ad, b;
+  double kp, kd, ku;
+  double xp, xd, xa;
+  double Gp, Gd, Gu, u;
+  double p_tilde, d_tilde;
+  double kp_dot, kd_dot, ku_dot;
 
   // Pull data from structure
   pthread_mutex_lock(&sf->mutex);
@@ -278,6 +286,7 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd )  {
   b  = sf->b;
   kp = sf->kp;
   kd = sf->kd;
+  ku = sf->ku;
   xp = sf->xp;
   xd = sf->xd;
   Gp = sf->Gp;
@@ -285,15 +294,33 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd )  {
   Gu = sf->Gu;
   pthread_mutex_unlock(&sf->mutex);
 
-  // Determine referenace states
+  // Determine control input
+  u = - kp * zp - kd * zd + kp * r;
+
+  // Determine ref model states
   xa  = r * ap - xp * ap - xd * ad;
   xd += dt * xa;
   xp += dt * xd + 0.5 * dt * dt * xa;
 
-  // Determine control input
-  u = - kp * zp - kd * zd + kp * r;
-
   // Adaptive update laws
+  p_tilde = xp - zp;
+  d_tilde = xd - zd;
+  kp_dot = - Gp * b * ( p_tilde + 2 * d_tilde ) * zp;
+  kd_dot = - Gd * b * ( p_tilde + 2 * d_tilde ) * zd;
+  ku_dot = - Gu * b * ( p_tilde + 2 * d_tilde ) * u;
+
+  // Projection operator
+  double kp_dot_max = 0.00001;
+  double kd_dot_max = 0.00001;
+  double ku_dot_max = 0.00001;
+  if ( kp_dot > kp_dot_max )  kp_dot = kp_dot_max;  if ( kp_dot < -kp_dot_max )  kp_dot = -kp_dot_max;
+  if ( kd_dot > kd_dot_max )  kd_dot = kd_dot_max;  if ( kd_dot < -kd_dot_max )  kd_dot = -kd_dot_max;
+  if ( ku_dot > ku_dot_max )  ku_dot = ku_dot_max;  if ( ku_dot < -ku_dot_max )  ku_dot = -ku_dot_max;
+
+  // Update gain values
+  kp += dt * kp_dot;
+  kd += dt * kd_dot;
+  ku += dt * ku_dot;
 
   // Push data to structure
   pthread_mutex_lock(&sf->mutex);
@@ -301,160 +328,14 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd )  {
   sf->xp = xp;
   sf->xd = xd;
   sf->u  = u;
+  sf->kp = kp;
+  sf->kd = kd;
+  sf->kd = ku;
   pthread_mutex_unlock(&sf->mutex);
 
   return u;
 }
 
-
-/**
- *  stab_pid
- *  Apply PID contorl loop
- */
-/*
-double stab_pid ( pid_struct *pid, double xp, double xd, double ref, bool reset )  {
-
-  // Local variables
-  double dt, cmd;
-  double perr, ierr, derr;
-  double pgain, igain, dgain;
-  bool wrap;
-
-  // Pull structure data
-  pthread_mutex_lock(&pid->mutex);
-  dt    = pid->dt;
-  wrap  = pid->wrap;
-  ierr  = pid->ierr;
-  pgain = pid->pgain;
-  igain = pid->igain;
-  dgain = pid->dgain;
-  pthread_mutex_unlock(&pid->mutex);
-
-  // Calculate error values
-  perr = -xp + ref;
-  if (wrap)  {
-    while ( perr >   M_PI )  perr -= 2.0 * M_PI;
-    while ( perr <= -M_PI )  perr += 2.0 * M_PI;
-  }
-  derr = -xd;
-  if (reset)  ierr = 0.0; 
-  else        ierr += perr * dt;
-
-  // Calculate output command
-  cmd = perr * pgain + 
-        ierr * igain + 
-        derr * dgain;
-
-  // Push to data structure
-  pthread_mutex_lock(&pid->mutex);
-  pid->perr = perr;
-  pid->ierr = ierr;
-  pid->derr = derr;
-  pthread_mutex_unlock(&pid->mutex);
-
-  return cmd;
-}
-*/
-
-/**
- *  stab_adapt
- *  Apply adaptive contorl loop
- */
-/*
-double stab_adapt ( adapt_struct *adapt, double p, double d, double r, bool areset )  {
-
-  // Local variables
-  double Gp, Gd, G;
-  double kp, kd, k;
-  double p_prev,  d_prev, r_prev;
-  double kp_prev, kd_prev;
-
-  // Lock struct while pulling data
-  pthread_mutex_lock(&adapt->mutex);
-
-  // Get adaptive law gains
-  Gp = adapt->Gp;
-  Gd = adapt->Gd;
-  //Gr = adapt->Gr;
-  G  = adapt->G;
-
-  // Get current state feedback gains
-  kp = adapt->kp;
-  kd = adapt->kd;
-  //kr = adapt->kr;
-  k  = adapt->k;
-
-  // Get previous states
-  p_prev = adapt->p;
-  d_prev = adapt->d;
-  r_prev = adapt->r;
-
-  // Get previous state feedback gains
-  kp_prev = adapt->kp_prev;
-  kd_prev = adapt->kd_prev;
-  //kr_prev = adapt->kr_prev;
-
-  // Assign previous state gains (before they are updated)
-  adapt->kp_prev = kp;
-  adapt->kd_prev = kd;
-  //adapt->kr_prev = kr;
-
-  // Unlock data structure
-  pthread_mutex_unlock(&adapt->mutex);
-
-  // Cancel adaptation
-  if ( areset )  {
-    Gp = 0.0;
-    Gd = 0.0;
-    //Gr = 0.0;
-    G  = 0.0;
-  }
-
-  // Scale down adaptive gains
-  else {
-    Gp /= 1000.0;
-    Gd /= 1000.0;
-    G  /= 1000.0;
-  }
-
-  // Control input 
-  double u = - kp * p - kd * d + kp * r;
-
-  // Auxilliary signals
-  double xi =  - ( kp - kp_prev ) * p_prev  - ( kd - kd_prev ) * d_prev  + ( kp - kp_prev ) * r_prev;
-  double eps = ( p - r_prev ) + ( k * xi );
-
-  // Normalizing signal
-  double m = 1 + p_prev * p_prev + d_prev * d_prev + r_prev * r_prev + xi * xi;
-  double n = eps / m;
-
-  // Adaptive laws
-  kp += Gp * p_prev * n;
-  kd += Gd * d_prev * n;
-  //kr -= Gr * r_prev * n;
-  k  -= G  * xi     * n;
-
-  // Lock struct while pushing data
-  pthread_mutex_lock(&adapt->mutex);
-
-  // Update states
-  adapt->p = p;
-  adapt->d = d;
-  adapt->r = r;
-  adapt->u = u;
-
-  // Update current gains
-  adapt->kp = kp;
-  adapt->kd = kd;
-  //adapt->kr = kr;
-  adapt->k  = k;
-
-  // Unlock data structure
-  pthread_mutex_unlock(&adapt->mutex);
-
-  return u;
-}
-*/
 
 /**
  *  stab_disarm

@@ -146,16 +146,28 @@ void log_init ( void )  {
   log_sfX.r         =  malloc( sizeof(float)  * log_stab.limit );
   log_sfX.xp        =  malloc( sizeof(float)  * log_stab.limit );
   log_sfX.xd        =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfX.u         =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfX.kp        =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfX.kd        =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfX.ku        =  malloc( sizeof(float)  * log_stab.limit );
 
   // SF pitch stabilization
   log_sfY.r         =  malloc( sizeof(float)  * log_stab.limit );
   log_sfY.xp        =  malloc( sizeof(float)  * log_stab.limit );
   log_sfY.xd        =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfY.u         =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfY.kp        =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfY.kd        =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfY.ku        =  malloc( sizeof(float)  * log_stab.limit );
 
   // SF yaw stabilization
   log_sfZ.r         =  malloc( sizeof(float)  * log_stab.limit );
   log_sfZ.xp        =  malloc( sizeof(float)  * log_stab.limit );
   log_sfZ.xd        =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfZ.u         =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfZ.kp        =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfZ.kd        =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfZ.ku        =  malloc( sizeof(float)  * log_stab.limit );
 
   /*
   // EKF setup
@@ -290,16 +302,28 @@ void log_exit ( void )  {
   free(log_sfX.r);
   free(log_sfX.xp);
   free(log_sfX.xd);
+  free(log_sfX.u);
+  free(log_sfX.kp);
+  free(log_sfX.kd);
+  free(log_sfX.ku);
 
   // SF pitch stab memory
   free(log_sfY.r);
   free(log_sfY.xp);
   free(log_sfY.xd);
+  free(log_sfY.u);
+  free(log_sfY.kp);
+  free(log_sfY.kd);
+  free(log_sfY.ku);
 
   // SF yaw stab memory
   free(log_sfZ.r);
   free(log_sfZ.xp);
   free(log_sfZ.xd);
+  free(log_sfZ.u);
+  free(log_sfZ.kp);
+  free(log_sfZ.kd);
+  free(log_sfZ.ku);
 
   /*
   // EKF memory
@@ -504,9 +528,9 @@ void log_start ( void )  {
   if( datalog.stab == NULL )  printf( "Error (log_init): Cannot generate 'stab' file. \n" );
   fprintf( datalog.stab, 
     "    stabtime  stabdur      \
-    X_r     X_xp     X_xd      \
-    Y_r     Y_xp     Y_xd      \
-    Z_r     Z_xp     Z_xd " );
+    X_r     X_xp     X_xd      X_u     X_kp     X_kd     X_ku      \
+    Y_r     Y_xp     Y_xd      Y_u     Y_kp     Y_kd     Y_ku      \
+    Z_r     Z_xp     Z_xd      Z_u     Z_kp     Z_kd     Z_ku   " );
 
   /*
   // EKF datalog file
@@ -773,6 +797,10 @@ void log_record ( enum log_index index )  {
       log_sfX.r  [row] = sfX.r;
       log_sfX.xp [row] = sfX.xp;
       log_sfX.xd [row] = sfX.xd;
+      log_sfX.u  [row] = sfX.u;
+      log_sfX.kp [row] = sfX.kp;
+      log_sfX.kd [row] = sfX.kd;
+      log_sfX.ku [row] = sfX.ku;
       pthread_mutex_unlock(&sfX.mutex);
 
       // Pitch SF values
@@ -780,6 +808,10 @@ void log_record ( enum log_index index )  {
       log_sfY.r  [row] = sfY.r;
       log_sfY.xp [row] = sfY.xp;
       log_sfY.xd [row] = sfY.xd;
+      log_sfY.u  [row] = sfY.u;
+      log_sfY.kp [row] = sfY.kp;
+      log_sfY.kd [row] = sfY.kd;
+      log_sfY.ku [row] = sfY.ku;
       pthread_mutex_unlock(&sfY.mutex);
 
       // Yaw SF values
@@ -787,6 +819,10 @@ void log_record ( enum log_index index )  {
       log_sfZ.r  [row] = sfZ.r;
       log_sfZ.xp [row] = sfZ.xp;
       log_sfZ.xd [row] = sfZ.xd;
+      log_sfZ.u  [row] = sfZ.u;
+      log_sfZ.kp [row] = sfZ.kp;
+      log_sfZ.kd [row] = sfZ.kd;
+      log_sfZ.ku [row] = sfZ.ku;
       pthread_mutex_unlock(&sfZ.mutex);
 
       /*
@@ -987,17 +1023,29 @@ static void log_save ( void )  {
   // Stabilization data
   for ( row = 0; row < log_stab.count; row++ )  {
     fprintf( datalog.stab, "\n %011.6f   %06ld      ", log_stab.time[row], log_stab.dur[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfX.r[row] );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfX.r[row]  );
     fprintf( datalog.stab, "%07.4f  ",  log_sfX.xp[row] );
     fprintf( datalog.stab, "%07.4f  ",  log_sfX.xd[row] );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfX.u[row]  );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfX.kp[row] );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfX.kd[row] );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfX.ku[row] );
     fprintf( datalog.stab, "    " );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfY.r[row] );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfY.r[row]  );
     fprintf( datalog.stab, "%07.4f  ",  log_sfY.xp[row] );
     fprintf( datalog.stab, "%07.4f  ",  log_sfY.xd[row] );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfY.u[row]  );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfY.kp[row] );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfY.kd[row] );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfY.ku[row] );
     fprintf( datalog.stab, "    " );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfZ.r[row] );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfZ.r[row]  );
     fprintf( datalog.stab, "%07.4f  ",  log_sfZ.xp[row] );
     fprintf( datalog.stab, "%07.4f  ",  log_sfZ.xd[row] );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfZ.u[row]  );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfZ.kp[row] );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfZ.kd[row] );
+    fprintf( datalog.stab, "%07.4f  ",  log_sfZ.ku[row] );
     fprintf( datalog.stab, "    " );
   }
 
