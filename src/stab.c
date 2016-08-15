@@ -10,7 +10,7 @@
 
 
 static void    stab_quad    ( void );
-static double  stab_sf      ( sf_struct *sf, double r, double zp, double zd, bool reset );
+static double  stab_sf      ( sf_struct *sf, double r, double zp, double zd, bool areset );
 //static double  stab_pid     ( pid_struct *pid, double xp, double xd, double ref, bool reset );
 //static double  stab_adapt   ( adapt_struct *adapt, double p, double d, double r, bool areset );
 static void    stab_disarm  ( void );
@@ -66,7 +66,7 @@ void stab_init ( void )  {
   // Assign desired characteristics
   sfX.ts = 1.60;  sfX.mp = 0.001;  sfX.b = 105.0;  stab_refmdl( &sfX );
   sfY.ts = 1.60;  sfY.mp = 0.001;  sfY.b = 105.0;  stab_refmdl( &sfY );
-  sfZ.ts = 1.60;  sfZ.mp = 0.001;  sfZ.b = 105.0;  stab_refmdl( &sfZ );
+  sfZ.ts = 16.0;  sfZ.mp = 0.001;  sfZ.b = 105.0;  stab_refmdl( &sfZ );
   if (DEBUG)  {
     printf("  Desired system response \n");
     printf("          Ts    Mp    zeta  nfreq    sigma  dfreq          ap      ad        kp      kd  \n" );
@@ -215,7 +215,7 @@ void stab_quad ( void )  {
   reset = ( in[CH_T] < -0.2 );
   cmd[x] = stab_sf( &sfX, ref[x], att[x],  ang[x], reset );
   cmd[y] = stab_sf( &sfY, ref[y], att[y],  ang[y], reset );
-  cmd[z] = stab_sf( &sfZ, ref[z], heading, ang[z], reset );
+  cmd[z] = stab_sf( &sfZ, ref[z], heading, ang[z], reset ); /*DEBUG*/  cmd[z] = -ang[z] * 0.06;
 
   // Determine throttle adjustment
   double tilt_adj = ( 1 - ( cos(att[0]) * cos(att[1]) ) ) * tilt;
@@ -256,7 +256,7 @@ void stab_quad ( void )  {
  *  stab_sf
  *  Apply state feedback control loop
  */
-double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool reset )  {
+double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
 
   // Local variables
   double dt, ap, ad, b;
@@ -265,9 +265,12 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool reset )  {
   double Gp, Gd, Gu, u;
   double p_tilde, d_tilde;
   double kp_dot, kd_dot, ku_dot;
+  double diff;
+  bool wrap;
 
   // Pull data from structure
   pthread_mutex_lock(&sf->mutex);
+  wrap = sf->wrap;
   dt = sf->dt;
   ap = sf->ap;
   ad = sf->ad;
@@ -285,13 +288,20 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool reset )  {
   // Determine control input
   u = - kp * zp - kd * zd + kp * r;
 
+  // Wrap states around PI
+  diff = r - xp;
+  if (wrap)  {
+    if ( diff >  PI  )  diff -= 2 * PI;
+    if ( diff <= -PI )  diff += 2 * PI;
+  }
+
   // Determine ref model states
-  xa  = r * ap - xp * ap - xd * ad;
+  xa  = ( r - xp ) * ap - xd * ad;
   xd += dt * xa;
   xp += dt * xd + 0.5 * dt * dt * xa;
 
   // Reset adaptive gains if needed
-  if (reset)  {  Gp = 0.0;  Gd = 0.0;  Gu = 0.0;  }
+  if (areset)  {  Gp = 0.0;  Gd = 0.0;  Gu = 0.0;  }
 
   // Adaptive update laws
   p_tilde = xp - zp;
