@@ -49,7 +49,7 @@ void stab_init ( void )  {
   stab.range[CH_T] = 0.3;
 
   // Throttle values (TODO: Move into radio or transmitter function)
-  stab.thrl[0] = -0.30;  // Tmin
+  stab.thrl[0] = -0.35;  // Tmin
   stab.thrl[1] = -0.15;  // Tmax
   stab.thrl[2] =  0.00;  // Ttilt
 
@@ -80,9 +80,9 @@ void stab_init ( void )  {
   }
 
   // Assign adaptive gains
-  sfX.Gp = 1.0;  sfX.Gd = 1.0;  sfX.Gu = 0.0;
-  sfY.Gp = 1.0;  sfY.Gd = 1.0;  sfY.Gu = 0.0;
-  sfZ.Gp = 1.0;  sfZ.Gd = 1.0;  sfZ.Gu = 0.0;
+  sfX.Gp = 0.0;  sfX.Gd = 0.0;  sfX.Gu = 0.0;
+  sfY.Gp = 0.0;  sfY.Gd = 0.0;  sfY.Gu = 0.0;
+  sfZ.Gp = 0.0;  sfZ.Gd = 0.0;  sfZ.Gu = 0.0;
   if (DEBUG)  {
     printf("  Adaptive gain settings \n");
     printf("       Gp   Gd   Gu  \n");
@@ -215,7 +215,7 @@ void stab_quad ( void )  {
   reset = ( in[CH_T] < -0.2 );
   cmd[x] = stab_sf( &sfX, ref[x], att[x],  ang[x], reset );
   cmd[y] = stab_sf( &sfY, ref[y], att[y],  ang[y], reset );
-  cmd[z] = stab_sf( &sfZ, ref[z], heading, ang[z], reset ); /*DEBUG*/  cmd[z] = -ang[z] * 0.06;
+  cmd[z] = stab_sf( &sfZ, ref[z], heading, ang[z], reset );  /*DEBUG*/  cmd[z] = (ref[z]-ang[z]) * 0.060;
 
   // Determine throttle adjustment
   double tilt_adj = ( 1 - ( cos(att[0]) * cos(att[1]) ) ) * tilt;
@@ -326,10 +326,10 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
   // Projection operator
   double kp_max = 0.120;
   double kd_max = 0.080;
-  double ku_max = 1.0;
+  //double ku_max = 1.0;
   if ( kp > kp_max )  kp = kp_max;
   if ( kd > kd_max )  kd = kd_max;
-  if ( ku > ku_max )  ku = ku_max;
+  //if ( ku > ku_max )  ku = ku_max;
 
   // Push data to structure
   pthread_mutex_lock(&sf->mutex);
