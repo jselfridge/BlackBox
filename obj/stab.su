@@ -1,5 +1,5 @@
-stab.c:271:8:stab_sf	136	static
+stab.c:259:8:stab_sf	152	static
 stab.c:103:6:stab_exit	0	static
 stab.c:114:6:stab_refmdl	80	static
 stab.c:23:6:stab_init	40	static
-stab.c:163:6:stab_update	264	static
+stab.c:163:6:stab_update	272	static

@@ -10,7 +10,7 @@
 
 
 static void    stab_quad    ( void );
-static double  stab_sf      ( sf_struct *sf, double r, double zp, double zd );
+static double  stab_sf      ( sf_struct *sf, double r, double zp, double zd, bool reset );
 //static double  stab_pid     ( pid_struct *pid, double xp, double xd, double ref, bool reset );
 //static double  stab_adapt   ( adapt_struct *adapt, double p, double d, double r, bool areset );
 static void    stab_disarm  ( void );
@@ -80,9 +80,9 @@ void stab_init ( void )  {
   }
 
   // Assign adaptive gains
-  sfX.Gp = 0.0;  sfX.Gd = 0.0;  sfX.Gu = 0.0;
-  sfY.Gp = 0.0;  sfY.Gd = 0.0;  sfY.Gu = 0.0;
-  sfZ.Gp = 0.0;  sfZ.Gd = 0.0;  sfZ.Gu = 0.0;
+  sfX.Gp = 1.0;  sfX.Gd = 1.0;  sfX.Gu = 0.0;
+  sfY.Gp = 1.0;  sfY.Gd = 1.0;  sfY.Gu = 0.0;
+  sfZ.Gp = 1.0;  sfZ.Gd = 1.0;  sfZ.Gu = 0.0;
   if (DEBUG)  {
     printf("  Adaptive gain settings \n");
     printf("       Gp   Gd   Gu  \n");
@@ -180,7 +180,7 @@ void stab_quad ( void )  {
   ushort x=0, y=1, z=2, t=3;
   double att[3], ang[3], in[4], ref[4], cmd[4], out[4];
   double dt, trange, tmin, tmax, tilt, heading, dial;
-  //bool reset;
+  bool reset;
 
   // Obtain states
   pthread_mutex_lock(&rot.mutex);
@@ -212,22 +212,10 @@ void stab_quad ( void )  {
   while ( heading <= -M_PI )  heading += 2.0 * M_PI;
 
   // Apply state feedback function
-  cmd[x] = stab_sf( &sfX, ref[x], att[x],  ang[x] );
-  cmd[y] = stab_sf( &sfY, ref[y], att[y],  ang[y] );
-  cmd[z] = stab_sf( &sfZ, ref[z], heading, ang[z] );
-
-  // -- ORIGINAL -- //
-  // Calculate Roll command
-  //reset = ( in[CH_R] < -IRESET || in[CH_R] > IRESET || in[CH_T] < -0.9 );
-  //cmd[x] = stab_pid( &pidX, att[0], ang[0], ref[CH_R], reset );
-  //reset = ( in[CH_T] < -0.2 );
-  //cmd[x] = stab_adapt( &adaptX, att[0], ang[0], ref[CH_R], reset );
-  // Calculate Pitch command
-  //reset = ( in[CH_P] < -IRESET || in[CH_P] > IRESET || in[CH_T] < -0.9 );
-  //cmd[y] = stab_pid( &pidY, att[1], ang[1], ref[CH_P], reset );
-  // Calculate Yaw command
-  //reset = ( in[CH_Y] < -IRESET || in[CH_Y] > IRESET || in[CH_T] < -0.9 );
-  //cmd[z] = stab_pid( &pidZ, att[2], ang[2], heading, reset );
+  reset = ( in[CH_T] < -0.2 );
+  cmd[x] = stab_sf( &sfX, ref[x], att[x],  ang[x], reset );
+  cmd[y] = stab_sf( &sfY, ref[y], att[y],  ang[y], reset );
+  cmd[z] = stab_sf( &sfZ, ref[z], heading, ang[z], reset );
 
   // Determine throttle adjustment
   double tilt_adj = ( 1 - ( cos(att[0]) * cos(att[1]) ) ) * tilt;
@@ -268,7 +256,7 @@ void stab_quad ( void )  {
  *  stab_sf
  *  Apply state feedback control loop
  */
-double stab_sf ( sf_struct *sf, double r, double zp, double zd )  {
+double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool reset )  {
 
   // Local variables
   double dt, ap, ad, b;
@@ -302,6 +290,9 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd )  {
   xd += dt * xa;
   xp += dt * xd + 0.5 * dt * dt * xa;
 
+  // Reset adaptive gains if needed
+  if (reset)  {  Gp = 0.0;  Gd = 0.0;  Gu = 0.0;  }
+
   // Adaptive update laws
   p_tilde = xp - zp;
   d_tilde = xd - zd;
@@ -310,9 +301,9 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd )  {
   ku_dot = - Gu * b * ( p_tilde + 2 * d_tilde ) * u;
 
   // Projection operator
-  double kp_dot_max = 0.00001;
-  double kd_dot_max = 0.00001;
-  double ku_dot_max = 0.00001;
+  double kp_dot_max = 0.0001;
+  double kd_dot_max = 0.0001;
+  double ku_dot_max = 0.0;
   if ( kp_dot > kp_dot_max )  kp_dot = kp_dot_max;  if ( kp_dot < -kp_dot_max )  kp_dot = -kp_dot_max;
   if ( kd_dot > kd_dot_max )  kd_dot = kd_dot_max;  if ( kd_dot < -kd_dot_max )  kd_dot = -kd_dot_max;
   if ( ku_dot > ku_dot_max )  ku_dot = ku_dot_max;  if ( ku_dot < -ku_dot_max )  ku_dot = -ku_dot_max;
@@ -322,6 +313,14 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd )  {
   kd += dt * kd_dot;
   ku += dt * ku_dot;
 
+  // Projection operator
+  double kp_max = 0.120;
+  double kd_max = 0.080;
+  double ku_max = 1.0;
+  if ( kp > kp_max )  kp = kp_max;
+  if ( kd > kd_max )  kd = kd_max;
+  if ( ku > ku_max )  ku = ku_max;
+
   // Push data to structure
   pthread_mutex_lock(&sf->mutex);
   sf->r  = r;
@@ -330,7 +329,7 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd )  {
   sf->u  = u;
   sf->kp = kp;
   sf->kd = kd;
-  sf->kd = ku;
+  sf->ku = ku;
   pthread_mutex_unlock(&sf->mutex);
 
   return u;
