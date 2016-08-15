@@ -64,9 +64,9 @@ void stab_init ( void )  {
   sfZ.wrap = true;
 
   // Assign desired characteristics
-  sfX.ts = 1.60;  sfX.mp = 0.001;  sfX.b = 105.0;  stab_refmdl( &sfX );
-  sfY.ts = 1.60;  sfY.mp = 0.001;  sfY.b = 105.0;  stab_refmdl( &sfY );
-  sfZ.ts = 16.0;  sfZ.mp = 0.001;  sfZ.b = 105.0;  stab_refmdl( &sfZ );
+  sfX.ts = 0.50;  sfX.mp = 10.0;  sfX.b = 2500.0;  stab_refmdl( &sfX );
+  sfY.ts = 0.50;  sfY.mp = 10.0;  sfY.b = 2500.0;  stab_refmdl( &sfY );
+  sfZ.ts = 0.50;  sfZ.mp = 10.0;  sfZ.b = 2500.0;  stab_refmdl( &sfZ );
   if (DEBUG)  {
     printf("  Desired system response \n");
     printf("          Ts    Mp    zeta  nfreq    sigma  dfreq          ap      ad        kp      kd  \n" );
@@ -215,7 +215,12 @@ void stab_quad ( void )  {
   reset = ( in[CH_T] < -0.2 );
   cmd[x] = stab_sf( &sfX, ref[x], att[x],  ang[x], reset );
   cmd[y] = stab_sf( &sfY, ref[y], att[y],  ang[y], reset );
-  cmd[z] = stab_sf( &sfZ, ref[z], heading, ang[z], reset );  /*DEBUG*/  cmd[z] = (ref[z]-ang[z]) * 0.060;
+  cmd[z] = stab_sf( &sfZ, ref[z], heading, ang[z], reset );
+
+  /*DEBUG*/
+  cmd[x] = ( ref[x] - att[x] ) * 0.085 - ang[x] * 0.055;
+  cmd[y] = ( ref[y] - att[y] ) * 0.085 - ang[y] * 0.055;
+  cmd[z] = ( ref[z] - ang[z] ) * 0.055;
 
   // Determine throttle adjustment
   double tilt_adj = ( 1 - ( cos(att[0]) * cos(att[1]) ) ) * tilt;
