@@ -226,10 +226,15 @@ void stab_quad ( void )  {
   cmd[y] = stab_sf( &sfY, ref[y], att[y],  ang[y], reset );
   cmd[z] = stab_sf( &sfZ, ref[z], heading, ang[z], reset );
 
-  /*DEBUG*/
-  cmd[x] = ( ref[x] - att[x] ) * 0.085 - ang[x] * 0.055;
-  cmd[y] = ( ref[y] - att[y] ) * 0.085 - ang[y] * 0.055;
-  cmd[z] = ( ref[z] - ang[z] ) * 0.055;
+  /*--- DEBUG: Remove adaptive control commands ---*/
+  cmd[x] = ( ref[x] - att[x] ) * 0.080 - ang[x] * 0.020;
+  cmd[y] = ( ref[y] - att[y] ) * 0.080 - ang[y] * 0.020;
+  cmd[z] = ( ref[z] - ang[z] ) * 0.040;
+
+  // Perform system identification
+  stab_sysid( &sysidX, cmd[x], att[x] );
+  stab_sysid( &sysidY, cmd[y], att[y] );
+  stab_sysid( &sysidZ, cmd[z], att[z] );
 
   // Determine throttle adjustment
   double tilt_adj = ( 1 - ( cos(att[0]) * cos(att[1]) ) ) * tilt;
