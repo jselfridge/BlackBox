@@ -1,6 +1,6 @@
 stab.c:278:8:stab_sf	152	static
-stab.c:372:6:stab_sysid	96	static
+stab.c:379:6:stab_sysid	96	static
 stab.c:112:6:stab_exit	0	static
 stab.c:123:6:stab_refmdl	80	static
-stab.c:22:6:stab_init	112	static
+stab.c:22:6:stab_init	40	static
 stab.c:172:6:stab_update	288	static

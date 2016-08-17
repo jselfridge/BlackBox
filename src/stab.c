@@ -63,9 +63,9 @@ void stab_init ( void )  {
   sfZ.wrap = true;
 
   // Assign desired characteristics
-  sfX.ts = 0.50;  sfX.mp =  5.0;  sfX.j = 2500.0;  stab_refmdl( &sfX );
-  sfY.ts = 0.50;  sfY.mp =  5.0;  sfY.j = 2500.0;  stab_refmdl( &sfY );
-  sfZ.ts = 0.50;  sfZ.mp =  5.0;  sfZ.j = 2500.0;  stab_refmdl( &sfZ );
+  sfX.ts = 1.70;  sfX.mp =  5.0;  sfX.j = 220.0;  stab_refmdl( &sfX );
+  sfY.ts = 1.70;  sfY.mp =  5.0;  sfY.j = 220.0;  stab_refmdl( &sfY );
+  sfZ.ts = 1.70;  sfZ.mp =  5.0;  sfZ.j = 220.0;  stab_refmdl( &sfZ );
   if (DEBUG)  {
     printf("  Desired system response \n");
     printf("          Ts    Mp    zeta  nfreq    sigma  dfreq          ap      ad        kp      kd  \n" );
@@ -146,7 +146,7 @@ void stab_refmdl ( sf_struct *sf )  {
   ad = 2.0 * zeta * nfreq;
   kp = ap / j;
   kd = ad / j;
-  ku = 1.0;  // Link with value of 'b'
+  ku = 1.0;  //--- WIP ---//
 
   // Assign reference model parameters
   pthread_mutex_lock(&sf->mutex);
@@ -226,10 +226,10 @@ void stab_quad ( void )  {
   cmd[y] = stab_sf( &sfY, ref[y], att[y],  ang[y], reset );
   cmd[z] = stab_sf( &sfZ, ref[z], heading, ang[z], reset );
 
-  /*--- DEBUG: Remove adaptive control commands ---*/
-  cmd[x] = ( ref[x] - att[x] ) * 0.080 - ang[x] * 0.020;
-  cmd[y] = ( ref[y] - att[y] ) * 0.080 - ang[y] * 0.020;
-  cmd[z] = ( ref[z] - ang[z] ) * 0.040;
+  //--- DEBUGGING: Override SF commands ---//
+  cmd[x] = ( ref[x] - att[x] ) * 0.085 - ang[x] * 0.055;
+  cmd[y] = ( ref[y] - att[y] ) * 0.085 - ang[y] * 0.055;
+  cmd[z] = ( ref[z] - ang[z] ) * 0.055;
 
   // Perform system identification
   stab_sysid( &sysidX, cmd[x], att[x] );
@@ -305,17 +305,20 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
   pthread_mutex_unlock(&sf->mutex);
 
   // Determine control input
-  u = - kp * zp - kd * zd + kp * r;
-
-  // Wrap states around PI
-  diff = r - xp;
+  diff = r - zp;
   if (wrap)  {
-    if ( diff >  PI  )  diff -= 2 * PI;
-    if ( diff <= -PI )  diff += 2 * PI;
+    if ( diff >   PI )  diff -= 2.0 * PI;
+    if ( diff <= -PI )  diff += 2.0 * PI;
   }
+  u = diff * kp - zd * kd;
 
   // Determine ref model states
-  xa  = ( r - xp ) * ap - xd * ad;
+  diff = r - xp;
+  if (wrap)  {
+    if ( diff >   PI )  diff -= 2.0 * PI;
+    if ( diff <= -PI )  diff += 2.0 * PI;
+  }
+  xa  = diff * ap - xd * ad;
   xd += dt * xa;
   xp += dt * xd + 0.5 * dt * dt * xa;
 
@@ -325,11 +328,15 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
   // Adaptive update laws
   p_tilde = xp - zp;
   d_tilde = xd - zd;
+  if (wrap)  {
+    if ( p_tilde >   PI )  p_tilde -= 2.0 * PI;
+    if ( p_tilde <= -PI )  p_tilde += 2.0 * PI;
+  }
   kp_dot = - Gp * j * ( p_tilde + 2 * d_tilde ) * zp;
   kd_dot = - Gd * j * ( p_tilde + 2 * d_tilde ) * zd;
   ku_dot = - Gu * j * ( p_tilde + 2 * d_tilde ) * u;
 
-  // Projection operator
+  // Projection operator  //--- WIP ---//
   double kp_dot_max = 0.0001;
   double kd_dot_max = 0.0001;
   double ku_dot_max = 0.0;
@@ -345,10 +352,10 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
   // Projection operator
   double kp_max = 0.120;
   double kd_max = 0.080;
-  //double ku_max = 1.0;
+  double ku_max = 1.0;
   if ( kp > kp_max )  kp = kp_max;
   if ( kd > kd_max )  kd = kd_max;
-  //if ( ku > ku_max )  ku = ku_max;
+  if ( ku > ku_max )  ku = ku_max;
 
   // Push data to structure
   pthread_mutex_lock(&sf->mutex);
@@ -374,7 +381,7 @@ void stab_sysid ( sysid_struct *sysid, double u, double y )  {
   // Local variables
   double z1, z2, p1, p2;
   double u1, u2, y1, y2;
-  double eps, m, n, G;
+  double eps, m, n;
 
   // Pull data from structure
   pthread_mutex_lock(&sysid->mutex);
@@ -394,11 +401,10 @@ void stab_sysid ( sysid_struct *sysid, double u, double y )  {
   n = eps/m;
 
   // Update parameter estimates
-  G   = 1000;
-  z1 -= G * n * u1;
-  z2 -= G * n * u2;
-  p1 -= G * n * y1;
-  p1 -= G * n * y2;
+  z1 -= n * u1;
+  z2 -= n * u2;
+  p1 -= n * y1;
+  p2 -= n * y2;
 
   // Shift data back a time step
   u2 = u1;  u1 = u;

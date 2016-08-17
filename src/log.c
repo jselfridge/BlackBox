@@ -574,8 +574,8 @@ void log_start ( void )  {
   if( datalog.sysid == NULL )  printf( "Error (log_init): Cannot generate 'sysid' file. \n" );
   fprintf( datalog.sysid, 
     "   sysidtime sysiddur     \
-    X_z1     X_z2     X_p1     X_p2      \
-    Y_z1     Y_z2     Y_p1     Y_p2      \
+    X_z1     X_z2     X_p1     X_p2     \
+    Y_z1     Y_z2     Y_p1     Y_p2     \
     Z_z1     Z_z2     Z_p1     Z_p2    " );
 
   /*
