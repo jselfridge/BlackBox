@@ -169,6 +169,24 @@ void log_init ( void )  {
   log_sfZ.kd        =  malloc( sizeof(float)  * log_stab.limit );
   log_sfZ.ku        =  malloc( sizeof(float)  * log_stab.limit );
 
+  // SysID roll axis
+  log_sysidX.z1     =  malloc( sizeof(float)  * log_stab.limit );
+  log_sysidX.z2     =  malloc( sizeof(float)  * log_stab.limit );
+  log_sysidX.p1     =  malloc( sizeof(float)  * log_stab.limit );
+  log_sysidX.p2     =  malloc( sizeof(float)  * log_stab.limit );
+
+  // SysID pitch axis
+  log_sysidY.z1     =  malloc( sizeof(float)  * log_stab.limit );
+  log_sysidY.z2     =  malloc( sizeof(float)  * log_stab.limit );
+  log_sysidY.p1     =  malloc( sizeof(float)  * log_stab.limit );
+  log_sysidY.p2     =  malloc( sizeof(float)  * log_stab.limit );
+
+  // SysID roll axis
+  log_sysidZ.z1     =  malloc( sizeof(float)  * log_stab.limit );
+  log_sysidZ.z2     =  malloc( sizeof(float)  * log_stab.limit );
+  log_sysidZ.p1     =  malloc( sizeof(float)  * log_stab.limit );
+  log_sysidZ.p2     =  malloc( sizeof(float)  * log_stab.limit );
+
   /*
   // EKF setup
   ushort n = EKF_N, m = EKF_M;
@@ -324,6 +342,24 @@ void log_exit ( void )  {
   free(log_sfZ.kp);
   free(log_sfZ.kd);
   free(log_sfZ.ku);
+
+  // SysID roll memory
+  free(log_sysidX.z1);
+  free(log_sysidX.z2);
+  free(log_sysidX.p1);
+  free(log_sysidX.p2);
+
+  // SysID pitch memory
+  free(log_sysidY.z1);
+  free(log_sysidY.z2);
+  free(log_sysidY.p1);
+  free(log_sysidY.p2);
+
+  // SysID yaw memory
+  free(log_sysidZ.z1);
+  free(log_sysidZ.z2);
+  free(log_sysidZ.p1);
+  free(log_sysidZ.p2);
 
   /*
   // EKF memory
@@ -531,6 +567,16 @@ void log_start ( void )  {
     X_r     X_xp     X_xd      X_u     X_kp     X_kd     X_ku      \
     Y_r     Y_xp     Y_xd      Y_u     Y_kp     Y_kd     Y_ku      \
     Z_r     Z_xp     Z_xd      Z_u     Z_kp     Z_kd     Z_ku   " );
+
+  // System identification datalog file
+  sprintf( file, "%ssysid.txt", datalog.path );
+  datalog.sysid = fopen( file, "w" );
+  if( datalog.sysid == NULL )  printf( "Error (log_init): Cannot generate 'sysid' file. \n" );
+  fprintf( datalog.sysid, 
+    "   sysidtime sysiddur     \
+    X_z1     X_z2     X_p1     X_p2      \
+    Y_z1     Y_z2     Y_p1     Y_p2      \
+    Z_z1     Z_z2     Z_p1     Z_p2    " );
 
   /*
   // EKF datalog file
@@ -825,6 +871,30 @@ void log_record ( enum log_index index )  {
       log_sfZ.ku [row] = sfZ.ku;
       pthread_mutex_unlock(&sfZ.mutex);
 
+      // Roll SysID values
+      pthread_mutex_lock(&sysidX.mutex);
+      log_sysidX.z1 [row] = sysidX.z1;
+      log_sysidX.z2 [row] = sysidX.z2;
+      log_sysidX.p1 [row] = sysidX.p1;
+      log_sysidX.p2 [row] = sysidX.p2;
+      pthread_mutex_unlock(&sysidX.mutex);
+
+      // Pitch SysID values
+      pthread_mutex_lock(&sysidY.mutex);
+      log_sysidY.z1 [row] = sysidY.z1;
+      log_sysidY.z2 [row] = sysidY.z2;
+      log_sysidY.p1 [row] = sysidY.p1;
+      log_sysidY.p2 [row] = sysidY.p2;
+      pthread_mutex_unlock(&sysidY.mutex);
+
+      // Yaw SysID values
+      pthread_mutex_lock(&sysidZ.mutex);
+      log_sysidZ.z1 [row] = sysidZ.z1;
+      log_sysidZ.z2 [row] = sysidZ.z2;
+      log_sysidZ.p1 [row] = sysidZ.p1;
+      log_sysidZ.p2 [row] = sysidZ.p2;
+      pthread_mutex_unlock(&sysidZ.mutex);
+
       /*
       // EKF values
       ushort r, c;
@@ -1049,6 +1119,26 @@ static void log_save ( void )  {
     fprintf( datalog.stab, "    " );
   }
 
+  // System identification data
+  for ( row = 0; row < log_stab.count; row++ )  {
+    fprintf( datalog.sysid, "\n %011.6f   %06ld      ", log_stab.time[row], log_stab.dur[row] );
+    fprintf( datalog.sysid, "%07.4f  ",  log_sysidX.z1[row]  );
+    fprintf( datalog.sysid, "%07.4f  ",  log_sysidX.z2[row]  );
+    fprintf( datalog.sysid, "%07.4f  ",  log_sysidX.p1[row]  );
+    fprintf( datalog.sysid, "%07.4f  ",  log_sysidX.p2[row]  );
+    fprintf( datalog.sysid, "    " );
+    fprintf( datalog.sysid, "%07.4f  ",  log_sysidY.z1[row]  );
+    fprintf( datalog.sysid, "%07.4f  ",  log_sysidY.z2[row]  );
+    fprintf( datalog.sysid, "%07.4f  ",  log_sysidY.p1[row]  );
+    fprintf( datalog.sysid, "%07.4f  ",  log_sysidY.p2[row]  );
+    fprintf( datalog.sysid, "    " );
+    fprintf( datalog.sysid, "%07.4f  ",  log_sysidZ.z1[row]  );
+    fprintf( datalog.sysid, "%07.4f  ",  log_sysidZ.z2[row]  );
+    fprintf( datalog.sysid, "%07.4f  ",  log_sysidZ.p1[row]  );
+    fprintf( datalog.sysid, "%07.4f  ",  log_sysidZ.p2[row]  );
+    fprintf( datalog.sysid, "    " );
+  }
+
   /*
   // Extended Kalman Filter data
   ushort n = EKF_N, m = EKF_M;
@@ -1105,6 +1195,7 @@ static void log_close ( void )  {
   }
 
   fclose(datalog.stab);
+  fclose(datalog.sysid);
 
   return;
 }
