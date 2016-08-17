@@ -59,6 +59,22 @@ sf_struct sfY;
 sf_struct sfZ;
 
 
+typedef struct sysid_struct {
+  double z1;
+  double z2;
+  double p1;
+  double p2;
+  double u1;
+  double u2;
+  double y1;
+  double y2;
+  pthread_mutex_t mutex;
+} sysid_struct;
+sysid_struct sysidX;
+sysid_struct sysidY;
+sysid_struct sysidZ;
+
+
 void    stab_init    ( void );
 void    stab_exit    ( void );
 void    stab_update  ( void );

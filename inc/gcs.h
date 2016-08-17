@@ -52,7 +52,7 @@ enum param_index {
   // Roll stabilization
   X_ts = 0,
   X_mp,
-  X_b,
+  X_j,
   X_Gp,
   X_Gd,
   X_Gu,
@@ -60,7 +60,7 @@ enum param_index {
   // Pitch stabilization
   Y_ts,
   Y_mp,
-  Y_b, 
+  Y_j, 
   Y_Gp,
   Y_Gd,
   Y_Gu,
@@ -68,7 +68,7 @@ enum param_index {
   // Yaw stabilization
   Z_ts,
   Z_mp,
-  Z_b,
+  Z_j,
   Z_Gp,
   Z_Gd,
   Z_Gu,

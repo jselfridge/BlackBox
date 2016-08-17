@@ -11,8 +11,7 @@
 
 static void    stab_quad    ( void );
 static double  stab_sf      ( sf_struct *sf, double r, double zp, double zd, bool areset );
-//static double  stab_pid     ( pid_struct *pid, double xp, double xd, double ref, bool reset );
-//static double  stab_adapt   ( adapt_struct *adapt, double p, double d, double r, bool areset );
+static void    stab_sysid   ( sysid_struct *sysid, double u, double y );
 static void    stab_disarm  ( void );
 
 
@@ -53,7 +52,7 @@ void stab_init ( void )  {
   stab.thrl[1] = -0.15;  // Tmax
   stab.thrl[2] =  0.00;  // Ttilt
 
-  // Initalize data struct values
+  // Initalize state feedback data struct values
   sfX.r = 0.0;  sfX.xp = 0.0;  sfX.xd = 0.0;
   sfY.r = 0.0;  sfY.xp = 0.0;  sfY.xd = 0.0;
   sfZ.r = 0.0;  sfZ.xp = 0.0;  sfZ.xd = 0.0;
@@ -91,6 +90,16 @@ void stab_init ( void )  {
     printf("  Z:  %3.1f  %3.1f  %3.1f  \n", sfZ.Gp, sfZ.Gd, sfZ.Gu );
     fflush(stdout);
   }
+
+  // Initialize sysid param values
+  sysidX.z1 = 0.001;  sysidX.z2 = 0.0;  sysidX.p1 = -2.0;  sysidX.p2 = 1.0;
+  sysidY.z1 = 0.001;  sysidY.z2 = 0.0;  sysidY.p1 = -2.0;  sysidY.p2 = 1.0;
+  sysidZ.z1 = 0.001;  sysidZ.z2 = 0.0;  sysidZ.p1 = -2.0;  sysidZ.p2 = 1.0;
+
+  // Initialize sysid signal values
+  sysidX.u1 = 0.0;  sysidX.u2 = 0.0;  sysidX.y1 = 0.0;  sysidX.y2 = 0.0;
+  sysidY.u1 = 0.0;  sysidY.u2 = 0.0;  sysidY.y1 = 0.0;  sysidY.y2 = 0.0;
+  sysidZ.u1 = 0.0;  sysidZ.u2 = 0.0;  sysidZ.y1 = 0.0;  sysidZ.y2 = 0.0;
 
   return;
 }
@@ -348,6 +357,61 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
   pthread_mutex_unlock(&sf->mutex);
 
   return u;
+}
+
+
+/**
+ *  stab_sysid
+ *  Perform system identification update.
+ */
+void stab_sysid ( sysid_struct *sysid, double u, double y )  {
+
+  // Local variables
+  double z1, z2, p1, p2;
+  double u1, u2, y1, y2;
+  double eps, m, n, G;
+
+  // Pull data from structure
+  pthread_mutex_lock(&sysid->mutex);
+  z1 = sysid->z1;
+  z2 = sysid->z2;
+  p1 = sysid->p1;
+  p2 = sysid->p2;
+  u1 = sysid->u1;
+  u2 = sysid->u2;
+  y1 = sysid->y1;
+  y2 = sysid->y2;
+  pthread_mutex_unlock(&sysid->mutex);
+
+  // Calculate auxilliary signals
+  eps = z2 * u2 + z1 * u1 - p2 * y2 - p1 * y1 - y;
+  m = 1 + u2 * u2 + u1 * u1 + y2 * y2 + y1 * y1;
+  n = eps/m;
+
+  // Update parameter estimates
+  G   = 1000;
+  z1 -= G * n * u1;
+  z2 -= G * n * u2;
+  p1 -= G * n * y1;
+  p1 -= G * n * y2;
+
+  // Shift data back a time step
+  u2 = u1;  u1 = u;
+  y2 = y1;  y1 = y;
+
+  // Push data to structure
+  pthread_mutex_lock(&sysid->mutex);
+  sysid->z1 = z1;
+  sysid->z2 = z2;
+  sysid->p1 = p1;
+  sysid->p2 = p2;
+  sysid->u1 = u1;
+  sysid->u2 = u2;
+  sysid->y1 = y1;
+  sysid->y2 = y2;
+  pthread_mutex_unlock(&sysid->mutex);
+
+  return;
 }
 
 
