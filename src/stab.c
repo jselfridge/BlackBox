@@ -64,9 +64,9 @@ void stab_init ( void )  {
   sfZ.wrap = true;
 
   // Assign desired characteristics
-  sfX.ts = 0.50;  sfX.mp = 10.0;  sfX.b = 2500.0;  stab_refmdl( &sfX );
-  sfY.ts = 0.50;  sfY.mp = 10.0;  sfY.b = 2500.0;  stab_refmdl( &sfY );
-  sfZ.ts = 0.50;  sfZ.mp = 10.0;  sfZ.b = 2500.0;  stab_refmdl( &sfZ );
+  sfX.ts = 0.50;  sfX.mp =  5.0;  sfX.j = 2500.0;  stab_refmdl( &sfX );
+  sfY.ts = 0.50;  sfY.mp =  5.0;  sfY.j = 2500.0;  stab_refmdl( &sfY );
+  sfZ.ts = 0.50;  sfZ.mp =  5.0;  sfZ.j = 2500.0;  stab_refmdl( &sfZ );
   if (DEBUG)  {
     printf("  Desired system response \n");
     printf("          Ts    Mp    zeta  nfreq    sigma  dfreq          ap      ad        kp      kd  \n" );
@@ -114,7 +114,7 @@ void stab_exit ( void )  {
 void stab_refmdl ( sf_struct *sf )  {
 
   // Local variables
-  double ts, mp, ln, b;
+  double ts, mp, ln, j;
   double sigma, zeta;
   double nfreq, dfreq;
   double ap, ad;
@@ -124,7 +124,7 @@ void stab_refmdl ( sf_struct *sf )  {
   pthread_mutex_lock(&sf->mutex);
   ts = sf->ts;
   mp = sf->mp / 100.0;
-  b  = sf->b;  // link with value of 'ku'
+  j  = sf->j;
   pthread_mutex_unlock(&sf->mutex);
 
   // Calculate parameters
@@ -135,8 +135,8 @@ void stab_refmdl ( sf_struct *sf )  {
   dfreq = nfreq * sqrt( 1 - zeta * zeta );
   ap = nfreq * nfreq;
   ad = 2.0 * zeta * nfreq;
-  kp = ap / b;
-  kd = ad / b;
+  kp = ap / j;
+  kd = ad / j;
   ku = 1.0;  // Link with value of 'b'
 
   // Assign reference model parameters
@@ -264,7 +264,7 @@ void stab_quad ( void )  {
 double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
 
   // Local variables
-  double dt, ap, ad, b;
+  double dt, ap, ad, j;
   double kp, kd, ku;
   double xp, xd, xa;
   double Gp, Gd, Gu, u;
@@ -279,7 +279,7 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
   dt = sf->dt;
   ap = sf->ap;
   ad = sf->ad;
-  b  = sf->b;
+  j  = sf->j;
   kp = sf->kp;
   kd = sf->kd;
   ku = sf->ku;
@@ -311,9 +311,9 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
   // Adaptive update laws
   p_tilde = xp - zp;
   d_tilde = xd - zd;
-  kp_dot = - Gp * b * ( p_tilde + 2 * d_tilde ) * zp;
-  kd_dot = - Gd * b * ( p_tilde + 2 * d_tilde ) * zd;
-  ku_dot = - Gu * b * ( p_tilde + 2 * d_tilde ) * u;
+  kp_dot = - Gp * j * ( p_tilde + 2 * d_tilde ) * zp;
+  kd_dot = - Gd * j * ( p_tilde + 2 * d_tilde ) * zd;
+  ku_dot = - Gu * j * ( p_tilde + 2 * d_tilde ) * u;
 
   // Projection operator
   double kp_dot_max = 0.0001;

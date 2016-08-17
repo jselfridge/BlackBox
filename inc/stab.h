@@ -41,7 +41,7 @@ typedef struct sf_struct {
   double  dfreq;
   double  ap;
   double  ad;
-  double  b;
+  double  j;
   double  kp;
   double  kd;
   double  ku;
