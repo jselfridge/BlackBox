@@ -12,6 +12,7 @@
 #include "gcs.h"
 #include "imu.h"
 #include "io.h"
+#include "led.h"
 #include "log.h"
 #include "sys.h"
 #include "stab.h"
