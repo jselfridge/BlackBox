@@ -151,12 +151,12 @@ void tmr_attr ( pthread_attr_t *attr )  {
 void tmr_begin ( pthread_attr_t *attr )  {
   if(DEBUG)  printf("  Begin timing threads:  ");
 
-  tmr_thread( &tmr_io,    attr, fcn_io    );  usleep(1000);
-  tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(1000);
-  tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(1000);
-  tmr_thread( &tmr_stab,  attr, fcn_stab  );  usleep(1000);
-  tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(1000);
-  tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(1000);
+  tmr_thread( &tmr_io,    attr, fcn_io    );  usleep(100000);
+  tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(100000);
+  tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);
+  //tmr_thread( &tmr_stab,  attr, fcn_stab  );  usleep(100000);
+  //tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
+  //tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(100000);
 
   if(DEBUG) {
     tmr_thread( &tmr_debug, attr, fcn_debug );
@@ -198,7 +198,7 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&sysidY.mutex);
   pthread_mutex_destroy(&sysidZ.mutex);
   pthread_mutex_destroy(&gcs.mutex);
-
+  /*
   // Exit GCSRX thread
   if( pthread_join ( tmr_gcsrx.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'gcsrx' thread. \n" );
@@ -218,7 +218,7 @@ void tmr_exit ( void )  {
   if( pthread_join ( tmr_stab.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'stab' thread. \n" );
   if(DEBUG)  printf( "stab " );
-
+  */
   // Exit IMU thread
   if( pthread_join ( tmr_imu.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'imu' thread. \n" );
@@ -411,8 +411,8 @@ void *fcn_imu (  )  {
     tmr_start(&tmr_imu);
     if (!datalog.saving) {
       if (IMUA_ENABLED)  imu_update(&imuA);
-      if (IMUB_ENABLED)  imu_update(&imuB);
-      imu_state();
+      //if (IMUB_ENABLED)  imu_update(&imuB);
+      //imu_state();
     }
     tmr_finish(&tmr_imu);
     if (datalog.enabled) {

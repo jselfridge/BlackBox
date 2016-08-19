@@ -15,8 +15,8 @@ int main ( void )  {
   io_init();
   flag_init();
   imu_init();
-  stab_init();
-  gcs_init();
+  //stab_init();
+  //gcs_init();
   log_init();
   tmr_init();
 
@@ -29,8 +29,8 @@ int main ( void )  {
   if (DEBUG)  printf("\n\n--- Exit BlackBox program --- \n");
   tmr_exit();
   log_exit();
-  gcs_exit();
-  stab_exit();
+  //gcs_exit();
+  //stab_exit();
   imu_exit();
   flag_exit();
   io_exit();
