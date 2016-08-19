@@ -177,25 +177,25 @@ static void sys_imu ( void )  {
   if (IMUA_ENABLED) {
 
   // Gyroscope data
-  //pthread_mutex_lock(&gyrA.mutex);
+  pthread_mutex_lock(&gyrA.mutex);
   //for ( i=0; i<3; i++ )  printf("%6d ",   gyrA.raw[i]    );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.scaled[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.scaled[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrA.filter[i] );  printf("   ");  fflush(stdout);
-  //pthread_mutex_unlock(&gyrA.mutex);
+  pthread_mutex_unlock(&gyrA.mutex);
 
   // Accelerometer data
-  //pthread_mutex_lock(&accA.mutex);
+  pthread_mutex_lock(&accA.mutex);
   //for ( i=0; i<3; i++ )  printf("%6d ",   accA.raw[i]    );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", accA.scaled[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", accA.scaled[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", accA.filter[i] );  printf("   ");  fflush(stdout);
-  //pthread_mutex_unlock(&accA.mutex);
+  pthread_mutex_unlock(&accA.mutex);
 
   // Magnetometer data
-  //pthread_mutex_lock(&magA.mutex);
+  pthread_mutex_lock(&magA.mutex);
   //for ( i=0; i<3; i++ )  printf("%4d ",   magA.raw[i]    );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", magA.scaled[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", magA.scaled[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", magA.filter[i] );  printf("   ");  fflush(stdout);
-  //pthread_mutex_unlock(&magA.mutex);
+  pthread_mutex_unlock(&magA.mutex);
 
   // Complimentry filter data
   //pthread_mutex_lock(&imuA.mutex);
@@ -210,25 +210,25 @@ static void sys_imu ( void )  {
   if (IMUB_ENABLED) {
 
   // Gyroscope data
-  //pthread_mutex_lock(&gyrB.mutex);
+  pthread_mutex_lock(&gyrB.mutex);
   //for ( i=0; i<3; i++ )  printf("%6d ",   gyrB.raw[i]    );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.scaled[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.scaled[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", gyrB.filter[i] );  printf("   ");  fflush(stdout);
-  //pthread_mutex_unlock(&gyrB.mutex);
+  pthread_mutex_unlock(&gyrB.mutex);
 
   // Accelerometer data
-  //pthread_mutex_lock(&accB.mutex);
+  pthread_mutex_lock(&accB.mutex);
   //for ( i=0; i<3; i++ )  printf("%6d ",   accB.raw[i]    );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", accB.scaled[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", accB.scaled[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", accB.filter[i] );  printf("   ");  fflush(stdout);
-  //pthread_mutex_unlock(&accB.mutex);
+  pthread_mutex_unlock(&accB.mutex);
 
   // Magnetometer data
-  //pthread_mutex_lock(&magB.mutex);
+  pthread_mutex_lock(&magB.mutex);
   //for ( i=0; i<3; i++ )  printf("%4d ",   magB.raw[i]    );  printf("   ");  fflush(stdout);
-  //for ( i=0; i<3; i++ )  printf("%6.3f ", magB.scaled[i] );  printf("   ");  fflush(stdout);
+  for ( i=0; i<3; i++ )  printf("%6.3f ", magB.scaled[i] );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", magB.filter[i] );  printf("   ");  fflush(stdout);
-  //pthread_mutex_unlock(&magB.mutex);
+  pthread_mutex_unlock(&magB.mutex);
 
   // Complimentry filter data
   //pthread_mutex_lock(&imuB.mutex);
@@ -240,10 +240,10 @@ static void sys_imu ( void )  {
   }
 
   // Rotational state values
-  pthread_mutex_lock(&rot.mutex);
-  for ( i=0; i<3; i++ )  printf("%6.3f ", rot.att[i] * ( 180.0 / PI ) );  printf("   ");  fflush(stdout);
+  //pthread_mutex_lock(&rot.mutex);
+  //for ( i=0; i<3; i++ )  printf("%6.3f ", rot.att[i] * ( 180.0 / PI ) );  printf("   ");  fflush(stdout);
   //for ( i=0; i<3; i++ )  printf("%6.3f ", rot.ang[i] );                   printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&rot.mutex);
+  //pthread_mutex_unlock(&rot.mutex);
 
   return;
 }
@@ -292,31 +292,34 @@ static void sys_stab ( void )  {
   //ushort i;
 
   // Stabilization signals
-  pthread_mutex_lock(&stab.mutex);
+  //pthread_mutex_lock(&stab.mutex);
   //for ( i=0; i<4; i++ )  printf("%5.2f ", stab.cmd[i]  );  printf("   ");  fflush(stdout);
   //printf("%5.2f ", stab.bank    *(180.0/PI) );  printf("   ");
   //printf("%5.2f ", stab.climb   *(180.0/PI) );  printf("   ");
-  printf("%5.2f ", stab.heading *(180.0/PI) );  printf("   ");
-  fflush(stdout);
-  pthread_mutex_unlock(&stab.mutex);
+  //printf("%5.2f ", stab.heading *(180.0/PI) );  printf("   ");
+  //fflush(stdout);
+  //pthread_mutex_unlock(&stab.mutex);
 
-  // Roll values
-  //pthread_mutex_lock(&pidX.mutex);
-  //printf("%5.2f %5.2f %5.2f   ", pidX.pgain, pidX.igain, pidX.dgain );  fflush(stdout);
-  //printf("%5.2f %5.2f %5.2f   ", pidX.perr,  pidX.ierr,  pidX.derr  );  fflush(stdout);
-  //pthread_mutex_unlock(&pidX.mutex);
+  // Roll state feedback values
+  pthread_mutex_lock(&sfX.mutex);
+  printf("%6.3f %6.3f %6.3f %6.3f   ", sfX.r, sfX.xp, sfX.xd, sfX.u );  fflush(stdout);
+  //printf("%6.3f %6.3f %6.3f %6.3f   ", sfX.ap, sfX.ad, sfX.kp, sfX.kd );  fflush(stdout);
+  //printf("%6.3f %6.3f %6.3f   ", sfX.Gp, sfX.Gd, sfX.Gu );  fflush(stdout);
+  pthread_mutex_unlock(&sfX.mutex);
 
-  // Pitch values
-  //pthread_mutex_lock(&pidY.mutex);
-  //printf("%5.2f %5.2f %5.2f   ", pidY.pgain, pidY.igain, pidY.dgain );  fflush(stdout);
-  //printf("%5.2f %5.2f %5.2f   ", pidY.perr,  pidY.ierr,  pidY.derr  );  fflush(stdout);
-  //pthread_mutex_unlock(&pidY.mutex);
+  // Pitch state feedback values
+  pthread_mutex_lock(&sfY.mutex);
+  printf("%6.3f %6.3f %6.3f %6.3f   ", sfY.r, sfY.xp, sfY.xd, sfY.u );  fflush(stdout);
+  //printf("%6.3f %6.3f %6.3f %6.3f   ", sfY.ap, sfY.ad, sfY.kp, sfY.kd );  fflush(stdout);
+  //printf("%6.3f %6.3f %6.3f   ", sfY.Gp, sfY.Gd, sfY.Gu );  fflush(stdout);
+  pthread_mutex_unlock(&sfY.mutex);
 
-  // Yaw values
-  //pthread_mutex_lock(&pidZ.mutex);
-  //printf("%5.2f %5.2f %5.2f   ", pidZ.pgain, pidZ.igain, pidZ.dgain );  fflush(stdout);
-  //printf("%5.2f %5.2f %5.2f   ", pidZ.perr,  pidZ.ierr,  pidZ.derr  );  fflush(stdout);
-  //pthread_mutex_unlock(&pidZ.mutex);
+  // Yaw state feedback values
+  pthread_mutex_lock(&sfZ.mutex);
+  printf("%6.3f %6.3f %6.3f %6.3f   ", sfZ.r, sfZ.xp, sfZ.xd, sfZ.u );  fflush(stdout);
+  //printf("%6.3f %6.3f %6.3f %6.3f   ", sfZ.ap, sfZ.ad, sfZ.kp, sfZ.kd );  fflush(stdout);
+  //printf("%6.3f %6.3f %6.3f   ", sfZ.Gp, sfZ.Gd, sfZ.Gu );  fflush(stdout);
+  pthread_mutex_unlock(&sfZ.mutex);
 
   return;
 }

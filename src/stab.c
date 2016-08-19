@@ -1,6 +1,7 @@
 
 
 #include "stab.h"
+#include <math.h>
 #include <stdio.h>
 #include "imu.h"
 #include "io.h"
@@ -9,8 +10,8 @@
 
 
 static void    stab_quad    ( void );
-static double  stab_pid     ( pid_struct *pid, double xp, double xd, double ref, bool reset );
-//static double  stab_adapt   ( adapt_struct *adapt, double p, double d, double r, bool areset );
+static double  stab_sf      ( sf_struct *sf, double r, double zp, double zd, bool areset );
+static void    stab_sysid   ( sysid_struct *sysid, double u, double y );
 static void    stab_disarm  ( void );
 
 
@@ -24,9 +25,9 @@ void stab_init ( void )  {
   // Set timing value
   double dt = 1.0 / HZ_STAB;;
   stab.dt = dt;
-  pidX.dt = dt;
-  pidY.dt = dt;
-  pidZ.dt = dt;
+  sfX.dt  = dt;
+  sfY.dt  = dt;
+  sfZ.dt  = dt;
 
   // Asign disarming array values
   stab.off[0] = -1.0;
@@ -47,42 +48,58 @@ void stab_init ( void )  {
   stab.range[CH_T] = 0.3;
 
   // Throttle values (TODO: Move into radio or transmitter function)
-  stab.thrl[0] = -0.30;  // Tmin
+  stab.thrl[0] = -0.35;  // Tmin
   stab.thrl[1] = -0.15;  // Tmax
   stab.thrl[2] =  0.00;  // Ttilt
 
+  // Initalize state feedback data struct values
+  sfX.r = 0.0;  sfX.xp = 0.0;  sfX.xd = 0.0;
+  sfY.r = 0.0;  sfY.xp = 0.0;  sfY.xd = 0.0;
+  sfZ.r = 0.0;  sfZ.xp = 0.0;  sfZ.xd = 0.0;
+
   // Wrap values of pi
-  pidX.wrap = true;
-  pidY.wrap = true;
-  pidZ.wrap = true;
+  sfX.wrap = true;
+  sfY.wrap = true;
+  sfZ.wrap = true;
 
-  // Roll (X) gain values
-  pidX.pgain = 0.085;
-  pidX.igain = 0.000;
-  pidX.dgain = 0.055;
-  /*
-  adaptX.Gp  = 0.0;
-  adaptX.Gd  = 0.0;
-  //adaptX.Gr  = 0.0;
-  adaptX.G   = 0.0;
-  adaptX.kp  = pidX.pgain;
-  adaptX.kd  = pidX.dgain;
-  //adaptX.kr  =  pidX.pgain;
-  adaptX.k   = 0.0;
-  adaptX.kp_prev = adaptX.kp;
-  adaptX.kd_prev = adaptX.kd;
-  //adaptX.kr_prev = adaptX.kr;
-  */
+  // Assign desired characteristics
+  sfX.ts = 1.70;  sfX.mp =  5.0;  sfX.j = 220.0;  stab_refmdl( &sfX );
+  sfY.ts = 1.70;  sfY.mp =  5.0;  sfY.j = 220.0;  stab_refmdl( &sfY );
+  sfZ.ts = 1.70;  sfZ.mp =  5.0;  sfZ.j = 220.0;  stab_refmdl( &sfZ );
+  if (DEBUG)  {
+    printf("  Desired system response \n");
+    printf("          Ts    Mp    zeta  nfreq    sigma  dfreq          ap      ad        kp      kd  \n" );
+    printf("  X:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f    %6.4f  %6.4f  \n", 
+      sfX.ts, sfX.mp, sfX.zeta, sfX.nfreq, sfX.sigma, sfX.dfreq, sfX.ap, sfX.ad, sfX.kp, sfX.kd );
+    printf("  Y:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f    %6.4f  %6.4f  \n", 
+      sfY.ts, sfY.mp, sfY.zeta, sfY.nfreq, sfY.sigma, sfY.dfreq, sfY.ap, sfY.ad, sfY.kp, sfY.kd );
+    printf("  Z:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f    %6.4f  %6.4f  \n", 
+      sfZ.ts, sfZ.mp, sfZ.zeta, sfZ.nfreq, sfZ.sigma, sfZ.dfreq, sfZ.ap, sfZ.ad, sfZ.kp, sfZ.kd );
+    fflush(stdout);
+  }
 
-  // Pitch (Y) gain values
-  pidY.pgain = 0.085;
-  pidY.igain = 0.000;
-  pidY.dgain = 0.055;
+  // Assign adaptive gains
+  sfX.Gp = 0.0;  sfX.Gd = 0.0;  sfX.Gu = 0.0;
+  sfY.Gp = 0.0;  sfY.Gd = 0.0;  sfY.Gu = 0.0;
+  sfZ.Gp = 0.0;  sfZ.Gd = 0.0;  sfZ.Gu = 0.0;
+  if (DEBUG)  {
+    printf("  Adaptive gain settings \n");
+    printf("       Gp   Gd   Gu  \n");
+    printf("  X:  %3.1f  %3.1f  %3.1f  \n", sfX.Gp, sfX.Gd, sfX.Gu );
+    printf("  Y:  %3.1f  %3.1f  %3.1f  \n", sfY.Gp, sfY.Gd, sfY.Gu );
+    printf("  Z:  %3.1f  %3.1f  %3.1f  \n", sfZ.Gp, sfZ.Gd, sfZ.Gu );
+    fflush(stdout);
+  }
 
-  // Yaw (Z) gain values
-  pidZ.pgain = 0.085;
-  pidZ.igain = 0.000;
-  pidZ.dgain = 0.055;
+  // Initialize sysid param values
+  sysidX.z1 = 0.001;  sysidX.z2 = 0.0;  sysidX.p1 = -2.0;  sysidX.p2 = 1.0;
+  sysidY.z1 = 0.001;  sysidY.z2 = 0.0;  sysidY.p1 = -2.0;  sysidY.p2 = 1.0;
+  sysidZ.z1 = 0.001;  sysidZ.z2 = 0.0;  sysidZ.p1 = -2.0;  sysidZ.p2 = 1.0;
+
+  // Initialize sysid signal values
+  sysidX.u1 = 0.0;  sysidX.u2 = 0.0;  sysidX.y1 = 0.0;  sysidX.y2 = 0.0;
+  sysidY.u1 = 0.0;  sysidY.u2 = 0.0;  sysidY.y1 = 0.0;  sysidY.y2 = 0.0;
+  sysidZ.u1 = 0.0;  sysidZ.u2 = 0.0;  sysidZ.y1 = 0.0;  sysidZ.y2 = 0.0;
 
   return;
 }
@@ -95,6 +112,55 @@ void stab_init ( void )  {
 void stab_exit ( void )  {
   if (DEBUG)  printf("Close stabilization \n");
   // Add exit code as needed...
+  return;
+}
+
+
+/**
+ *  stab_refmdl
+ *  Take desired system char and determine reference model
+ */
+void stab_refmdl ( sf_struct *sf )  {
+
+  // Local variables
+  double ts, mp, ln, j;
+  double sigma, zeta;
+  double nfreq, dfreq;
+  double ap, ad;
+  double kp, kd, ku;
+
+  // Get desired system characteristics
+  pthread_mutex_lock(&sf->mutex);
+  ts = sf->ts;
+  mp = sf->mp / 100.0;
+  j  = sf->j;
+  pthread_mutex_unlock(&sf->mutex);
+
+  // Calculate parameters
+  sigma = 4.6 / ts;
+  ln = log(mp) * log(mp);
+  zeta = sqrt( ln / ( M_PI * M_PI + ln ) );
+  nfreq = sigma / zeta;
+  dfreq = nfreq * sqrt( 1 - zeta * zeta );
+  ap = nfreq * nfreq;
+  ad = 2.0 * zeta * nfreq;
+  kp = ap / j;
+  kd = ad / j;
+  ku = 1.0;  //--- WIP ---//
+
+  // Assign reference model parameters
+  pthread_mutex_lock(&sf->mutex);
+  sf->sigma = sigma;
+  sf->zeta  = zeta;
+  sf->nfreq = nfreq;
+  sf->dfreq = dfreq;
+  sf->ap    = ap;
+  sf->ad    = ad;
+  sf->kp    = kp;
+  sf->kd    = kd;
+  sf->ku    = ku;
+  pthread_mutex_unlock(&sf->mutex);
+
   return;
 }
 
@@ -154,19 +220,21 @@ void stab_quad ( void )  {
   while ( heading >   M_PI )  heading -= 2.0 * M_PI;
   while ( heading <= -M_PI )  heading += 2.0 * M_PI;
 
-  // Calculate Roll command
-  reset = ( in[CH_R] < -IRESET || in[CH_R] > IRESET || in[CH_T] < -0.9 );
-  cmd[x] = stab_pid( &pidX, att[0], ang[0], ref[CH_R], reset );
-  //reset = ( in[CH_T] < -0.2 );
-  //cmd[x] = stab_adapt( &adaptX, att[0], ang[0], ref[CH_R], reset );
+  // Apply state feedback function
+  reset = ( in[CH_T] < -0.2 );
+  cmd[x] = stab_sf( &sfX, ref[x], att[x],  ang[x], reset );
+  cmd[y] = stab_sf( &sfY, ref[y], att[y],  ang[y], reset );
+  cmd[z] = stab_sf( &sfZ, ref[z], heading, ang[z], reset );
 
-  // Calculate Pitch command
-  reset = ( in[CH_P] < -IRESET || in[CH_P] > IRESET || in[CH_T] < -0.9 );
-  cmd[y] = stab_pid( &pidY, att[1], ang[1], ref[CH_P], reset );
+  //--- DEBUGGING: Override SF commands ---//
+  cmd[x] = ( ref[x] - att[x] ) * 0.085 - ang[x] * 0.055;
+  cmd[y] = ( ref[y] - att[y] ) * 0.085 - ang[y] * 0.055;
+  cmd[z] = ( ref[z] - ang[z] ) * 0.055;
 
-  // Calculate Yaw command
-  reset = ( in[CH_Y] < -IRESET || in[CH_Y] > IRESET || in[CH_T] < -0.9 );
-  cmd[z] = stab_pid( &pidZ, att[2], ang[2], heading, reset );
+  // Perform system identification
+  stab_sysid( &sysidX, cmd[x], att[x] );
+  stab_sysid( &sysidY, cmd[y], att[y] );
+  stab_sysid( &sysidZ, cmd[z], att[z] );
 
   // Determine throttle adjustment
   double tilt_adj = ( 1 - ( cos(att[0]) * cos(att[1]) ) ) * tilt;
@@ -187,7 +255,7 @@ void stab_quad ( void )  {
     out[QUAD_FR] = -1.0;
   }
 
-  // Push control data
+  // Push stabilization data
   pthread_mutex_lock(&stab.mutex);
   for ( i=0; i<4; i++ )  stab.cmd[i] = cmd[i];
   stab.heading = heading;
@@ -204,152 +272,159 @@ void stab_quad ( void )  {
 
 
 /**
- *  stab_pid
- *  Apply PID contorl loop
+ *  stab_sf
+ *  Apply state feedback control loop
  */
-double stab_pid ( pid_struct *pid, double xp, double xd, double ref, bool reset )  {
+double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
 
   // Local variables
-  double dt, cmd;
-  double perr, ierr, derr;
-  double pgain, igain, dgain;
+  double dt, ap, ad, j;
+  double kp, kd, ku;
+  double xp, xd, xa;
+  double Gp, Gd, Gu, u;
+  double p_tilde, d_tilde;
+  double kp_dot, kd_dot, ku_dot;
+  double diff;
   bool wrap;
 
-  // Pull structure data
-  pthread_mutex_lock(&pid->mutex);
-  dt    = pid->dt;
-  wrap  = pid->wrap;
-  ierr  = pid->ierr;
-  pgain = pid->pgain;
-  igain = pid->igain;
-  dgain = pid->dgain;
-  pthread_mutex_unlock(&pid->mutex);
+  // Pull data from structure
+  pthread_mutex_lock(&sf->mutex);
+  wrap = sf->wrap;
+  dt = sf->dt;
+  ap = sf->ap;
+  ad = sf->ad;
+  j  = sf->j;
+  kp = sf->kp;
+  kd = sf->kd;
+  ku = sf->ku;
+  xp = sf->xp;
+  xd = sf->xd;
+  Gp = sf->Gp;
+  Gd = sf->Gd;
+  Gu = sf->Gu;
+  pthread_mutex_unlock(&sf->mutex);
 
-  // Calculate error values
-  perr = -xp + ref;
+  // Determine control input
+  diff = r - zp;
   if (wrap)  {
-    while ( perr >   M_PI )  perr -= 2.0 * M_PI;
-    while ( perr <= -M_PI )  perr += 2.0 * M_PI;
+    if ( diff >   PI )  diff -= 2.0 * PI;
+    if ( diff <= -PI )  diff += 2.0 * PI;
   }
-  derr = -xd;
-  if (reset)  ierr = 0.0; 
-  else        ierr += perr * dt;
+  u = diff * kp - zd * kd;
 
-  // Calculate output command
-  cmd = perr * pgain + 
-        ierr * igain + 
-        derr * dgain;
+  // Determine ref model states
+  diff = r - xp;
+  if (wrap)  {
+    if ( diff >   PI )  diff -= 2.0 * PI;
+    if ( diff <= -PI )  diff += 2.0 * PI;
+  }
+  xa  = diff * ap - xd * ad;
+  xd += dt * xa;
+  xp += dt * xd + 0.5 * dt * dt * xa;
 
-  // Push to data structure
-  pthread_mutex_lock(&pid->mutex);
-  pid->perr = perr;
-  pid->ierr = ierr;
-  pid->derr = derr;
-  pthread_mutex_unlock(&pid->mutex);
+  // Reset adaptive gains if needed
+  if (areset)  {  Gp = 0.0;  Gd = 0.0;  Gu = 0.0;  }
 
-  return cmd;
+  // Adaptive update laws
+  p_tilde = xp - zp;
+  d_tilde = xd - zd;
+  if (wrap)  {
+    if ( p_tilde >   PI )  p_tilde -= 2.0 * PI;
+    if ( p_tilde <= -PI )  p_tilde += 2.0 * PI;
+  }
+  kp_dot = - Gp * j * ( p_tilde + 2 * d_tilde ) * zp;
+  kd_dot = - Gd * j * ( p_tilde + 2 * d_tilde ) * zd;
+  ku_dot = - Gu * j * ( p_tilde + 2 * d_tilde ) * u;
+
+  // Projection operator  //--- WIP ---//
+  double kp_dot_max = 0.0001;
+  double kd_dot_max = 0.0001;
+  double ku_dot_max = 0.0;
+  if ( kp_dot > kp_dot_max )  kp_dot = kp_dot_max;  if ( kp_dot < -kp_dot_max )  kp_dot = -kp_dot_max;
+  if ( kd_dot > kd_dot_max )  kd_dot = kd_dot_max;  if ( kd_dot < -kd_dot_max )  kd_dot = -kd_dot_max;
+  if ( ku_dot > ku_dot_max )  ku_dot = ku_dot_max;  if ( ku_dot < -ku_dot_max )  ku_dot = -ku_dot_max;
+
+  // Update gain values
+  kp += dt * kp_dot;
+  kd += dt * kd_dot;
+  ku += dt * ku_dot;
+
+  // Projection operator
+  double kp_max = 0.120;
+  double kd_max = 0.080;
+  double ku_max = 1.0;
+  if ( kp > kp_max )  kp = kp_max;
+  if ( kd > kd_max )  kd = kd_max;
+  if ( ku > ku_max )  ku = ku_max;
+
+  // Push data to structure
+  pthread_mutex_lock(&sf->mutex);
+  sf->r  = r;
+  sf->xp = xp;
+  sf->xd = xd;
+  sf->u  = u;
+  sf->kp = kp;
+  sf->kd = kd;
+  sf->ku = ku;
+  pthread_mutex_unlock(&sf->mutex);
+
+  return u;
 }
 
 
 /**
- *  stab_adapt
- *  Apply adaptive contorl loop
+ *  stab_sysid
+ *  Perform system identification update.
  */
-/*
-double stab_adapt ( adapt_struct *adapt, double p, double d, double r, bool areset )  {
+void stab_sysid ( sysid_struct *sysid, double u, double y )  {
 
   // Local variables
-  double Gp, Gd, G;
-  double kp, kd, k;
-  double p_prev,  d_prev, r_prev;
-  double kp_prev, kd_prev;
+  double z1, z2, p1, p2;
+  double u1, u2, y1, y2;
+  double eps, m, n;
 
-  // Lock struct while pulling data
-  pthread_mutex_lock(&adapt->mutex);
+  // Pull data from structure
+  pthread_mutex_lock(&sysid->mutex);
+  z1 = sysid->z1;
+  z2 = sysid->z2;
+  p1 = sysid->p1;
+  p2 = sysid->p2;
+  u1 = sysid->u1;
+  u2 = sysid->u2;
+  y1 = sysid->y1;
+  y2 = sysid->y2;
+  pthread_mutex_unlock(&sysid->mutex);
 
-  // Get adaptive law gains
-  Gp = adapt->Gp;
-  Gd = adapt->Gd;
-  //Gr = adapt->Gr;
-  G  = adapt->G;
+  // Calculate auxilliary signals
+  eps = z2 * u2 + z1 * u1 - p2 * y2 - p1 * y1 - y;
+  m = 1 + u2 * u2 + u1 * u1 + y2 * y2 + y1 * y1;
+  n = eps/m;
 
-  // Get current state feedback gains
-  kp = adapt->kp;
-  kd = adapt->kd;
-  //kr = adapt->kr;
-  k  = adapt->k;
+  // Update parameter estimates
+  z1 -= n * u1;
+  z2 -= n * u2;
+  p1 -= n * y1;
+  p2 -= n * y2;
 
-  // Get previous states
-  p_prev = adapt->p;
-  d_prev = adapt->d;
-  r_prev = adapt->r;
+  // Shift data back a time step
+  u2 = u1;  u1 = u;
+  y2 = y1;  y1 = y;
 
-  // Get previous state feedback gains
-  kp_prev = adapt->kp_prev;
-  kd_prev = adapt->kd_prev;
-  //kr_prev = adapt->kr_prev;
+  // Push data to structure
+  pthread_mutex_lock(&sysid->mutex);
+  sysid->z1 = z1;
+  sysid->z2 = z2;
+  sysid->p1 = p1;
+  sysid->p2 = p2;
+  sysid->u1 = u1;
+  sysid->u2 = u2;
+  sysid->y1 = y1;
+  sysid->y2 = y2;
+  pthread_mutex_unlock(&sysid->mutex);
 
-  // Assign previous state gains (before they are updated)
-  adapt->kp_prev = kp;
-  adapt->kd_prev = kd;
-  //adapt->kr_prev = kr;
-
-  // Unlock data structure
-  pthread_mutex_unlock(&adapt->mutex);
-
-  // Cancel adaptation
-  if ( areset )  {
-    Gp = 0.0;
-    Gd = 0.0;
-    //Gr = 0.0;
-    G  = 0.0;
-  }
-
-  // Scale down adaptive gains
-  else {
-    Gp /= 1000.0;
-    Gd /= 1000.0;
-    G  /= 1000.0;
-  }
-
-  // Control input 
-  double u = - kp * p - kd * d + kp * r;
-
-  // Auxilliary signals
-  double xi =  - ( kp - kp_prev ) * p_prev  - ( kd - kd_prev ) * d_prev  + ( kp - kp_prev ) * r_prev;
-  double eps = ( p - r_prev ) + ( k * xi );
-
-  // Normalizing signal
-  double m = 1 + p_prev * p_prev + d_prev * d_prev + r_prev * r_prev + xi * xi;
-  double n = eps / m;
-
-  // Adaptive laws
-  kp += Gp * p_prev * n;
-  kd += Gd * d_prev * n;
-  //kr -= Gr * r_prev * n;
-  k  -= G  * xi     * n;
-
-  // Lock struct while pushing data
-  pthread_mutex_lock(&adapt->mutex);
-
-  // Update states
-  adapt->p = p;
-  adapt->d = d;
-  adapt->r = r;
-  adapt->u = u;
-
-  // Update current gains
-  adapt->kp = kp;
-  adapt->kd = kd;
-  //adapt->kr = kr;
-  adapt->k  = k;
-
-  // Unlock data structure
-  pthread_mutex_unlock(&adapt->mutex);
-
-  return u;
+  return;
 }
-*/
+
 
 /**
  *  stab_disarm

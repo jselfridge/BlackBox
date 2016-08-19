@@ -49,28 +49,33 @@
 
 enum param_index {
 
-  // Roll gains
-  X_Kp = 0,
-  X_Ki,
-  X_Kd,
-  //X_Gp,
-  //X_Gd,
-  //X_Gr,
-  //X_G,
+  // Roll stabilization
+  X_ts = 0,
+  X_mp,
+  X_j,
+  X_Gp,
+  X_Gd,
+  X_Gu,
 
-  // Pitch gains
-  Y_Kp,
-  Y_Ki,
-  Y_Kd,
+  // Pitch stabilization
+  Y_ts,
+  Y_mp,
+  Y_j, 
+  Y_Gp,
+  Y_Gd,
+  Y_Gu,
 
-  // Yaw gains
-  Z_Kp,
-  Z_Ki,
-  Z_Kd,
+  // Yaw stabilization
+  Z_ts,
+  Z_mp,
+  Z_j,
+  Z_Gp,
+  Z_Gd,
+  Z_Gu,
 
   // Thrl values
   T_min,
-  T_max, 
+  T_max,
   T_tilt,
 
   // Range values
@@ -78,8 +83,6 @@ enum param_index {
   Y_Range,
   Z_Range,
   T_Range,
-
-  // Roll adaptive gains
 
   // Number of elements
   param_count

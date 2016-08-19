@@ -361,7 +361,7 @@ void imu_update ( imu_struct *imu )  {
     Mf[i] = Mp[i] + Mg[i] * ( Ms[i] - Mp[i] );
     }
   }
-
+  /*
   // Complimentary filter variables
   double dt, gain, R, P;
 
@@ -379,7 +379,7 @@ void imu_update ( imu_struct *imu )  {
 
   // AHRS data fusion
   imu_9DOF( imu );
-
+  */
   // Push gyroscope values to data structure
   pthread_mutex_lock( &(imu->gyr->mutex) );
   for ( i=0; i<3; i++ )  {
@@ -408,13 +408,13 @@ void imu_update ( imu_struct *imu )  {
   }
   pthread_mutex_unlock( &(imu->mag->mutex) );
   }
-
+  /*
   // Push complimentary filter values to data structure
   pthread_mutex_lock( &(imu->mutex) );
   imu->roll  = R;
   imu->pitch = P;
   pthread_mutex_unlock( &(imu->mutex) );
-
+  */
   return;
 }
 

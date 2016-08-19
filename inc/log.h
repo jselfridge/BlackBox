@@ -18,8 +18,7 @@ enum log_index {
   LOG_IO,
   LOG_IMUA,
   LOG_IMUB,
-  LOG_STAB,
-  LOG_INS
+  LOG_STAB
 } log_index;
 
 
@@ -90,23 +89,36 @@ typedef struct log_stab_struct {
   ulong  limit;
   float  *time;
   ulong  *dur;
-  float  *att;
-  float  *ang;
-  float  *cmd;
 } log_stab_struct;
 log_stab_struct log_stab;
 
 
-typedef struct log_pid_struct {
-  double *perr;
-  double *ierr;
-  double *derr;
-} log_pid_struct;
-log_pid_struct log_pidX;
-log_pid_struct log_pidY;
-log_pid_struct log_pidZ;
+typedef struct log_sf_struct {
+  float *r;
+  float *xp;
+  float *xd;
+  float *u;
+  float *kp;
+  float *kd;
+  float *ku;
+} log_sf_struct;
+log_sf_struct log_sfX;
+log_sf_struct log_sfY;
+log_sf_struct log_sfZ;
 
 
+typedef struct log_sysid_struct {
+  float *z1;
+  float *z2;
+  float *p1;
+  float *p2;
+} log_sysid_struct;
+log_sysid_struct log_sysidX;
+log_sysid_struct log_sysidY;
+log_sysid_struct log_sysidZ;
+
+
+/*
 typedef struct log_ekf_struct {
   ulong  count;
   ulong  limit;
@@ -122,8 +134,9 @@ typedef struct log_ekf_struct {
   float  *S;
 } log_ekf_struct;
 log_ekf_struct log_ekf;
+*/
 
-
+/*
 typedef struct log_ins_struct {
   ulong  count;
   ulong  limit;
@@ -132,22 +145,8 @@ typedef struct log_ins_struct {
   float  *K;
 } log_ins_struct;
 log_ins_struct log_ins;
-
-/*
-typedef struct log_adapt_struct {
-  double *u;
-  double *p;
-  double *d;
-  double *r;
-  double *kp;
-  double *kd;
-  //double *kr;
-  double *k;
-} log_adapt_struct;
-log_adapt_struct log_adaptX;
-log_adapt_struct log_adaptY;
-log_adapt_struct log_adaptZ;
 */
+
 
 typedef struct datalog_struct {
   bool   enabled;
@@ -170,8 +169,7 @@ typedef struct datalog_struct {
   FILE   *compB;
   FILE   *ahrsB;
   FILE   *stab;
-  FILE   *ekf;
-  FILE   *ins;
+  FILE   *sysid;
 } datalog_struct;
 datalog_struct datalog;
 

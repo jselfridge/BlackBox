@@ -8,8 +8,6 @@
 #include <sys/types.h>
 
 
-#define STAB_PID      true
-
 #define IRESET        0.25
 
 #define QUAD_FL       0
@@ -32,49 +30,55 @@ typedef struct stab_struct {
 stab_struct stab;
 
 
-typedef struct pid_struct {
+typedef struct sf_struct {
   double  dt;
   bool    wrap;
-  double  pgain;
-  double  igain;
-  double  dgain;
-  double  perr;
-  double  ierr;
-  double  derr;
+  double  ts;
+  double  mp;
+  double  sigma;
+  double  zeta;
+  double  nfreq;
+  double  dfreq;
+  double  ap;
+  double  ad;
+  double  j;
+  double  kp;
+  double  kd;
+  double  ku;
+  double  r;
+  double  xp;
+  double  xd;
+  double  u;
+  double  Gp;
+  double  Gd;
+  double  Gu;
   pthread_mutex_t mutex;
-} pid_struct;
-pid_struct pidX;
-pid_struct pidY;
-pid_struct pidZ;
+} sf_struct;
+sf_struct sfX;
+sf_struct sfY;
+sf_struct sfZ;
 
-/*
-typedef struct adapt_struct {
-  double u;
-  double p;
-  double d;
-  double r;
-  double Gp;
-  double Gd;
-  //double Gr;
-  double G;
-  double kp;
-  double kd;
-  //double kr;
-  double k;
-  double kp_prev;
-  double kd_prev;
-  //double kr_prev;
+
+typedef struct sysid_struct {
+  double z1;
+  double z2;
+  double p1;
+  double p2;
+  double u1;
+  double u2;
+  double y1;
+  double y2;
   pthread_mutex_t mutex;
-} adapt_struct;
-adapt_struct adaptX;
-adapt_struct adaptY;
-adapt_struct adaptZ;
-*/
+} sysid_struct;
+sysid_struct sysidX;
+sysid_struct sysidY;
+sysid_struct sysidZ;
+
 
 void    stab_init    ( void );
 void    stab_exit    ( void );
 void    stab_update  ( void );
-
+void    stab_refmdl  ( sf_struct *sf );
 
 #endif
 
