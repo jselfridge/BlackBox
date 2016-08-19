@@ -411,8 +411,8 @@ void *fcn_imu (  )  {
     tmr_start(&tmr_imu);
     if (!datalog.saving) {
       if (IMUA_ENABLED)  imu_update(&imuA);
-      //if (IMUB_ENABLED)  imu_update(&imuB);
-      //imu_state();
+      if (IMUB_ENABLED)  imu_update(&imuB);
+      imu_state();
     }
     tmr_finish(&tmr_imu);
     if (datalog.enabled) {
