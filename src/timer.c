@@ -35,10 +35,10 @@ void tmr_init ( void )  {
  */
 void tmr_mutex ( void )  {
   if(DEBUG)  printf("  Establish mutex locks \n");
-  pthread_mutex_init( &input.mutex,  NULL );
-  pthread_mutex_init( &output.mutex, NULL );
   pthread_mutex_init( &mutex_i2c1,   NULL );
   pthread_mutex_init( &mutex_i2c2,   NULL );
+  pthread_mutex_init( &input.mutex,  NULL );
+  pthread_mutex_init( &output.mutex, NULL );
   pthread_mutex_init( &imuA.mutex,   NULL );
   pthread_mutex_init( &gyrA.mutex,   NULL );
   pthread_mutex_init( &accA.mutex,   NULL );
@@ -52,14 +52,14 @@ void tmr_mutex ( void )  {
   pthread_mutex_init( &compB.mutex,  NULL );
   pthread_mutex_init( &ahrsB.mutex,  NULL );
   pthread_mutex_init( &rot.mutex,    NULL );
-  pthread_mutex_init( &stab.mutex,   NULL );
-  pthread_mutex_init( &sfX.mutex,    NULL );
-  pthread_mutex_init( &sfY.mutex,    NULL );
-  pthread_mutex_init( &sfZ.mutex,    NULL );
-  pthread_mutex_init( &sysidX.mutex, NULL );
-  pthread_mutex_init( &sysidY.mutex, NULL );
-  pthread_mutex_init( &sysidZ.mutex, NULL );
-  pthread_mutex_init( &gcs.mutex,    NULL );
+  //pthread_mutex_init( &stab.mutex,   NULL );
+  //pthread_mutex_init( &sfX.mutex,    NULL );
+  //pthread_mutex_init( &sfY.mutex,    NULL );
+  //pthread_mutex_init( &sfZ.mutex,    NULL );
+  //pthread_mutex_init( &sysidX.mutex, NULL );
+  //pthread_mutex_init( &sysidY.mutex, NULL );
+  //pthread_mutex_init( &sysidZ.mutex, NULL );
+  //pthread_mutex_init( &gcs.mutex,    NULL );
   return;
 }
 
@@ -84,12 +84,12 @@ void tmr_setup ( void )  {
   // IMU timer
   tmr_imu.name = "imu";
   tmr_imu.prio = PRIO_IMU;
-  tmr_imu.per  = 1000000 / HZ_IMU_FAST;
+  tmr_imu.per  = 1000000 / HZ_IMU;
 
   // Stabilization timer
-  tmr_stab.name = "stab";
-  tmr_stab.prio = PRIO_STAB;
-  tmr_stab.per  = 1000000 / HZ_STAB;
+  //tmr_stab.name = "stab";
+  //tmr_stab.prio = PRIO_STAB;
+  //tmr_stab.per  = 1000000 / HZ_STAB;
 
   // Inertial Navigation System timer
   //tmr_ins.name = "ins";
@@ -97,14 +97,14 @@ void tmr_setup ( void )  {
   //tmr_ins.per  = 1000000 / HZ_INS;
 
   // GCSTX timer
-  tmr_gcstx.name = "gcstx";
-  tmr_gcstx.prio = PRIO_GCSTX;
-  tmr_gcstx.per  = 1000000 / HZ_GCSTX;
+  //tmr_gcstx.name = "gcstx";
+  //tmr_gcstx.prio = PRIO_GCSTX;
+  //tmr_gcstx.per  = 1000000 / HZ_GCSTX;
 
   // GCSRX timer
-  tmr_gcsrx.name = "gcsrx";
-  tmr_gcsrx.prio = PRIO_GCSRX;
-  tmr_gcsrx.per  = 1000000 / HZ_GCSRX;
+  //tmr_gcsrx.name = "gcsrx";
+  //tmr_gcsrx.prio = PRIO_GCSRX;
+  //tmr_gcsrx.per  = 1000000 / HZ_GCSRX;
 
   // Debugging timer
   tmr_debug.name = "debug";
@@ -157,6 +157,8 @@ void tmr_begin ( pthread_attr_t *attr )  {
   tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(100000);
   tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);
   //tmr_thread( &tmr_stab,  attr, fcn_stab  );  usleep(100000);
+  //tmr_thread( &tmr_ins,   attr, fcn_ins   );  usleep(100000);
+  //tmr_thread( &tmr_nav,   attr, fcn_nav   );  usleep(100000);
   //tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
   //tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(100000);
 
@@ -177,10 +179,10 @@ void tmr_exit ( void )  {
   printf("Close timing threads:  ");
 
   // Destroy mutex locks
-  pthread_mutex_destroy(&input.mutex);
-  pthread_mutex_destroy(&output.mutex);
   pthread_mutex_destroy(&mutex_i2c1);
   pthread_mutex_destroy(&mutex_i2c2);
+  pthread_mutex_destroy(&input.mutex);
+  pthread_mutex_destroy(&output.mutex);
   pthread_mutex_destroy(&imuA.mutex);
   pthread_mutex_destroy(&gyrA.mutex);
   pthread_mutex_destroy(&accA.mutex);
@@ -194,14 +196,15 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&compB.mutex);
   pthread_mutex_destroy(&ahrsB.mutex);
   pthread_mutex_destroy(&rot.mutex);
-  pthread_mutex_destroy(&stab.mutex);
-  pthread_mutex_destroy(&sfX.mutex);
-  pthread_mutex_destroy(&sfY.mutex);
-  pthread_mutex_destroy(&sfZ.mutex);
-  pthread_mutex_destroy(&sysidX.mutex);
-  pthread_mutex_destroy(&sysidY.mutex);
-  pthread_mutex_destroy(&sysidZ.mutex);
-  pthread_mutex_destroy(&gcs.mutex);
+  //pthread_mutex_destroy(&stab.mutex);
+  //pthread_mutex_destroy(&sfX.mutex);
+  //pthread_mutex_destroy(&sfY.mutex);
+  //pthread_mutex_destroy(&sfZ.mutex);
+  //pthread_mutex_destroy(&sysidX.mutex);
+  //pthread_mutex_destroy(&sysidY.mutex);
+  //pthread_mutex_destroy(&sysidZ.mutex);
+  //pthread_mutex_destroy(&gcs.mutex);
+
   /*
   // Exit GCSRX thread
   if( pthread_join ( tmr_gcsrx.id, NULL ) )
@@ -213,7 +216,12 @@ void tmr_exit ( void )  {
     printf( "Error (tmr_exit): Failed to exit 'gcstx' thread. \n" );
   if(DEBUG)  printf( "gcstx " );
 
-  // Exit INS thread
+  // Exit navigation thread
+  //if( pthread_join ( tmr_nav.id, NULL ) )
+    //printf( "Error (tmr_exit): Failed to exit 'nav' thread. \n" );
+  //if(DEBUG)  printf( "ins " );
+
+  // Exit inertial nav sys thread
   //if( pthread_join ( tmr_ins.id, NULL ) )
     //printf( "Error (tmr_exit): Failed to exit 'ins' thread. \n" );
   //if(DEBUG)  printf( "ins " );
@@ -223,6 +231,7 @@ void tmr_exit ( void )  {
     printf( "Error (tmr_exit): Failed to exit 'stab' thread. \n" );
   if(DEBUG)  printf( "stab " );
   */
+
   // Exit IMU thread
   if( pthread_join ( tmr_imu.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'imu' thread. \n" );
@@ -419,10 +428,7 @@ void *fcn_imu (  )  {
       imu_state();
     }
     tmr_finish(&tmr_imu);
-    if (datalog.enabled) {
-      if (IMUA_ENABLED)  log_record(LOG_IMUA);
-      if (IMUB_ENABLED)  log_record(LOG_IMUB);
-    }
+    if (datalog.enabled)  log_record(LOG_IMU);
     tmr_pause(&tmr_imu);
   }
   pthread_exit(NULL);
@@ -434,6 +440,7 @@ void *fcn_imu (  )  {
  *  fcn_stab
  *  Function handler for the stabilization timing thread.
  */
+/*
 void *fcn_stab (  )  {
   tmr_create(&tmr_stab);
   while (running) {
@@ -446,7 +453,7 @@ void *fcn_stab (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_ins
@@ -457,7 +464,7 @@ void *fcn_ins (  )  {
   tmr_create(&tmr_ins);
   while (running) {
     tmr_start(&tmr_ins);
-    ekf_gain();
+    ins_update();
     tmr_finish(&tmr_ins);
     if (datalog.enabled)  log_record(LOG_INS);
     tmr_pause(&tmr_ins);
@@ -468,9 +475,29 @@ void *fcn_ins (  )  {
 */
 
 /**
+ *  fcn_nav
+ *  Function handler for the navigation timing thread.
+ */
+/*
+void *fcn_nav (  )  {
+  tmr_create(&tmr_nav);
+  while (running) {
+    tmr_start(&tmr_nav);
+    nav_update();
+    tmr_finish(&tmr_nav);
+    if (datalog.enabled)  log_record(LOG_NAV);
+    tmr_pause(&tmr_nav);
+  }
+  pthread_exit(NULL);
+  return NULL;
+}
+*/
+
+/**
  *  fcn_gcstx
  *  Function handler for the GCS transmission timing thread.
  */
+/*
 void *fcn_gcstx (  )  {
   tmr_create(&tmr_gcstx);
   while (running) {
@@ -482,12 +509,13 @@ void *fcn_gcstx (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_gcsrx
  *  Function handler for the GCS receiver timing thread.
  */
+/*
 void *fcn_gcsrx (  )  {
   tmr_create(&tmr_gcsrx);
   while (running) {
@@ -499,7 +527,7 @@ void *fcn_gcsrx (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-
+*/
 
 /**
  *  fcn_debug

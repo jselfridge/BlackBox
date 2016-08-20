@@ -2,5 +2,5 @@ imu.c:114:6:imu_param	16	static
 imu.c:151:6:imu_getcal	96	static
 imu.c:26:6:imu_init	24	static
 imu.c:101:6:imu_exit	8	static
-imu.c:321:6:imu_update	1016	static
-imu.c:750:6:imu_state	88	static
+imu.c:313:6:imu_update	1016	static
+imu.c:742:6:imu_state	88	static

@@ -16,9 +16,10 @@
 enum log_index {
   LOG_PARAM = 0,
   LOG_IO,
-  LOG_IMUA,
-  LOG_IMUB,
-  LOG_STAB
+  LOG_IMU,
+  LOG_STAB,
+  LOG_INS, 
+  LOG_NAV
 } log_index;
 
 
@@ -83,7 +84,7 @@ typedef struct log_ahrs_struct {
 log_ahrs_struct log_ahrsA;
 log_ahrs_struct log_ahrsB;
 
-
+/*
 typedef struct log_stab_struct {
   ulong  count;
   ulong  limit;
@@ -91,8 +92,8 @@ typedef struct log_stab_struct {
   ulong  *dur;
 } log_stab_struct;
 log_stab_struct log_stab;
-
-
+*/
+/*
 typedef struct log_sf_struct {
   float *r;
   float *xp;
@@ -105,8 +106,8 @@ typedef struct log_sf_struct {
 log_sf_struct log_sfX;
 log_sf_struct log_sfY;
 log_sf_struct log_sfZ;
-
-
+*/
+/*
 typedef struct log_sysid_struct {
   float *z1;
   float *z2;
@@ -116,8 +117,7 @@ typedef struct log_sysid_struct {
 log_sysid_struct log_sysidX;
 log_sysid_struct log_sysidY;
 log_sysid_struct log_sysidZ;
-
-
+*/
 /*
 typedef struct log_ekf_struct {
   ulong  count;
@@ -135,7 +135,6 @@ typedef struct log_ekf_struct {
 } log_ekf_struct;
 log_ekf_struct log_ekf;
 */
-
 /*
 typedef struct log_ins_struct {
   ulong  count;
@@ -158,6 +157,7 @@ typedef struct datalog_struct {
   FILE   *param;
   FILE   *in;
   FILE   *out;
+  FILE   *imu;
   FILE   *gyrA;
   FILE   *accA;
   FILE   *magA;
@@ -168,8 +168,7 @@ typedef struct datalog_struct {
   FILE   *magB;
   FILE   *compB;
   FILE   *ahrsB;
-  FILE   *stab;
-  FILE   *sysid;
+  FILE   *rot;
 } datalog_struct;
 datalog_struct datalog;
 
