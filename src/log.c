@@ -222,7 +222,6 @@ void log_exit ( void )  {
   free(log_output.time);
   free(log_output.data);
 
-
   // Timestamp memory
   free(log_imu.time);
   //free(log_stab.time);
@@ -448,43 +447,43 @@ void log_start ( void )  {
   datalog.gyrA = fopen( file, "w" );
   if( datalog.gyrA == NULL )  printf( "Error (log_init): Cannot generate 'gyra' file. \n" );
   fprintf( datalog.gyrA, "\
-    gyr_arx  gyr_ary  gyr_arz   \
-    gyr_asx   gyr_asy   gyr_asz   \
-    gyr_afx   gyr_afy   gyr_afz");
+    gyr_arx  gyr_ary  gyr_arz    \
+    gyr_asx   gyr_asy   gyr_asz    \
+    gyr_afx   gyr_afy   gyr_afz        ");
 
   // Accelerometer A datalog file
   sprintf( file, "%sacca.txt", datalog.path );
   datalog.accA = fopen( file, "w" );
   if( datalog.accA == NULL )  printf( "Error (log_init): Cannot generate 'acca' file. \n" );
   fprintf( datalog.accA, "\
-    acc_arx  acc_ary  acc_arz   \
-    acc_asx   acc_asy   acc_asz   \
-    acc_afx   acc_afy   acc_afz");
+    acc_arx  acc_ary  acc_arz    \
+    acc_asx   acc_asy   acc_asz    \
+    acc_afx   acc_afy   acc_afz        ");
 
   // Magnetometer A datalog file
   sprintf( file, "%smaga.txt", datalog.path );
   datalog.magA = fopen( file, "w" );
   if( datalog.magA == NULL )  printf( "Error (log_init): Cannot generate 'maga' file. \n" );
   fprintf( datalog.magA, "\
-    mag_arx  mag_ary  mag_arz   \
-    mag_asx   mag_asy   mag_asz   \
-    mag_afx   mag_afy   mag_afz");
+    mag_arx  mag_ary  mag_arz    \
+    mag_asx   mag_asy   mag_asz    \
+    mag_afx   mag_afy   mag_afz        ");
 
   // Comp filter A datalog file
   sprintf( file, "%scompa.txt", datalog.path );
   datalog.compA = fopen( file, "w" );
   if( datalog.compA == NULL )  printf( "Error (log_init): Cannot generate 'compa' file. \n" );
-  fprintf( datalog.compA, "  comp_ar comp_ap ");  
+  fprintf( datalog.compA, "     comp_ar   comp_ap   ");  
 
   // Attitude and heading reference system A datalog file
   sprintf( file, "%sahrsa.txt", datalog.path );
   datalog.ahrsA = fopen( file, "w" );
   if( datalog.ahrsA == NULL )  printf( "Error (log_init): Cannot generate 'ahrsa' file. \n" );
-  fprintf( datalog.ahrsA, "\
-    quat_aw   quat_ax   quat_ay   quat_az  \
-    dquat_aw  dquat_ax  dquat_ay  dquat_az    \
-    eul_ax    eul_ay    eul_az   \
-    deul_ax   deul_ay   deul_az");
+  fprintf( datalog.ahrsA, " \
+    quat_aw   quat_ax   quat_ay   quat_az   \
+    dquat_aw  dquat_ax  dquat_ay  dquat_az     \
+    eul_ax    eul_ay    eul_az    \
+    deul_ax   deul_ay   deul_az        ");
 
   }
 
@@ -496,43 +495,43 @@ void log_start ( void )  {
   datalog.gyrB = fopen( file, "w" );
   if( datalog.gyrB == NULL )  printf( "Error (log_init): Cannot generate 'gyrb' file. \n" );
   fprintf( datalog.gyrB, "\
-    gyr_brx  gyr_bry  gyr_brz   \
-    gyr_bsx   gyr_bsy   gyr_bsz   \
-    gyr_bfx   gyr_bfy   gyr_bfz");
+    gyr_brx  gyr_bry  gyr_brz    \
+    gyr_bsx   gyr_bsy   gyr_bsz    \
+    gyr_bfx   gyr_bfy   gyr_bfz        ");
 
   // Accelerometer B datalog file
   sprintf( file, "%saccb.txt", datalog.path );
   datalog.accB = fopen( file, "w" );
   if( datalog.accB == NULL )  printf( "Error (log_init): Cannot generate 'accb' file. \n" );
   fprintf( datalog.accB, "\
-    acc_brx  acc_bry  acc_brz   \
-    acc_bsx   acc_bsy   acc_bsz   \
-    acc_bfx   acc_bfy   acc_bfz");
+    acc_brx  acc_bry  acc_brz    \
+    acc_bsx   acc_bsy   acc_bsz    \
+    acc_bfx   acc_bfy   acc_bfz        ");
 
   // Magnetometer B datalog file
   sprintf( file, "%smagb.txt", datalog.path );
   datalog.magB = fopen( file, "w" );
   if( datalog.magB == NULL )  printf( "Error (log_init): Cannot generate 'magb' file. \n" );
   fprintf( datalog.magB, "\
-    mag_brx  mag_bry  mag_brz   \
-    mag_bsx   mag_bsy   mag_bsz   \
-    mag_bfx   mag_bfy   mag_bfz");
+    mag_brx  mag_bry  mag_brz    \
+    mag_bsx   mag_bsy   mag_bsz    \
+    mag_bfx   mag_bfy   mag_bfz        ");
 
   // Comp filter B datalog file
   sprintf( file, "%scompb.txt", datalog.path );
   datalog.compB = fopen( file, "w" );
   if( datalog.compB == NULL )  printf( "Error (log_init): Cannot generate 'compb' file. \n" );
-  fprintf( datalog.compB, "    comp_br comp_bp ");
+  fprintf( datalog.compB, "     comp_br   comp_bp   ");
 
   // Attitude and heading reference system B datalog file
   sprintf( file, "%sahrsb.txt", datalog.path );
   datalog.ahrsB = fopen( file, "w" );
   if( datalog.ahrsB == NULL )  printf( "Error (log_init): Cannot generate 'ahrsb' file. \n" );
-  fprintf( datalog.ahrsB, "\
-    quat_bw   quat_bx   quat_by   quat_bz  \
-    dquat_bw  dquat_bx  dquat_by  dquat_bz    \
-    eul_bx    eul_by    eul_bz   \
-    deul_bx   deul_by   deul_bz");
+  fprintf( datalog.ahrsB, " \
+    quat_bw   quat_bx   quat_by   quat_bz   \
+    dquat_bw  dquat_bx  dquat_by  dquat_bz     \
+    eul_bx    eul_by    eul_bz    \
+    deul_bx   deul_by   deul_bz        ");
 
   }
 

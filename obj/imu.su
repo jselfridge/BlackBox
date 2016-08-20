@@ -1,4 +1,6 @@
-imu.c:26:6:imu_init	8	static
+imu.c:103:6:imu_param	16	static
+imu.c:140:6:imu_getcal	96	static
+imu.c:26:6:imu_init	24	static
 imu.c:90:6:imu_exit	8	static
 imu.c:302:6:imu_update	1016	static
-imu.c:731:6:imu_state	56	static
+imu.c:731:6:imu_state	88	static
