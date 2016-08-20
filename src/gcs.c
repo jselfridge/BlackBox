@@ -142,7 +142,7 @@ void gcs_tx ( void)  {
 
   if(GCS_DEBUG)  printf("TX:  ");
 
-  static int count = 0;
+  //static int count = 0;
   //if ( count < HZ_GCSTX )  {  count++;  }
   //else                     {  count = 0;  gcs.sendhb = true;  }
 

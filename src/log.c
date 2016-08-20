@@ -421,70 +421,70 @@ void log_start ( void )  {
   datalog.in = fopen( file, "w" );
   if( datalog.in == NULL )  printf( "Error (log_init): Cannot generate 'input' file. \n" );
   fprintf( datalog.in,
-    "      InTime   \
-    In01     In02     In03     In04     In05 \
-    In06     In07     In08     In09     In10" );
+    "         in_time   \
+    in_01     in_02     in_03     in_04     in_05 \
+    in_06     in_07     in_08     in_09     in_10   " );
 
   // Output datalog file
   sprintf( file, "%soutput.txt", datalog.path );
   datalog.out = fopen( file, "w" );
   if( datalog.out == NULL )  printf( "Error (log_init): Cannot generate 'output' file. \n" );
   fprintf( datalog.out, 
-    "     OutTime  \
-    Out01    Out02    Out03    Out04    Out05\
-    Out06    Out07    Out08    Out09    Out10" );
+    "        out_time  \
+    out_01    out_02    out_03    out_04    out_05\
+    out_06    out_07    out_08    out_09    out_10   " );
 
   // IMU timing thread datalog file
   sprintf( file, "%simu.txt", datalog.path );
   datalog.imu = fopen( file, "w" );
   if( datalog.imu == NULL )  printf( "Error (log_init): Cannot generate 'imu' file. \n" );
-  fprintf( datalog.imu, "     imuTime   imuDur  ");
+  fprintf( datalog.imu, "        imu_time    imu_dur   ");
 
   // IMUA datalogs
   if (IMUA_ENABLED)  {
 
   // Gyroscope A datalog file
-  sprintf( file, "%sgyrA.txt", datalog.path );
+  sprintf( file, "%sgyra.txt", datalog.path );
   datalog.gyrA = fopen( file, "w" );
-  if( datalog.gyrA == NULL )  printf( "Error (log_init): Cannot generate 'gyrA' file. \n" );
+  if( datalog.gyrA == NULL )  printf( "Error (log_init): Cannot generate 'gyra' file. \n" );
   fprintf( datalog.gyrA, "\
-    GyrArx  GyrAry  GyrArz   \
-    GyrAsx   GyrAsy   GyrAsz   \
-    GyrAfx   GyrAfy   GyrAfz");
+    gyr_arx  gyr_ary  gyr_arz   \
+    gyr_asx   gyr_asy   gyr_asz   \
+    gyr_afx   gyr_afy   gyr_afz");
 
   // Accelerometer A datalog file
-  sprintf( file, "%saccA.txt", datalog.path );
+  sprintf( file, "%sacca.txt", datalog.path );
   datalog.accA = fopen( file, "w" );
-  if( datalog.accA == NULL )  printf( "Error (log_init): Cannot generate 'accA' file. \n" );
+  if( datalog.accA == NULL )  printf( "Error (log_init): Cannot generate 'acca' file. \n" );
   fprintf( datalog.accA, "\
-    AccArx  AccAry  AccArz   \
-    AccAsx   AccAsy   AccAsz   \
-    AccAfx   AccAfy   AccAfz");
+    acc_arx  acc_ary  acc_arz   \
+    acc_asx   acc_asy   acc_asz   \
+    acc_afx   acc_afy   acc_afz");
 
   // Magnetometer A datalog file
-  sprintf( file, "%smagA.txt", datalog.path );
+  sprintf( file, "%smaga.txt", datalog.path );
   datalog.magA = fopen( file, "w" );
-  if( datalog.magA == NULL )  printf( "Error (log_init): Cannot generate 'magA' file. \n" );
+  if( datalog.magA == NULL )  printf( "Error (log_init): Cannot generate 'maga' file. \n" );
   fprintf( datalog.magA, "\
-    MagArx  MagAry  MagArz   \
-    MagAsx   MagAsy   MagAsz   \
-    MagAfx   MagAfy   MagAfz");
+    mag_arx  mag_ary  mag_arz   \
+    mag_asx   mag_asy   mag_asz   \
+    mag_afx   mag_afy   mag_afz");
 
   // Comp filter A datalog file
-  sprintf( file, "%scompA.txt", datalog.path );
+  sprintf( file, "%scompa.txt", datalog.path );
   datalog.compA = fopen( file, "w" );
-  if( datalog.compA == NULL )  printf( "Error (log_init): Cannot generate 'compA' file. \n" );
-  fprintf( datalog.compA, "   CompAroll CompApitch ");  
+  if( datalog.compA == NULL )  printf( "Error (log_init): Cannot generate 'compa' file. \n" );
+  fprintf( datalog.compA, "  comp_ar comp_ap ");  
 
   // Attitude and heading reference system A datalog file
-  sprintf( file, "%sahrsA.txt", datalog.path );
+  sprintf( file, "%sahrsa.txt", datalog.path );
   datalog.ahrsA = fopen( file, "w" );
-  if( datalog.ahrsA == NULL )  printf( "Error (log_init): Cannot generate 'ahrsA' file. \n" );
+  if( datalog.ahrsA == NULL )  printf( "Error (log_init): Cannot generate 'ahrsa' file. \n" );
   fprintf( datalog.ahrsA, "\
-    QuatAw   QuatAx   QuatAy   QuatAz  \
-    dQuatAw  dQuatAx  dQuatAy  dQuatAz    \
-    EulAx    EulAy    EulAz   \
-    dEulAx   dEulAy   dEulAz");
+    quat_aw   quat_ax   quat_ay   quat_az  \
+    dquat_aw  dquat_ax  dquat_ay  dquat_az    \
+    eul_ax    eul_ay    eul_az   \
+    deul_ax   deul_ay   deul_az");
 
   }
 
@@ -492,47 +492,47 @@ void log_start ( void )  {
   if (IMUB_ENABLED )  {
 
   // Gyroscope B datalog file
-  sprintf( file, "%sgyrB.txt", datalog.path );
+  sprintf( file, "%sgyrb.txt", datalog.path );
   datalog.gyrB = fopen( file, "w" );
-  if( datalog.gyrB == NULL )  printf( "Error (log_init): Cannot generate 'gyrB' file. \n" );
+  if( datalog.gyrB == NULL )  printf( "Error (log_init): Cannot generate 'gyrb' file. \n" );
   fprintf( datalog.gyrB, "\
-    GyrBrx  GyrBry  GyrBrz   \
-    GyrBsx   GyrBsy   GyrBsz   \
-    GyrBfx   GyrBfy   GyrBfz");
+    gyr_brx  gyr_bry  gyr_brz   \
+    gyr_bsx   gyr_bsy   gyr_bsz   \
+    gyr_bfx   gyr_bfy   gyr_bfz");
 
   // Accelerometer B datalog file
-  sprintf( file, "%saccB.txt", datalog.path );
+  sprintf( file, "%saccb.txt", datalog.path );
   datalog.accB = fopen( file, "w" );
-  if( datalog.accB == NULL )  printf( "Error (log_init): Cannot generate 'accB' file. \n" );
+  if( datalog.accB == NULL )  printf( "Error (log_init): Cannot generate 'accb' file. \n" );
   fprintf( datalog.accB, "\
-    AccBrx  AccBry  AccBrz   \
-    AccBsx   AccBsy   AccBsz   \
-    AccBfx   AccBfy   AccBfz");
+    acc_brx  acc_bry  acc_brz   \
+    acc_bsx   acc_bsy   acc_bsz   \
+    acc_bfx   acc_bfy   acc_bfz");
 
   // Magnetometer B datalog file
-  sprintf( file, "%smagB.txt", datalog.path );
+  sprintf( file, "%smagb.txt", datalog.path );
   datalog.magB = fopen( file, "w" );
-  if( datalog.magB == NULL )  printf( "Error (log_init): Cannot generate 'magB' file. \n" );
+  if( datalog.magB == NULL )  printf( "Error (log_init): Cannot generate 'magb' file. \n" );
   fprintf( datalog.magB, "\
-    MagBrx  MagBry  MagBrz   \
-    MagBsx   MagBsy   MagBsz   \
-    MagBfx   MagBfy   MagBfz");
+    mag_brx  mag_bry  mag_brz   \
+    mag_bsx   mag_bsy   mag_bsz   \
+    mag_bfx   mag_bfy   mag_bfz");
 
   // Comp filter B datalog file
-  sprintf( file, "%scompB.txt", datalog.path );
+  sprintf( file, "%scompb.txt", datalog.path );
   datalog.compB = fopen( file, "w" );
-  if( datalog.compB == NULL )  printf( "Error (log_init): Cannot generate 'compB' file. \n" );
-  fprintf( datalog.compB, "    CompBroll CompBpitch ");  
+  if( datalog.compB == NULL )  printf( "Error (log_init): Cannot generate 'compb' file. \n" );
+  fprintf( datalog.compB, "    comp_br comp_bp ");
 
   // Attitude and heading reference system B datalog file
-  sprintf( file, "%sahrsB.txt", datalog.path );
+  sprintf( file, "%sahrsb.txt", datalog.path );
   datalog.ahrsB = fopen( file, "w" );
-  if( datalog.ahrsB == NULL )  printf( "Error (log_init): Cannot generate 'ahrsB' file. \n" );
+  if( datalog.ahrsB == NULL )  printf( "Error (log_init): Cannot generate 'ahrsb' file. \n" );
   fprintf( datalog.ahrsB, "\
-    QuatBw   QuatBx   QuatBy   QuatBz  \
-    dQuatBw  dQuatBx  dQuatBy  dQuatBz    \
-    EulBx    EulBy    EulBz   \
-    dEulBx   dEulBy   dEulBz");
+    quat_bw   quat_bx   quat_by   quat_bz  \
+    dquat_bw  dquat_bx  dquat_by  dquat_bz    \
+    eul_bx    eul_by    eul_bz   \
+    deul_bx   deul_by   deul_bz");
 
   }
 
@@ -540,9 +540,9 @@ void log_start ( void )  {
   sprintf( file, "%srot.txt", datalog.path );
   datalog.rot = fopen( file, "w" );
   if( datalog.rot == NULL )  printf( "Error (log_init): Cannot generate 'rot' file. \n" );
-  fprintf( datalog.rot, "  \
-    Attx     Atty     Attz    \
-    Angx     Angy     Angz");
+  fprintf( datalog.rot, "   \
+    att_x     att_y     att_z      \
+    ang_x     ang_y     ang_z        ");
 
 
   /*
@@ -931,55 +931,60 @@ static void log_save ( void )  {
 
   // Parameter data
   for ( row = 0; row < log_param.count; row++ )  {
-    fprintf( datalog.param, "\n %011.6f     ", log_param.time[row] );
-    for ( i=0; i < param_count; i++ )  fprintf( datalog.param, "%09.4f  ", log_param.values [ row * param_count + i ] );
+    fprintf( datalog.param, "\n     %011.6f     ", log_param.time[row] );
+    for ( i=0; i < param_count; i++ )  fprintf( datalog.param, "%09.4f   ", log_param.values [ row * param_count + i ] );
   }
 
   // Input data
   for ( row = 0; row < log_input.count; row++ ) {
-    fprintf( datalog.in, "\n %011.6f    ", log_input.time[row] );
-    for ( i=0; i<10; i++ )  fprintf( datalog.in, "%7.4f  ", log_input.data [ row*10 +i ] );   fprintf( datalog.in, "    " );
+    fprintf( datalog.in, "\n     %011.6f     ", log_input.time[row] );
+    for ( i=0; i<10; i++ )  fprintf( datalog.in, "%7.4f   ", log_input.data [ row*10 +i ] );
   }
 
   // Output data
   for ( row = 0; row < log_output.count; row++ ) {
-    fprintf( datalog.out, "\n %011.6f    ", log_output.time[row] );
-    for ( i=0; i<10; i++ )  fprintf( datalog.out, "%7.4f  ", log_output.data [ row*10 +i ] );   fprintf( datalog.out, "    " );
+    fprintf( datalog.out, "\n     %011.6f     ", log_output.time[row] );
+    for ( i=0; i<10; i++ )  fprintf( datalog.out, "%7.4f   ", log_output.data [ row*10 +i ] );
   }
 
   // IMU timing thread
   for ( row = 0; row < log_imu.count; row++ ) {
 
     // IMU timing data
-    fprintf( datalog.imu, "\n %011.6f   %06ld      ", log_imu.time[row], log_imu.dur[row] );
+    fprintf( datalog.imu, "\n     %011.6f     %06ld   ", log_imu.time[row], log_imu.dur[row] );
 
     // IMU A datalogs
     if(IMUA_ENABLED)  {
 
       // Gyroscope A data
-      for ( i=0; i<3; i++ )  fprintf( datalog.gyrA, "%06d  ",   log_gyrA.raw    [ row*3 +i ] );   fprintf( datalog.gyrA, "    " );
-      for ( i=0; i<3; i++ )  fprintf( datalog.gyrA, "%07.4f  ", log_gyrA.scaled [ row*3 +i ] );   fprintf( datalog.gyrA, "    " );
-      for ( i=0; i<3; i++ )  fprintf( datalog.gyrA, "%07.4f  ", log_gyrA.filter [ row*3 +i ] );   fprintf( datalog.gyrA, "    " );
+      fprintf( datalog.gyrA, "\n     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.gyrA, "%06d   ",   log_gyrA.raw    [ row*3 +i ] );   fprintf( datalog.gyrA, "     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.gyrA, "%07.4f   ", log_gyrA.scaled [ row*3 +i ] );   fprintf( datalog.gyrA, "     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.gyrA, "%07.4f   ", log_gyrA.filter [ row*3 +i ] );   fprintf( datalog.gyrA, "     " );
 
       // Accelerometer A data
-      for ( i=0; i<3; i++ )  fprintf( datalog.accA, "%06d  ",   log_accA.raw    [ row*3 +i ] );   fprintf( datalog.accA, "    " );
-      for ( i=0; i<3; i++ )  fprintf( datalog.accA, "%07.4f  ", log_accA.scaled [ row*3 +i ] );   fprintf( datalog.accA, "    " );
-      for ( i=0; i<3; i++ )  fprintf( datalog.accA, "%07.4f  ", log_accA.filter [ row*3 +i ] );   fprintf( datalog.accA, "    " );
+      fprintf( datalog.accA, "\n     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.accA, "%06d   ",   log_accA.raw    [ row*3 +i ] );   fprintf( datalog.accA, "     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.accA, "%07.4f   ", log_accA.scaled [ row*3 +i ] );   fprintf( datalog.accA, "     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.accA, "%07.4f   ", log_accA.filter [ row*3 +i ] );   fprintf( datalog.accA, "     " );
 
       // Magnetometer A data
-      for ( i=0; i<3; i++ )  fprintf( datalog.magA, "%06d  ",   log_magA.raw    [ row*3 +i ] );   fprintf( datalog.magA, "    " );
-      for ( i=0; i<3; i++ )  fprintf( datalog.magA, "%07.4f  ", log_magA.scaled [ row*3 +i ] );   fprintf( datalog.magA, "    " );
-      for ( i=0; i<3; i++ )  fprintf( datalog.magA, "%07.4f  ", log_magA.filter [ row*3 +i ] );   fprintf( datalog.magA, "    " );
+      fprintf( datalog.magA, "\n     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.magA, "%06d   ",   log_magA.raw    [ row*3 +i ] );   fprintf( datalog.magA, "     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.magA, "%07.4f   ", log_magA.scaled [ row*3 +i ] );   fprintf( datalog.magA, "     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.magA, "%07.4f   ", log_magA.filter [ row*3 +i ] );   fprintf( datalog.magA, "     " );
 
       // Complimentary filter A data
-      fprintf( datalog.compA, "%07.4f    ", log_compA.roll[row]  );
-      fprintf( datalog.compA, "%07.4f    ", log_compA.pitch[row] );
+      fprintf( datalog.compA, "\n     " );
+      fprintf( datalog.compA, "%07.4f   ", log_compA.roll[row]  );
+      fprintf( datalog.compA, "%07.4f   ", log_compA.pitch[row] );
 
       // Attitude/Heading Reference System A data
-      for ( i=0; i<4; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.quat   [ row*4 +i ] );  fprintf( datalog.ahrsA, "    " );
-      for ( i=0; i<4; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.dquat  [ row*4 +i ] );  fprintf( datalog.ahrsA, "    " );
-      for ( i=0; i<3; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.eul    [ row*3 +i ] );  fprintf( datalog.ahrsA, "    " );
-      for ( i=0; i<3; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.deul   [ row*3 +i ] );  fprintf( datalog.ahrsA, "    " );
+      fprintf( datalog.ahrsA, "\n     " );
+      for ( i=0; i<4; i++ )  fprintf( datalog.ahrsA, "%07.4f   ", log_ahrsA.quat   [ row*4 +i ] );  fprintf( datalog.ahrsA, "     " );
+      for ( i=0; i<4; i++ )  fprintf( datalog.ahrsA, "%07.4f   ", log_ahrsA.dquat  [ row*4 +i ] );  fprintf( datalog.ahrsA, "     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.ahrsA, "%07.4f   ", log_ahrsA.eul    [ row*3 +i ] );  fprintf( datalog.ahrsA, "     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.ahrsA, "%07.4f   ", log_ahrsA.deul   [ row*3 +i ] );  fprintf( datalog.ahrsA, "     " );
 
     }
 
@@ -987,35 +992,41 @@ static void log_save ( void )  {
     if (IMUB_ENABLED)  {
 
       // Gyroscope B data
-      for ( i=0; i<3; i++ )  fprintf( datalog.gyrB, "%06d  ",   log_gyrB.raw    [ row*3 +i ] );   fprintf( datalog.gyrB, "    " );
-      for ( i=0; i<3; i++ )  fprintf( datalog.gyrB, "%07.4f  ", log_gyrB.scaled [ row*3 +i ] );   fprintf( datalog.gyrB, "    " );
-      for ( i=0; i<3; i++ )  fprintf( datalog.gyrB, "%07.4f  ", log_gyrB.filter [ row*3 +i ] );   fprintf( datalog.gyrB, "    " );
+      fprintf( datalog.gyrB, "\n     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.gyrB, "%06d   ",   log_gyrB.raw    [ row*3 +i ] );   fprintf( datalog.gyrB, "     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.gyrB, "%07.4f   ", log_gyrB.scaled [ row*3 +i ] );   fprintf( datalog.gyrB, "     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.gyrB, "%07.4f   ", log_gyrB.filter [ row*3 +i ] );   fprintf( datalog.gyrB, "     " );
 
       // Accelerometer B data
-      for ( i=0; i<3; i++ )  fprintf( datalog.accB, "%06d  ",   log_accB.raw    [ row*3 +i ] );   fprintf( datalog.accB, "    " );
-      for ( i=0; i<3; i++ )  fprintf( datalog.accB, "%07.4f  ", log_accB.scaled [ row*3 +i ] );   fprintf( datalog.accB, "    " );
-      for ( i=0; i<3; i++ )  fprintf( datalog.accB, "%07.4f  ", log_accB.filter [ row*3 +i ] );   fprintf( datalog.accB, "    " );
+      fprintf( datalog.accB, "\n     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.accB, "%06d   ",   log_accB.raw    [ row*3 +i ] );   fprintf( datalog.accB, "     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.accB, "%07.4f   ", log_accB.scaled [ row*3 +i ] );   fprintf( datalog.accB, "     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.accB, "%07.4f   ", log_accB.filter [ row*3 +i ] );   fprintf( datalog.accB, "     " );
 
       // Magnetometer B data
-      for ( i=0; i<3; i++ )  fprintf( datalog.magB, "%06d  ",   log_magB.raw    [ row*3 +i ] );   fprintf( datalog.magB, "    " );
-      for ( i=0; i<3; i++ )  fprintf( datalog.magB, "%07.4f  ", log_magB.scaled [ row*3 +i ] );   fprintf( datalog.magB, "    " );
-      for ( i=0; i<3; i++ )  fprintf( datalog.magB, "%07.4f  ", log_magB.filter [ row*3 +i ] );   fprintf( datalog.magB, "    " );
+      fprintf( datalog.magB, "\n     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.magB, "%06d   ",   log_magB.raw    [ row*3 +i ] );   fprintf( datalog.magB, "     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.magB, "%07.4f   ", log_magB.scaled [ row*3 +i ] );   fprintf( datalog.magB, "     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.magB, "%07.4f   ", log_magB.filter [ row*3 +i ] );   fprintf( datalog.magB, "     " );
 
       // Complimentary filter B data
-      fprintf( datalog.compB, "%07.4f    ", log_compB.roll[row]  );
-      fprintf( datalog.compB, "%07.4f    ", log_compB.pitch[row] );
+      fprintf( datalog.compB, "\n     " );
+      fprintf( datalog.compB, "%07.4f   ", log_compB.roll[row]  );
+      fprintf( datalog.compB, "%07.4f   ", log_compB.pitch[row] );
 
       // Attitude/Heading Reference System B data
-      for ( i=0; i<4; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.quat   [ row*4 +i ] );  fprintf( datalog.ahrsB, "    " );
-      for ( i=0; i<4; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.dquat  [ row*4 +i ] );  fprintf( datalog.ahrsB, "    " );
-      for ( i=0; i<3; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.eul    [ row*3 +i ] );  fprintf( datalog.ahrsB, "    " );
-      for ( i=0; i<3; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.deul   [ row*3 +i ] );  fprintf( datalog.ahrsB, "    " );
+      fprintf( datalog.ahrsB, "\n     " );
+      for ( i=0; i<4; i++ )  fprintf( datalog.ahrsB, "%07.4f   ", log_ahrsB.quat  [ row*4 +i ] );  fprintf( datalog.ahrsB, "     " );
+      for ( i=0; i<4; i++ )  fprintf( datalog.ahrsB, "%07.4f   ", log_ahrsB.dquat [ row*4 +i ] );  fprintf( datalog.ahrsB, "     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.ahrsB, "%07.4f   ", log_ahrsB.eul   [ row*3 +i ] );  fprintf( datalog.ahrsB, "     " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.ahrsB, "%07.4f   ", log_ahrsB.deul  [ row*3 +i ] );  fprintf( datalog.ahrsB, "     " );
 
     }
 
     // Rotational state data
-    for ( i=0; i<3; i++ )  fprintf( datalog.rot, "%07.4f  ", log_rot.att [ row*3 +i ] );   fprintf( datalog.rot, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.rot, "%07.4f  ", log_rot.ang [ row*3 +i ] );   fprintf( datalog.rot, "    " );
+    fprintf( datalog.rot, "\n     " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.rot, "%07.4f   ", log_rot.att [ row*3 +i ] );   fprintf( datalog.rot, "     " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.rot, "%07.4f   ", log_rot.ang [ row*3 +i ] );   fprintf( datalog.rot, "     " );
 
   }
 

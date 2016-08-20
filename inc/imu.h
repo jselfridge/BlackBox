@@ -9,8 +9,8 @@
 #include <sys/types.h>
 
 
-#define IMUA_ENABLED   true
-#define IMUB_ENABLED   true
+#define IMUA_ENABLED   false
+#define IMUB_ENABLED   false
 
 #define GYR_FSR    500
 #define ACC_FSR    4
