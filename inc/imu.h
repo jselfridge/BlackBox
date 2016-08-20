@@ -14,7 +14,7 @@
 
 #define GYR_FSR    500
 #define ACC_FSR    4
-#define MAG_LOOPS  4
+#define MAG_LOOPS  2
 #define GYR_SCALE  ( 500.0 / 32768.0 ) * ( PI / 180.0 )
 #define PI         M_PI
 
