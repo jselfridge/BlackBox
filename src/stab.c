@@ -45,11 +45,11 @@ void stab_init ( void )  {
   stab.range[CH_R] = 0.6;
   stab.range[CH_P] = 0.6;
   stab.range[CH_Y] = 2.0;
-  stab.range[CH_T] = 0.3;
+  stab.range[CH_T] = 1.0;
 
   // Throttle values
-  stab.thrl[0] = -0.35;  // Tmin
-  stab.thrl[1] = -0.15;  // Tmax
+  stab.thrl[0] =  0.00;  // Tmin
+  stab.thrl[1] =  0.00;  // Tmax
   stab.thrl[2] =  0.00;  // Ttilt
 
   // Initalize state feedback data struct values

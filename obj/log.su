@@ -1,4 +1,4 @@
-log.c:24:6:log_init	32	static
+log.c:24:6:log_init	40	static
 log.c:206:6:log_exit	64	static
 log.c:371:6:log_start	32	static
 log.c:602:6:log_record	128	static
