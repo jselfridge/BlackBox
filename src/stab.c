@@ -23,7 +23,7 @@ void stab_init ( void )  {
   if (DEBUG)  printf("Initializing stabilization \n");
 
   // Set timing value
-  double dt = 1.0 / HZ_STAB;;
+  double dt = 1.0; // / HZ_STAB;;
   stab.dt = dt;
   sfX.dt  = dt;
   sfY.dt  = dt;

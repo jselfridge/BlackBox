@@ -14,6 +14,7 @@
 
 #define GYR_FSR    500
 #define ACC_FSR    4
+#define MAG_LOOPS  4
 #define GYR_SCALE  ( 500.0 / 32768.0 ) * ( PI / 180.0 )
 #define PI         M_PI
 
@@ -64,7 +65,6 @@ typedef struct imu_struct {
   char   id;
   ushort bus;
   ushort addr;
-  ushort loops;
   ushort count;
   bool   getmag;
   imu_data_struct *gyr;

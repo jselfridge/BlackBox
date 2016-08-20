@@ -536,6 +536,15 @@ void log_start ( void )  {
 
   }
 
+  // Rotational states datalog file
+  sprintf( file, "%srot.txt", datalog.path );
+  datalog.rot = fopen( file, "w" );
+  if( datalog.rot == NULL )  printf( "Error (log_init): Cannot generate 'rot' file. \n" );
+  fprintf( datalog.rot, "  \
+    Attx     Atty     Attz    \
+    Angx     Angy     Angz");
+
+
   /*
   // Stabilization datalog file
   sprintf( file, "%sstab.txt", datalog.path );
@@ -609,7 +618,7 @@ void log_record ( enum log_index index )  {
   ushort i;
   ulong  row;
   float  timestamp;
-  struct timespec t;
+  //struct timespec t;
 
   // Jump to appropriate log 
   switch(index) {
@@ -617,7 +626,7 @@ void log_record ( enum log_index index )  {
 
   // Record parameter values
   case LOG_PARAM :
-
+    /*
     // Determine timestamp
     clock_gettime( CLOCK_MONOTONIC, &t );
     timestamp = (float) ( t.tv_sec + ( t.tv_nsec / 1000000000.0f ) ) - datalog.offset;
@@ -630,7 +639,7 @@ void log_record ( enum log_index index )  {
       log_param.count++;
     }
     pthread_mutex_unlock(&gcs.mutex);
-
+    */
     return;
 
 
@@ -662,162 +671,122 @@ void log_record ( enum log_index index )  {
     return;
 
 
-  // Record IMUA data
-  case LOG_IMUA :
+  // Record IMU data
+  case LOG_IMU :
 
-    timestamp = (float) ( tmr_imu.start_sec  + ( tmr_imu.start_usec  / 1000000.0f ) ) - datalog.offset;
+    // Check memory limit
+    if ( log_imu.count < log_imu.limit )  {
 
-    // Gyroscope A data
-    pthread_mutex_lock(&gyrA.mutex);
-    if ( log_gyrA.count < log_gyrA.limit ) {
-      row = log_gyrA.count;
-      log_gyrA.time[row] = timestamp;
-      log_gyrA.dur[row]  = tmr_imu.dur;
-      for ( i=0; i<3; i++ )  log_gyrA.raw    [ row*3 +i ] = gyrA.raw[i];
-      for ( i=0; i<3; i++ )  log_gyrA.scaled [ row*3 +i ] = gyrA.scaled[i];
-      for ( i=0; i<3; i++ )  log_gyrA.filter [ row*3 +i ] = gyrA.filter[i];
-      log_gyrA.count++;
+      // IMU timing data
+      row = log_imu.count;
+      timestamp = (float) ( tmr_imu.start_sec  + ( tmr_imu.start_usec  / 1000000.0f ) ) - datalog.offset;
+      log_imu.time[row] = timestamp;
+      log_imu.dur[row]  = tmr_imu.dur;
+
+      // Record IMUA data
+      if (IMUA_ENABLED)  {
+
+        // Gyroscope A data
+        pthread_mutex_lock(&gyrA.mutex);
+        for ( i=0; i<3; i++ )  log_gyrA.raw    [ row*3 +i ] = gyrA.raw[i];
+        for ( i=0; i<3; i++ )  log_gyrA.scaled [ row*3 +i ] = gyrA.scaled[i];
+        for ( i=0; i<3; i++ )  log_gyrA.filter [ row*3 +i ] = gyrA.filter[i];
+        pthread_mutex_unlock(&gyrA.mutex);
+
+        // Accelerometer A data
+        pthread_mutex_lock(&accA.mutex);
+        for ( i=0; i<3; i++ )  log_accA.raw    [ row*3 +i ] = accA.raw[i];
+        for ( i=0; i<3; i++ )  log_accA.scaled [ row*3 +i ] = accA.scaled[i];
+        for ( i=0; i<3; i++ )  log_accA.filter [ row*3 +i ] = accA.filter[i];
+        pthread_mutex_unlock(&accA.mutex);
+
+        // Magnetometer A data
+        pthread_mutex_lock(&magA.mutex);
+        for ( i=0; i<3; i++ )  log_magA.raw    [ row*3 +i ] = magA.raw[i];
+        for ( i=0; i<3; i++ )  log_magA.scaled [ row*3 +i ] = magA.scaled[i];
+        for ( i=0; i<3; i++ )  log_magA.filter [ row*3 +i ] = magA.filter[i];
+        pthread_mutex_unlock(&magA.mutex);
+
+        // Comp filter A data
+        pthread_mutex_lock(&compA.mutex);
+        log_compA.roll[row]  = compA.roll;
+        log_compA.pitch[row] = compA.pitch;
+        pthread_mutex_unlock(&compA.mutex);
+
+        // AHRS A data
+        pthread_mutex_lock(&ahrsA.mutex);
+        for ( i=0; i<4; i++ )  log_ahrsA.quat  [ row*4 +i ] = ahrsA.quat  [i];
+        for ( i=0; i<4; i++ )  log_ahrsA.dquat [ row*4 +i ] = ahrsA.dquat [i];
+        for ( i=0; i<3; i++ )  log_ahrsA.eul   [ row*3 +i ] = ahrsA.eul   [i];
+        for ( i=0; i<3; i++ )  log_ahrsA.deul  [ row*3 +i ] = ahrsA.deul  [i];
+        pthread_mutex_unlock(&ahrsA.mutex);
+
+      }
+
+      // Record IMUB data
+      if (IMUB_ENABLED)  {
+
+        // Gyroscope B data
+        pthread_mutex_lock(&gyrB.mutex);
+        for ( i=0; i<3; i++ )  log_gyrB.raw    [ row*3 +i ] = gyrB.raw[i];
+        for ( i=0; i<3; i++ )  log_gyrB.scaled [ row*3 +i ] = gyrB.scaled[i];
+        for ( i=0; i<3; i++ )  log_gyrB.filter [ row*3 +i ] = gyrB.filter[i];
+        pthread_mutex_unlock(&gyrB.mutex);
+
+        // Accelerometer B data
+        pthread_mutex_lock(&accB.mutex);
+        for ( i=0; i<3; i++ )  log_accB.raw    [ row*3 +i ] = accB.raw[i];
+        for ( i=0; i<3; i++ )  log_accB.scaled [ row*3 +i ] = accB.scaled[i];
+        for ( i=0; i<3; i++ )  log_accB.filter [ row*3 +i ] = accB.filter[i];
+        pthread_mutex_unlock(&accB.mutex);
+
+        // Magnetometer B data
+        pthread_mutex_lock(&magB.mutex);
+        for ( i=0; i<3; i++ )  log_magB.raw    [ row*3 +i ] = magB.raw[i];
+        for ( i=0; i<3; i++ )  log_magB.scaled [ row*3 +i ] = magB.scaled[i];
+        for ( i=0; i<3; i++ )  log_magB.filter [ row*3 +i ] = magB.filter[i];
+        pthread_mutex_unlock(&magB.mutex);
+
+        // Comp filter B data
+        pthread_mutex_lock(&compB.mutex);
+        log_compB.roll[row]  = compB.roll;
+        log_compB.pitch[row] = compB.pitch;
+        pthread_mutex_unlock(&compB.mutex);
+
+        // AHRS B data
+        pthread_mutex_lock(&ahrsB.mutex);
+        for ( i=0; i<4; i++ )  log_ahrsB.quat  [ row*4 +i ] = ahrsB.quat  [i];
+        for ( i=0; i<4; i++ )  log_ahrsB.dquat [ row*4 +i ] = ahrsB.dquat [i];
+        for ( i=0; i<3; i++ )  log_ahrsB.eul   [ row*3 +i ] = ahrsB.eul   [i];
+        for ( i=0; i<3; i++ )  log_ahrsB.deul  [ row*3 +i ] = ahrsB.deul  [i];
+        pthread_mutex_unlock(&ahrsB.mutex);
+
+      }
+
+      // Rotational state data
+      pthread_mutex_lock(&rot.mutex);
+      for ( i=0; i<3; i++ )  log_rot.att [ row*3 +i ] = rot.att[i];
+      for ( i=0; i<3; i++ )  log_rot.ang [ row*3 +i ] = rot.ang[i];
+      pthread_mutex_unlock(&rot.mutex);
+
+      // Increment log counter
+      log_imu.count++;
+
     }
-    pthread_mutex_unlock(&gyrA.mutex);
-
-    // Accelerometer A data
-    pthread_mutex_lock(&accA.mutex);
-    if ( log_accA.count < log_accA.limit ) {
-      row = log_accA.count;
-      log_accA.time[row] = timestamp;
-      log_accA.dur[row]  = tmr_imu.dur;
-      for ( i=0; i<3; i++ )  log_accA.raw    [ row*3 +i ] = accA.raw[i];
-      for ( i=0; i<3; i++ )  log_accA.scaled [ row*3 +i ] = accA.scaled[i];
-      for ( i=0; i<3; i++ )  log_accA.filter [ row*3 +i ] = accA.filter[i];
-      log_accA.count++;
-    }
-    pthread_mutex_unlock(&accA.mutex);
-
-    // Magnetometer A data
-    pthread_mutex_lock(&magA.mutex);
-    if ( imuA.getmag && ( log_magA.count < log_magA.limit ) ) {
-      row = log_magA.count;
-      log_magA.time[row] = timestamp;
-      log_magA.dur[row]  = tmr_imu.dur;
-      for ( i=0; i<3; i++ )  log_magA.raw    [ row*3 +i ] = magA.raw[i];
-      for ( i=0; i<3; i++ )  log_magA.scaled [ row*3 +i ] = magA.scaled[i];
-      for ( i=0; i<3; i++ )  log_magA.filter [ row*3 +i ] = magA.filter[i];
-      log_magA.count++;
-    }
-    pthread_mutex_unlock(&magA.mutex);
-
-    // Comp filter A data
-    pthread_mutex_lock(&compA.mutex);
-    if ( log_compA.count < log_compA.limit ) {
-      row = log_compA.count;
-      log_compA.time[row]  = timestamp;
-      log_compA.dur[row]   = tmr_imu.dur;
-      log_compA.roll[row]  = compA.roll;
-      log_compA.pitch[row] = compA.pitch;
-      log_compA.count++;
-    }
-    pthread_mutex_unlock(&compA.mutex);
-
-    // AHRS A data
-    if ( log_ahrsA.count < log_ahrsA.limit ) {
-      row = log_ahrsA.count;
-      log_ahrsA.time[row] = timestamp;
-      log_ahrsA.dur[row]  = tmr_imu.dur;
-      pthread_mutex_lock(&ahrsA.mutex);
-      for ( i=0; i<4; i++ )  log_ahrsA.quat  [ row*4 +i ] = ahrsA.quat  [i];
-      for ( i=0; i<4; i++ )  log_ahrsA.dquat [ row*4 +i ] = ahrsA.dquat [i];
-      for ( i=0; i<3; i++ )  log_ahrsA.eul   [ row*3 +i ] = ahrsA.eul   [i];
-      for ( i=0; i<3; i++ )  log_ahrsA.deul  [ row*3 +i ] = ahrsA.deul  [i];
-      pthread_mutex_unlock(&ahrsA.mutex);
-      log_ahrsA.count++;
-    }
-
-    return;
-
-
-  // Record IMUB data
-  case LOG_IMUB :
-
-    timestamp = (float) ( tmr_imu.start_sec  + ( tmr_imu.start_usec  / 1000000.0f ) ) - datalog.offset;
-
-    // Gyroscope B data
-    pthread_mutex_lock(&gyrB.mutex);
-    if ( log_gyrB.count < log_gyrB.limit ) {
-      row = log_gyrB.count;
-      log_gyrB.time[row] = timestamp;
-      log_gyrB.dur[row]  = tmr_imu.dur;
-      for ( i=0; i<3; i++ )  log_gyrB.raw    [ row*3 +i ] = gyrB.raw[i];
-      for ( i=0; i<3; i++ )  log_gyrB.scaled [ row*3 +i ] = gyrB.scaled[i];
-      for ( i=0; i<3; i++ )  log_gyrB.filter [ row*3 +i ] = gyrB.filter[i];
-      log_gyrB.count++;
-    }
-    pthread_mutex_unlock(&gyrB.mutex);
-
-    // Accelerometer B data
-    pthread_mutex_lock(&accB.mutex);
-    if ( log_accB.count < log_accB.limit ) {
-      row = log_accB.count;
-      log_accB.time[row] = timestamp;
-      log_accB.dur[row]  = tmr_imu.dur;
-      for ( i=0; i<3; i++ )  log_accB.raw    [ row*3 +i ] = accB.raw[i];
-      for ( i=0; i<3; i++ )  log_accB.scaled [ row*3 +i ] = accB.scaled[i];
-      for ( i=0; i<3; i++ )  log_accB.filter [ row*3 +i ] = accB.filter[i];
-      log_accB.count++;
-    }
-    pthread_mutex_unlock(&accB.mutex);
-
-    // Magnetometer B data
-    pthread_mutex_lock(&magB.mutex);
-    if( imuB.getmag && ( log_magB.count < log_magB.limit) ) {
-      row = log_magB.count;
-      log_magB.time[row] = timestamp;
-      log_magB.dur[row]  = tmr_imu.dur;
-      for ( i=0; i<3; i++ )  log_magB.raw    [ row*3 +i ] = magB.raw[i];
-      for ( i=0; i<3; i++ )  log_magB.scaled [ row*3 +i ] = magB.scaled[i];
-      for ( i=0; i<3; i++ )  log_magB.filter [ row*3 +i ] = magB.filter[i];
-      log_magB.count++;
-    }
-    pthread_mutex_unlock(&magB.mutex);
-
-    // Comp filter B data
-    pthread_mutex_lock(&compB.mutex);
-    if ( log_compB.count < log_compB.limit ) {
-      row = log_compB.count;
-      log_compB.time[row]  = timestamp;
-      log_compB.dur[row]   = tmr_imu.dur;
-      log_compB.roll[row]  = compB.roll;
-      log_compB.pitch[row] = compB.pitch;
-      log_compB.count++;
-    }
-    pthread_mutex_unlock(&compB.mutex);
-
-    // AHRS B data
-    if ( log_ahrsB.count < log_ahrsB.limit ) {
-      row = log_ahrsB.count;
-      log_ahrsB.time[row] = timestamp;
-      log_ahrsB.dur[row]  = tmr_imu.dur;
-      pthread_mutex_lock(&ahrsB.mutex);
-      for ( i=0; i<4; i++ )  log_ahrsB.quat  [ row*4 +i ] = ahrsB.quat  [i];
-      for ( i=0; i<4; i++ )  log_ahrsB.dquat [ row*4 +i ] = ahrsB.dquat [i];
-      for ( i=0; i<3; i++ )  log_ahrsB.eul   [ row*3 +i ] = ahrsB.eul   [i];
-      for ( i=0; i<3; i++ )  log_ahrsB.deul  [ row*3 +i ] = ahrsB.deul  [i];
-      pthread_mutex_unlock(&ahrsB.mutex);
-      log_ahrsB.count++;
-    }
-
     return;
 
 
   // Record STAB data
-  case LOG_STAB :
+  //case LOG_STAB :
 
-    timestamp = (float) ( tmr_stab.start_sec + ( tmr_stab.start_usec / 1000000.0f ) ) - datalog.offset;
+    //timestamp = (float) ( tmr_stab.start_sec + ( tmr_stab.start_usec / 1000000.0f ) ) - datalog.offset;
 
-    if ( log_stab.count < log_stab.limit ) {
-      row = log_stab.count;
-      log_stab.time[row] = timestamp;
-      log_stab.dur[row]  = tmr_stab.dur;
+    //if ( log_stab.count < log_stab.limit ) {
+      //row = log_stab.count;
+      //log_stab.time[row] = timestamp;
+      //log_stab.dur[row]  = tmr_stab.dur;
 
+      /*
       // Roll SF values
       pthread_mutex_lock(&sfX.mutex);
       log_sfX.r  [row] = sfX.r;
@@ -874,7 +843,7 @@ void log_record ( enum log_index index )  {
       log_sysidZ.p1 [row] = sysidZ.p1;
       log_sysidZ.p2 [row] = sysidZ.p2;
       pthread_mutex_unlock(&sysidZ.mutex);
-
+      */
       /*
       // EKF values
       ushort r, c;
@@ -891,10 +860,10 @@ void log_record ( enum log_index index )  {
       pthread_mutex_unlock(&ekf.mutex);
       */
 
-      log_stab.count++;
-    }
+      //log_stab.count++;
+    //}
+    //return;
 
-    return;
 
   /*
   // Record INS data
@@ -978,98 +947,80 @@ static void log_save ( void )  {
     for ( i=0; i<10; i++ )  fprintf( datalog.out, "%7.4f  ", log_output.data [ row*10 +i ] );   fprintf( datalog.out, "    " );
   }
 
-  // IMU A datalogs
-  if(IMUA_ENABLED)  {
+  // IMU timing thread
+  for ( row = 0; row < log_imu.count; row++ ) {
 
-  // Gyroscope A data
-  for ( row = 0; row < log_gyrA.count; row++ ) {
-    fprintf( datalog.gyrA, "\n %011.6f   %06ld      ", log_gyrA.time[row], log_gyrA.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( datalog.gyrA, "%06d  ",   log_gyrA.raw    [ row*3 +i ] );   fprintf( datalog.gyrA, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.gyrA, "%07.4f  ", log_gyrA.scaled [ row*3 +i ] );   fprintf( datalog.gyrA, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.gyrA, "%07.4f  ", log_gyrA.filter [ row*3 +i ] );   fprintf( datalog.gyrA, "    " );
-  }
+    // IMU timing data
+    fprintf( datalog.imu, "\n %011.6f   %06ld      ", log_imu.time[row], log_imu.dur[row] );
 
-  // Accelerometer A data
-  for ( row = 0; row < log_accA.count; row++ ) {
-    fprintf( datalog.accA, "\n %011.6f   %06ld      ", log_accA.time[row], log_accA.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( datalog.accA, "%06d  ",   log_accA.raw    [ row*3 +i ] );   fprintf( datalog.accA, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.accA, "%07.4f  ", log_accA.scaled [ row*3 +i ] );   fprintf( datalog.accA, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.accA, "%07.4f  ", log_accA.filter [ row*3 +i ] );   fprintf( datalog.accA, "    " );
-  }
+    // IMU A datalogs
+    if(IMUA_ENABLED)  {
 
-  // Magnetometer A data
-  for ( row = 0; row < log_magA.count; row++ ) {
-    fprintf( datalog.magA, "\n %011.6f   %06ld      ", log_magA.time[row], log_magA.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( datalog.magA, "%06d  ",   log_magA.raw    [ row*3 +i ] );   fprintf( datalog.magA, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.magA, "%07.4f  ", log_magA.scaled [ row*3 +i ] );   fprintf( datalog.magA, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.magA, "%07.4f  ", log_magA.filter [ row*3 +i ] );   fprintf( datalog.magA, "    " );
-  }
+      // Gyroscope A data
+      for ( i=0; i<3; i++ )  fprintf( datalog.gyrA, "%06d  ",   log_gyrA.raw    [ row*3 +i ] );   fprintf( datalog.gyrA, "    " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.gyrA, "%07.4f  ", log_gyrA.scaled [ row*3 +i ] );   fprintf( datalog.gyrA, "    " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.gyrA, "%07.4f  ", log_gyrA.filter [ row*3 +i ] );   fprintf( datalog.gyrA, "    " );
 
-  // Complimentary filter A data
-  for ( row = 0; row < log_compA.count; row++ ) {
-    fprintf( datalog.compA, "\n %011.6f   %06ld      ", log_compA.time[row], log_compA.dur[row] );
-    fprintf( datalog.compA, "%07.4f    ", log_compA.roll[row]  );
-    fprintf( datalog.compA, "%07.4f    ", log_compA.pitch[row] );
-  }
+      // Accelerometer A data
+      for ( i=0; i<3; i++ )  fprintf( datalog.accA, "%06d  ",   log_accA.raw    [ row*3 +i ] );   fprintf( datalog.accA, "    " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.accA, "%07.4f  ", log_accA.scaled [ row*3 +i ] );   fprintf( datalog.accA, "    " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.accA, "%07.4f  ", log_accA.filter [ row*3 +i ] );   fprintf( datalog.accA, "    " );
 
-  // Attitude/Heading Reference System A data
-  for ( row = 0; row < log_ahrsA.count; row++ ) {
-    fprintf( datalog.ahrsA, "\n %011.6f   %06ld      ", log_ahrsA.time[row], log_ahrsA.dur[row] );
-    for ( i=0; i<4; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.quat   [ row*4 +i ] );  fprintf( datalog.ahrsA, "    " );
-    for ( i=0; i<4; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.dquat  [ row*4 +i ] );  fprintf( datalog.ahrsA, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.eul    [ row*3 +i ] );  fprintf( datalog.ahrsA, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.deul   [ row*3 +i ] );  fprintf( datalog.ahrsA, "    " );
-    fprintf( datalog.ahrsA, "   " );
-  }
+      // Magnetometer A data
+      for ( i=0; i<3; i++ )  fprintf( datalog.magA, "%06d  ",   log_magA.raw    [ row*3 +i ] );   fprintf( datalog.magA, "    " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.magA, "%07.4f  ", log_magA.scaled [ row*3 +i ] );   fprintf( datalog.magA, "    " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.magA, "%07.4f  ", log_magA.filter [ row*3 +i ] );   fprintf( datalog.magA, "    " );
 
-  }
+      // Complimentary filter A data
+      fprintf( datalog.compA, "%07.4f    ", log_compA.roll[row]  );
+      fprintf( datalog.compA, "%07.4f    ", log_compA.pitch[row] );
 
-  // IMU B datalogs
-  if (IMUB_ENABLED)  {
+      // Attitude/Heading Reference System A data
+      for ( i=0; i<4; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.quat   [ row*4 +i ] );  fprintf( datalog.ahrsA, "    " );
+      for ( i=0; i<4; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.dquat  [ row*4 +i ] );  fprintf( datalog.ahrsA, "    " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.eul    [ row*3 +i ] );  fprintf( datalog.ahrsA, "    " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.ahrsA, "%07.4f  ", log_ahrsA.deul   [ row*3 +i ] );  fprintf( datalog.ahrsA, "    " );
 
-  // Gyroscope B data
-  for ( row = 0; row < log_gyrB.count; row++ ) {
-    fprintf( datalog.gyrB, "\n %011.6f   %06ld      ", log_gyrB.time[row], log_gyrB.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( datalog.gyrB, "%06d  ",   log_gyrB.raw    [ row*3 +i ] );   fprintf( datalog.gyrB, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.gyrB, "%07.4f  ", log_gyrB.scaled [ row*3 +i ] );   fprintf( datalog.gyrB, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.gyrB, "%07.4f  ", log_gyrB.filter [ row*3 +i ] );   fprintf( datalog.gyrB, "    " );
-  }
+    }
 
-  // Accelerometer B data
-  for ( row = 0; row < log_accB.count; row++ ) {
-    fprintf( datalog.accB, "\n %011.6f   %06ld      ", log_accB.time[row], log_accB.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( datalog.accB, "%06d  ",   log_accB.raw    [ row*3 +i ] );   fprintf( datalog.accB, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.accB, "%07.4f  ", log_accB.scaled [ row*3 +i ] );   fprintf( datalog.accB, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.accB, "%07.4f  ", log_accB.filter [ row*3 +i ] );   fprintf( datalog.accB, "    " );
-  }
+    // IMU B datalogs
+    if (IMUB_ENABLED)  {
 
-  // Magnetometer B data
-  for ( row = 0; row < log_magB.count; row++ ) {
-    fprintf( datalog.magB, "\n %011.6f   %06ld      ", log_magB.time[row], log_magB.dur[row] );
-    for ( i=0; i<3; i++ )  fprintf( datalog.magB, "%06d  ",   log_magB.raw    [ row*3 +i ] );   fprintf( datalog.magB, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.magB, "%07.4f  ", log_magB.scaled [ row*3 +i ] );   fprintf( datalog.magB, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.magB, "%07.4f  ", log_magB.filter [ row*3 +i ] );   fprintf( datalog.magB, "    " );
-  }
+      // Gyroscope B data
+      for ( i=0; i<3; i++ )  fprintf( datalog.gyrB, "%06d  ",   log_gyrB.raw    [ row*3 +i ] );   fprintf( datalog.gyrB, "    " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.gyrB, "%07.4f  ", log_gyrB.scaled [ row*3 +i ] );   fprintf( datalog.gyrB, "    " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.gyrB, "%07.4f  ", log_gyrB.filter [ row*3 +i ] );   fprintf( datalog.gyrB, "    " );
 
-  // Complimentary filter B data
-  for ( row = 0; row < log_compB.count; row++ ) {
-    fprintf( datalog.compB, "\n %011.6f   %06ld      ", log_compB.time[row], log_compB.dur[row] );
-    fprintf( datalog.compB, "%07.4f    ", log_compB.roll[row]  );
-    fprintf( datalog.compB, "%07.4f    ", log_compB.pitch[row] );
-  }
+      // Accelerometer B data
+      for ( i=0; i<3; i++ )  fprintf( datalog.accB, "%06d  ",   log_accB.raw    [ row*3 +i ] );   fprintf( datalog.accB, "    " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.accB, "%07.4f  ", log_accB.scaled [ row*3 +i ] );   fprintf( datalog.accB, "    " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.accB, "%07.4f  ", log_accB.filter [ row*3 +i ] );   fprintf( datalog.accB, "    " );
 
-  // Attitude/Heading Reference System B data
-  for ( row = 0; row < log_ahrsB.count; row++ ) {
-    fprintf( datalog.ahrsB, "\n %011.6f   %06ld      ", log_ahrsB.time[row], log_ahrsB.dur[row] );
-    for ( i=0; i<4; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.quat   [ row*4 +i ] );  fprintf( datalog.ahrsB, "    " );
-    for ( i=0; i<4; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.dquat  [ row*4 +i ] );  fprintf( datalog.ahrsB, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.eul    [ row*3 +i ] );  fprintf( datalog.ahrsB, "    " );
-    for ( i=0; i<3; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.deul   [ row*3 +i ] );  fprintf( datalog.ahrsB, "    " );
-    fprintf( datalog.ahrsB, "   " );
-  }
+      // Magnetometer B data
+      for ( i=0; i<3; i++ )  fprintf( datalog.magB, "%06d  ",   log_magB.raw    [ row*3 +i ] );   fprintf( datalog.magB, "    " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.magB, "%07.4f  ", log_magB.scaled [ row*3 +i ] );   fprintf( datalog.magB, "    " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.magB, "%07.4f  ", log_magB.filter [ row*3 +i ] );   fprintf( datalog.magB, "    " );
+
+      // Complimentary filter B data
+      fprintf( datalog.compB, "%07.4f    ", log_compB.roll[row]  );
+      fprintf( datalog.compB, "%07.4f    ", log_compB.pitch[row] );
+
+      // Attitude/Heading Reference System B data
+      for ( i=0; i<4; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.quat   [ row*4 +i ] );  fprintf( datalog.ahrsB, "    " );
+      for ( i=0; i<4; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.dquat  [ row*4 +i ] );  fprintf( datalog.ahrsB, "    " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.eul    [ row*3 +i ] );  fprintf( datalog.ahrsB, "    " );
+      for ( i=0; i<3; i++ )  fprintf( datalog.ahrsB, "%07.4f  ", log_ahrsB.deul   [ row*3 +i ] );  fprintf( datalog.ahrsB, "    " );
+
+    }
+
+    // Rotational state data
+    for ( i=0; i<3; i++ )  fprintf( datalog.rot, "%07.4f  ", log_rot.att [ row*3 +i ] );   fprintf( datalog.rot, "    " );
+    for ( i=0; i<3; i++ )  fprintf( datalog.rot, "%07.4f  ", log_rot.ang [ row*3 +i ] );   fprintf( datalog.rot, "    " );
 
   }
 
+
+  /*
   // Stabilization data
   for ( row = 0; row < log_stab.count; row++ )  {
     fprintf( datalog.stab, "\n %011.6f   %06ld      ", log_stab.time[row], log_stab.dur[row] );
@@ -1098,7 +1049,8 @@ static void log_save ( void )  {
     fprintf( datalog.stab, "%07.4f  ",  log_sfZ.ku[row] );
     fprintf( datalog.stab, "    " );
   }
-
+  */
+  /*
   // System identification data
   for ( row = 0; row < log_stab.count; row++ )  {
     fprintf( datalog.sysid, "\n %011.6f   %06ld      ", log_stab.time[row], log_stab.dur[row] );
@@ -1118,7 +1070,7 @@ static void log_save ( void )  {
     fprintf( datalog.sysid, "%07.4f  ",  log_sysidZ.p2[row]  );
     fprintf( datalog.sysid, "    " );
   }
-
+  */
   /*
   // Extended Kalman Filter data
   ushort n = EKF_N, m = EKF_M;
@@ -1135,7 +1087,6 @@ static void log_save ( void )  {
 
   }
   */
-
   /*
   // Inertial Navigation System data
   for ( row = 0; row < log_ins.count; row++ )  {
@@ -1158,6 +1109,9 @@ static void log_close ( void )  {
   fclose(datalog.in);
   fclose(datalog.out);
 
+  fclose(datalog.imu);
+  fclose(datalog.rot);  
+
   if (IMUA_ENABLED)  {
     fclose(datalog.gyrA);
     fclose(datalog.accA);
@@ -1174,8 +1128,8 @@ static void log_close ( void )  {
     fclose(datalog.ahrsB);
   }
 
-  fclose(datalog.stab);
-  fclose(datalog.sysid);
+  //fclose(datalog.stab);
+  //fclose(datalog.sysid);
 
   return;
 }

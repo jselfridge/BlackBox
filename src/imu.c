@@ -29,18 +29,14 @@ void imu_init ( void )  {
   // Start initialization
   led_blink( LED_IMU, 200, 200 );
 
-  // Check timing conditions
-  if ( HZ_IMU_FAST % HZ_IMU_SLOW != 0 )
-    printf( "  *** WARNING ***  Slow loop must divide evenly into fast loop. \n" );
-  uint loops = HZ_IMU_FAST / HZ_IMU_SLOW;
-
   // Setup IMUA
   if (IMUA_ENABLED)  {
 
-    // I2C parameters
-    imuA.id   = 'A';
-    imuA.bus  = 1;
-    imuA.addr = 0x68;
+    // Definitions
+    imuA.id     = 'A';
+    imuA.bus    = 1;
+    imuA.addr   = 0x68;
+    imuA.getmag = false;
 
     // Assign pointers
     imuA.gyr  = &gyrA;
@@ -48,10 +44,6 @@ void imu_init ( void )  {
     imuA.mag  = &magA;
     imuA.comp = &compA;
     imuA.ahrs = &ahrsA;
-
-    // Loop counter values
-    imuA.loops  = loops;
-    imuA.getmag = false;
 
     // Setup functions
     i2c_init( &(imuA.fd), imuA.bus, imuA.addr );
@@ -63,10 +55,11 @@ void imu_init ( void )  {
   // Setup IMUB
   if (IMUB_ENABLED)  {
 
-    // I2C parameters
-    imuB.id   = 'B';
-    imuB.bus  = 2;
-    imuB.addr = 0x68;
+    // Definitions
+    imuB.id     = 'B';
+    imuB.bus    = 2;
+    imuB.addr   = 0x68;
+    imuB.getmag = false;
 
     // Assign pointers
     imuB.gyr  = &gyrB;
@@ -74,10 +67,6 @@ void imu_init ( void )  {
     imuB.mag  = &magB;
     imuB.comp = &compB;
     imuB.ahrs = &ahrsB;
-
-    // Loop counter values
-    imuB.loops  = loops;
-    imuB.getmag = false;
 
     // Setup functions
     i2c_init( &(imuB.fd), imuB.bus, imuB.addr );
@@ -123,11 +112,11 @@ void imu_param ( imu_struct *imu )  {
     printf( "Error (imu_param): 'mpu_set_sensors' failed. \n" );
 
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  if( mpu_set_sample_rate( imu->fd, HZ_IMU_FAST ) )
+  if( mpu_set_sample_rate( imu->fd, HZ_IMU ) )
     printf( "Error (imu_param): 'mpu_set_sample_rate' failed. \n" );
 
   if(DEBUG) {  printf(".");  fflush(stdout);  }
-  if( mpu_set_compass_sample_rate( imu->fd, HZ_IMU_SLOW ) )
+  if( mpu_set_compass_sample_rate( imu->fd, ( HZ_IMU / MAG_LOOPS ) ) )
     printf( "Error (imu_param): 'mpu_set_compass_sample_rate' failed. \n" );
 
   if(DEBUG) {  printf(".");  fflush(stdout);  }
@@ -329,7 +318,7 @@ void imu_update ( imu_struct *imu )  {
   imu->getmag = false;
   if ( imu->count == 0 ) {
     imu->getmag = true;
-    imu->count = imu->loops;
+    imu->count = MAG_LOOPS;
   }
   imu->count--;
 
@@ -435,7 +424,7 @@ void imu_comp ( imu_struct *imu )  {
   double dt, gain, R, P, Gx, Gy, Ax, Ay, Az;
 
   // Get complimentary filter values
-  dt = 1.0 / HZ_IMU_FAST;
+  dt = 1.0 / HZ_IMU;
   pthread_mutex_lock( &(imu->comp->mutex) );
   gain = imu->comp->gain;
   R = imu->comp->roll;
@@ -489,7 +478,7 @@ void imu_9DOF ( imu_struct *imu )  {
   ushort W=0, X=1, Y=2, Z=3;
 
   // Time step
-  dt = 1.0 / HZ_IMU_FAST;
+  dt = 1.0 / HZ_IMU;
 
   // Get gyr IMU data
   pthread_mutex_lock(&(imu->gyr->mutex));
@@ -645,7 +634,7 @@ void imu_6DOF ( imu_struct *imu )  {
   ushort W=0, X=1, Y=2, Z=3;
 
   // Time step
-  dt = 1.0 / HZ_IMU_FAST;
+  dt = 1.0 / HZ_IMU;
 
   // Get gyr IMU data
   pthread_mutex_lock(&(imu->gyr->mutex));

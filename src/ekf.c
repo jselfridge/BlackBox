@@ -78,7 +78,7 @@ void ekf_init ( void )  {
   mat_set( ekf.P, 6, 6, 0.1 );
 
   // Static F matrix
-  double dt  = 1.0 / HZ_STAB;
+  double dt  = 1.0;  // / HZ_STAB;
   ekf.F = mat_eye(n);
   mat_set( ekf.F, 1,4, dt );
   mat_set( ekf.F, 2,5, dt );
