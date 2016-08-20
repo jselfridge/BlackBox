@@ -14,6 +14,7 @@
 
 static void  imu_param   ( imu_struct *imu );
 static void  imu_getcal  ( imu_struct *imu );
+static void  imu_comp    ( imu_struct *imu );
 static void  imu_9DOF    ( imu_struct *imu );
 static void  imu_6DOF    ( imu_struct *imu );
 
@@ -262,6 +263,16 @@ void imu_getcal ( imu_struct *imu )  {
   imu->ahrs->gain = atoi(buff);
   fclose(f);
 
+  // Set AHRS bias
+  sprintf( path, "../Param/board/bias/ahrs%c", imu->id );
+  f = fopen( path, "r" );
+  if(!f)  printf( "Error (imu_getcal): File for 'ahrs%c bias' not found. \n", imu->id );
+  for ( i=0; i<3; i++ )  {
+    fgets( buff, 32, f );
+    imu->ahrs->bias[i] = atoi(buff) / 10000;
+  }
+  fclose(f);
+
   // Set unit quaternion value
   imu->ahrs->quat[0]  = 1.0;
 
@@ -291,6 +302,9 @@ void imu_getcal ( imu_struct *imu )  {
   //printf( "%4.2f  \n", imu->comp->bias[1]  );
   //printf( "%4.2f  \n", imu->comp->gain  );
   //printf( "%4.2f  \n", imu->ahrs->gain  );
+  //printf( "%4.2f  \n", imu->ahrs->bias[0]  );
+  //printf( "%4.2f  \n", imu->ahrs->bias[1]  );
+  //printf( "%4.2f  \n", imu->ahrs->bias[2]  );
 
   return;
 }
@@ -376,24 +390,6 @@ void imu_update ( imu_struct *imu )  {
     }
   }
 
-  // Complimentary filter variables
-  double dt, gain, R, P;
-
-  // Get complimentary filter values
-  dt = 1.0 / HZ_IMU_FAST;
-  pthread_mutex_lock( &(imu->mutex) );
-  gain = imu->comp;
-  R = imu->roll;
-  P = imu->pitch;
-  pthread_mutex_unlock( &(imu->mutex) );
-
-  // Complimentary filter attitude angles
-  R = gain * ( R + Gf[0] * dt ) + ( 1.0 - gain ) * atan2( -Af[1], -Af[2] );
-  P = gain * ( P + Gf[1] * dt ) + ( 1.0 - gain ) * atan2(  Af[0], -Af[2] );
-
-  // AHRS data fusion
-  imu_9DOF( imu );
-
   // Push gyroscope values to data structure
   pthread_mutex_lock( &(imu->gyr->mutex) );
   for ( i=0; i<3; i++ )  {
@@ -423,11 +419,55 @@ void imu_update ( imu_struct *imu )  {
   pthread_mutex_unlock( &(imu->mag->mutex) );
   }
 
+  // Run complimentary filter algorithm
+  imu_comp( imu );
+
+  // Run AHRS data fusion algorithm
+  imu_9DOF( imu );
+
+  return;
+}
+
+
+/**
+ *  imu_comp
+ *  Implements the complimentary filter algorithm.
+ */
+void imu_comp ( imu_struct *imu )  {
+
+  // Complimentary filter variables
+  double dt, gain, R, P, Gx, Gy, Ax, Ay, Az;
+
+  // Get complimentary filter values
+  dt = 1.0 / HZ_IMU_FAST;
+  pthread_mutex_lock( &(imu->comp->mutex) );
+  gain = imu->comp->gain;
+  R = imu->comp->roll;
+  P = imu->comp->pitch;
+  pthread_mutex_unlock( &(imu->comp->mutex) );
+
+  // Get gyr data
+  pthread_mutex_lock( &(imu->gyr->mutex) );
+  Gx = imu->gyr->filter[0];
+  Gy = imu->gyr->filter[1];
+  pthread_mutex_unlock( &(imu->gyr->mutex) );
+
+  // Get acc data
+  pthread_mutex_lock( &(imu->acc->mutex) );
+  Ax = imu->acc->filter[0];
+  Ay = imu->acc->filter[1];
+  Az = imu->acc->filter[2];
+  pthread_mutex_unlock( &(imu->acc->mutex) );
+
+  // Complimentary filter attitude angles
+  R = gain * ( R + Gx * dt ) + ( 1.0 - gain ) * atan2( -Ay, -Az );
+  P = gain * ( P + Gy * dt ) + ( 1.0 - gain ) * atan2(  Ax, -Az );
+
   // Push complimentary filter values to data structure
-  pthread_mutex_lock( &(imu->mutex) );
-  imu->roll  = R;
-  imu->pitch = P;
-  pthread_mutex_unlock( &(imu->mutex) );
+  pthread_mutex_lock( &(imu->comp->mutex) );
+  imu->comp->roll  = R;
+  imu->comp->pitch = P;
+  pthread_mutex_unlock( &(imu->comp->mutex) );
 
   return;
 }
@@ -442,7 +482,7 @@ void imu_9DOF ( imu_struct *imu )  {
   // Local variables
   ushort i;
   double dt, recipNorm;
-  double q[4], dq[4], g[3], a[3], m[3], s[4], e[3], de[3], off[3];
+  double q[4], dq[4], g[3], a[3], m[3], s[4], e[3], de[3], bias[3], gain;
   double hx, hy;
   double _2qWmx, _2qWmy, _2qWmz, _2qXmx, _2bx, _2bz, _4bx, _4bz;
   double _2qW, _2qX, _2qY, _2qZ, _2qWqY, _2qYqZ;
@@ -472,8 +512,9 @@ void imu_9DOF ( imu_struct *imu )  {
 
   // Get AHRS data
   pthread_mutex_lock(&(imu->ahrs->mutex));
-  for ( i=0; i<4; i++ )  q[i]   = imu->ahrs->quat[i];
-  for ( i=0; i<3; i++ )  off[i] = imu->offset[i];
+  gain = imu->ahrs->gain;
+  for ( i=0; i<3; i++ )  bias[i] = imu->ahrs->bias[i];
+  for ( i=0; i<4; i++ )  q[i]    = imu->ahrs->quat[i];
   pthread_mutex_unlock(&(imu->ahrs->mutex));
 
   // Use IMU algorithm if magnetometer measurement invalid
@@ -558,7 +599,7 @@ void imu_9DOF ( imu_struct *imu )  {
     for ( i=0; i<4; i++ )  s[i] *= recipNorm;
 
     // Apply feedback step
-    for ( i=0; i<4; i++ )  dq[i] -= IMU_GAIN * s[i];
+    for ( i=0; i<4; i++ )  dq[i] -= gain * s[i];
 
   }
 
@@ -570,9 +611,9 @@ void imu_9DOF ( imu_struct *imu )  {
   for ( i=0; i<4; i++ )  q[i] *= recipNorm;
 
   // Calculate Euler angles
-  e[x] = atan2 ( ( 2.0f * ( q[W]*q[X] + q[Y]*q[Z] ) ), ( 1.0f - 2.0f * ( q[X]*q[X] + q[Y]*q[Y] ) ) ) - off[x];
-  e[y] = asin  (   2.0f * ( q[W]*q[Y] - q[X]*q[Z] ) )                                                - off[y];
-  e[z] = atan2 ( ( 2.0f * ( q[W]*q[Z] + q[X]*q[Y] ) ), ( 1.0f - 2.0f * ( q[Y]*q[Y] + q[Z]*q[Z] ) ) ) - off[z];
+  e[x] = atan2 ( ( 2.0f * ( q[W]*q[X] + q[Y]*q[Z] ) ), ( 1.0f - 2.0f * ( q[X]*q[X] + q[Y]*q[Y] ) ) ) - bias[x];
+  e[y] = asin  (   2.0f * ( q[W]*q[Y] - q[X]*q[Z] ) )                                                - bias[y];
+  e[z] = atan2 ( ( 2.0f * ( q[W]*q[Z] + q[X]*q[Y] ) ), ( 1.0f - 2.0f * ( q[Y]*q[Y] + q[Z]*q[Z] ) ) ) - bias[z];
 
   // Calculate Euler derivatives
   de[x] = - q[X] * dq[W] + q[W] * dq[X] + q[Z] * dq[Y] - q[Y] * dq[Z];
@@ -599,7 +640,7 @@ void imu_6DOF ( imu_struct *imu )  {
   // Local variables
   ushort i;
   double dt, recipNorm;
-  double q[4], dq[4], g[3], a[3], s[4], e[3], de[3], off[3];
+  double q[4], dq[4], g[3], a[3], s[4], e[3], de[3], bias[3], gain;
   double _2qW, _2qX, _2qY, _2qZ, _4qW, _4qX, _4qY ,_8qX, _8qY;
   double qWqW, qXqX, qYqY, qZqZ;
 
@@ -622,8 +663,9 @@ void imu_6DOF ( imu_struct *imu )  {
 
   // Get AHRS data
   pthread_mutex_lock(&(imu->ahrs->mutex));
-  for ( i=0; i<4; i++ )  q[i]   = imu->ahrs->quat[i];
-  for ( i=0; i<3; i++ )  off[i] = imu->offset[i];
+  gain = imu->ahrs->gain;
+  for ( i=0; i<3; i++ )  bias[i] = imu->ahrs->bias[i];
+  for ( i=0; i<4; i++ )  q[i]    = imu->ahrs->quat[i];
   pthread_mutex_unlock(&(imu->ahrs->mutex));
 
   // Rate of change of quaternion from gyroscope
@@ -665,7 +707,7 @@ void imu_6DOF ( imu_struct *imu )  {
     for ( i=0; i<4; i++ )  s[i] *= recipNorm;
 
     // Apply feedback step
-    for ( i=0; i<4; i++ )  dq[i] -= IMU_GAIN * s[i];
+    for ( i=0; i<4; i++ )  dq[i] -= gain * s[i];
 
   }
 
@@ -677,9 +719,9 @@ void imu_6DOF ( imu_struct *imu )  {
   for ( i=0; i<4; i++ )  q[i] *= recipNorm;
 
   // Calculate Euler angles
-  e[x] = atan2 ( ( 2.0f * ( q[W]*q[X] + q[Y]*q[Z] ) ), ( 1.0f - 2.0f * ( q[X]*q[X] + q[Y]*q[Y] ) ) ) - off[x];
-  e[y] = asin  (   2.0f * ( q[W]*q[Y] - q[X]*q[Z] ) )                                                - off[y];
-  e[z] = atan2 ( ( 2.0f * ( q[W]*q[Z] + q[X]*q[Y] ) ), ( 1.0f - 2.0f * ( q[Y]*q[Y] + q[Z]*q[Z] ) ) ) - off[z];
+  e[x] = atan2 ( ( 2.0f * ( q[W]*q[X] + q[Y]*q[Z] ) ), ( 1.0f - 2.0f * ( q[X]*q[X] + q[Y]*q[Y] ) ) ) - bias[x];
+  e[y] = asin  (   2.0f * ( q[W]*q[Y] - q[X]*q[Z] ) )                                                - bias[y];
+  e[z] = atan2 ( ( 2.0f * ( q[W]*q[Z] + q[X]*q[Y] ) ), ( 1.0f - 2.0f * ( q[Y]*q[Y] + q[Z]*q[Z] ) ) ) - bias[z];
 
   // Calculate Euler derivatives
   de[x] = - q[X] * dq[W] + q[W] * dq[X] + q[Z] * dq[Y] - q[Y] * dq[Z];
@@ -705,7 +747,7 @@ void imu_state ( void )  {
 
   // Local variables
   ushort i;
-  double att[3], ang[3], off[3];
+  double att[3], ang[3];
 
   // Zero out states
   for ( i=0; i<3; i++ )  {  att[i] = 0.0;  ang[i] = 0.0;  }
@@ -713,16 +755,11 @@ void imu_state ( void )  {
   // IMUA states
   if (IMUA_ENABLED)  {
 
-    // Get offset values
-    pthread_mutex_lock(&ahrsA.mutex);
-    for ( i=0; i<3; i++ )  off[i] = imuA.offset[i];
-    pthread_mutex_unlock(&ahrsA.mutex);
-
-    // Comp filter values (no yaw value)
-    pthread_mutex_lock(&imuA.mutex);
-    att[0] += imuA.roll  - off[0];
-    att[1] += imuA.pitch - off[1];
-    pthread_mutex_unlock(&imuA.mutex);
+    // Get comp filter values
+    pthread_mutex_lock(&compA.mutex);
+    att[0] += compA.roll  - compA.bias[0];
+    att[1] += compA.pitch - compA.bias[1];
+    pthread_mutex_unlock(&compA.mutex);
 
     // Loop through states
     for ( i=0; i<3; i++ )  {
@@ -744,16 +781,11 @@ void imu_state ( void )  {
   // IMUB states
   if (IMUB_ENABLED)  {
 
-    // Get offset values
-    pthread_mutex_lock(&ahrsB.mutex);
-    for ( i=0; i<3; i++ )  off[i] = imuB.offset[i];
-    pthread_mutex_unlock(&ahrsB.mutex);
-
-    // Comp filter values (no yaw value)
-    pthread_mutex_lock(&imuB.mutex);
-    att[0] += imuB.roll  - off[0];
-    att[1] += imuB.pitch - off[1];
-    pthread_mutex_unlock(&imuB.mutex);
+    // Get comp filter values
+    pthread_mutex_lock(&compB.mutex);
+    att[0] += compB.roll  - compB.bias[0];
+    att[1] += compB.pitch - compB.bias[1];
+    pthread_mutex_unlock(&compB.mutex);
 
     // Loop through states
     for ( i=0; i<3; i++ )  {

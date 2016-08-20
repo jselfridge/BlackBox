@@ -727,16 +727,16 @@ void log_record ( enum log_index index )  {
     pthread_mutex_unlock(&magA.mutex);
 
     // Comp filter A data
-    pthread_mutex_lock(&imuA.mutex);
+    pthread_mutex_lock(&compA.mutex);
     if ( log_compA.count < log_compA.limit ) {
       row = log_compA.count;
       log_compA.time[row]  = timestamp;
       log_compA.dur[row]   = tmr_imu.dur;
-      log_compA.roll[row]  = imuA.roll;
-      log_compA.pitch[row] = imuA.pitch;
+      log_compA.roll[row]  = compA.roll;
+      log_compA.pitch[row] = compA.pitch;
       log_compA.count++;
     }
-    pthread_mutex_unlock(&imuA.mutex);
+    pthread_mutex_unlock(&compA.mutex);
 
     // AHRS A data
     if ( log_ahrsA.count < log_ahrsA.limit ) {
@@ -800,16 +800,16 @@ void log_record ( enum log_index index )  {
     pthread_mutex_unlock(&magB.mutex);
 
     // Comp filter B data
-    pthread_mutex_lock(&imuB.mutex);
+    pthread_mutex_lock(&compB.mutex);
     if ( log_compB.count < log_compB.limit ) {
       row = log_compB.count;
       log_compB.time[row]  = timestamp;
       log_compB.dur[row]   = tmr_imu.dur;
-      log_compB.roll[row]  = imuB.roll;
-      log_compB.pitch[row] = imuB.pitch;
+      log_compB.roll[row]  = compB.roll;
+      log_compB.pitch[row] = compB.pitch;
       log_compB.count++;
     }
-    pthread_mutex_unlock(&imuB.mutex);
+    pthread_mutex_unlock(&compB.mutex);
 
     // AHRS B data
     if ( log_ahrsB.count < log_ahrsB.limit ) {

@@ -48,6 +48,7 @@ imu_comp_struct compB;
 
 typedef struct imu_ahrs_struct {
   double  gain;
+  double  bias   [3];
   double  quat   [4];
   double  dquat  [4];
   double  eul    [3];

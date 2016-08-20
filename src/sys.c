@@ -198,11 +198,11 @@ static void sys_imu ( void )  {
   pthread_mutex_unlock(&magA.mutex);
 
   // Complimentry filter data
-  pthread_mutex_lock(&imuA.mutex);
-  double Ra = imuA.roll  * ( 180.0 / PI );
-  double Pa = imuA.pitch * ( 180.0 / PI );
+  pthread_mutex_lock(&compA.mutex);
+  double Ra = compA.roll  * ( 180.0 / PI );
+  double Pa = compA.pitch * ( 180.0 / PI );
   printf("%6.3f %6.3f ", Ra, Pa );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&imuA.mutex);
+  pthread_mutex_unlock(&compA.mutex);
 
   }
 
@@ -231,11 +231,11 @@ static void sys_imu ( void )  {
   pthread_mutex_unlock(&magB.mutex);
 
   // Complimentry filter data
-  pthread_mutex_lock(&imuB.mutex);
-  double Rb = imuB.roll  * ( 180.0 / PI );
-  double Pb = imuB.pitch * ( 180.0 / PI );
+  pthread_mutex_lock(&compB.mutex);
+  double Rb = compB.roll  * ( 180.0 / PI );
+  double Pb = compB.pitch * ( 180.0 / PI );
   printf("%6.3f %6.3f ", Rb, Pb );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&imuB.mutex);
+  pthread_mutex_unlock(&compB.mutex);
 
   }
 
