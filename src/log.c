@@ -35,7 +35,7 @@ void log_init ( void )  {
   log_input.limit   =  LOG_MAX_DUR * HZ_IO;
   log_output.limit  =  LOG_MAX_DUR * HZ_IO;
   log_imu.limit     =  LOG_MAX_DUR * HZ_IMU;
-  //log_stab.limit    =  LOG_MAX_DUR * HZ_STAB;
+  log_stab.limit    =  LOG_MAX_DUR * HZ_STAB;
   //log_ins.limit     =  LOG_MAX_DUR * HZ_INS;
   //log_nav.limit     =  LOG_MAX_DUR * HZ_NAV;
 
@@ -53,13 +53,13 @@ void log_init ( void )  {
 
   // Timestamp setup
   log_imu.time      = malloc( sizeof(float)  * log_imu.limit  );
-  //log_stab.time     = malloc( sizeof(float)  * log_stab.limit );
+  log_stab.time     = malloc( sizeof(float)  * log_stab.limit );
   //log_ins.time      = malloc( sizeof(float)  * log_ins.limit  );
   //log_nav.time      = malloc( sizeof(float)  * log_nav.limit  );
 
   // Timing loop duration setup
   log_imu.dur       = malloc( sizeof(ulong)  * log_imu.limit  );
-  //log_stab.dur      = malloc( sizeof(ulong)  * log_stab.limit );
+  log_stab.dur      = malloc( sizeof(ulong)  * log_stab.limit );
   //log_ins.dur       = malloc( sizeof(ulong)  * log_ins.limit  );
   //log_nav.dur       = malloc( sizeof(ulong)  * log_nag.limit  );
 
@@ -127,10 +127,6 @@ void log_init ( void )  {
   log_rot.att       =  malloc( sizeof(float)  * log_imu.limit * 3 );
   log_rot.ang       =  malloc( sizeof(float)  * log_imu.limit * 3 );
 
-
-  // Stabilization setup
-  //log_stab.time     =  malloc( sizeof(float)  * log_stab.limit     );
-  //log_stab.dur      =  malloc( sizeof(ulong)  * log_stab.limit     );
 
   // SF roll stabilization
   //log_sfX.r         =  malloc( sizeof(float)  * log_stab.limit );
@@ -224,13 +220,13 @@ void log_exit ( void )  {
 
   // Timestamp memory
   free(log_imu.time);
-  //free(log_stab.time);
+  free(log_stab.time);
   //free(log_ins.time);
   //free(log_nav.time);
 
   // Timing loop duration memory
   free(log_imu.dur);
-  //free(log_stab.dur);
+  free(log_stab.dur);
   //free(log_ins.dur);
   //free(log_nav.dur);
 
@@ -297,10 +293,6 @@ void log_exit ( void )  {
   // Rotational states memory
   free(log_rot.att);
   free(log_rot.ang);
-
-  // Stabilization memory
-  //free(log_stab.time);
-  //free(log_stab.dur);
 
   // SF roll stab memory
   //free(log_sfX.r);
@@ -383,7 +375,7 @@ void log_start ( void )  {
   log_input.count  = 0;
   log_output.count = 0;
   log_imu.count    = 0;
-  //log_stab.count   = 0;
+  log_stab.count   = 0;
   //log_ins.count    = 0;
   //log_nav.count    = 0;
 
@@ -543,18 +535,14 @@ void log_start ( void )  {
     att_x     att_y     att_z      \
     ang_x     ang_y     ang_z        ");
 
-
-  /*
-  // Stabilization datalog file
+  // Stabilization timing thread datalog file
   sprintf( file, "%sstab.txt", datalog.path );
   datalog.stab = fopen( file, "w" );
   if( datalog.stab == NULL )  printf( "Error (log_init): Cannot generate 'stab' file. \n" );
-  fprintf( datalog.stab, 
-    "    stabtime  stabdur      \
-    X_r     X_xp     X_xd      X_u     X_kp     X_kd     X_ku      \
-    Y_r     Y_xp     Y_xd      Y_u     Y_kp     Y_kd     Y_ku      \
-    Z_r     Z_xp     Z_xd      Z_u     Z_kp     Z_kd     Z_ku   " );
+  fprintf( datalog.stab, "       stab_time   stab_dur   ");
 
+
+  /*
   // System identification datalog file
   sprintf( file, "%ssysid.txt", datalog.path );
   datalog.sysid = fopen( file, "w" );
@@ -776,14 +764,16 @@ void log_record ( enum log_index index )  {
 
 
   // Record STAB data
-  //case LOG_STAB :
+  case LOG_STAB :
 
-    //timestamp = (float) ( tmr_stab.start_sec + ( tmr_stab.start_usec / 1000000.0f ) ) - datalog.offset;
+    // Check memory limit
+    if ( log_stab.count < log_stab.limit )  {
 
-    //if ( log_stab.count < log_stab.limit ) {
-      //row = log_stab.count;
-      //log_stab.time[row] = timestamp;
-      //log_stab.dur[row]  = tmr_stab.dur;
+      // Stabilization timing data
+      row = log_stab.count;
+      timestamp = (float) ( tmr_stab.start_sec + ( tmr_stab.start_usec / 1000000.0f ) ) - datalog.offset;
+      log_stab.time[row] = timestamp;
+      log_stab.dur[row]  = tmr_stab.dur;
 
       /*
       // Roll SF values
@@ -859,9 +849,11 @@ void log_record ( enum log_index index )  {
       pthread_mutex_unlock(&ekf.mutex);
       */
 
-      //log_stab.count++;
-    //}
-    //return;
+      // Increment log counter
+      log_stab.count++;
+
+    }
+    return;
 
 
   /*
@@ -1030,10 +1022,17 @@ static void log_save ( void )  {
   }
 
 
+  // Stabilization timing thread
+  for ( row = 0; row < log_stab.count; row++ ) {
+
+    // Stabilization timing data
+    fprintf( datalog.stab, "\n     %011.6f     %06ld   ", log_stab.time[row], log_stab.dur[row] );
+
+    // Add other files as needed...
+
+  }
+
   /*
-  // Stabilization data
-  for ( row = 0; row < log_stab.count; row++ )  {
-    fprintf( datalog.stab, "\n %011.6f   %06ld      ", log_stab.time[row], log_stab.dur[row] );
     fprintf( datalog.stab, "%07.4f  ",  log_sfX.r[row]  );
     fprintf( datalog.stab, "%07.4f  ",  log_sfX.xp[row] );
     fprintf( datalog.stab, "%07.4f  ",  log_sfX.xd[row] );
@@ -1121,6 +1120,7 @@ static void log_close ( void )  {
 
   fclose(datalog.imu);
   fclose(datalog.rot);  
+  fclose(datalog.stab);  
 
   if (IMUA_ENABLED)  {
     fclose(datalog.gyrA);
@@ -1137,9 +1137,6 @@ static void log_close ( void )  {
     fclose(datalog.compB);
     fclose(datalog.ahrsB);
   }
-
-  //fclose(datalog.stab);
-  //fclose(datalog.sysid);
 
   return;
 }

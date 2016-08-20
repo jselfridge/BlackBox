@@ -10,8 +10,8 @@
 
 
 static void    stab_quad    ( void );
-static double  stab_sf      ( sf_struct *sf, double r, double zp, double zd, bool areset );
-static void    stab_sysid   ( sysid_struct *sysid, double u, double y );
+//static double  stab_sf      ( sf_struct *sf, double r, double zp, double zd, bool areset );
+//static void    stab_sysid   ( sysid_struct *sysid, double u, double y );
 static void    stab_disarm  ( void );
 
 
@@ -23,11 +23,11 @@ void stab_init ( void )  {
   if (DEBUG)  printf("Initializing stabilization \n");
 
   // Set timing value
-  double dt = 1.0; // / HZ_STAB;;
+  double dt = 1.0 / HZ_STAB;;
   stab.dt = dt;
-  sfX.dt  = dt;
-  sfY.dt  = dt;
-  sfZ.dt  = dt;
+  //sfX.dt  = dt;
+  //sfY.dt  = dt;
+  //sfZ.dt  = dt;
 
   // Asign disarming array values
   stab.off[0] = -1.0;
@@ -41,28 +41,28 @@ void stab_init ( void )  {
   stab.off[8] = -1.0;
   stab.off[9] = -1.0;
 
-  // Reference ranges (TODO: Move into radio or transmitter function)
+  // Reference ranges
   stab.range[CH_R] = 0.6;
   stab.range[CH_P] = 0.6;
   stab.range[CH_Y] = 2.0;
   stab.range[CH_T] = 0.3;
 
-  // Throttle values (TODO: Move into radio or transmitter function)
+  // Throttle values
   stab.thrl[0] = -0.35;  // Tmin
   stab.thrl[1] = -0.15;  // Tmax
   stab.thrl[2] =  0.00;  // Ttilt
 
   // Initalize state feedback data struct values
-  sfX.r = 0.0;  sfX.xp = 0.0;  sfX.xd = 0.0;
-  sfY.r = 0.0;  sfY.xp = 0.0;  sfY.xd = 0.0;
-  sfZ.r = 0.0;  sfZ.xp = 0.0;  sfZ.xd = 0.0;
+  //sfX.r = 0.0;  sfX.xp = 0.0;  sfX.xd = 0.0;
+  //sfY.r = 0.0;  sfY.xp = 0.0;  sfY.xd = 0.0;
+  //sfZ.r = 0.0;  sfZ.xp = 0.0;  sfZ.xd = 0.0;
 
   // Wrap values of pi
-  sfX.wrap = true;
-  sfY.wrap = true;
-  sfZ.wrap = true;
+  //sfX.wrap = true;
+  //sfY.wrap = true;
+  //sfZ.wrap = true;
 
-  // Assign desired characteristics
+  /*/ Assign desired characteristics
   sfX.ts = 1.70;  sfX.mp =  5.0;  sfX.j = 220.0;  stab_refmdl( &sfX );
   sfY.ts = 1.70;  sfY.mp =  5.0;  sfY.j = 220.0;  stab_refmdl( &sfY );
   sfZ.ts = 1.70;  sfZ.mp =  5.0;  sfZ.j = 220.0;  stab_refmdl( &sfZ );
@@ -77,8 +77,8 @@ void stab_init ( void )  {
       sfZ.ts, sfZ.mp, sfZ.zeta, sfZ.nfreq, sfZ.sigma, sfZ.dfreq, sfZ.ap, sfZ.ad, sfZ.kp, sfZ.kd );
     fflush(stdout);
   }
-
-  // Assign adaptive gains
+  */
+  /*/ Assign adaptive gains
   sfX.Gp = 0.0;  sfX.Gd = 0.0;  sfX.Gu = 0.0;
   sfY.Gp = 0.0;  sfY.Gd = 0.0;  sfY.Gu = 0.0;
   sfZ.Gp = 0.0;  sfZ.Gd = 0.0;  sfZ.Gu = 0.0;
@@ -90,17 +90,17 @@ void stab_init ( void )  {
     printf("  Z:  %3.1f  %3.1f  %3.1f  \n", sfZ.Gp, sfZ.Gd, sfZ.Gu );
     fflush(stdout);
   }
-
-  // Initialize sysid param values
+  */
+  /*/ Initialize sysid param values
   sysidX.z1 = 0.001;  sysidX.z2 = 0.0;  sysidX.p1 = -2.0;  sysidX.p2 = 1.0;
   sysidY.z1 = 0.001;  sysidY.z2 = 0.0;  sysidY.p1 = -2.0;  sysidY.p2 = 1.0;
   sysidZ.z1 = 0.001;  sysidZ.z2 = 0.0;  sysidZ.p1 = -2.0;  sysidZ.p2 = 1.0;
-
-  // Initialize sysid signal values
+  */
+  /*/ Initialize sysid signal values
   sysidX.u1 = 0.0;  sysidX.u2 = 0.0;  sysidX.y1 = 0.0;  sysidX.y2 = 0.0;
   sysidY.u1 = 0.0;  sysidY.u2 = 0.0;  sysidY.y1 = 0.0;  sysidY.y2 = 0.0;
   sysidZ.u1 = 0.0;  sysidZ.u2 = 0.0;  sysidZ.y1 = 0.0;  sysidZ.y2 = 0.0;
-
+  */
   return;
 }
 
@@ -120,6 +120,7 @@ void stab_exit ( void )  {
  *  stab_refmdl
  *  Take desired system char and determine reference model
  */
+/*
 void stab_refmdl ( sf_struct *sf )  {
 
   // Local variables
@@ -163,7 +164,7 @@ void stab_refmdl ( sf_struct *sf )  {
 
   return;
 }
-
+*/
 
 /**
  *  stab_update
@@ -220,21 +221,23 @@ void stab_quad ( void )  {
   while ( heading >   M_PI )  heading -= 2.0 * M_PI;
   while ( heading <= -M_PI )  heading += 2.0 * M_PI;
 
-  // Apply state feedback function
+  /*/ Apply state feedback function
   reset = ( in[CH_T] < -0.2 );
   cmd[x] = stab_sf( &sfX, ref[x], att[x],  ang[x], reset );
   cmd[y] = stab_sf( &sfY, ref[y], att[y],  ang[y], reset );
   cmd[z] = stab_sf( &sfZ, ref[z], heading, ang[z], reset );
+  */
 
   //--- DEBUGGING: Override SF commands ---//
-  cmd[x] = ( ref[x] - att[x] ) * 0.085 - ang[x] * 0.055;
-  cmd[y] = ( ref[y] - att[y] ) * 0.085 - ang[y] * 0.055;
-  cmd[z] = ( ref[z] - ang[z] ) * 0.055;
+  cmd[x] = 0.0;  // ( ref[x] - att[x] ) * 0.085 - ang[x] * 0.055;
+  cmd[y] = 0.0;  // ( ref[y] - att[y] ) * 0.085 - ang[y] * 0.055;
+  cmd[z] = 0.0;  // ( ref[z] - ang[z] ) * 0.055;
 
-  // Perform system identification
+  /*/ Perform system identification
   stab_sysid( &sysidX, cmd[x], att[x] );
   stab_sysid( &sysidY, cmd[y], att[y] );
   stab_sysid( &sysidZ, cmd[z], att[z] );
+  */
 
   // Determine throttle adjustment
   double tilt_adj = ( 1 - ( cos(att[0]) * cos(att[1]) ) ) * tilt;
@@ -257,7 +260,7 @@ void stab_quad ( void )  {
 
   // Push stabilization data
   pthread_mutex_lock(&stab.mutex);
-  for ( i=0; i<4; i++ )  stab.cmd[i] = cmd[i];
+  //for ( i=0; i<4; i++ )  stab.cmd[i] = cmd[i];
   stab.heading = heading;
   pthread_mutex_unlock(&stab.mutex);
 
@@ -275,6 +278,7 @@ void stab_quad ( void )  {
  *  stab_sf
  *  Apply state feedback control loop
  */
+/*
 double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
 
   // Local variables
@@ -370,12 +374,13 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
 
   return u;
 }
-
+*/
 
 /**
  *  stab_sysid
  *  Perform system identification update.
  */
+/*
 void stab_sysid ( sysid_struct *sysid, double u, double y )  {
 
   // Local variables
@@ -424,7 +429,7 @@ void stab_sysid ( sysid_struct *sysid, double u, double y )  {
 
   return;
 }
-
+*/
 
 /**
  *  stab_disarm

@@ -87,7 +87,7 @@ typedef struct log_rot_struct {
 } log_rot_struct;
 log_rot_struct log_rot;
 
-/*
+
 typedef struct log_stab_struct {
   ulong  count;
   ulong  limit;
@@ -95,7 +95,7 @@ typedef struct log_stab_struct {
   ulong  *dur;
 } log_stab_struct;
 log_stab_struct log_stab;
-*/
+
 /*
 typedef struct log_sf_struct {
   float *r;
@@ -172,6 +172,7 @@ typedef struct datalog_struct {
   FILE   *compB;
   FILE   *ahrsB;
   FILE   *rot;
+  FILE   *stab;
 } datalog_struct;
 datalog_struct datalog;
 

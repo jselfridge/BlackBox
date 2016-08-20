@@ -29,7 +29,7 @@ typedef struct stab_struct {
 } stab_struct;
 stab_struct stab;
 
-
+/*
 typedef struct sf_struct {
   double  dt;
   bool    wrap;
@@ -57,8 +57,8 @@ typedef struct sf_struct {
 sf_struct sfX;
 sf_struct sfY;
 sf_struct sfZ;
-
-
+*/
+/*
 typedef struct sysid_struct {
   double z1;
   double z2;
@@ -73,12 +73,12 @@ typedef struct sysid_struct {
 sysid_struct sysidX;
 sysid_struct sysidY;
 sysid_struct sysidZ;
-
+*/
 
 void    stab_init    ( void );
 void    stab_exit    ( void );
 void    stab_update  ( void );
-void    stab_refmdl  ( sf_struct *sf );
+//void    stab_refmdl  ( sf_struct *sf );
 
 #endif
 
