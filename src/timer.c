@@ -43,11 +43,13 @@ void tmr_mutex ( void )  {
   pthread_mutex_init( &gyrA.mutex,   NULL );
   pthread_mutex_init( &accA.mutex,   NULL );
   pthread_mutex_init( &magA.mutex,   NULL );
+  pthread_mutex_init( &compA.mutex,  NULL );
   pthread_mutex_init( &ahrsA.mutex,  NULL );
   pthread_mutex_init( &imuB.mutex,   NULL );
   pthread_mutex_init( &gyrB.mutex,   NULL );
   pthread_mutex_init( &accB.mutex,   NULL );
   pthread_mutex_init( &magB.mutex,   NULL );
+  pthread_mutex_init( &compB.mutex,  NULL );
   pthread_mutex_init( &ahrsB.mutex,  NULL );
   pthread_mutex_init( &rot.mutex,    NULL );
   pthread_mutex_init( &stab.mutex,   NULL );
@@ -183,11 +185,13 @@ void tmr_exit ( void )  {
   pthread_mutex_destroy(&gyrA.mutex);
   pthread_mutex_destroy(&accA.mutex);
   pthread_mutex_destroy(&magA.mutex);
+  pthread_mutex_destroy(&compA.mutex);
   pthread_mutex_destroy(&ahrsA.mutex);
   pthread_mutex_destroy(&imuB.mutex);
   pthread_mutex_destroy(&gyrB.mutex);
   pthread_mutex_destroy(&accB.mutex);
   pthread_mutex_destroy(&magB.mutex);
+  pthread_mutex_destroy(&compB.mutex);
   pthread_mutex_destroy(&ahrsB.mutex);
   pthread_mutex_destroy(&rot.mutex);
   pthread_mutex_destroy(&stab.mutex);

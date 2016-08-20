@@ -12,6 +12,12 @@
 #include "timer.h"
 
 
+static void  imu_param   ( imu_struct *imu );
+static void  imu_getcal  ( imu_struct *imu );
+static void  imu_9DOF    ( imu_struct *imu );
+static void  imu_6DOF    ( imu_struct *imu );
+
+
 /**
  *  imu_init
  *  Initializes an MPU sensor.
@@ -35,43 +41,16 @@ void imu_init ( void )  {
     imuA.bus  = 1;
     imuA.addr = 0x68;
 
-    // Loop counter values
-    imuA.count  = 0;
-    imuA.loops  = loops;
-    imuA.getmag = false;
-
-    // Low pass filter values
-    imuA.gyr  = &gyrA;  imuA.gyr->lpf[0] = 1.00;  imuA.gyr->lpf[1] = 1.00;  imuA.gyr->lpf[2] = 1.00;
-    imuA.acc  = &accA;  imuA.acc->lpf[0] = 0.50;  imuA.acc->lpf[1] = 0.50;  imuA.acc->lpf[2] = 0.50;
-    imuA.mag  = &magA;  imuA.mag->lpf[0] = 0.20;  imuA.mag->lpf[1] = 0.20;  imuA.mag->lpf[2] = 0.20;
+    // Assign pointers
+    imuA.gyr  = &gyrA;
+    imuA.acc  = &accA;
+    imuA.mag  = &magA;
+    imuA.comp = &compA;
     imuA.ahrs = &ahrsA;
 
-    // Complimentary filter values
-    imuA.comp  = 0.985;
-    imuA.roll  = 0.0;
-    imuA.pitch = 0.0; 
-
-    // Initialize quaternion
-    imuA.ahrs->quat[0]  = 1.0;
-    imuA.ahrs->quat[1]  = 0.0;
-    imuA.ahrs->quat[2]  = 0.0;
-    imuA.ahrs->quat[3]  = 0.0;
-
-    // Initialize quaternion derivative
-    imuA.ahrs->dquat[0] = 0.0;
-    imuA.ahrs->dquat[1] = 0.0;
-    imuA.ahrs->dquat[2] = 0.0;
-    imuA.ahrs->dquat[3] = 0.0;
-
-    // Initialize Euler angles
-    imuA.ahrs->eul[0] = 0.0;
-    imuA.ahrs->eul[1] = 0.0;
-    imuA.ahrs->eul[2] = 0.0;
-
-    // Initialize Euler derivatives
-    imuA.ahrs->deul[0] = 0.0;
-    imuA.ahrs->deul[1] = 0.0;
-    imuA.ahrs->deul[2] = 0.0;
+    // Loop counter values
+    imuA.loops  = loops;
+    imuA.getmag = false;
 
     // Setup functions
     i2c_init( &(imuA.fd), imuA.bus, imuA.addr );
@@ -88,43 +67,16 @@ void imu_init ( void )  {
     imuB.bus  = 2;
     imuB.addr = 0x68;
 
-    // Loop counter values
-    imuB.count  = 0;
-    imuB.loops  = loops;
-    imuB.getmag = false;
-
-    // Low pass filter values
-    imuB.gyr  = &gyrB;  imuB.gyr->lpf[0] = 1.00;  imuB.gyr->lpf[1] = 1.00;  imuB.gyr->lpf[2] = 1.00;
-    imuB.acc  = &accB;  imuB.acc->lpf[0] = 0.50;  imuB.acc->lpf[1] = 0.50;  imuB.acc->lpf[2] = 0.50;
-    imuB.mag  = &magB;  imuB.mag->lpf[0] = 0.20;  imuB.mag->lpf[1] = 0.20;  imuB.mag->lpf[2] = 0.20;
+    // Assign pointers
+    imuB.gyr  = &gyrB;
+    imuB.acc  = &accB;
+    imuB.mag  = &magB;
+    imuB.comp = &compB;
     imuB.ahrs = &ahrsB;
 
-    // Complimentary filter values
-    imuB.comp  = 0.985;
-    imuB.roll  = 0.0;
-    imuB.pitch = 0.0; 
-
-    // Initialize quaternion
-    imuB.ahrs->quat[0]  = 1.0;
-    imuB.ahrs->quat[1]  = 0.0;
-    imuB.ahrs->quat[2]  = 0.0;
-    imuB.ahrs->quat[3]  = 0.0;
-
-    // Initialize quaternion derivative
-    imuB.ahrs->dquat[0] = 0.0;
-    imuB.ahrs->dquat[1] = 0.0;
-    imuB.ahrs->dquat[2] = 0.0;
-    imuB.ahrs->dquat[3] = 0.0;
-
-    // Initialize Euler angles
-    imuB.ahrs->eul[0] = 0.0;
-    imuB.ahrs->eul[1] = 0.0;
-    imuB.ahrs->eul[2] = 0.0;
-
-    // Initialize Euler derivatives
-    imuB.ahrs->deul[0] = 0.0;
-    imuB.ahrs->deul[1] = 0.0;
-    imuB.ahrs->deul[2] = 0.0;
+    // Loop counter values
+    imuB.loops  = loops;
+    imuB.getmag = false;
 
     // Setup functions
     i2c_init( &(imuB.fd), imuB.bus, imuB.addr );
@@ -224,6 +176,16 @@ void imu_getcal ( imu_struct *imu )  {
   }
   fclose(f);
 
+  // Set accelerometer lpf
+  sprintf( path, "../Param/board/lpf/acc" );
+  f = fopen( path, "r" );
+  if(!f)  printf( "Error (imu_getcal): File for 'acc lpf' not found. \n" );
+  for ( i=0; i<3; i++ ) {
+    fgets( buff, 32, f );
+    imu->acc->lpf[i] = atoi(buff);
+  }
+  fclose(f);
+
   // Set magnetometer bias
   sprintf( path, "../Param/board/bias/mag%c", imu->id );
   f = fopen( path, "r" );
@@ -244,7 +206,17 @@ void imu_getcal ( imu_struct *imu )  {
   }
   fclose(f);
 
-  // Set gyro bias
+  // Set magnetometer lpf
+  sprintf( path, "../Param/board/lpf/mag" );
+  f = fopen( path, "r" );
+  if(!f)  printf( "Error (imu_getcal): File for 'mag lpf' not found. \n" );
+  for ( i=0; i<3; i++ ) {
+    fgets( buff, 32, f );
+    imu->mag->lpf[i] = atoi(buff);
+  }
+  fclose(f);
+
+  // Set rate gyro bias
   sprintf( path, "../Param/board/bias/gyr%c", imu->id );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'gyr%c bias' not found. \n", imu->id );
@@ -254,29 +226,71 @@ void imu_getcal ( imu_struct *imu )  {
   }
   fclose(f);
 
-  // Assign IMU offset
-  sprintf( path, "../Param/board/bias/offset%c", imu->id );
+  // Set rate gyro lpf
+  sprintf( path, "../Param/board/lpf/gyr" );
   f = fopen( path, "r" );
-  if(!f)  printf( "Error (imu_getcal): File for 'offset%c bias' not found. \n", imu->id );
+  if(!f)  printf( "Error (imu_getcal): File for 'gyr lpf' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
-    imu->offset[i] = atoi(buff) / 10000.0;
+    imu->gyr->lpf[i] = atoi(buff);
   }
   fclose(f);
 
+  // Set comp filter bias
+  sprintf( path, "../Param/board/bias/comp%c", imu->id );
+  f = fopen( path, "r" );
+  if(!f)  printf( "Error (imu_getcal): File for 'comp%c bias' not found. \n", imu->id );
+  for ( i=0; i<2; i++ ) {
+    fgets( buff, 32, f );
+    imu->comp->bias[i] = atoi(buff) / 10000.0;
+  }
+  fclose(f);
+
+  // Set comp filter gain
+  sprintf( path, "../Param/board/gain/comp" );
+  f = fopen( path, "r" );
+  if(!f)  printf( "Error (imu_getcal): File for 'comp gain' not found. \n" );
+  fgets( buff, 32, f );
+  imu->comp->gain = atoi(buff);
+  fclose(f);
+
+  // Set AHRS gain
+  sprintf( path, "../Param/board/gain/ahrs" );
+  f = fopen( path, "r" );
+  if(!f)  printf( "Error (imu_getcal): File for 'ahrs gain' not found. \n" );
+  fgets( buff, 32, f );
+  imu->ahrs->gain = atoi(buff);
+  fclose(f);
+
+  // Set unit quaternion value
+  imu->ahrs->quat[0]  = 1.0;
+
   // Display calibration values
   if(DEBUG) {
-    printf("   abias%c arange%c   mbias%c mrange%c   gbias%c    offset%c  \n", imu->id, imu->id, imu->id, imu->id, imu->id, imu->id );
+
+    printf("   \
+    abias%c arange%c alpf%c   \
+    mbias%c mrange%c mlpf%c   \
+    gbias%c glpf%c  \n", 
+    imu->id, imu->id, imu->id, imu->id, imu->id, imu->id, imu->id, imu->id );
+
     for ( i=0; i<3; i++ ) {
       printf("     ");
       printf( "%4d    ",   imu->acc->bias[i]  );
       printf( "%4d     ",  imu->acc->range[i] );
-      printf( "%4d    ",   imu->mag->bias[i]  );
+      printf( "%4.2f   ",  imu->acc->lpf[i]   );
+      printf( "%4d     ",  imu->mag->bias[i]  );
       printf( "%4d     ",  imu->mag->range[i] );
-      printf( "%4d    ",   imu->gyr->bias[i]  );
-      printf( "%4.2f  \n", imu->offset[i]  );
+      printf( "%4.2f   ",  imu->mag->lpf[i]   );
+      printf( "%4d     ",  imu->gyr->bias[i]  );
+      printf( "%4.2f   ",  imu->gyr->lpf[i]   );
     } 
   }
+
+  //printf( "%4.2f  \n", imu->comp->bias[0]  );
+  //printf( "%4.2f  \n", imu->comp->bias[1]  );
+  //printf( "%4.2f  \n", imu->comp->gain  );
+  //printf( "%4.2f  \n", imu->ahrs->gain  );
 
   return;
 }

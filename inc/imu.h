@@ -12,7 +12,6 @@
 #define IMUA_ENABLED   true
 #define IMUB_ENABLED   true
 
-#define IMU_GAIN   0.1f
 #define GYR_FSR    500
 #define ACC_FSR    4
 #define GYR_SCALE  ( 500.0 / 32768.0 ) * ( PI / 180.0 )
@@ -22,10 +21,10 @@
 typedef struct imu_data_struct {
   int    bias   [3];
   int    range  [3];
+  double lpf    [3];
   short  raw    [3];
   double scaled [3];
   double filter [3];
-  double lpf    [3];
   pthread_mutex_t mutex;
 } imu_data_struct;
 imu_data_struct gyrA;
@@ -36,8 +35,19 @@ imu_data_struct accB;
 imu_data_struct magB;
 
 
+typedef struct imu_comp_struct {
+  double bias [2];
+  double gain;
+  double roll;
+  double pitch;
+  pthread_mutex_t mutex;
+} imu_comp_struct;
+imu_comp_struct compA;
+imu_comp_struct compB;
+
+
 typedef struct imu_ahrs_struct {
-  char    id;
+  double  gain;
   double  quat   [4];
   double  dquat  [4];
   double  eul    [3];
@@ -56,13 +66,10 @@ typedef struct imu_struct {
   ushort loops;
   ushort count;
   bool   getmag;
-  double comp;
-  double roll;
-  double pitch;
-  double offset [3];
   imu_data_struct *gyr;
   imu_data_struct *acc;
   imu_data_struct *mag;
+  imu_comp_struct *comp;
   imu_ahrs_struct *ahrs;
   pthread_mutex_t mutex;
 } imu_struct;
@@ -80,11 +87,7 @@ rot_state_struct rot;
 
 void  imu_init    ( void );
 void  imu_exit    ( void );
-void  imu_param   ( imu_struct *imu );
-void  imu_getcal  ( imu_struct *imu );
 void  imu_update  ( imu_struct *imu );
-void  imu_9DOF    ( imu_struct *imu );
-void  imu_6DOF    ( imu_struct *imu );
 void  imu_state   ( void );
 
 
