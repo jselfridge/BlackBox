@@ -81,6 +81,7 @@ typedef struct log_ahrs_struct {
 log_ahrs_struct log_ahrsA;
 log_ahrs_struct log_ahrsB;
 
+
 typedef struct log_rot_struct {
   float *att;
   float *ang;

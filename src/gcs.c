@@ -66,7 +66,10 @@ void gcs_init ( void )  {
   // Load parameters
   if (DEBUG)  printf( "  Loading %d parameters \n", param_count );
 
-  /*/ Roll (X) stabilization parameters
+  // Roll (X) stabilization parameters
+  strcpy( param.name[X_kp], "X_kp" );  param.val[X_kp] = sfX.kp;
+  strcpy( param.name[X_kd], "X_kd" );  param.val[X_kd] = sfX.kd;
+  /*
   strcpy( param.name[X_ts], "X_ts" );  param.val[X_ts] = sfX.ts;
   strcpy( param.name[X_mp], "X_mp" );  param.val[X_mp] = sfX.mp;
   strcpy( param.name[X_j ], "X_j"  );  param.val[X_j]  = sfX.j;
@@ -74,7 +77,11 @@ void gcs_init ( void )  {
   strcpy( param.name[X_Gd], "X_Gd" );  param.val[X_Gd] = sfX.Gd;
   strcpy( param.name[X_Gu], "X_Gu" );  param.val[X_Gu] = sfX.Gu;
   */
-  /*/ Pitch (Y) stabilization paramters
+
+  // Pitch (Y) stabilization paramters
+  strcpy( param.name[Y_kp], "Y_kp" );  param.val[Y_kp] = sfY.kp;
+  strcpy( param.name[Y_kd], "Y_kd" );  param.val[Y_kd] = sfY.kd;
+  /*
   strcpy( param.name[Y_ts], "Y_ts" );  param.val[Y_ts] = sfY.ts;
   strcpy( param.name[Y_mp], "Y_mp" );  param.val[Y_mp] = sfY.mp;
   strcpy( param.name[Y_j],  "Y_j"  );  param.val[Y_j]  = sfY.j;
@@ -82,7 +89,11 @@ void gcs_init ( void )  {
   strcpy( param.name[Y_Gd], "Y_Gd" );  param.val[Y_Gd] = sfY.Gd;
   strcpy( param.name[Y_Gu], "Y_Gu" );  param.val[Y_Gu] = sfY.Gu;
   */
-  /*/ Yaw (Z) stabilization parameters
+
+  // Yaw (Z) stabilization parameters
+  strcpy( param.name[Z_kp], "Z_kp" );  param.val[Z_kp] = sfZ.kp;
+  strcpy( param.name[Z_kd], "Z_kd" );  param.val[Z_kd] = sfZ.kd;
+  /*
   strcpy( param.name[Z_ts], "Z_ts" );  param.val[Z_ts] = sfZ.ts;
   strcpy( param.name[Z_mp], "Z_mp" );  param.val[Z_mp] = sfZ.mp;
   strcpy( param.name[Z_j],  "Z_j"  );  param.val[Z_j]  = sfZ.j;
@@ -90,6 +101,7 @@ void gcs_init ( void )  {
   strcpy( param.name[Z_Gd], "Z_Gd" );  param.val[Z_Gd] = sfZ.Gd;
   strcpy( param.name[Z_Gu], "Z_Gu" );  param.val[Z_Gu] = sfZ.Gu;
   */
+
   // Throttle values
   strcpy( param.name[T_min],  "T_min"  );  param.val[T_min]  = stab.thrl[0];
   strcpy( param.name[T_max],  "T_max"  );  param.val[T_max]  = stab.thrl[1];
@@ -107,7 +119,7 @@ void gcs_init ( void )  {
   gcs.sendmission = false;
 
   // Assign pause for serial stream
-  gcs.pause = 100;
+  gcs.pause = 300;
 
   return;
 }
@@ -264,7 +276,6 @@ static void gcs_heartbeat ( void )  {
   if(GCS_DEBUG)  printf("HB  ");
 
   // Initialize the required buffers
-  int len, w;
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
  
@@ -281,13 +292,13 @@ static void gcs_heartbeat ( void )  {
   );
 
   // Copy the heartbeat message to the send buffer
-  len = mavlink_msg_to_send_buffer( buf, &msg );
+  int len = mavlink_msg_to_send_buffer( buf, &msg );
 
   // Send the message 
   pthread_mutex_lock(&gcs.mutex);
-  w = write( gcs.fd, buf, len );
-  pthread_mutex_unlock(&gcs.mutex);
+  int w = write( gcs.fd, buf, len );
   usleep( w * gcs.pause );
+  pthread_mutex_unlock(&gcs.mutex);
 
   // Reset conditional flag
   gcs.sendhb = false;
@@ -306,7 +317,7 @@ static void gcs_paramlist ( void )  {
   if(GCS_DEBUG)  printf("PL  ");
 
   // Local variables
-  int len, w, i;
+  int i;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
   mavlink_message_t msg;
 
@@ -328,13 +339,13 @@ static void gcs_paramlist ( void )  {
 
     // Copy message to buffer
     memset( buf, 0, sizeof(buf) );
-    len = mavlink_msg_to_send_buffer( buf, &msg );
+    int len = mavlink_msg_to_send_buffer( buf, &msg );
 
     // Send the message
     pthread_mutex_lock(&gcs.mutex);
-    w = write( gcs.fd, buf, len );
-    pthread_mutex_unlock(&gcs.mutex);
+    int w = write( gcs.fd, buf, len );
     usleep( w * gcs.pause );
+    pthread_mutex_unlock(&gcs.mutex);
 
   }
 
@@ -355,7 +366,6 @@ static void gcs_missionlist ( void)  {
   if(GCS_DEBUG)  printf("ML  ");
 
   // Local variables
-  int len, w;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
   mavlink_message_t msg;
 
@@ -372,13 +382,13 @@ static void gcs_missionlist ( void)  {
 
   // Copy message to buffer
   memset( buf, 0, sizeof(buf) );
-  len = mavlink_msg_to_send_buffer( buf, &msg );
+  int len = mavlink_msg_to_send_buffer( buf, &msg );
 
   // Send the message
   pthread_mutex_lock(&gcs.mutex);
-  w = write( gcs.fd, buf, len );
-  pthread_mutex_unlock(&gcs.mutex);
+  int w = write( gcs.fd, buf, len );
   usleep( w * gcs.pause );
+  pthread_mutex_unlock(&gcs.mutex);
 
   // Reset conditional flag
   gcs.sendmission = false;
@@ -395,7 +405,6 @@ static void gcs_get_param_value ( mavlink_message_t *msg )  {
 
   // Local variables
   uint i, j;
-  int len, w;
   bool match;
   mavlink_param_set_t set;
   mavlink_msg_param_set_decode( msg, &set );
@@ -456,13 +465,13 @@ static void gcs_get_param_value ( mavlink_message_t *msg )  {
           // Send parameter to GCS
           uint8_t buf[MAVLINK_MAX_PACKET_LEN];
           memset( buf, 0, sizeof(buf) );
-          len = mavlink_msg_to_send_buffer( buf, &confirm_msg );
+          int len = mavlink_msg_to_send_buffer( buf, &confirm_msg );
 
           // Write out to GCS
           pthread_mutex_lock(&gcs.mutex);
-          w = write( gcs.fd, buf, len );
-          pthread_mutex_unlock(&gcs.mutex);
+          int w = write( gcs.fd, buf, len );
           usleep( w * gcs.pause );
+          pthread_mutex_unlock(&gcs.mutex);
 
 	}
       }
@@ -482,7 +491,18 @@ static void gcs_set_param_value ( uint index, double val )  {
   // Jump to parameter
   switch (index)  {
 
-  /*/ Roll (X) Stabilization Parameters
+  // Roll (X) Stabilization Parameters
+  case X_kp :
+    pthread_mutex_lock(&sfX.mutex);
+    sfX.kp = val;
+    pthread_mutex_unlock(&sfX.mutex);
+    break;
+  case X_kd :
+    pthread_mutex_lock(&sfX.mutex);
+    sfX.kd = val;
+    pthread_mutex_unlock(&sfX.mutex);
+    break;
+  /*
   case X_ts :
     pthread_mutex_lock(&sfX.mutex);
     sfX.ts = val;
@@ -517,7 +537,20 @@ static void gcs_set_param_value ( uint index, double val )  {
     pthread_mutex_unlock(&sfX.mutex);
     break;
   */
-  /*/ Pitch (Y) Stabilization Parameters
+
+
+  // Pitch (Y) Stabilization Parameters
+  case Y_kp :
+    pthread_mutex_lock(&sfY.mutex);
+    sfY.kp = val;
+    pthread_mutex_unlock(&sfY.mutex);
+    break;
+  case Y_kd :
+    pthread_mutex_lock(&sfY.mutex);
+    sfY.kd = val;
+    pthread_mutex_unlock(&sfY.mutex);
+    break;
+  /*
   case Y_ts :
     pthread_mutex_lock(&sfY.mutex);
     sfY.ts = val;
@@ -552,7 +585,20 @@ static void gcs_set_param_value ( uint index, double val )  {
     pthread_mutex_unlock(&sfY.mutex);
     break;
   */
-  /*/ Yaw (Z) Stabilization Parameters
+
+
+  // Yaw (Z) Stabilization Parameters
+  case Z_kp :
+    pthread_mutex_lock(&sfZ.mutex);
+    sfZ.kp = val;
+    pthread_mutex_unlock(&sfZ.mutex);
+    break;
+  case Z_kd :
+    pthread_mutex_lock(&sfZ.mutex);
+    sfZ.kd = val;
+    pthread_mutex_unlock(&sfZ.mutex);
+    break;
+  /*
   case Z_ts :
     pthread_mutex_lock(&sfZ.mutex);
     sfZ.ts = val;
@@ -587,6 +633,8 @@ static void gcs_set_param_value ( uint index, double val )  {
     pthread_mutex_unlock(&sfZ.mutex);
     break;
   */
+
+
   // Throttle settings
   case T_min :
     pthread_mutex_lock(&stab.mutex);
@@ -643,7 +691,6 @@ static void gcs_set_param_value ( uint index, double val )  {
 static void gcs_input ( void )  {
 
   // Initialize the required buffers
-  int len, w;
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
 
@@ -674,13 +721,13 @@ static void gcs_input ( void )  {
     );
 
   // Copy the heartbeat message to the send buffer
-  len = mavlink_msg_to_send_buffer( buf, &msg );
+  int len = mavlink_msg_to_send_buffer( buf, &msg );
 
   // Transmit the attitude data
   pthread_mutex_lock(&gcs.mutex);
-  w = write( gcs.fd, buf, len );
-  pthread_mutex_unlock(&gcs.mutex);
+  int w = write( gcs.fd, buf, len );
   usleep( w * gcs.pause );
+  pthread_mutex_unlock(&gcs.mutex);
 
   return;
 }
@@ -693,7 +740,6 @@ static void gcs_input ( void )  {
 static void gcs_output ( void )  {
 
   // Initialize the required buffers
-  int len, w;
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
 
@@ -723,13 +769,13 @@ static void gcs_output ( void )  {
     );
 
   // Copy the heartbeat message to the send buffer
-  len = mavlink_msg_to_send_buffer( buf, &msg );
+  int len = mavlink_msg_to_send_buffer( buf, &msg );
 
   // Transmit the attitude data
   pthread_mutex_lock(&gcs.mutex);
-  w = write( gcs.fd, buf, len );
+  int w = write( gcs.fd, buf, len );
+  usleep( w * gcs.pause );
   pthread_mutex_unlock(&gcs.mutex);
-  usleep(w*300);
 
   return;
 }
@@ -742,7 +788,6 @@ static void gcs_output ( void )  {
 static void gcs_att ( void )  {
 
   // Initialize the required buffers
-  int len, w;
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
 
@@ -769,13 +814,13 @@ static void gcs_att ( void )  {
     );
 
   // Copy the heartbeat message to the send buffer
-  len = mavlink_msg_to_send_buffer( buf, &msg );
+  int len = mavlink_msg_to_send_buffer( buf, &msg );
 
   // Transmit the attitude data
   pthread_mutex_lock(&gcs.mutex);
-  w = write( gcs.fd, buf, len );
-  pthread_mutex_unlock(&gcs.mutex);
+  int w = write( gcs.fd, buf, len );
   usleep( w * gcs.pause );
+  pthread_mutex_unlock(&gcs.mutex);
 
   return;
 }

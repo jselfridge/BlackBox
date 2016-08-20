@@ -755,10 +755,10 @@ void imu_state ( void )  {
       pthread_mutex_unlock(&gyrA.mutex);
 
       // AHRS values
-      pthread_mutex_lock(&ahrsA.mutex);
-      att[i] += ahrsA.eul[i];
+      //pthread_mutex_lock(&ahrsA.mutex);
+      //att[i] += ahrsA.eul[i];
       //ang[i] += ahrsA.deul[i];
-      pthread_mutex_unlock(&ahrsA.mutex);
+      //pthread_mutex_unlock(&ahrsA.mutex);
 
     }
   }
@@ -781,20 +781,22 @@ void imu_state ( void )  {
       pthread_mutex_unlock(&gyrB.mutex);
 
       // AHRS values
-      pthread_mutex_lock(&ahrsB.mutex);
-      att[i] += ahrsB.eul[i];
+      //pthread_mutex_lock(&ahrsB.mutex);
+      //att[i] += ahrsB.eul[i];
       //ang[i] += ahrsB.deul[i];
-      pthread_mutex_unlock(&ahrsB.mutex);
+      //pthread_mutex_unlock(&ahrsB.mutex);
 
     }
   }
 
   // Average all the data sources
-  if ( IMUA_ENABLED && IMUB_ENABLED )  {  for ( i=0; i<3; i++ )  {  att[i] /= 4.0;  ang[i] /= 2.0;  }  }
-  else                                 {  for ( i=0; i<3; i++ )  {  att[i] /= 2.0;  ang[i] /= 1.0;  }  }
+  //if ( IMUA_ENABLED && IMUB_ENABLED )  {  for ( i=0; i<3; i++ )  {  att[i] /= 4.0;  ang[i] /= 2.0;  }  }
+  //else                                 {  for ( i=0; i<3; i++ )  {  att[i] /= 2.0;  ang[i] /= 1.0;  }  }
+  for ( i=0; i<3; i++ )  {  att[i] /= 2.0;  ang[i] /= 2.0;  }
 
   // Correction b/c comp filter has no yaw value  
-  att[2] *= 2.0; 
+  //att[2] *= 2.0; 
+  att[2] = 0.0;
 
   // Push to data structure
   pthread_mutex_lock(&rot.mutex);

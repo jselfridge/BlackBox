@@ -404,8 +404,8 @@ void log_start ( void )  {
   sprintf( file, "%sparam.txt", datalog.path );
   datalog.param = fopen( file, "w" );
   if( datalog.param == NULL )  printf( "Error (log_init): Cannot generate 'param' file. \n" );
-  fprintf( datalog.param, "   ParamTime   " );
-  for ( i=1; i <= param_count; i++ )  fprintf( datalog.param, "   Param_%02d", i );
+  fprintf( datalog.param, "      param_time     " );
+  for ( i=1; i <= param_count; i++ )  fprintf( datalog.param, " Param_%02d   ", i );
 
   // Input datalog file
   sprintf( file, "%sinput.txt", datalog.path );
@@ -605,7 +605,7 @@ void log_record ( enum log_index index )  {
   ushort i;
   ulong  row;
   float  timestamp;
-  //struct timespec t;
+  struct timespec t;
 
   // Jump to appropriate log 
   switch(index) {
@@ -613,20 +613,23 @@ void log_record ( enum log_index index )  {
 
   // Record parameter values
   case LOG_PARAM :
-    /*
+
     // Determine timestamp
     clock_gettime( CLOCK_MONOTONIC, &t );
     timestamp = (float) ( t.tv_sec + ( t.tv_nsec / 1000000000.0f ) ) - datalog.offset;
 
-    pthread_mutex_lock(&gcs.mutex);
     if ( log_param.count < log_param.limit )  {
+
       row = log_param.count;
       log_param.time[row] = timestamp;
+
+      pthread_mutex_lock(&gcs.mutex);
       for ( i=0; i < param_count; i++ )  log_param.values [ row * param_count + i ] = param.val[i];
+      pthread_mutex_unlock(&gcs.mutex);
+
       log_param.count++;
     }
-    pthread_mutex_unlock(&gcs.mutex);
-    */
+
     return;
 
 
@@ -636,24 +639,30 @@ void log_record ( enum log_index index )  {
     timestamp = (float) ( tmr_io.start_sec + ( tmr_io.start_usec / 1000000.0f ) ) - datalog.offset;
 
     // Input data
-    pthread_mutex_lock(&input.mutex);
-    if ( log_input.count < log_input.limit ) {
+    if ( log_input.count < log_input.limit )  {
+
       row = log_input.count;
       log_input.time[row] = timestamp;
+
+      pthread_mutex_lock(&input.mutex);
       for ( i=0; i<10; i++ )  log_input.data [ row*10 +i ] = input.norm[i];
+      pthread_mutex_unlock(&input.mutex);
+
       log_input.count++;
     }
-    pthread_mutex_unlock(&input.mutex);
 
     // Output data
-    pthread_mutex_lock(&output.mutex);
-    if ( log_output.count < log_output.limit ) {
+    if ( log_output.count < log_output.limit )  {
+
       row = log_output.count;
       log_output.time[row] = timestamp;
+
+      pthread_mutex_lock(&output.mutex);
       for ( i=0; i<10; i++ )  log_output.data [ row*10 +i ] = output.norm[i];
+      pthread_mutex_unlock(&output.mutex);
+
       log_output.count++;
     }
-    pthread_mutex_unlock(&output.mutex);
 
     return;
 

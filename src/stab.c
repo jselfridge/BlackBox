@@ -10,7 +10,7 @@
 
 
 static void    stab_quad    ( void );
-//static double  stab_sf      ( sf_struct *sf, double r, double zp, double zd, bool areset );
+static double  stab_sf      ( sf_struct *sf, double r, double zp, double zd, bool areset );
 //static void    stab_sysid   ( sysid_struct *sysid, double u, double y );
 static void    stab_disarm  ( void );
 
@@ -45,11 +45,11 @@ void stab_init ( void )  {
   stab.range[CH_R] = 0.6;
   stab.range[CH_P] = 0.6;
   stab.range[CH_Y] = 2.0;
-  stab.range[CH_T] = 1.0;
+  stab.range[CH_T] = 0.5;
 
   // Throttle values
   stab.thrl[0] =  0.00;  // Tmin
-  stab.thrl[1] =  0.00;  // Tmax
+  stab.thrl[1] =  0.20;  // Tmax
   stab.thrl[2] =  0.00;  // Ttilt
 
   // Initalize state feedback data struct values
@@ -58,9 +58,14 @@ void stab_init ( void )  {
   //sfZ.r = 0.0;  sfZ.xp = 0.0;  sfZ.xd = 0.0;
 
   // Wrap values of pi
-  //sfX.wrap = true;
-  //sfY.wrap = true;
-  //sfZ.wrap = true;
+  sfX.wrap = true;
+  sfY.wrap = true;
+  sfZ.wrap = true;
+
+  // Assign fixed PD gains
+  sfX.kp = 0.055;  sfX.kd = 0.0055;
+  sfY.kp = 0.050;  sfY.kd = 0.0050;
+  sfZ.kp = 0.050;  sfZ.kd = 0.0000;
 
   /*/ Assign desired characteristics
   sfX.ts = 1.70;  sfX.mp =  5.0;  sfX.j = 220.0;  stab_refmdl( &sfX );
@@ -221,17 +226,11 @@ void stab_quad ( void )  {
   while ( heading >   M_PI )  heading -= 2.0 * M_PI;
   while ( heading <= -M_PI )  heading += 2.0 * M_PI;
 
-  /*/ Apply state feedback function
+  // Apply state feedback function
   reset = ( in[CH_T] < -0.2 );
   cmd[x] = stab_sf( &sfX, ref[x], att[x],  ang[x], reset );
   cmd[y] = stab_sf( &sfY, ref[y], att[y],  ang[y], reset );
   cmd[z] = stab_sf( &sfZ, ref[z], heading, ang[z], reset );
-  */
-
-  //--- DEBUGGING: Override SF commands ---//
-  cmd[x] = 0.0;  // ( ref[x] - att[x] ) * 0.085 - ang[x] * 0.055;
-  cmd[y] = 0.0;  // ( ref[y] - att[y] ) * 0.085 - ang[y] * 0.055;
-  cmd[z] = 0.0;  // ( ref[z] - ang[z] ) * 0.055;
 
   /*/ Perform system identification
   stab_sysid( &sysidX, cmd[x], att[x] );
@@ -278,34 +277,35 @@ void stab_quad ( void )  {
  *  stab_sf
  *  Apply state feedback control loop
  */
-/*
 double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
 
   // Local variables
-  double dt, ap, ad, j;
-  double kp, kd, ku;
-  double xp, xd, xa;
-  double Gp, Gd, Gu, u;
-  double p_tilde, d_tilde;
-  double kp_dot, kd_dot, ku_dot;
+  //double dt;
+  //double ap, ad, j;
+  double kp, kd; //, ku;
+  //double xp, xd, xa;
+  //double Gp, Gd, Gu;
+  double u;
+  //double p_tilde, d_tilde;
+  //double kp_dot, kd_dot, ku_dot;
   double diff;
   bool wrap;
 
   // Pull data from structure
   pthread_mutex_lock(&sf->mutex);
   wrap = sf->wrap;
-  dt = sf->dt;
-  ap = sf->ap;
-  ad = sf->ad;
-  j  = sf->j;
+  //dt = sf->dt;
+  //ap = sf->ap;
+  //ad = sf->ad;
+  //j  = sf->j;
   kp = sf->kp;
   kd = sf->kd;
-  ku = sf->ku;
-  xp = sf->xp;
-  xd = sf->xd;
-  Gp = sf->Gp;
-  Gd = sf->Gd;
-  Gu = sf->Gu;
+  //ku = sf->ku;
+  //xp = sf->xp;
+  //xd = sf->xd;
+  //Gp = sf->Gp;
+  //Gd = sf->Gd;
+  //Gu = sf->Gu;
   pthread_mutex_unlock(&sf->mutex);
 
   // Determine control input
@@ -316,7 +316,7 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
   }
   u = diff * kp - zd * kd;
 
-  // Determine ref model states
+  /*/ Determine ref model states
   diff = r - xp;
   if (wrap)  {
     if ( diff >   PI )  diff -= 2.0 * PI;
@@ -325,11 +325,12 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
   xa  = diff * ap - xd * ad;
   xd += dt * xa;
   xp += dt * xd + 0.5 * dt * dt * xa;
+  */
 
   // Reset adaptive gains if needed
-  if (areset)  {  Gp = 0.0;  Gd = 0.0;  Gu = 0.0;  }
+  //if (areset)  {  Gp = 0.0;  Gd = 0.0;  Gu = 0.0;  }
 
-  // Adaptive update laws
+  /*/ Adaptive update laws
   p_tilde = xp - zp;
   d_tilde = xd - zd;
   if (wrap)  {
@@ -339,29 +340,33 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
   kp_dot = - Gp * j * ( p_tilde + 2 * d_tilde ) * zp;
   kd_dot = - Gd * j * ( p_tilde + 2 * d_tilde ) * zd;
   ku_dot = - Gu * j * ( p_tilde + 2 * d_tilde ) * u;
+  */
 
-  // Projection operator  //--- WIP ---//
+  /*/ Projection operator  //--- WIP ---//
   double kp_dot_max = 0.0001;
   double kd_dot_max = 0.0001;
   double ku_dot_max = 0.0;
   if ( kp_dot > kp_dot_max )  kp_dot = kp_dot_max;  if ( kp_dot < -kp_dot_max )  kp_dot = -kp_dot_max;
   if ( kd_dot > kd_dot_max )  kd_dot = kd_dot_max;  if ( kd_dot < -kd_dot_max )  kd_dot = -kd_dot_max;
   if ( ku_dot > ku_dot_max )  ku_dot = ku_dot_max;  if ( ku_dot < -ku_dot_max )  ku_dot = -ku_dot_max;
+  */
 
-  // Update gain values
+  /*/ Update gain values
   kp += dt * kp_dot;
   kd += dt * kd_dot;
   ku += dt * ku_dot;
+  */
 
-  // Projection operator
+  /*/ Projection operator
   double kp_max = 0.120;
   double kd_max = 0.080;
   double ku_max = 1.0;
   if ( kp > kp_max )  kp = kp_max;
   if ( kd > kd_max )  kd = kd_max;
   if ( ku > ku_max )  ku = ku_max;
+  */
 
-  // Push data to structure
+  /*/ Push data to structure
   pthread_mutex_lock(&sf->mutex);
   sf->r  = r;
   sf->xp = xp;
@@ -371,10 +376,11 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
   sf->kd = kd;
   sf->ku = ku;
   pthread_mutex_unlock(&sf->mutex);
+  */
 
   return u;
 }
-*/
+
 
 /**
  *  stab_sysid

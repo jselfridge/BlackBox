@@ -28,15 +28,19 @@
 
 enum param_index {
 
-  /*/ Roll stabilization
-  X_ts = 0,
+  // Roll stabilization
+  X_kp = 0,
+  X_kd, /*
+  X_ts,
   X_mp,
   X_j,
   X_Gp,
   X_Gd,
   X_Gu,*/
 
-  /*/ Pitch stabilization
+  // Pitch stabilization
+  Y_kp,
+  Y_kd, /*
   Y_ts,
   Y_mp,
   Y_j, 
@@ -44,7 +48,9 @@ enum param_index {
   Y_Gd,
   Y_Gu,*/
 
-  /*/ Yaw stabilization
+  // Yaw stabilization
+  Z_kp,
+  Z_kd, /*
   Z_ts,
   Z_mp,
   Z_j,
@@ -53,7 +59,7 @@ enum param_index {
   Z_Gu,*/
 
   // Throttle values
-  T_min = 0,
+  T_min,
   T_max,
   T_tilt,
 

@@ -21,7 +21,7 @@ typedef struct stab_struct {
   double  off   [10];
   double  range [4];
   double  thrl  [3];
-  double  cmd   [4];
+  //double  cmd   [4];
   double  bank;
   double  climb;
   double  heading;
@@ -29,35 +29,35 @@ typedef struct stab_struct {
 } stab_struct;
 stab_struct stab;
 
-/*
+
 typedef struct sf_struct {
-  double  dt;
+  //double  dt;
   bool    wrap;
-  double  ts;
-  double  mp;
-  double  sigma;
-  double  zeta;
-  double  nfreq;
-  double  dfreq;
-  double  ap;
-  double  ad;
-  double  j;
+  //double  ts;
+  //double  mp;
+  //double  sigma;
+  //double  zeta;
+  //double  nfreq;
+  //double  dfreq;
+  //double  ap;
+  //double  ad;
+  //double  j;
   double  kp;
   double  kd;
-  double  ku;
-  double  r;
-  double  xp;
-  double  xd;
-  double  u;
-  double  Gp;
-  double  Gd;
-  double  Gu;
+  //double  ku;
+  //double  r;
+  //double  xp;
+  //double  xd;
+  //double  u;
+  //double  Gp;
+  //double  Gd;
+  //double  Gu;
   pthread_mutex_t mutex;
 } sf_struct;
 sf_struct sfX;
 sf_struct sfY;
 sf_struct sfZ;
-*/
+
 /*
 typedef struct sysid_struct {
   double z1;
