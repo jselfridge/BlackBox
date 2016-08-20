@@ -183,7 +183,7 @@ void imu_getcal ( imu_struct *imu )  {
   if(!f)  printf( "Error (imu_getcal): File for 'acc lpf' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
-    imu->acc->lpf[i] = atoi(buff);
+    imu->acc->lpf[i] = atoi(buff) / 100.0;
   }
   fclose(f);
 
@@ -213,7 +213,7 @@ void imu_getcal ( imu_struct *imu )  {
   if(!f)  printf( "Error (imu_getcal): File for 'mag lpf' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
-    imu->mag->lpf[i] = atoi(buff);
+    imu->mag->lpf[i] = atoi(buff) / 100.0;
   }
   fclose(f);
 
@@ -233,7 +233,7 @@ void imu_getcal ( imu_struct *imu )  {
   if(!f)  printf( "Error (imu_getcal): File for 'gyr lpf' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
-    imu->gyr->lpf[i] = atoi(buff);
+    imu->gyr->lpf[i] = atoi(buff) / 100.0;
   }
   fclose(f);
 
@@ -243,7 +243,7 @@ void imu_getcal ( imu_struct *imu )  {
   if(!f)  printf( "Error (imu_getcal): File for 'comp%c bias' not found. \n", imu->id );
   for ( i=0; i<2; i++ ) {
     fgets( buff, 32, f );
-    imu->comp->bias[i] = atoi(buff) / 10000.0;
+    imu->comp->bias[i] = atoi(buff) / 1000.0;
   }
   fclose(f);
 
@@ -252,15 +252,7 @@ void imu_getcal ( imu_struct *imu )  {
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'comp gain' not found. \n" );
   fgets( buff, 32, f );
-  imu->comp->gain = atoi(buff);
-  fclose(f);
-
-  // Set AHRS gain
-  sprintf( path, "../Param/board/gain/ahrs" );
-  f = fopen( path, "r" );
-  if(!f)  printf( "Error (imu_getcal): File for 'ahrs gain' not found. \n" );
-  fgets( buff, 32, f );
-  imu->ahrs->gain = atoi(buff);
+  imu->comp->gain = atoi(buff) / 1000.0;
   fclose(f);
 
   // Set AHRS bias
@@ -269,8 +261,16 @@ void imu_getcal ( imu_struct *imu )  {
   if(!f)  printf( "Error (imu_getcal): File for 'ahrs%c bias' not found. \n", imu->id );
   for ( i=0; i<3; i++ )  {
     fgets( buff, 32, f );
-    imu->ahrs->bias[i] = atoi(buff) / 10000;
+    imu->ahrs->bias[i] = atoi(buff) / 1000.0;
   }
+  fclose(f);
+
+  // Set AHRS gain
+  sprintf( path, "../Param/board/gain/ahrs" );
+  f = fopen( path, "r" );
+  if(!f)  printf( "Error (imu_getcal): File for 'ahrs gain' not found. \n" );
+  fgets( buff, 32, f );
+  imu->ahrs->gain = atoi(buff) / 1000.0;
   fclose(f);
 
   // Set unit quaternion value
@@ -278,33 +278,29 @@ void imu_getcal ( imu_struct *imu )  {
 
   // Display calibration values
   if(DEBUG) {
-
-    printf("   \
-    abias%c arange%c alpf%c   \
-    mbias%c mrange%c mlpf%c   \
-    gbias%c glpf%c  \n", 
-    imu->id, imu->id, imu->id, imu->id, imu->id, imu->id, imu->id, imu->id );
-
+    printf( "             Acc%c                   Mag%c                 Gyr%c             Off%c \n", imu->id, imu->id, imu->id, imu->id );
+    printf( "    |  Bias  Range    LPF  |  Bias  Range    LPF  |  Bias    LPF  |   Comp    AHRS  | \n" );
     for ( i=0; i<3; i++ ) {
-      printf("     ");
-      printf( "%4d    ",   imu->acc->bias[i]  );
-      printf( "%4d     ",  imu->acc->range[i] );
-      printf( "%4.2f   ",  imu->acc->lpf[i]   );
-      printf( "%4d     ",  imu->mag->bias[i]  );
-      printf( "%4d     ",  imu->mag->range[i] );
-      printf( "%4.2f   ",  imu->mag->lpf[i]   );
-      printf( "%4d     ",  imu->gyr->bias[i]  );
-      printf( "%4.2f   ",  imu->gyr->lpf[i]   );
+      printf("   ");
+      printf(" |  ");
+      printf( "%4d   ",  imu->acc->bias[i]  );
+      printf( "%4d   ",  imu->acc->range[i] );
+      printf( "%4.2f ",  imu->acc->lpf[i]   );
+      printf(" |  ");
+      printf( "%4d   ",  imu->mag->bias[i]  );
+      printf( "%4d   ",  imu->mag->range[i] );
+      printf( "%4.2f ",  imu->mag->lpf[i]   );
+      printf(" |  ");
+      printf( "%4d   ",  imu->gyr->bias[i]  );
+      printf( "%4.2f ",  imu->gyr->lpf[i]   );
+      printf(" |  ");
+      if(i!=2)  printf( "%5.3f   ",  imu->comp->bias[i] );
+      else      printf(" ---    ");
+      printf( "%5.3f ",  imu->ahrs->bias[i] );
+      printf(" |  ");
+      printf( "\n" );
     } 
   }
-
-  //printf( "%4.2f  \n", imu->comp->bias[0]  );
-  //printf( "%4.2f  \n", imu->comp->bias[1]  );
-  //printf( "%4.2f  \n", imu->comp->gain  );
-  //printf( "%4.2f  \n", imu->ahrs->gain  );
-  //printf( "%4.2f  \n", imu->ahrs->bias[0]  );
-  //printf( "%4.2f  \n", imu->ahrs->bias[1]  );
-  //printf( "%4.2f  \n", imu->ahrs->bias[2]  );
 
   return;
 }
