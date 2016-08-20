@@ -24,7 +24,7 @@ static void  log_close ( void );
 void log_init ( void )  {
   if(DEBUG)  printf("Initializing data logging \n");
 
-  // Set boolean values... move to "log.c"
+  // Set boolean values
   if(DEBUG)  printf("  Set boolean conditions \n");
   datalog.enabled  = false;
   datalog.setup    = false;
@@ -34,17 +34,10 @@ void log_init ( void )  {
   log_param.limit   =  LOG_MAX_PARAM;  
   log_input.limit   =  LOG_MAX_DUR * HZ_IO;
   log_output.limit  =  LOG_MAX_DUR * HZ_IO;
-  log_gyrA.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
-  log_accA.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
-  log_magA.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
-  log_compA.limit   =  LOG_MAX_DUR * HZ_IMU_FAST;
-  log_ahrsA.limit   =  LOG_MAX_DUR * HZ_IMU_FAST;
-  log_gyrB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
-  log_accB.limit    =  LOG_MAX_DUR * HZ_IMU_FAST;
-  log_magB.limit    =  LOG_MAX_DUR * HZ_IMU_SLOW;
-  log_compB.limit   =  LOG_MAX_DUR * HZ_IMU_FAST;
-  log_ahrsB.limit   =  LOG_MAX_DUR * HZ_IMU_FAST;
-  log_stab.limit    =  LOG_MAX_DUR * HZ_STAB;
+  log_imu.limit     =  LOG_MAX_DUR * HZ_IMU;
+  //log_stab.limit    =  LOG_MAX_DUR * HZ_STAB;
+  //log_ins.limit     =  LOG_MAX_DUR * HZ_INS;
+  //log_nav.limit     =  LOG_MAX_DUR * HZ_NAV;
 
   // Parameter value setup
   log_param.time    =  malloc( sizeof(float)  * log_param.limit               );
@@ -58,43 +51,45 @@ void log_init ( void )  {
   log_output.time   =  malloc( sizeof(float)  * log_output.limit          );
   log_output.data   =  malloc( sizeof(float)  * log_output.limit * OUT_CH );
 
+  // Timestamp setup
+  log_imu.time      = malloc( sizeof(float)  * log_imu.limit  );
+  //log_stab.time     = malloc( sizeof(float)  * log_stab.limit );
+  //log_ins.time      = malloc( sizeof(float)  * log_ins.limit  );
+  //log_nav.time      = malloc( sizeof(float)  * log_nav.limit  );
+
+  // Timing loop duration setup
+  log_imu.dur       = malloc( sizeof(ulong)  * log_imu.limit  );
+  //log_stab.dur      = malloc( sizeof(ulong)  * log_stab.limit );
+  //log_ins.dur       = malloc( sizeof(ulong)  * log_ins.limit  );
+  //log_nav.dur       = malloc( sizeof(ulong)  * log_nag.limit  );
+
   // IMU A setup
   if (IMUA_ENABLED) {
 
   // Gyroscope A setup
-  log_gyrA.time     =  malloc( sizeof(float)  * log_gyrA.limit     );
-  log_gyrA.dur      =  malloc( sizeof(ulong)  * log_gyrA.limit     );
-  log_gyrA.raw      =  malloc( sizeof(short)  * log_gyrA.limit * 3 );
-  log_gyrA.scaled   =  malloc( sizeof(float)  * log_gyrA.limit * 3 );
-  log_gyrA.filter   =  malloc( sizeof(float)  * log_gyrA.limit * 3 );
+  log_gyrA.raw      =  malloc( sizeof(short)  * log_imu.limit * 3 );
+  log_gyrA.scaled   =  malloc( sizeof(float)  * log_imu.limit * 3 );
+  log_gyrA.filter   =  malloc( sizeof(float)  * log_imu.limit * 3 );
 
   // Accelerometer A setup
-  log_accA.time     =  malloc( sizeof(float)  * log_accA.limit     );
-  log_accA.dur      =  malloc( sizeof(ulong)  * log_accA.limit     );
-  log_accA.raw      =  malloc( sizeof(short)  * log_accA.limit * 3 );
-  log_accA.scaled   =  malloc( sizeof(float)  * log_accA.limit * 3 );
-  log_accA.filter   =  malloc( sizeof(float)  * log_accA.limit * 3 );
+  log_accA.raw      =  malloc( sizeof(short)  * log_imu.limit * 3 );
+  log_accA.scaled   =  malloc( sizeof(float)  * log_imu.limit * 3 );
+  log_accA.filter   =  malloc( sizeof(float)  * log_imu.limit * 3 );
 
   // Magnetometer A setup
-  log_magA.time     =  malloc( sizeof(float)  * log_magA.limit     );
-  log_magA.dur      =  malloc( sizeof(ulong)  * log_magA.limit     );
-  log_magA.raw      =  malloc( sizeof(short)  * log_magA.limit * 3 );
-  log_magA.scaled   =  malloc( sizeof(float)  * log_magA.limit * 3 );
-  log_magA.filter   =  malloc( sizeof(float)  * log_magA.limit * 3 );
+  log_magA.raw      =  malloc( sizeof(short)  * log_imu.limit * 3 );
+  log_magA.scaled   =  malloc( sizeof(float)  * log_imu.limit * 3 );
+  log_magA.filter   =  malloc( sizeof(float)  * log_imu.limit * 3 );
 
   // Complimentary filter A setup
-  log_compA.time    =  malloc( sizeof(float)  * log_compA.limit );
-  log_compA.dur     =  malloc( sizeof(ulong)  * log_compA.limit );
-  log_compA.roll    =  malloc( sizeof(float)  * log_compA.limit );
-  log_compA.pitch   =  malloc( sizeof(float)  * log_compA.limit );
+  log_compA.roll    =  malloc( sizeof(float)  * log_imu.limit );
+  log_compA.pitch   =  malloc( sizeof(float)  * log_imu.limit );
 
   // Attitude and Heading Reference System A setup
-  log_ahrsA.time    =  malloc( sizeof(float)  * log_ahrsA.limit     );
-  log_ahrsA.dur     =  malloc( sizeof(ulong)  * log_ahrsA.limit     );
-  log_ahrsA.quat    =  malloc( sizeof(float)  * log_ahrsA.limit * 4 );
-  log_ahrsA.dquat   =  malloc( sizeof(float)  * log_ahrsA.limit * 4 );
-  log_ahrsA.eul     =  malloc( sizeof(float)  * log_ahrsA.limit * 3 );
-  log_ahrsA.deul    =  malloc( sizeof(float)  * log_ahrsA.limit * 3 );
+  log_ahrsA.quat    =  malloc( sizeof(float)  * log_imu.limit * 4 );
+  log_ahrsA.dquat   =  malloc( sizeof(float)  * log_imu.limit * 4 );
+  log_ahrsA.eul     =  malloc( sizeof(float)  * log_imu.limit * 3 );
+  log_ahrsA.deul    =  malloc( sizeof(float)  * log_imu.limit * 3 );
 
   }
 
@@ -102,90 +97,85 @@ void log_init ( void )  {
   if (IMUB_ENABLED) {
 
   // Gyroscope B setup
-  log_gyrB.time     =  malloc( sizeof(float)  * log_gyrB.limit     );
-  log_gyrB.dur      =  malloc( sizeof(ulong)  * log_gyrB.limit     );
-  log_gyrB.raw      =  malloc( sizeof(short)  * log_gyrB.limit * 3 );
-  log_gyrB.scaled   =  malloc( sizeof(float)  * log_gyrB.limit * 3 );
-  log_gyrB.filter   =  malloc( sizeof(float)  * log_gyrB.limit * 3 );
+  log_gyrB.raw      =  malloc( sizeof(short)  * log_imu.limit * 3 );
+  log_gyrB.scaled   =  malloc( sizeof(float)  * log_imu.limit * 3 );
+  log_gyrB.filter   =  malloc( sizeof(float)  * log_imu.limit * 3 );
 
   // Accelerometer B setup
-  log_accB.time     =  malloc( sizeof(float)  * log_accB.limit     );
-  log_accB.dur      =  malloc( sizeof(ulong)  * log_accB.limit     );
-  log_accB.raw      =  malloc( sizeof(short)  * log_accB.limit * 3 );
-  log_accB.scaled   =  malloc( sizeof(float)  * log_accB.limit * 3 );
-  log_accB.filter   =  malloc( sizeof(float)  * log_accB.limit * 3 );
+  log_accB.raw      =  malloc( sizeof(short)  * log_imu.limit * 3 );
+  log_accB.scaled   =  malloc( sizeof(float)  * log_imu.limit * 3 );
+  log_accB.filter   =  malloc( sizeof(float)  * log_imu.limit * 3 );
 
   // Magnetometer B setup
-  log_magB.time     =  malloc( sizeof(float)  * log_magB.limit     );
-  log_magB.dur      =  malloc( sizeof(ulong)  * log_magB.limit     );
-  log_magB.raw      =  malloc( sizeof(short)  * log_magB.limit * 3 );
-  log_magB.scaled   =  malloc( sizeof(float)  * log_magB.limit * 3 );
-  log_magB.filter   =  malloc( sizeof(float)  * log_magB.limit * 3 );
+  log_magB.raw      =  malloc( sizeof(short)  * log_imu.limit * 3 );
+  log_magB.scaled   =  malloc( sizeof(float)  * log_imu.limit * 3 );
+  log_magB.filter   =  malloc( sizeof(float)  * log_imu.limit * 3 );
 
   // Complimentary filter B setup
-  log_compB.time    =  malloc( sizeof(float)  * log_compB.limit );
-  log_compB.dur     =  malloc( sizeof(ulong)  * log_compB.limit );
-  log_compB.roll    =  malloc( sizeof(float)  * log_compB.limit );
-  log_compB.pitch   =  malloc( sizeof(float)  * log_compB.limit );
+  log_compB.roll    =  malloc( sizeof(float)  * log_imu.limit );
+  log_compB.pitch   =  malloc( sizeof(float)  * log_imu.limit );
 
   // Attitude and Heading Reference System B setup
-  log_ahrsB.time    =  malloc( sizeof(float)  * log_ahrsB.limit     );
-  log_ahrsB.dur     =  malloc( sizeof(ulong)  * log_ahrsB.limit     );
-  log_ahrsB.quat    =  malloc( sizeof(float)  * log_ahrsB.limit * 4 );
-  log_ahrsB.dquat   =  malloc( sizeof(float)  * log_ahrsB.limit * 4 );
-  log_ahrsB.eul     =  malloc( sizeof(float)  * log_ahrsB.limit * 3 );
-  log_ahrsB.deul    =  malloc( sizeof(float)  * log_ahrsB.limit * 3 );
+  log_ahrsB.quat    =  malloc( sizeof(float)  * log_imu.limit * 4 );
+  log_ahrsB.dquat   =  malloc( sizeof(float)  * log_imu.limit * 4 );
+  log_ahrsB.eul     =  malloc( sizeof(float)  * log_imu.limit * 3 );
+  log_ahrsB.deul    =  malloc( sizeof(float)  * log_imu.limit * 3 );
 
   }
 
+  // Rotational states setup
+  log_rot.att       =  malloc( sizeof(float)  * log_imu.limit * 3 );
+  log_rot.ang       =  malloc( sizeof(float)  * log_imu.limit * 3 );
+
+
   // Stabilization setup
-  log_stab.time     =  malloc( sizeof(float)  * log_stab.limit     );
-  log_stab.dur      =  malloc( sizeof(ulong)  * log_stab.limit     );
+  //log_stab.time     =  malloc( sizeof(float)  * log_stab.limit     );
+  //log_stab.dur      =  malloc( sizeof(ulong)  * log_stab.limit     );
 
   // SF roll stabilization
-  log_sfX.r         =  malloc( sizeof(float)  * log_stab.limit );
-  log_sfX.xp        =  malloc( sizeof(float)  * log_stab.limit );
-  log_sfX.xd        =  malloc( sizeof(float)  * log_stab.limit );
-  log_sfX.u         =  malloc( sizeof(float)  * log_stab.limit );
-  log_sfX.kp        =  malloc( sizeof(float)  * log_stab.limit );
-  log_sfX.kd        =  malloc( sizeof(float)  * log_stab.limit );
-  log_sfX.ku        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfX.r         =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfX.xp        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfX.xd        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfX.u         =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfX.kp        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfX.kd        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfX.ku        =  malloc( sizeof(float)  * log_stab.limit );
 
   // SF pitch stabilization
-  log_sfY.r         =  malloc( sizeof(float)  * log_stab.limit );
-  log_sfY.xp        =  malloc( sizeof(float)  * log_stab.limit );
-  log_sfY.xd        =  malloc( sizeof(float)  * log_stab.limit );
-  log_sfY.u         =  malloc( sizeof(float)  * log_stab.limit );
-  log_sfY.kp        =  malloc( sizeof(float)  * log_stab.limit );
-  log_sfY.kd        =  malloc( sizeof(float)  * log_stab.limit );
-  log_sfY.ku        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfY.r         =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfY.xp        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfY.xd        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfY.u         =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfY.kp        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfY.kd        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfY.ku        =  malloc( sizeof(float)  * log_stab.limit );
 
   // SF yaw stabilization
-  log_sfZ.r         =  malloc( sizeof(float)  * log_stab.limit );
-  log_sfZ.xp        =  malloc( sizeof(float)  * log_stab.limit );
-  log_sfZ.xd        =  malloc( sizeof(float)  * log_stab.limit );
-  log_sfZ.u         =  malloc( sizeof(float)  * log_stab.limit );
-  log_sfZ.kp        =  malloc( sizeof(float)  * log_stab.limit );
-  log_sfZ.kd        =  malloc( sizeof(float)  * log_stab.limit );
-  log_sfZ.ku        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfZ.r         =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfZ.xp        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfZ.xd        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfZ.u         =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfZ.kp        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfZ.kd        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfZ.ku        =  malloc( sizeof(float)  * log_stab.limit );
 
   // SysID roll axis
-  log_sysidX.z1     =  malloc( sizeof(float)  * log_stab.limit );
-  log_sysidX.z2     =  malloc( sizeof(float)  * log_stab.limit );
-  log_sysidX.p1     =  malloc( sizeof(float)  * log_stab.limit );
-  log_sysidX.p2     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sysidX.z1     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sysidX.z2     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sysidX.p1     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sysidX.p2     =  malloc( sizeof(float)  * log_stab.limit );
 
   // SysID pitch axis
-  log_sysidY.z1     =  malloc( sizeof(float)  * log_stab.limit );
-  log_sysidY.z2     =  malloc( sizeof(float)  * log_stab.limit );
-  log_sysidY.p1     =  malloc( sizeof(float)  * log_stab.limit );
-  log_sysidY.p2     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sysidY.z1     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sysidY.z2     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sysidY.p1     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sysidY.p2     =  malloc( sizeof(float)  * log_stab.limit );
 
   // SysID roll axis
-  log_sysidZ.z1     =  malloc( sizeof(float)  * log_stab.limit );
-  log_sysidZ.z2     =  malloc( sizeof(float)  * log_stab.limit );
-  log_sysidZ.p1     =  malloc( sizeof(float)  * log_stab.limit );
-  log_sysidZ.p2     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sysidZ.z1     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sysidZ.z2     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sysidZ.p1     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sysidZ.p2     =  malloc( sizeof(float)  * log_stab.limit );
 
   /*
   // EKF setup
@@ -232,39 +222,42 @@ void log_exit ( void )  {
   free(log_output.time);
   free(log_output.data);
 
+
+  // Timestamp memory
+  free(log_imu.time);
+  //free(log_stab.time);
+  //free(log_ins.time);
+  //free(log_nav.time);
+
+  // Timing loop duration memory
+  free(log_imu.dur);
+  //free(log_stab.dur);
+  //free(log_ins.dur);
+  //free(log_nav.dur);
+
   // IMU A memory
   if (IMUA_ENABLED) {
 
   // Gyroscope A memory
-  free(log_gyrA.time);
-  free(log_gyrA.dur);
   free(log_gyrA.raw);
   free(log_gyrA.scaled);
   free(log_gyrA.filter);
 
   // Accelerometer A memory
-  free(log_accA.time);
-  free(log_accA.dur);
   free(log_accA.raw);
   free(log_accA.scaled);
   free(log_accA.filter);
 
   // Magnetometer A memory
-  free(log_magA.time);
-  free(log_magA.dur);
   free(log_magA.raw);
   free(log_magA.scaled);
   free(log_magA.filter);
 
   // Comp filter A memory
-  free(log_compA.time);
-  free(log_compA.dur);
   free(log_compA.roll);
   free(log_compA.pitch);
 
   // Attitude/Heading A memory
-  free(log_ahrsA.time);
-  free(log_ahrsA.dur);
   free(log_ahrsA.quat);
   free(log_ahrsA.dquat);
   free(log_ahrsA.eul);
@@ -276,35 +269,25 @@ void log_exit ( void )  {
   if (IMUB_ENABLED) {
 
   // Gyroscope B memory
-  free(log_gyrB.time);
-  free(log_gyrB.dur);
   free(log_gyrB.raw);
   free(log_gyrB.scaled);
   free(log_gyrB.filter);
 
   // Accelerometer B memory
-  free(log_accB.time);
-  free(log_accB.dur);
   free(log_accB.raw);
   free(log_accB.scaled);
   free(log_accB.filter);
 
   // Magnetometer B memory
-  free(log_magB.time);
-  free(log_magB.dur);
   free(log_magB.raw);
   free(log_magB.scaled);
   free(log_magB.filter);
 
   // Comp filter B memory
-  free(log_compB.time);
-  free(log_compB.dur);
   free(log_compB.roll);
   free(log_compB.pitch);
 
   // Attitude/Heading B memory
-  free(log_ahrsB.time);
-  free(log_ahrsB.dur);
   free(log_ahrsB.quat);
   free(log_ahrsB.dquat);
   free(log_ahrsB.eul);
@@ -312,54 +295,58 @@ void log_exit ( void )  {
 
   }
 
+  // Rotational states memory
+  free(log_rot.att);
+  free(log_rot.ang);
+
   // Stabilization memory
-  free(log_stab.time);
-  free(log_stab.dur);
+  //free(log_stab.time);
+  //free(log_stab.dur);
 
   // SF roll stab memory
-  free(log_sfX.r);
-  free(log_sfX.xp);
-  free(log_sfX.xd);
-  free(log_sfX.u);
-  free(log_sfX.kp);
-  free(log_sfX.kd);
-  free(log_sfX.ku);
+  //free(log_sfX.r);
+  //free(log_sfX.xp);
+  //free(log_sfX.xd);
+  //free(log_sfX.u);
+  //free(log_sfX.kp);
+  //free(log_sfX.kd);
+  //free(log_sfX.ku);
 
   // SF pitch stab memory
-  free(log_sfY.r);
-  free(log_sfY.xp);
-  free(log_sfY.xd);
-  free(log_sfY.u);
-  free(log_sfY.kp);
-  free(log_sfY.kd);
-  free(log_sfY.ku);
+  //free(log_sfY.r);
+  //free(log_sfY.xp);
+  //free(log_sfY.xd);
+  //free(log_sfY.u);
+  //free(log_sfY.kp);
+  //free(log_sfY.kd);
+  //free(log_sfY.ku);
 
   // SF yaw stab memory
-  free(log_sfZ.r);
-  free(log_sfZ.xp);
-  free(log_sfZ.xd);
-  free(log_sfZ.u);
-  free(log_sfZ.kp);
-  free(log_sfZ.kd);
-  free(log_sfZ.ku);
+  //free(log_sfZ.r);
+  //free(log_sfZ.xp);
+  //free(log_sfZ.xd);
+  //free(log_sfZ.u);
+  //free(log_sfZ.kp);
+  //free(log_sfZ.kd);
+  //free(log_sfZ.ku);
 
   // SysID roll memory
-  free(log_sysidX.z1);
-  free(log_sysidX.z2);
-  free(log_sysidX.p1);
-  free(log_sysidX.p2);
+  //free(log_sysidX.z1);
+  //free(log_sysidX.z2);
+  //free(log_sysidX.p1);
+  //free(log_sysidX.p2);
 
   // SysID pitch memory
-  free(log_sysidY.z1);
-  free(log_sysidY.z2);
-  free(log_sysidY.p1);
-  free(log_sysidY.p2);
+  //free(log_sysidY.z1);
+  //free(log_sysidY.z2);
+  //free(log_sysidY.p1);
+  //free(log_sysidY.p2);
 
   // SysID yaw memory
-  free(log_sysidZ.z1);
-  free(log_sysidZ.z2);
-  free(log_sysidZ.p1);
-  free(log_sysidZ.p2);
+  //free(log_sysidZ.z1);
+  //free(log_sysidZ.z2);
+  //free(log_sysidZ.p1);
+  //free(log_sysidZ.p2);
 
   /*
   // EKF memory
@@ -396,17 +383,10 @@ void log_start ( void )  {
   log_param.count  = 0;
   log_input.count  = 0;
   log_output.count = 0;
-  log_gyrA.count   = 0;
-  log_accA.count   = 0;
-  log_magA.count   = 0;
-  log_compA.count  = 0;
-  log_ahrsA.count  = 0;
-  log_gyrB.count   = 0;
-  log_accB.count   = 0;
-  log_magB.count   = 0;
-  log_compB.count  = 0;
-  log_ahrsB.count  = 0;
-  log_stab.count   = 0;
+  log_imu.count    = 0;
+  //log_stab.count   = 0;
+  //log_ins.count    = 0;
+  //log_nav.count    = 0;
 
   // Allocate dir/path/file memory
   datalog.dir  = malloc(16);
@@ -454,6 +434,12 @@ void log_start ( void )  {
     Out01    Out02    Out03    Out04    Out05\
     Out06    Out07    Out08    Out09    Out10" );
 
+  // IMU timing thread datalog file
+  sprintf( file, "%simu.txt", datalog.path );
+  datalog.imu = fopen( file, "w" );
+  if( datalog.imu == NULL )  printf( "Error (log_init): Cannot generate 'imu' file. \n" );
+  fprintf( datalog.imu, "     imuTime   imuDur  ");
+
   // IMUA datalogs
   if (IMUA_ENABLED)  {
 
@@ -461,8 +447,7 @@ void log_start ( void )  {
   sprintf( file, "%sgyrA.txt", datalog.path );
   datalog.gyrA = fopen( file, "w" );
   if( datalog.gyrA == NULL )  printf( "Error (log_init): Cannot generate 'gyrA' file. \n" );
-  fprintf( datalog.gyrA,
-    "    GyrAtime  GyrAdur  \
+  fprintf( datalog.gyrA, "\
     GyrArx  GyrAry  GyrArz   \
     GyrAsx   GyrAsy   GyrAsz   \
     GyrAfx   GyrAfy   GyrAfz");
@@ -471,8 +456,7 @@ void log_start ( void )  {
   sprintf( file, "%saccA.txt", datalog.path );
   datalog.accA = fopen( file, "w" );
   if( datalog.accA == NULL )  printf( "Error (log_init): Cannot generate 'accA' file. \n" );
-  fprintf( datalog.accA, 
-    "    AccAtime  AccAdur  \
+  fprintf( datalog.accA, "\
     AccArx  AccAry  AccArz   \
     AccAsx   AccAsy   AccAsz   \
     AccAfx   AccAfy   AccAfz");
@@ -481,8 +465,7 @@ void log_start ( void )  {
   sprintf( file, "%smagA.txt", datalog.path );
   datalog.magA = fopen( file, "w" );
   if( datalog.magA == NULL )  printf( "Error (log_init): Cannot generate 'magA' file. \n" );
-  fprintf( datalog.magA,
-    "    MagAtime  MagAdur  \
+  fprintf( datalog.magA, "\
     MagArx  MagAry  MagArz   \
     MagAsx   MagAsy   MagAsz   \
     MagAfx   MagAfy   MagAfz");
@@ -491,14 +474,13 @@ void log_start ( void )  {
   sprintf( file, "%scompA.txt", datalog.path );
   datalog.compA = fopen( file, "w" );
   if( datalog.compA == NULL )  printf( "Error (log_init): Cannot generate 'compA' file. \n" );
-  fprintf( datalog.compA, "   CompAtime CompAdur    CompAroll CompApitch ");  
+  fprintf( datalog.compA, "   CompAroll CompApitch ");  
 
   // Attitude and heading reference system A datalog file
   sprintf( file, "%sahrsA.txt", datalog.path );
   datalog.ahrsA = fopen( file, "w" );
   if( datalog.ahrsA == NULL )  printf( "Error (log_init): Cannot generate 'ahrsA' file. \n" );
-  fprintf( datalog.ahrsA,
-    "   ahrsAtime ahrsAdur   \
+  fprintf( datalog.ahrsA, "\
     QuatAw   QuatAx   QuatAy   QuatAz  \
     dQuatAw  dQuatAx  dQuatAy  dQuatAz    \
     EulAx    EulAy    EulAz   \
@@ -513,8 +495,7 @@ void log_start ( void )  {
   sprintf( file, "%sgyrB.txt", datalog.path );
   datalog.gyrB = fopen( file, "w" );
   if( datalog.gyrB == NULL )  printf( "Error (log_init): Cannot generate 'gyrB' file. \n" );
-  fprintf( datalog.gyrB,
-    "    GyrBtime  GyrBdur  \
+  fprintf( datalog.gyrB, "\
     GyrBrx  GyrBry  GyrBrz   \
     GyrBsx   GyrBsy   GyrBsz   \
     GyrBfx   GyrBfy   GyrBfz");
@@ -523,8 +504,7 @@ void log_start ( void )  {
   sprintf( file, "%saccB.txt", datalog.path );
   datalog.accB = fopen( file, "w" );
   if( datalog.accB == NULL )  printf( "Error (log_init): Cannot generate 'accB' file. \n" );
-  fprintf( datalog.accB, 
-    "    AccBtime  AccBdur  \
+  fprintf( datalog.accB, "\
     AccBrx  AccBry  AccBrz   \
     AccBsx   AccBsy   AccBsz   \
     AccBfx   AccBfy   AccBfz");
@@ -533,8 +513,7 @@ void log_start ( void )  {
   sprintf( file, "%smagB.txt", datalog.path );
   datalog.magB = fopen( file, "w" );
   if( datalog.magB == NULL )  printf( "Error (log_init): Cannot generate 'magB' file. \n" );
-  fprintf( datalog.magB,
-    "    MagBtime  MagBdur  \
+  fprintf( datalog.magB, "\
     MagBrx  MagBry  MagBrz   \
     MagBsx   MagBsy   MagBsz   \
     MagBfx   MagBfy   MagBfz");
@@ -543,14 +522,13 @@ void log_start ( void )  {
   sprintf( file, "%scompB.txt", datalog.path );
   datalog.compB = fopen( file, "w" );
   if( datalog.compB == NULL )  printf( "Error (log_init): Cannot generate 'compB' file. \n" );
-  fprintf( datalog.compB, "   CompBtime CompBdur    CompBroll CompBpitch ");  
+  fprintf( datalog.compB, "    CompBroll CompBpitch ");  
 
   // Attitude and heading reference system B datalog file
   sprintf( file, "%sahrsB.txt", datalog.path );
   datalog.ahrsB = fopen( file, "w" );
   if( datalog.ahrsB == NULL )  printf( "Error (log_init): Cannot generate 'ahrsB' file. \n" );
-  fprintf( datalog.ahrsB,
-    "   ahrsBtime ahrsBdur   \
+  fprintf( datalog.ahrsB, "\
     QuatBw   QuatBx   QuatBy   QuatBz  \
     dQuatBw  dQuatBx  dQuatBy  dQuatBz    \
     EulBx    EulBy    EulBz   \
@@ -558,6 +536,7 @@ void log_start ( void )  {
 
   }
 
+  /*
   // Stabilization datalog file
   sprintf( file, "%sstab.txt", datalog.path );
   datalog.stab = fopen( file, "w" );
@@ -577,6 +556,7 @@ void log_start ( void )  {
     X_z1     X_z2     X_p1     X_p2     \
     Y_z1     Y_z2     Y_p1     Y_p2     \
     Z_z1     Z_z2     Z_p1     Z_p2    " );
+  */
 
   /*
   // EKF datalog file

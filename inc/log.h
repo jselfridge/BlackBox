@@ -47,23 +47,24 @@ typedef struct log_imu_struct {
   ulong limit;
   float *time;
   ulong *dur;
+} log_imu_struct;
+log_imu_struct log_imu;
+
+
+typedef struct log_imudata_struct {
   short *raw;
   float *scaled;
   float *filter;
-} log_imu_struct;
-log_imu_struct log_gyrA;
-log_imu_struct log_accA;
-log_imu_struct log_magA;
-log_imu_struct log_gyrB;
-log_imu_struct log_accB;
-log_imu_struct log_magB;
+} log_imudata_struct;
+log_imudata_struct log_gyrA;
+log_imudata_struct log_accA;
+log_imudata_struct log_magA;
+log_imudata_struct log_gyrB;
+log_imudata_struct log_accB;
+log_imudata_struct log_magB;
 
 
 typedef struct log_comp_struct {
-  ulong count;
-  ulong limit;
-  float *time;
-  ulong *dur;
   float *roll;
   float *pitch;
 } log_comp_struct;
@@ -72,10 +73,6 @@ log_comp_struct log_compB;
 
 
 typedef struct log_ahrs_struct {
-  ulong count;
-  ulong limit;
-  float *time;
-  ulong *dur;
   float *quat;
   float *dquat;
   float *eul;
@@ -83,6 +80,12 @@ typedef struct log_ahrs_struct {
 } log_ahrs_struct;
 log_ahrs_struct log_ahrsA;
 log_ahrs_struct log_ahrsB;
+
+typedef struct log_rot_struct {
+  float *att;
+  float *ang;
+} log_rot_struct;
+log_rot_struct log_rot;
 
 /*
 typedef struct log_stab_struct {
