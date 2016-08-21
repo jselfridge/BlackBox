@@ -97,20 +97,17 @@ typedef struct log_stab_struct {
 } log_stab_struct;
 log_stab_struct log_stab;
 
-/*
+
 typedef struct log_sf_struct {
   float *r;
-  float *xp;
-  float *xd;
+  float *zp;
+  float *zd;
   float *u;
-  float *kp;
-  float *kd;
-  float *ku;
 } log_sf_struct;
 log_sf_struct log_sfX;
-log_sf_struct log_sfY;
-log_sf_struct log_sfZ;
-*/
+//log_sf_struct log_sfY;
+//log_sf_struct log_sfZ;
+
 /*
 typedef struct log_sysid_struct {
   float *z1;
@@ -174,6 +171,7 @@ typedef struct datalog_struct {
   FILE   *ahrsB;
   FILE   *rot;
   FILE   *stab;
+  FILE   *sfX;
 } datalog_struct;
 datalog_struct datalog;
 

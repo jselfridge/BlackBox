@@ -52,20 +52,20 @@ void stab_init ( void )  {
   stab.thrl[1] =  0.20;  // Tmax
   stab.thrl[2] =  0.00;  // Ttilt
 
+  // Wrap values of pi
+  sfX.wrap = true;
+  //sfY.wrap = true;
+  //sfZ.wrap = true;
+
   // Initalize state feedback data struct values
-  //sfX.r = 0.0;  sfX.xp = 0.0;  sfX.xd = 0.0;
+  sfX.r = 0.0;  sfX.zp = 0.0;  sfX.zd = 0.0;
   //sfY.r = 0.0;  sfY.xp = 0.0;  sfY.xd = 0.0;
   //sfZ.r = 0.0;  sfZ.xp = 0.0;  sfZ.xd = 0.0;
 
-  // Wrap values of pi
-  sfX.wrap = true;
-  sfY.wrap = true;
-  sfZ.wrap = true;
-
   // Assign fixed PD gains
-  sfX.kp = 0.055;  sfX.kd = 0.0055;
-  sfY.kp = 0.050;  sfY.kd = 0.0050;
-  sfZ.kp = 0.050;  sfZ.kd = 0.0000;
+  sfX.kp = 0.120;  sfX.kd = 0.025;
+  //sfY.kp = 0.050;  sfY.kd = 0.0050;
+  //sfZ.kp = 0.050;  sfZ.kd = 0.0000;
 
   /*/ Assign desired characteristics
   sfX.ts = 1.70;  sfX.mp =  5.0;  sfX.j = 220.0;  stab_refmdl( &sfX );
@@ -228,9 +228,9 @@ void stab_quad ( void )  {
 
   // Apply state feedback function
   reset = ( in[CH_T] < -0.2 );
-  cmd[x] = stab_sf( &sfX, ref[x], att[x],  ang[x], reset );
-  cmd[y] = stab_sf( &sfY, ref[y], att[y],  ang[y], reset );
-  cmd[z] = stab_sf( &sfZ, ref[z], heading, ang[z], reset );
+  cmd[x] = stab_sf( &sfX, ref[x], att[x], ang[x], reset );
+  cmd[y] = 0.0;  // stab_sf( &sfY, ref[y], att[y], ang[y], reset );
+  cmd[z] = 0.0;  // stab_sf( &sfZ, ref[z], ang[z],      0, reset );
 
   /*/ Perform system identification
   stab_sysid( &sysidX, cmd[x], att[x] );
@@ -259,7 +259,6 @@ void stab_quad ( void )  {
 
   // Push stabilization data
   pthread_mutex_lock(&stab.mutex);
-  //for ( i=0; i<4; i++ )  stab.cmd[i] = cmd[i];
   stab.heading = heading;
   pthread_mutex_unlock(&stab.mutex);
 
@@ -280,26 +279,27 @@ void stab_quad ( void )  {
 double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
 
   // Local variables
+  bool   wrap;
+  double kp, kd;
+  double u;
+  double diff;
   //double dt;
   //double ap, ad, j;
-  double kp, kd; //, ku;
+  //double ku;
   //double xp, xd, xa;
   //double Gp, Gd, Gu;
-  double u;
   //double p_tilde, d_tilde;
   //double kp_dot, kd_dot, ku_dot;
-  double diff;
-  bool wrap;
 
   // Pull data from structure
   pthread_mutex_lock(&sf->mutex);
   wrap = sf->wrap;
+  kp   = sf->kp;
+  kd   = sf->kd;
   //dt = sf->dt;
   //ap = sf->ap;
   //ad = sf->ad;
   //j  = sf->j;
-  kp = sf->kp;
-  kd = sf->kd;
   //ku = sf->ku;
   //xp = sf->xp;
   //xd = sf->xd;
@@ -366,17 +366,16 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
   if ( ku > ku_max )  ku = ku_max;
   */
 
-  /*/ Push data to structure
+  // Push data to structure
   pthread_mutex_lock(&sf->mutex);
   sf->r  = r;
-  sf->xp = xp;
-  sf->xd = xd;
+  sf->zp = zp;
+  sf->zd = zd;
   sf->u  = u;
-  sf->kp = kp;
-  sf->kd = kd;
-  sf->ku = ku;
+  //sf->kp = kp;
+  //sf->kd = kd;
+  //sf->ku = ku;
   pthread_mutex_unlock(&sf->mutex);
-  */
 
   return u;
 }

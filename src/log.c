@@ -127,12 +127,11 @@ void log_init ( void )  {
   log_rot.att       =  malloc( sizeof(float)  * log_imu.limit * 3 );
   log_rot.ang       =  malloc( sizeof(float)  * log_imu.limit * 3 );
 
-
   // SF roll stabilization
-  //log_sfX.r         =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sfX.xp        =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sfX.xd        =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sfX.u         =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfX.r         =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfX.zp        =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfX.zd        =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfX.u         =  malloc( sizeof(float)  * log_stab.limit );
   //log_sfX.kp        =  malloc( sizeof(float)  * log_stab.limit );
   //log_sfX.kd        =  malloc( sizeof(float)  * log_stab.limit );
   //log_sfX.ku        =  malloc( sizeof(float)  * log_stab.limit );
@@ -295,10 +294,10 @@ void log_exit ( void )  {
   free(log_rot.ang);
 
   // SF roll stab memory
-  //free(log_sfX.r);
-  //free(log_sfX.xp);
-  //free(log_sfX.xd);
-  //free(log_sfX.u);
+  free(log_sfX.r);
+  free(log_sfX.zp);
+  free(log_sfX.zd);
+  free(log_sfX.u);
   //free(log_sfX.kp);
   //free(log_sfX.kd);
   //free(log_sfX.ku);
@@ -540,6 +539,12 @@ void log_start ( void )  {
   datalog.stab = fopen( file, "w" );
   if( datalog.stab == NULL )  printf( "Error (log_init): Cannot generate 'stab' file. \n" );
   fprintf( datalog.stab, "       stab_time   stab_dur   ");
+
+  // SF roll stab datalog file
+  sprintf( file, "%ssfX.txt", datalog.path );
+  datalog.sfX = fopen( file, "w" );
+  if( datalog.sfX == NULL )  printf( "Error (log_init): Cannot generate 'sfX' file. \n" );
+  fprintf( datalog.sfX, "       sfX_r    sfX_zp    sfX_zd     sfX_u   ");
 
 
   /*
@@ -784,18 +789,18 @@ void log_record ( enum log_index index )  {
       log_stab.time[row] = timestamp;
       log_stab.dur[row]  = tmr_stab.dur;
 
-      /*
       // Roll SF values
       pthread_mutex_lock(&sfX.mutex);
       log_sfX.r  [row] = sfX.r;
-      log_sfX.xp [row] = sfX.xp;
-      log_sfX.xd [row] = sfX.xd;
+      log_sfX.zp [row] = sfX.zp;
+      log_sfX.zd [row] = sfX.zd;
       log_sfX.u  [row] = sfX.u;
-      log_sfX.kp [row] = sfX.kp;
-      log_sfX.kd [row] = sfX.kd;
-      log_sfX.ku [row] = sfX.ku;
+      //log_sfX.kp [row] = sfX.kp;
+      //log_sfX.kd [row] = sfX.kd;
+      //log_sfX.ku [row] = sfX.ku;
       pthread_mutex_unlock(&sfX.mutex);
 
+      /*
       // Pitch SF values
       pthread_mutex_lock(&sfY.mutex);
       log_sfY.r  [row] = sfY.r;
@@ -1037,19 +1042,19 @@ static void log_save ( void )  {
     // Stabilization timing data
     fprintf( datalog.stab, "\n     %011.6f     %06ld   ", log_stab.time[row], log_stab.dur[row] );
 
-    // Add other files as needed...
+    // SF roll data
+    fprintf( datalog.sfX, "\n     " );
+    fprintf( datalog.sfX, "%07.4f   ",  log_sfX.r  [row] );
+    fprintf( datalog.sfX, "%07.4f   ",  log_sfX.zp [row] );
+    fprintf( datalog.sfX, "%07.4f   ",  log_sfX.zd [row] );
+    fprintf( datalog.sfX, "%07.4f   ",  log_sfX.u  [row] );
+    //fprintf( datalog.sfX, "%07.4f   ",  log_sfX.kp[row] );
+    //fprintf( datalog.sfX, "%07.4f   ",  log_sfX.kd[row] );
+    //fprintf( datalog.sfX, "%07.4f   ",  log_sfX.ku[row] );
 
   }
 
   /*
-    fprintf( datalog.stab, "%07.4f  ",  log_sfX.r[row]  );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfX.xp[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfX.xd[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfX.u[row]  );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfX.kp[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfX.kd[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfX.ku[row] );
-    fprintf( datalog.stab, "    " );
     fprintf( datalog.stab, "%07.4f  ",  log_sfY.r[row]  );
     fprintf( datalog.stab, "%07.4f  ",  log_sfY.xp[row] );
     fprintf( datalog.stab, "%07.4f  ",  log_sfY.xd[row] );
@@ -1128,9 +1133,6 @@ static void log_close ( void )  {
   fclose(datalog.out);
 
   fclose(datalog.imu);
-  fclose(datalog.rot);  
-  fclose(datalog.stab);  
-
   if (IMUA_ENABLED)  {
     fclose(datalog.gyrA);
     fclose(datalog.accA);
@@ -1138,7 +1140,6 @@ static void log_close ( void )  {
     fclose(datalog.compA);
     fclose(datalog.ahrsA);
   }
-
   if (IMUB_ENABLED)  {
     fclose(datalog.gyrB);
     fclose(datalog.accB);
@@ -1146,6 +1147,10 @@ static void log_close ( void )  {
     fclose(datalog.compB);
     fclose(datalog.ahrsB);
   }
+  fclose(datalog.rot);
+
+  fclose(datalog.stab);
+  fclose(datalog.sfX);
 
   return;
 }

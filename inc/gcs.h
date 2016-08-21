@@ -39,24 +39,28 @@ enum param_index {
   X_Gu,*/
 
   // Pitch stabilization
+  /*
   Y_kp,
-  Y_kd, /*
+  Y_kd,
   Y_ts,
   Y_mp,
   Y_j, 
   Y_Gp,
   Y_Gd,
-  Y_Gu,*/
+  Y_Gu,
+  */
 
   // Yaw stabilization
+  /*
   Z_kp,
-  Z_kd, /*
+  Z_kd,
   Z_ts,
   Z_mp,
   Z_j,
   Z_Gp,
   Z_Gd,
-  Z_Gu,*/
+  Z_Gu,
+  */
 
   // Throttle values
   T_min,
