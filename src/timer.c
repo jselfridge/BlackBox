@@ -159,8 +159,8 @@ void tmr_begin ( pthread_attr_t *attr )  {
   tmr_thread( &tmr_stab,  attr, fcn_stab  );  usleep(100000);
   //tmr_thread( &tmr_ins,   attr, fcn_ins   );  usleep(100000);
   //tmr_thread( &tmr_nav,   attr, fcn_nav   );  usleep(100000);
-  tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
-  tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(100000);
+  //tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
+  //tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(100000);
 
   if(DEBUG) {
     tmr_thread( &tmr_debug, attr, fcn_debug );
@@ -207,14 +207,14 @@ void tmr_exit ( void )  {
 
 
   // Exit GCSRX thread
-  if( pthread_join ( tmr_gcsrx.id, NULL ) )
-    printf( "Error (tmr_exit): Failed to exit 'gcsrx' thread. \n" );
-  if(DEBUG)  printf( "gcsrx " );
+  //if( pthread_join ( tmr_gcsrx.id, NULL ) )
+  //printf( "Error (tmr_exit): Failed to exit 'gcsrx' thread. \n" );
+  //if(DEBUG)  printf( "gcsrx " );
 
   // Exit GCSTX thread
-  if( pthread_join ( tmr_gcstx.id, NULL ) )
-    printf( "Error (tmr_exit): Failed to exit 'gcstx' thread. \n" );
-  if(DEBUG)  printf( "gcstx " );
+  //if( pthread_join ( tmr_gcstx.id, NULL ) )
+  //printf( "Error (tmr_exit): Failed to exit 'gcstx' thread. \n" );
+  //if(DEBUG)  printf( "gcstx " );
   /*
   // Exit navigation thread
   //if( pthread_join ( tmr_nav.id, NULL ) )

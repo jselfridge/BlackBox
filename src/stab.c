@@ -63,7 +63,7 @@ void stab_init ( void )  {
   //sfZ.r = 0.0;  sfZ.xp = 0.0;  sfZ.xd = 0.0;
 
   // Assign fixed PD gains
-  sfX.kp = 0.120;  sfX.kd = 0.025;
+  sfX.kp = 0.000;  sfX.kd = 0.175;
   //sfY.kp = 0.050;  sfY.kd = 0.0050;
   //sfZ.kp = 0.050;  sfZ.kd = 0.0000;
 
