@@ -32,6 +32,14 @@ void imu_init ( void )  {
   // Setup IMUA
   if (IMUA_ENABLED)  {
 
+    // Enable IMUA mutex locks
+    pthread_mutex_init( &imuA.mutex,  NULL );
+    pthread_mutex_init( &gyrA.mutex,  NULL );
+    pthread_mutex_init( &accA.mutex,  NULL );
+    pthread_mutex_init( &magA.mutex,  NULL );
+    pthread_mutex_init( &compA.mutex, NULL );
+    pthread_mutex_init( &ahrsA.mutex, NULL );
+
     // Definitions
     imuA.id     = 'A';
     imuA.bus    = 1;
@@ -55,6 +63,14 @@ void imu_init ( void )  {
   // Setup IMUB
   if (IMUB_ENABLED)  {
 
+    // Enable IMUB mutex locks
+    pthread_mutex_init( &imuB.mutex,  NULL );
+    pthread_mutex_init( &gyrB.mutex,  NULL );
+    pthread_mutex_init( &accB.mutex,  NULL );
+    pthread_mutex_init( &magB.mutex,  NULL );
+    pthread_mutex_init( &compB.mutex, NULL );
+    pthread_mutex_init( &ahrsB.mutex, NULL );
+
     // Definitions
     imuB.id     = 'B';
     imuB.bus    = 2;
@@ -75,6 +91,9 @@ void imu_init ( void )  {
 
   }
 
+  // Enable rotational state mutex lock
+  pthread_mutex_init( &rot.mutex, NULL );
+
   // IMU warmup period
   usleep(300000);
   led_on(LED_IMU);
@@ -89,8 +108,29 @@ void imu_init ( void )  {
  */
 void imu_exit ( void )  {
   if(DEBUG)  printf("Close IMU \n");
-  if(IMUA_ENABLED)  i2c_exit( &(imuA.fd) );
-  if(IMUB_ENABLED)  i2c_exit( &(imuB.fd) );
+
+  if(IMUA_ENABLED)  {
+    pthread_mutex_destroy(&imuA.mutex);
+    pthread_mutex_destroy(&gyrA.mutex);
+    pthread_mutex_destroy(&accA.mutex);
+    pthread_mutex_destroy(&magA.mutex);
+    pthread_mutex_destroy(&compA.mutex);
+    pthread_mutex_destroy(&ahrsA.mutex);
+    i2c_exit( &(imuA.fd) );
+  }
+
+  if(IMUB_ENABLED)  {
+    pthread_mutex_destroy(&imuB.mutex);
+    pthread_mutex_destroy(&gyrB.mutex);
+    pthread_mutex_destroy(&accB.mutex);
+    pthread_mutex_destroy(&magB.mutex);
+    pthread_mutex_destroy(&compB.mutex);
+    pthread_mutex_destroy(&ahrsB.mutex);
+    i2c_exit( &(imuB.fd) );
+  }
+
+  pthread_mutex_destroy(&rot.mutex);
+
   led_off(LED_IMU);
   return;
 }
