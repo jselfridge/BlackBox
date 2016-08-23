@@ -22,6 +22,15 @@ static void    stab_disarm  ( void );
 void stab_init ( void )  {
   if (DEBUG)  printf("Initializing stabilization \n");
 
+  // Enable mutex locks
+  pthread_mutex_init( &stab.mutex, NULL );
+  pthread_mutex_init( &sfx.mutex,  NULL );
+  pthread_mutex_init( &idx.mutex,  NULL );
+  //pthread_mutex_init( &sfy.mutex,  NULL );
+  //pthread_mutex_init( &sfz.mutex,  NULL );
+  //pthread_mutex_init( &idy.mutex,  NULL );
+  //pthread_mutex_init( &idz.mutex,  NULL );
+
   // Set timing value
   double dt = 1.0 / HZ_STAB;;
   stab.dt = dt;
@@ -117,7 +126,13 @@ void stab_init ( void )  {
  */
 void stab_exit ( void )  {
   if (DEBUG)  printf("Close stabilization \n");
-  // Add exit code as needed...
+  pthread_mutex_destroy(&stab.mutex);
+  pthread_mutex_destroy(&sfx.mutex);
+  pthread_mutex_destroy(&idx.mutex);
+  //pthread_mutex_destroy(&sfy.mutex);
+  //pthread_mutex_destroy(&sfz.mutex);
+  //pthread_mutex_destroy(&idy.mutex);
+  //pthread_mutex_destroy(&idz.mutex);
   return;
 }
 

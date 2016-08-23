@@ -33,6 +33,9 @@ static void  gcs_att          ( void );
 void gcs_init ( void )  {
   if (DEBUG)  printf("Initializing GCS \n");
 
+  // Enable mutex lock
+  pthread_mutex_init( &gcs.mutex, NULL );
+
   // Assign UART path
   if (DEBUG)  printf("  Open UART channel \n");
   memset( gcs.path, 0, sizeof(gcs.path) );
@@ -131,6 +134,7 @@ void gcs_init ( void )  {
  */
 void gcs_exit ( void )  {
   if (DEBUG)  printf("Close GCS \n");
+  pthread_mutex_destroy(&gcs.mutex);
   close (gcs.fd);
   return;
 }
