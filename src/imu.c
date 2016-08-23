@@ -141,7 +141,7 @@ void imu_exit ( void )  {
  *  Assign parameters to an MPU sensor.
  */
 void imu_param ( imu_struct *imu )  {
-  if(DEBUG) {  printf("  Assign IMU%c parameters ", imu->id );  fflush(stdout);  }
+  if(DEBUG) {  printf("  Assign imu%c parameters ", imu->id );  fflush(stdout);  }
 
   if(DEBUG) {  printf(".");  fflush(stdout);  }
   if( mpu_init( imu->fd, NULL ) )
@@ -178,7 +178,7 @@ void imu_param ( imu_struct *imu )  {
  *  Gets the calibration parameters for the MPU sensor.
  */
 void imu_getcal ( imu_struct *imu )  {
-  if(DEBUG)  printf( "  IMU%c calibration values: \n", imu->id );
+  if(DEBUG)  printf( "  Assign imu%c calibration values: \n", imu->id );
 
   // Local variables
   int i;
@@ -307,9 +307,9 @@ void imu_getcal ( imu_struct *imu )  {
 
   // Display calibration values
   if(DEBUG) {
-    printf( "             Acc%c                   Mag%c                 Gyr%c             Off%c \n",
+    printf( "             acc%c                   mag%c                 gyr%c             off%c \n",
        imu->id, imu->id, imu->id, imu->id );
-    printf( "    |  Bias  Range    LPF  |  Bias  Range    LPF  |  Bias    LPF  |   Comp    AHRS  | \n" );
+    printf( "    |  bias  range    lpf  |  bias  range    lpf  |  bias    lpf  |   comp    ahrs  | \n" );
     for ( i=0; i<3; i++ ) {
       printf("   ");
       printf(" |  ");

@@ -3,6 +3,8 @@
 #include "stab.h"
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "imu.h"
 #include "io.h"
 #include "sys.h"
@@ -22,6 +24,12 @@ static void    stab_disarm  ( void );
 void stab_init ( void )  {
   if (DEBUG)  printf("Initializing stabilization \n");
 
+  // Local variables
+  int i;
+  FILE *f;
+  char buff [32];  memset( buff, 0, sizeof(buff) );
+  char path [32];  memset( path, 0, sizeof(path) );
+
   // Enable mutex locks
   pthread_mutex_init( &stab.mutex, NULL );
   pthread_mutex_init( &sfx.mutex,  NULL );
@@ -39,27 +47,59 @@ void stab_init ( void )  {
   //sfz.dt  = dt;
 
   // Asign disarming array values
-  stab.off[0] = -1.0;
-  stab.off[1] = -1.0;
-  stab.off[2] = -1.0;
-  stab.off[3] = -1.0;
-  stab.off[4] = -1.0;
-  stab.off[5] = -1.0;
-  stab.off[6] = -1.0;
-  stab.off[7] = -1.0;
-  stab.off[8] = -1.0;
-  stab.off[9] = -1.0;
+  sprintf( path, "./param/eikon/off" );
+  f = fopen( path, "r" );
+  if(!f)  printf( "Error (stab_init): File for 'eikon off' not found. \n" );
+  for ( i=0; i<10; i++ )  {
+    fgets( buff, 32, f );
+    stab.off[i] = atof(buff);
+  }
+  fclose(f);
+
+  // Display disarm values
+  if (DEBUG)  {
+    printf("  Disarm values:    ");
+    for ( i=0; i<10; i++ ) printf("%4.1f  ", stab.off[i] );
+    printf("\n");
+  }
 
   // Reference ranges
-  stab.range[CH_R] = 0.6;
-  stab.range[CH_P] = 0.6;
-  stab.range[CH_Y] = 2.0;
-  stab.range[CH_T] = 0.5;
+  sprintf( path, "./param/eikon/range" );
+  f = fopen( path, "r" );
+  if(!f)  printf( "Error (stab_init): File for 'eikon range' not found. \n" );
+  for ( i=0; i<4; i++ )  {
+    fgets( buff, 32, f );
+    stab.range[i] = atof(buff);
+  }
+  fclose(f);
+
+  // Display reference range values
+  if (DEBUG)  {
+    printf("  Range values:     ");
+    for ( i=0; i<4; i++ ) printf("%4.1f  ", stab.range[i] );
+    printf("\n");
+  }
 
   // Throttle values
   stab.thrl[0] =  0.05;  // Tmin
   stab.thrl[1] =  0.20;  // Tmax
   stab.thrl[2] =  0.00;  // Ttilt
+
+  sprintf( path, "./param/eikon/thrl" );
+  f = fopen( path, "r" );
+  if(!f)  printf( "Error (stab_init): File for 'eikon thrl' not found. \n" );
+  for ( i=0; i<3; i++ )  {
+    fgets( buff, 32, f );
+    stab.thrl[i] = atof(buff);
+  }
+  fclose(f);
+
+  // Display throttle values
+  if (DEBUG)  {
+    printf("  Throttle values:  ");
+    for ( i=0; i<3; i++ ) printf("%4.1f  ", stab.thrl[i] );
+    printf("\n");
+  }
 
   // Wrap values of pi
   sfx.wrap = true;
