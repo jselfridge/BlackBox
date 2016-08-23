@@ -23,6 +23,10 @@ void io_init ( void )  {
   // Set LED indicator
   led_blink( LED_SIO, 200, 200 );
 
+  // Enable mutex lock
+  pthread_mutex_init( &input.mutex,  NULL );
+  pthread_mutex_init( &output.mutex, NULL );
+
   // Load PRU driver
   if(DEBUG)  printf("  Load driver \n");
   if( prussdrv_init() ) {
@@ -66,10 +70,16 @@ void io_init ( void )  {
  */
 void io_exit ( void )  {
   if(DEBUG)  printf("Close input/output \n");
+
+  pthread_mutex_destroy(&input.mutex);
+  pthread_mutex_destroy(&output.mutex);
+
   prussdrv_pru_disable(0);
   prussdrv_pru_disable(1);
+
   prussdrv_exit(); 
   led_off(LED_SIO);
+
   return;
 }
 

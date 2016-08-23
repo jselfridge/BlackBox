@@ -11,8 +11,8 @@
 #define IRESET        0.25
 
 #define QUAD_FL       0
-#define QUAD_BL       1
-#define QUAD_BR       4
+#define QUAD_BL       4
+#define QUAD_BR       1
 #define QUAD_FR       5
 
 

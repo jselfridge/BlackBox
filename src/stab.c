@@ -48,8 +48,8 @@ void stab_init ( void )  {
   stab.range[CH_T] = 0.5;
 
   // Throttle values
-  stab.thrl[0] = -0.20;  // Tmin
-  stab.thrl[1] =  0.00;  // Tmax
+  stab.thrl[0] =  0.05;  // Tmin
+  stab.thrl[1] =  0.20;  // Tmax
   stab.thrl[2] =  0.00;  // Ttilt
 
   // Wrap values of pi
@@ -234,9 +234,11 @@ void stab_quad ( void )  {
   cmd[z] = 0.0;  // stab_sf( &sfz, ref[z], ang[z],      0, reset );
 
   // Perform system identification
-  stab_id( &idx, cmd[x], att[x] );
-  //stab_id( &idy, cmd[y], att[y] );
-  //stab_id( &idz, cmd[z], att[z] );
+  if (!reset)  {
+    stab_id( &idx, cmd[x], att[x] );
+    //stab_id( &idy, cmd[y], att[y] );
+    //stab_id( &idz, cmd[z], att[z] );
+  }
 
   // Determine throttle adjustment
   double tilt_adj = ( 1 - ( cos(att[0]) * cos(att[1]) ) ) * tilt;

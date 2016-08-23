@@ -1,3 +1,3 @@
-stab.c:22:6:stab_init	28	static
+stab.c:22:6:stab_init	32	static
 stab.c:118:6:stab_exit	0	static
-stab.c:179:6:stab_update	280	static
+stab.c:179:6:stab_update	272	static

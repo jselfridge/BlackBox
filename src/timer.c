@@ -35,10 +35,10 @@ void tmr_init ( void )  {
  */
 void tmr_mutex ( void )  {
   if(DEBUG)  printf("  Establish mutex locks \n");
-  pthread_mutex_init( &mutex_i2c1,   NULL );
-  pthread_mutex_init( &mutex_i2c2,   NULL );
-  pthread_mutex_init( &input.mutex,  NULL );
-  pthread_mutex_init( &output.mutex, NULL );
+  //pthread_mutex_init( &mutex_i2c1,   NULL );
+  //pthread_mutex_init( &mutex_i2c2,   NULL );
+  //pthread_mutex_init( &input.mutex,  NULL );
+  //pthread_mutex_init( &output.mutex, NULL );
   pthread_mutex_init( &imuA.mutex,   NULL );
   pthread_mutex_init( &gyrA.mutex,   NULL );
   pthread_mutex_init( &accA.mutex,   NULL );
@@ -179,10 +179,10 @@ void tmr_exit ( void )  {
   printf("Close timing threads:  ");
 
   // Destroy mutex locks
-  pthread_mutex_destroy(&mutex_i2c1);
-  pthread_mutex_destroy(&mutex_i2c2);
-  pthread_mutex_destroy(&input.mutex);
-  pthread_mutex_destroy(&output.mutex);
+  //pthread_mutex_destroy(&mutex_i2c1);
+  //pthread_mutex_destroy(&mutex_i2c2);
+  //pthread_mutex_destroy(&input.mutex);
+  //pthread_mutex_destroy(&output.mutex);
   pthread_mutex_destroy(&imuA.mutex);
   pthread_mutex_destroy(&gyrA.mutex);
   pthread_mutex_destroy(&accA.mutex);

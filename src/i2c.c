@@ -20,6 +20,9 @@ int i2c_init ( int *fd, ushort bus, ushort slave_addr )  {
 
   char buf[32];
 
+  pthread_mutex_init( &mutex_i2c1,   NULL );
+  pthread_mutex_init( &mutex_i2c2,   NULL );
+
   sprintf( buf, "/dev/i2c-%d", bus );
   *fd = open( buf, O_RDWR | O_NONBLOCK );
 
@@ -43,8 +46,13 @@ int i2c_init ( int *fd, ushort bus, ushort slave_addr )  {
  *  Closes file descriptor and exits I2C channel.
  */
 void i2c_exit ( int *fd )  {
+
+  pthread_mutex_destroy(&mutex_i2c1);
+  pthread_mutex_destroy(&mutex_i2c2);
+
   close(*fd);
   *fd=0;
+
   return;
 }
 
