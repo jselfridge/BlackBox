@@ -41,7 +41,7 @@ void imu_init ( void )  {
     pthread_mutex_init( &ahrsA.mutex, NULL );
 
     // Definitions
-    imuA.id     = 'A';
+    imuA.id     = 'a';
     imuA.bus    = 1;
     imuA.addr   = 0x68;
     imuA.getmag = false;
@@ -72,7 +72,7 @@ void imu_init ( void )  {
     pthread_mutex_init( &ahrsB.mutex, NULL );
 
     // Definitions
-    imuB.id     = 'B';
+    imuB.id     = 'b';
     imuB.bus    = 2;
     imuB.addr   = 0x68;
     imuB.getmag = false;
@@ -187,7 +187,7 @@ void imu_getcal ( imu_struct *imu )  {
   char path [32];  memset( path, 0, sizeof(path) );
 
   // Set accelerometer bias
-  sprintf( path, "../Param/board/bias/acc%c", imu->id );
+  sprintf( path, "./param/avionics/bias/acc%c", imu->id );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'acc%c bias' not found. \n", imu->id );
   for ( i=0; i<3; i++ ) {
@@ -197,7 +197,7 @@ void imu_getcal ( imu_struct *imu )  {
   fclose(f);
 
   // Set accelerometer range
-  sprintf( path, "../Param/board/range/acc%c", imu->id );
+  sprintf( path, "./param/avionics/range/acc%c", imu->id );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'acc%c range' not found. \n", imu->id );
   for ( i=0; i<3; i++ ) {
@@ -207,17 +207,17 @@ void imu_getcal ( imu_struct *imu )  {
   fclose(f);
 
   // Set accelerometer lpf
-  sprintf( path, "../Param/board/lpf/acc" );
+  sprintf( path, "./param/avionics/lpf/acc" );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'acc lpf' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
-    imu->acc->lpf[i] = atoi(buff) / 100.0;
+    imu->acc->lpf[i] = atof(buff);
   }
   fclose(f);
 
   // Set magnetometer bias
-  sprintf( path, "../Param/board/bias/mag%c", imu->id );
+  sprintf( path, "./param/avionics/bias/mag%c", imu->id );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'mag%c bias' not found. \n", imu->id );
   for ( i=0; i<3; i++ ) {
@@ -227,7 +227,7 @@ void imu_getcal ( imu_struct *imu )  {
   fclose(f);
 
   // Set magnetometer range
-  sprintf( path, "../Param/board/range/mag%c", imu->id );
+  sprintf( path, "./param/avionics/range/mag%c", imu->id );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'mag%c range' not found. \n", imu->id );
   for ( i=0; i<3; i++ ) {
@@ -237,17 +237,17 @@ void imu_getcal ( imu_struct *imu )  {
   fclose(f);
 
   // Set magnetometer lpf
-  sprintf( path, "../Param/board/lpf/mag" );
+  sprintf( path, "./param/avionics/lpf/mag" );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'mag lpf' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
-    imu->mag->lpf[i] = atoi(buff) / 100.0;
+    imu->mag->lpf[i] = atof(buff);
   }
   fclose(f);
 
   // Set rate gyro bias
-  sprintf( path, "../Param/board/bias/gyr%c", imu->id );
+  sprintf( path, "./param/avionics/bias/gyr%c", imu->id );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'gyr%c bias' not found. \n", imu->id );
   for ( i=0; i<3; i++ ) {
@@ -257,49 +257,49 @@ void imu_getcal ( imu_struct *imu )  {
   fclose(f);
 
   // Set rate gyro lpf
-  sprintf( path, "../Param/board/lpf/gyr" );
+  sprintf( path, "./param/avionics/lpf/gyr" );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'gyr lpf' not found. \n" );
   for ( i=0; i<3; i++ ) {
     fgets( buff, 32, f );
-    imu->gyr->lpf[i] = atoi(buff) / 100.0;
+    imu->gyr->lpf[i] = atof(buff);
   }
   fclose(f);
 
   // Set comp filter bias
-  sprintf( path, "../Param/board/bias/comp%c", imu->id );
+  sprintf( path, "./param/avionics/bias/comp%c", imu->id );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'comp%c bias' not found. \n", imu->id );
   for ( i=0; i<2; i++ ) {
     fgets( buff, 32, f );
-    imu->comp->bias[i] = atoi(buff) / 1000.0;
+    imu->comp->bias[i] = atof(buff);
   }
   fclose(f);
 
   // Set comp filter gain
-  sprintf( path, "../Param/board/gain/comp" );
+  sprintf( path, "./param/avionics/gain/comp" );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'comp gain' not found. \n" );
   fgets( buff, 32, f );
-  imu->comp->gain = atoi(buff) / 1000.0;
+  imu->comp->gain = atof(buff);
   fclose(f);
 
   // Set AHRS bias
-  sprintf( path, "../Param/board/bias/ahrs%c", imu->id );
+  sprintf( path, "./param/avionics/bias/ahrs%c", imu->id );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'ahrs%c bias' not found. \n", imu->id );
   for ( i=0; i<3; i++ )  {
     fgets( buff, 32, f );
-    imu->ahrs->bias[i] = atoi(buff) / 1000.0;
+    imu->ahrs->bias[i] = atof(buff);
   }
   fclose(f);
 
   // Set AHRS gain
-  sprintf( path, "../Param/board/gain/ahrs" );
+  sprintf( path, "./param/avionics/gain/ahrs" );
   f = fopen( path, "r" );
   if(!f)  printf( "Error (imu_getcal): File for 'ahrs gain' not found. \n" );
   fgets( buff, 32, f );
-  imu->ahrs->gain = atoi(buff) / 1000.0;
+  imu->ahrs->gain = atof(buff);
   fclose(f);
 
   // Set unit quaternion value
@@ -307,7 +307,8 @@ void imu_getcal ( imu_struct *imu )  {
 
   // Display calibration values
   if(DEBUG) {
-    printf( "             Acc%c                   Mag%c                 Gyr%c             Off%c \n", imu->id, imu->id, imu->id, imu->id );
+    printf( "             Acc%c                   Mag%c                 Gyr%c             Off%c \n",
+       imu->id, imu->id, imu->id, imu->id );
     printf( "    |  Bias  Range    LPF  |  Bias  Range    LPF  |  Bias    LPF  |   Comp    AHRS  | \n" );
     for ( i=0; i<3; i++ ) {
       printf("   ");
