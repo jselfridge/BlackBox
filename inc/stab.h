@@ -12,8 +12,8 @@
 
 #define QUAD_FL       0
 #define QUAD_BL       1
-#define QUAD_BR       5
-#define QUAD_FR       4
+#define QUAD_BR       4
+#define QUAD_FR       5
 
 
 typedef struct stab_struct {
@@ -56,12 +56,12 @@ typedef struct sf_struct {
   //double  Gu;
   pthread_mutex_t mutex;
 } sf_struct;
-sf_struct sfX;
-//sf_struct sfY;
-//sf_struct sfZ;
+sf_struct sfx;
+//sf_struct sfy;
+//sf_struct sfz;
 
-/*
-typedef struct sysid_struct {
+
+typedef struct id_struct {
   double z1;
   double z2;
   double p1;
@@ -71,11 +71,11 @@ typedef struct sysid_struct {
   double y1;
   double y2;
   pthread_mutex_t mutex;
-} sysid_struct;
-sysid_struct sysidX;
-sysid_struct sysidY;
-sysid_struct sysidZ;
-*/
+} id_struct;
+id_struct idx;
+//id_struct idy;
+//id_struct idz;
+
 
 void    stab_init    ( void );
 void    stab_exit    ( void );

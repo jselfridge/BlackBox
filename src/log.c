@@ -128,49 +128,49 @@ void log_init ( void )  {
   log_rot.ang       =  malloc( sizeof(float)  * log_imu.limit * 3 );
 
   // SF roll stabilization
-  log_sfX.r         =  malloc( sizeof(float)  * log_stab.limit );
-  log_sfX.zp        =  malloc( sizeof(float)  * log_stab.limit );
-  log_sfX.zd        =  malloc( sizeof(float)  * log_stab.limit );
-  log_sfX.u         =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sfX.kp        =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sfX.kd        =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sfX.ku        =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfx.r         =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfx.zp        =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfx.zd        =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfx.u         =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfx.kp        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfx.kd        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfx.ku        =  malloc( sizeof(float)  * log_stab.limit );
 
   // SF pitch stabilization
-  //log_sfY.r         =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sfY.xp        =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sfY.xd        =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sfY.u         =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sfY.kp        =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sfY.kd        =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sfY.ku        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfy.r         =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfy.xp        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfy.xd        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfy.u         =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfy.kp        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfy.kd        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfy.ku        =  malloc( sizeof(float)  * log_stab.limit );
 
   // SF yaw stabilization
-  //log_sfZ.r         =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sfZ.xp        =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sfZ.xd        =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sfZ.u         =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sfZ.kp        =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sfZ.kd        =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sfZ.ku        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfz.r         =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfz.xp        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfz.xd        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfz.u         =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfz.kp        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfz.kd        =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sfz.ku        =  malloc( sizeof(float)  * log_stab.limit );
 
-  // SysID roll axis
-  //log_sysidX.z1     =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sysidX.z2     =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sysidX.p1     =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sysidX.p2     =  malloc( sizeof(float)  * log_stab.limit );
+  // System ID roll axis
+  log_idx.z1        =  malloc( sizeof(float)  * log_stab.limit );
+  log_idx.z2        =  malloc( sizeof(float)  * log_stab.limit );
+  log_idx.p1        =  malloc( sizeof(float)  * log_stab.limit );
+  log_idx.p2        =  malloc( sizeof(float)  * log_stab.limit );
 
   // SysID pitch axis
-  //log_sysidY.z1     =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sysidY.z2     =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sysidY.p1     =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sysidY.p2     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sysidy.z1     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sysidy.z2     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sysidy.p1     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sysidy.p2     =  malloc( sizeof(float)  * log_stab.limit );
 
   // SysID roll axis
-  //log_sysidZ.z1     =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sysidZ.z2     =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sysidZ.p1     =  malloc( sizeof(float)  * log_stab.limit );
-  //log_sysidZ.p2     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sysidz.z1     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sysidz.z2     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sysidz.p1     =  malloc( sizeof(float)  * log_stab.limit );
+  //log_sysidz.p2     =  malloc( sizeof(float)  * log_stab.limit );
 
   /*
   // EKF setup
@@ -294,49 +294,49 @@ void log_exit ( void )  {
   free(log_rot.ang);
 
   // SF roll stab memory
-  free(log_sfX.r);
-  free(log_sfX.zp);
-  free(log_sfX.zd);
-  free(log_sfX.u);
-  //free(log_sfX.kp);
-  //free(log_sfX.kd);
-  //free(log_sfX.ku);
+  free(log_sfx.r);
+  free(log_sfx.zp);
+  free(log_sfx.zd);
+  free(log_sfx.u);
+  //free(log_sfx.kp);
+  //free(log_sfx.kd);
+  //free(log_sfx.ku);
 
   // SF pitch stab memory
-  //free(log_sfY.r);
-  //free(log_sfY.xp);
-  //free(log_sfY.xd);
-  //free(log_sfY.u);
-  //free(log_sfY.kp);
-  //free(log_sfY.kd);
-  //free(log_sfY.ku);
+  //free(log_sfy.r);
+  //free(log_sfy.xp);
+  //free(log_sfy.xd);
+  //free(log_sfy.u);
+  //free(log_sfy.kp);
+  //free(log_sfy.kd);
+  //free(log_sfy.ku);
 
   // SF yaw stab memory
-  //free(log_sfZ.r);
-  //free(log_sfZ.xp);
-  //free(log_sfZ.xd);
-  //free(log_sfZ.u);
-  //free(log_sfZ.kp);
-  //free(log_sfZ.kd);
-  //free(log_sfZ.ku);
+  //free(log_sfz.r);
+  //free(log_sfz.xp);
+  //free(log_sfz.xd);
+  //free(log_sfz.u);
+  //free(log_sfz.kp);
+  //free(log_sfz.kd);
+  //free(log_sfz.ku);
 
   // SysID roll memory
-  //free(log_sysidX.z1);
-  //free(log_sysidX.z2);
-  //free(log_sysidX.p1);
-  //free(log_sysidX.p2);
+  free(log_idx.z1);
+  free(log_idx.z2);
+  free(log_idx.p1);
+  free(log_idx.p2);
 
   // SysID pitch memory
-  //free(log_sysidY.z1);
-  //free(log_sysidY.z2);
-  //free(log_sysidY.p1);
-  //free(log_sysidY.p2);
+  //free(log_sysidy.z1);
+  //free(log_sysidy.z2);
+  //free(log_sysidy.p1);
+  //free(log_sysidy.p2);
 
   // SysID yaw memory
-  //free(log_sysidZ.z1);
-  //free(log_sysidZ.z2);
-  //free(log_sysidZ.p1);
-  //free(log_sysidZ.p2);
+  //free(log_sysidz.z1);
+  //free(log_sysidz.z2);
+  //free(log_sysidz.p1);
+  //free(log_sysidz.p2);
 
   /*
   // EKF memory
@@ -541,10 +541,16 @@ void log_start ( void )  {
   fprintf( datalog.stab, "       stab_time   stab_dur   ");
 
   // SF roll stab datalog file
-  sprintf( file, "%ssfX.txt", datalog.path );
-  datalog.sfX = fopen( file, "w" );
-  if( datalog.sfX == NULL )  printf( "Error (log_init): Cannot generate 'sfX' file. \n" );
-  fprintf( datalog.sfX, "       sfX_r    sfX_zp    sfX_zd     sfX_u   ");
+  sprintf( file, "%ssfx.txt", datalog.path );
+  datalog.sfx = fopen( file, "w" );
+  if( datalog.sfx == NULL )  printf( "Error (log_init): Cannot generate 'sfx' file. \n" );
+  fprintf( datalog.sfx, "       sfx_r    sfx_zp    sfx_zd     sfx_u   ");
+
+  // System ID roll datalog file
+  sprintf( file, "%sidx.txt", datalog.path );
+  datalog.idx = fopen( file, "w" );
+  if( datalog.idx == NULL )  printf( "Error (log_init): Cannot generate 'idx' file. \n" );
+  fprintf( datalog.idx, "      idx_z1    idx_z2    idx_p1    idx_p2   ");
 
 
   /*
@@ -790,62 +796,64 @@ void log_record ( enum log_index index )  {
       log_stab.dur[row]  = tmr_stab.dur;
 
       // Roll SF values
-      pthread_mutex_lock(&sfX.mutex);
-      log_sfX.r  [row] = sfX.r;
-      log_sfX.zp [row] = sfX.zp;
-      log_sfX.zd [row] = sfX.zd;
-      log_sfX.u  [row] = sfX.u;
-      //log_sfX.kp [row] = sfX.kp;
-      //log_sfX.kd [row] = sfX.kd;
-      //log_sfX.ku [row] = sfX.ku;
-      pthread_mutex_unlock(&sfX.mutex);
+      pthread_mutex_lock(&sfx.mutex);
+      log_sfx.r  [row] = sfx.r;
+      log_sfx.zp [row] = sfx.zp;
+      log_sfx.zd [row] = sfx.zd;
+      log_sfx.u  [row] = sfx.u;
+      //log_sfx.kp [row] = sfx.kp;
+      //log_sfx.kd [row] = sfx.kd;
+      //log_sfx.ku [row] = sfx.ku;
+      pthread_mutex_unlock(&sfx.mutex);
 
       /*
       // Pitch SF values
-      pthread_mutex_lock(&sfY.mutex);
-      log_sfY.r  [row] = sfY.r;
-      log_sfY.xp [row] = sfY.xp;
-      log_sfY.xd [row] = sfY.xd;
-      log_sfY.u  [row] = sfY.u;
-      log_sfY.kp [row] = sfY.kp;
-      log_sfY.kd [row] = sfY.kd;
-      log_sfY.ku [row] = sfY.ku;
-      pthread_mutex_unlock(&sfY.mutex);
+      pthread_mutex_lock(&sfy.mutex);
+      log_sfy.r  [row] = sfy.r;
+      log_sfy.xp [row] = sfy.xp;
+      log_sfy.xd [row] = sfy.xd;
+      log_sfy.u  [row] = sfy.u;
+      log_sfy.kp [row] = sfy.kp;
+      log_sfy.kd [row] = sfy.kd;
+      log_sfy.ku [row] = sfy.ku;
+      pthread_mutex_unlock(&sfy.mutex);
 
       // Yaw SF values
-      pthread_mutex_lock(&sfZ.mutex);
-      log_sfZ.r  [row] = sfZ.r;
-      log_sfZ.xp [row] = sfZ.xp;
-      log_sfZ.xd [row] = sfZ.xd;
-      log_sfZ.u  [row] = sfZ.u;
-      log_sfZ.kp [row] = sfZ.kp;
-      log_sfZ.kd [row] = sfZ.kd;
-      log_sfZ.ku [row] = sfZ.ku;
-      pthread_mutex_unlock(&sfZ.mutex);
+      pthread_mutex_lock(&sfz.mutex);
+      log_sfz.r  [row] = sfz.r;
+      log_sfz.xp [row] = sfz.xp;
+      log_sfz.xd [row] = sfz.xd;
+      log_sfz.u  [row] = sfz.u;
+      log_sfz.kp [row] = sfz.kp;
+      log_sfz.kd [row] = sfz.kd;
+      log_sfz.ku [row] = sfz.ku;
+      pthread_mutex_unlock(&sfz.mutex);
+      */
 
       // Roll SysID values
-      pthread_mutex_lock(&sysidX.mutex);
-      log_sysidX.z1 [row] = sysidX.z1;
-      log_sysidX.z2 [row] = sysidX.z2;
-      log_sysidX.p1 [row] = sysidX.p1;
-      log_sysidX.p2 [row] = sysidX.p2;
-      pthread_mutex_unlock(&sysidX.mutex);
+      pthread_mutex_lock(&idx.mutex);
+      log_idx.z1 [row] = idx.z1;
+      log_idx.z2 [row] = idx.z2;
+      log_idx.p1 [row] = idx.p1;
+      log_idx.p2 [row] = idx.p2;
+      pthread_mutex_unlock(&idx.mutex);
 
+      /*
       // Pitch SysID values
-      pthread_mutex_lock(&sysidY.mutex);
-      log_sysidY.z1 [row] = sysidY.z1;
-      log_sysidY.z2 [row] = sysidY.z2;
-      log_sysidY.p1 [row] = sysidY.p1;
-      log_sysidY.p2 [row] = sysidY.p2;
-      pthread_mutex_unlock(&sysidY.mutex);
+      pthread_mutex_lock(&sysidy.mutex);
+      log_sysidy.z1 [row] = sysidy.z1;
+      log_sysidy.z2 [row] = sysidy.z2;
+      log_sysidy.p1 [row] = sysidy.p1;
+      log_sysidy.p2 [row] = sysidy.p2;
+      pthread_mutex_unlock(&sysidy.mutex);
 
       // Yaw SysID values
-      pthread_mutex_lock(&sysidZ.mutex);
-      log_sysidZ.z1 [row] = sysidZ.z1;
-      log_sysidZ.z2 [row] = sysidZ.z2;
-      log_sysidZ.p1 [row] = sysidZ.p1;
-      log_sysidZ.p2 [row] = sysidZ.p2;
-      pthread_mutex_unlock(&sysidZ.mutex);
+      pthread_mutex_lock(&sysidz.mutex);
+      log_sysidz.z1 [row] = sysidz.z1;
+      log_sysidz.z2 [row] = sysidz.z2;
+      log_sysidz.p1 [row] = sysidz.p1;
+      log_sysidz.p2 [row] = sysidz.p2;
+      pthread_mutex_unlock(&sysidz.mutex);
       */
       /*
       // EKF values
@@ -1043,57 +1051,25 @@ static void log_save ( void )  {
     fprintf( datalog.stab, "\n     %011.6f     %06ld   ", log_stab.time[row], log_stab.dur[row] );
 
     // SF roll data
-    fprintf( datalog.sfX, "\n     " );
-    fprintf( datalog.sfX, "%07.4f   ",  log_sfX.r  [row] );
-    fprintf( datalog.sfX, "%07.4f   ",  log_sfX.zp [row] );
-    fprintf( datalog.sfX, "%07.4f   ",  log_sfX.zd [row] );
-    fprintf( datalog.sfX, "%07.4f   ",  log_sfX.u  [row] );
-    //fprintf( datalog.sfX, "%07.4f   ",  log_sfX.kp[row] );
-    //fprintf( datalog.sfX, "%07.4f   ",  log_sfX.kd[row] );
-    //fprintf( datalog.sfX, "%07.4f   ",  log_sfX.ku[row] );
+    fprintf( datalog.sfx, "\n     " );
+    fprintf( datalog.sfx, "%07.4f   ",  log_sfx.r  [row] );
+    fprintf( datalog.sfx, "%07.4f   ",  log_sfx.zp [row] );
+    fprintf( datalog.sfx, "%07.4f   ",  log_sfx.zd [row] );
+    fprintf( datalog.sfx, "%07.4f   ",  log_sfx.u  [row] );
+    //fprintf( datalog.sfx, "%07.4f   ",  log_sfx.kp[row] );
+    //fprintf( datalog.sfx, "%07.4f   ",  log_sfx.kd[row] );
+    //fprintf( datalog.sfx, "%07.4f   ",  log_sfx.ku[row] );
+
+    // System ID roll data
+    fprintf( datalog.idx, "\n     " );
+    fprintf( datalog.idx, "%07.4f   ",  log_idx.z1 [row] );
+    fprintf( datalog.idx, "%07.4f   ",  log_idx.z2 [row] );
+    fprintf( datalog.idx, "%07.4f   ",  log_idx.p1 [row] );
+    fprintf( datalog.idx, "%07.4f   ",  log_idx.p2 [row] );
+
 
   }
 
-  /*
-    fprintf( datalog.stab, "%07.4f  ",  log_sfY.r[row]  );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfY.xp[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfY.xd[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfY.u[row]  );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfY.kp[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfY.kd[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfY.ku[row] );
-    fprintf( datalog.stab, "    " );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfZ.r[row]  );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfZ.xp[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfZ.xd[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfZ.u[row]  );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfZ.kp[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfZ.kd[row] );
-    fprintf( datalog.stab, "%07.4f  ",  log_sfZ.ku[row] );
-    fprintf( datalog.stab, "    " );
-  }
-  */
-  /*
-  // System identification data
-  for ( row = 0; row < log_stab.count; row++ )  {
-    fprintf( datalog.sysid, "\n %011.6f   %06ld      ", log_stab.time[row], log_stab.dur[row] );
-    fprintf( datalog.sysid, "%07.4f  ",  log_sysidX.z1[row]  );
-    fprintf( datalog.sysid, "%07.4f  ",  log_sysidX.z2[row]  );
-    fprintf( datalog.sysid, "%07.4f  ",  log_sysidX.p1[row]  );
-    fprintf( datalog.sysid, "%07.4f  ",  log_sysidX.p2[row]  );
-    fprintf( datalog.sysid, "    " );
-    fprintf( datalog.sysid, "%07.4f  ",  log_sysidY.z1[row]  );
-    fprintf( datalog.sysid, "%07.4f  ",  log_sysidY.z2[row]  );
-    fprintf( datalog.sysid, "%07.4f  ",  log_sysidY.p1[row]  );
-    fprintf( datalog.sysid, "%07.4f  ",  log_sysidY.p2[row]  );
-    fprintf( datalog.sysid, "    " );
-    fprintf( datalog.sysid, "%07.4f  ",  log_sysidZ.z1[row]  );
-    fprintf( datalog.sysid, "%07.4f  ",  log_sysidZ.z2[row]  );
-    fprintf( datalog.sysid, "%07.4f  ",  log_sysidZ.p1[row]  );
-    fprintf( datalog.sysid, "%07.4f  ",  log_sysidZ.p2[row]  );
-    fprintf( datalog.sysid, "    " );
-  }
-  */
   /*
   // Extended Kalman Filter data
   ushort n = EKF_N, m = EKF_M;
@@ -1150,7 +1126,8 @@ static void log_close ( void )  {
   fclose(datalog.rot);
 
   fclose(datalog.stab);
-  fclose(datalog.sfX);
+  fclose(datalog.sfx);
+  fclose(datalog.idx);
 
   return;
 }

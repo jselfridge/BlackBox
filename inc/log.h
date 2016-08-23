@@ -104,21 +104,21 @@ typedef struct log_sf_struct {
   float *zd;
   float *u;
 } log_sf_struct;
-log_sf_struct log_sfX;
+log_sf_struct log_sfx;
 //log_sf_struct log_sfY;
 //log_sf_struct log_sfZ;
 
-/*
-typedef struct log_sysid_struct {
+
+typedef struct log_id_struct {
   float *z1;
   float *z2;
   float *p1;
   float *p2;
-} log_sysid_struct;
-log_sysid_struct log_sysidX;
-log_sysid_struct log_sysidY;
-log_sysid_struct log_sysidZ;
-*/
+} log_id_struct;
+log_id_struct log_idx;
+//log_id_struct log_idy;
+//log_id_struct log_idz;
+
 /*
 typedef struct log_ekf_struct {
   ulong  count;
@@ -171,7 +171,8 @@ typedef struct datalog_struct {
   FILE   *ahrsB;
   FILE   *rot;
   FILE   *stab;
-  FILE   *sfX;
+  FILE   *sfx;
+  FILE   *idx;
 } datalog_struct;
 datalog_struct datalog;
 

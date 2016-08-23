@@ -301,25 +301,25 @@ static void sys_stab ( void )  {
   //pthread_mutex_unlock(&stab.mutex);
 
   // Roll state feedback values
-  pthread_mutex_lock(&sfX.mutex);
-  printf("%6.3f %6.3f %6.3f %6.3f   ", sfX.r, sfX.zp, sfX.zd, sfX.u );  fflush(stdout);
-  //printf("%6.3f %6.3f %6.3f %6.3f   ", sfX.ap, sfX.ad, sfX.kp, sfX.kd );  fflush(stdout);
-  //printf("%6.3f %6.3f %6.3f   ", sfX.Gp, sfX.Gd, sfX.Gu );  fflush(stdout);
-  pthread_mutex_unlock(&sfX.mutex);
+  pthread_mutex_lock(&sfx.mutex);
+  printf("%6.3f %6.3f %6.3f %6.3f   ", sfx.r, sfx.zp, sfx.zd, sfx.u );  fflush(stdout);
+  //printf("%6.3f %6.3f %6.3f %6.3f   ", sfx.ap, sfx.ad, sfx.kp, sfx.kd );  fflush(stdout);
+  //printf("%6.3f %6.3f %6.3f   ", sfx.Gp, sfx.Gd, sfx.Gu );  fflush(stdout);
+  pthread_mutex_unlock(&sfx.mutex);
 
   // Pitch state feedback values
-  //pthread_mutex_lock(&sfY.mutex);
-  //printf("%6.3f %6.3f %6.3f %6.3f   ", sfY.r, sfY.xp, sfY.xd, sfY.u );  fflush(stdout);
-  //printf("%6.3f %6.3f %6.3f %6.3f   ", sfY.ap, sfY.ad, sfY.kp, sfY.kd );  fflush(stdout);
-  //printf("%6.3f %6.3f %6.3f   ", sfY.Gp, sfY.Gd, sfY.Gu );  fflush(stdout);
-  //pthread_mutex_unlock(&sfY.mutex);
+  //pthread_mutex_lock(&sfy.mutex);
+  //printf("%6.3f %6.3f %6.3f %6.3f   ", sfy.r, sfy.xp, sfy.xd, sfy.u );  fflush(stdout);
+  //printf("%6.3f %6.3f %6.3f %6.3f   ", sfy.ap, sfy.ad, sfy.kp, sfy.kd );  fflush(stdout);
+  //printf("%6.3f %6.3f %6.3f   ", sfy.Gp, sfy.Gd, sfy.Gu );  fflush(stdout);
+  //pthread_mutex_unlock(&sfy.mutex);
 
   // Yaw state feedback values
-  //pthread_mutex_lock(&sfZ.mutex);
-  //printf("%6.3f %6.3f %6.3f %6.3f   ", sfZ.r, sfZ.xp, sfZ.xd, sfZ.u );  fflush(stdout);
-  //printf("%6.3f %6.3f %6.3f %6.3f   ", sfZ.ap, sfZ.ad, sfZ.kp, sfZ.kd );  fflush(stdout);
-  //printf("%6.3f %6.3f %6.3f   ", sfZ.Gp, sfZ.Gd, sfZ.Gu );  fflush(stdout);
-  //pthread_mutex_unlock(&sfZ.mutex);
+  //pthread_mutex_lock(&sfz.mutex);
+  //printf("%6.3f %6.3f %6.3f %6.3f   ", sfz.r, sfz.xp, sfz.xd, sfz.u );  fflush(stdout);
+  //printf("%6.3f %6.3f %6.3f %6.3f   ", sfz.ap, sfz.ad, sfz.kp, sfz.kd );  fflush(stdout);
+  //printf("%6.3f %6.3f %6.3f   ", sfz.Gp, sfz.Gd, sfz.Gu );  fflush(stdout);
+  //pthread_mutex_unlock(&sfz.mutex);
 
   return;
 }

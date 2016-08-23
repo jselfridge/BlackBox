@@ -11,7 +11,7 @@
 
 static void    stab_quad    ( void );
 static double  stab_sf      ( sf_struct *sf, double r, double zp, double zd, bool areset );
-//static void    stab_sysid   ( sysid_struct *sysid, double u, double y );
+static void    stab_id      ( id_struct *id, double u, double y );
 static void    stab_disarm  ( void );
 
 
@@ -25,9 +25,9 @@ void stab_init ( void )  {
   // Set timing value
   double dt = 1.0 / HZ_STAB;;
   stab.dt = dt;
-  //sfX.dt  = dt;
-  //sfY.dt  = dt;
-  //sfZ.dt  = dt;
+  //sfx.dt  = dt;
+  //sfy.dt  = dt;
+  //sfz.dt  = dt;
 
   // Asign disarming array values
   stab.off[0] = -1.0;
@@ -48,29 +48,29 @@ void stab_init ( void )  {
   stab.range[CH_T] = 0.5;
 
   // Throttle values
-  stab.thrl[0] =  0.00;  // Tmin
-  stab.thrl[1] =  0.20;  // Tmax
+  stab.thrl[0] = -0.20;  // Tmin
+  stab.thrl[1] =  0.00;  // Tmax
   stab.thrl[2] =  0.00;  // Ttilt
 
   // Wrap values of pi
-  sfX.wrap = true;
-  //sfY.wrap = true;
-  //sfZ.wrap = true;
+  sfx.wrap = true;
+  //sfy.wrap = true;
+  //sfz.wrap = true;
 
   // Initalize state feedback data struct values
-  sfX.r = 0.0;  sfX.zp = 0.0;  sfX.zd = 0.0;
-  //sfY.r = 0.0;  sfY.xp = 0.0;  sfY.xd = 0.0;
-  //sfZ.r = 0.0;  sfZ.xp = 0.0;  sfZ.xd = 0.0;
+  sfx.r = 0.0;  sfx.zp = 0.0;  sfx.zd = 0.0;
+  //sfy.r = 0.0;  sfy.xp = 0.0;  sfy.xd = 0.0;
+  //sfz.r = 0.0;  sfz.xp = 0.0;  sfz.xd = 0.0;
 
   // Assign fixed PD gains
-  sfX.kp = 0.150;  sfX.kd = 0.080;
-  //sfY.kp = 0.050;  sfY.kd = 0.0050;
-  //sfZ.kp = 0.050;  sfZ.kd = 0.0000;
+  sfx.kp = 0.150;  sfx.kd = 0.080;
+  //sfy.kp = 0.050;  sfy.kd = 0.0050;
+  //sfz.kp = 0.050;  sfz.kd = 0.0000;
 
   /*/ Assign desired characteristics
-  sfX.ts = 1.70;  sfX.mp =  5.0;  sfX.j = 220.0;  stab_refmdl( &sfX );
-  sfY.ts = 1.70;  sfY.mp =  5.0;  sfY.j = 220.0;  stab_refmdl( &sfY );
-  sfZ.ts = 1.70;  sfZ.mp =  5.0;  sfZ.j = 220.0;  stab_refmdl( &sfZ );
+  sfx.ts = 1.70;  sfx.mp =  5.0;  sfx.j = 220.0;  stab_refmdl( &sfx );
+  sfy.ts = 1.70;  sfy.mp =  5.0;  sfy.j = 220.0;  stab_refmdl( &sfy );
+  sfz.ts = 1.70;  sfz.mp =  5.0;  sfz.j = 220.0;  stab_refmdl( &sfz );
   if (DEBUG)  {
     printf("  Desired system response \n");
     printf("          Ts    Mp    zeta  nfreq    sigma  dfreq          ap      ad        kp      kd  \n" );
@@ -84,28 +84,29 @@ void stab_init ( void )  {
   }
   */
   /*/ Assign adaptive gains
-  sfX.Gp = 0.0;  sfX.Gd = 0.0;  sfX.Gu = 0.0;
-  sfY.Gp = 0.0;  sfY.Gd = 0.0;  sfY.Gu = 0.0;
-  sfZ.Gp = 0.0;  sfZ.Gd = 0.0;  sfZ.Gu = 0.0;
+  sfx.Gp = 0.0;  sfx.Gd = 0.0;  sfx.Gu = 0.0;
+  sfy.Gp = 0.0;  sfy.Gd = 0.0;  sfy.Gu = 0.0;
+  sfz.Gp = 0.0;  sfz.Gd = 0.0;  sfz.Gu = 0.0;
   if (DEBUG)  {
     printf("  Adaptive gain settings \n");
     printf("       Gp   Gd   Gu  \n");
-    printf("  X:  %3.1f  %3.1f  %3.1f  \n", sfX.Gp, sfX.Gd, sfX.Gu );
-    printf("  Y:  %3.1f  %3.1f  %3.1f  \n", sfY.Gp, sfY.Gd, sfY.Gu );
-    printf("  Z:  %3.1f  %3.1f  %3.1f  \n", sfZ.Gp, sfZ.Gd, sfZ.Gu );
+    printf("  X:  %3.1f  %3.1f  %3.1f  \n", sfx.Gp, sfx.Gd, sfx.Gu );
+    printf("  Y:  %3.1f  %3.1f  %3.1f  \n", sfy.Gp, sfy.Gd, sfy.Gu );
+    printf("  Z:  %3.1f  %3.1f  %3.1f  \n", sfz.Gp, sfz.Gd, sfz.Gu );
     fflush(stdout);
   }
   */
-  /*/ Initialize sysid param values
-  sysidX.z1 = 0.001;  sysidX.z2 = 0.0;  sysidX.p1 = -2.0;  sysidX.p2 = 1.0;
-  sysidY.z1 = 0.001;  sysidY.z2 = 0.0;  sysidY.p1 = -2.0;  sysidY.p2 = 1.0;
-  sysidZ.z1 = 0.001;  sysidZ.z2 = 0.0;  sysidZ.p1 = -2.0;  sysidZ.p2 = 1.0;
-  */
-  /*/ Initialize sysid signal values
-  sysidX.u1 = 0.0;  sysidX.u2 = 0.0;  sysidX.y1 = 0.0;  sysidX.y2 = 0.0;
-  sysidY.u1 = 0.0;  sysidY.u2 = 0.0;  sysidY.y1 = 0.0;  sysidY.y2 = 0.0;
-  sysidZ.u1 = 0.0;  sysidZ.u2 = 0.0;  sysidZ.y1 = 0.0;  sysidZ.y2 = 0.0;
-  */
+
+  // Initialize sysid param values
+  idx.z1 = 0.001;  idx.z2 = 0.0;  idx.p1 = -2.0;  idx.p2 = 1.0;
+  //idy.z1 = 0.001;  idy.z2 = 0.0;  idy.p1 = -2.0;  idy.p2 = 1.0;
+  //idz.z1 = 0.001;  idz.z2 = 0.0;  idz.p1 = -2.0;  idz.p2 = 1.0;
+
+  // Initialize sysid signal values
+  idx.u1 = 0.0;  idx.u2 = 0.0;  idx.y1 = 0.0;  idx.y2 = 0.0;
+  //idy.u1 = 0.0;  idy.u2 = 0.0;  idy.y1 = 0.0;  idy.y2 = 0.0;
+  //idz.u1 = 0.0;  idz.u2 = 0.0;  idz.y1 = 0.0;  idz.y2 = 0.0;
+
   return;
 }
 
@@ -228,15 +229,14 @@ void stab_quad ( void )  {
 
   // Apply state feedback function
   reset = ( in[CH_T] < -0.2 );
-  cmd[x] = stab_sf( &sfX, ref[x], att[x], ang[x], reset );
-  cmd[y] = 0.0;  // stab_sf( &sfY, ref[y], att[y], ang[y], reset );
-  cmd[z] = 0.0;  // stab_sf( &sfZ, ref[z], ang[z],      0, reset );
+  cmd[x] = stab_sf( &sfx, ref[x], att[x], ang[x], reset );
+  cmd[y] = 0.0;  // stab_sf( &sfy, ref[y], att[y], ang[y], reset );
+  cmd[z] = 0.0;  // stab_sf( &sfz, ref[z], ang[z],      0, reset );
 
-  /*/ Perform system identification
-  stab_sysid( &sysidX, cmd[x], att[x] );
-  stab_sysid( &sysidY, cmd[y], att[y] );
-  stab_sysid( &sysidZ, cmd[z], att[z] );
-  */
+  // Perform system identification
+  stab_id( &idx, cmd[x], att[x] );
+  //stab_id( &idy, cmd[y], att[y] );
+  //stab_id( &idz, cmd[z], att[z] );
 
   // Determine throttle adjustment
   double tilt_adj = ( 1 - ( cos(att[0]) * cos(att[1]) ) ) * tilt;
@@ -382,11 +382,10 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
 
 
 /**
- *  stab_sysid
+ *  stab_id
  *  Perform system identification update.
  */
-/*
-void stab_sysid ( sysid_struct *sysid, double u, double y )  {
+void stab_id ( id_struct *id, double u, double y )  {
 
   // Local variables
   double z1, z2, p1, p2;
@@ -394,16 +393,16 @@ void stab_sysid ( sysid_struct *sysid, double u, double y )  {
   double eps, m, n;
 
   // Pull data from structure
-  pthread_mutex_lock(&sysid->mutex);
-  z1 = sysid->z1;
-  z2 = sysid->z2;
-  p1 = sysid->p1;
-  p2 = sysid->p2;
-  u1 = sysid->u1;
-  u2 = sysid->u2;
-  y1 = sysid->y1;
-  y2 = sysid->y2;
-  pthread_mutex_unlock(&sysid->mutex);
+  pthread_mutex_lock(&id->mutex);
+  z1 = id->z1;
+  z2 = id->z2;
+  p1 = id->p1;
+  p2 = id->p2;
+  u1 = id->u1;
+  u2 = id->u2;
+  y1 = id->y1;
+  y2 = id->y2;
+  pthread_mutex_unlock(&id->mutex);
 
   // Calculate auxilliary signals
   eps = z2 * u2 + z1 * u1 - p2 * y2 - p1 * y1 - y;
@@ -421,20 +420,20 @@ void stab_sysid ( sysid_struct *sysid, double u, double y )  {
   y2 = y1;  y1 = y;
 
   // Push data to structure
-  pthread_mutex_lock(&sysid->mutex);
-  sysid->z1 = z1;
-  sysid->z2 = z2;
-  sysid->p1 = p1;
-  sysid->p2 = p2;
-  sysid->u1 = u1;
-  sysid->u2 = u2;
-  sysid->y1 = y1;
-  sysid->y2 = y2;
-  pthread_mutex_unlock(&sysid->mutex);
+  pthread_mutex_lock(&id->mutex);
+  id->z1 = z1;
+  id->z2 = z2;
+  id->p1 = p1;
+  id->p2 = p2;
+  id->u1 = u1;
+  id->u2 = u2;
+  id->y1 = y1;
+  id->y2 = y2;
+  pthread_mutex_unlock(&id->mutex);
 
   return;
 }
-*/
+
 
 /**
  *  stab_disarm
