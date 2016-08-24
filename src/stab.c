@@ -47,9 +47,9 @@ void stab_init ( void )  {
   //sfz.dt  = dt;
 
   // Asign disarming array values
-  sprintf( path, "./param/eikon/off" );
+  sprintf( path, "./param/viking/off" );
   f = fopen( path, "r" );
-  if(!f)  printf( "Error (stab_init): File for 'eikon off' not found. \n" );
+  if(!f)  printf( "Error (stab_init): File for 'viking off' not found. \n" );
   for ( i=0; i<10; i++ )  {
     fgets( buff, 32, f );
     stab.off[i] = atof(buff);
@@ -64,9 +64,9 @@ void stab_init ( void )  {
   }
 
   // Reference ranges
-  sprintf( path, "./param/eikon/range" );
+  sprintf( path, "./param/viking/range" );
   f = fopen( path, "r" );
-  if(!f)  printf( "Error (stab_init): File for 'eikon range' not found. \n" );
+  if(!f)  printf( "Error (stab_init): File for 'viking range' not found. \n" );
   for ( i=0; i<4; i++ )  {
     fgets( buff, 32, f );
     stab.range[i] = atof(buff);
@@ -81,13 +81,9 @@ void stab_init ( void )  {
   }
 
   // Throttle values
-  stab.thrl[0] =  0.05;  // Tmin
-  stab.thrl[1] =  0.20;  // Tmax
-  stab.thrl[2] =  0.00;  // Ttilt
-
-  sprintf( path, "./param/eikon/thrl" );
+  sprintf( path, "./param/viking/thrl" );
   f = fopen( path, "r" );
-  if(!f)  printf( "Error (stab_init): File for 'eikon thrl' not found. \n" );
+  if(!f)  printf( "Error (stab_init): File for 'viking thrl' not found. \n" );
   for ( i=0; i<3; i++ )  {
     fgets( buff, 32, f );
     stab.thrl[i] = atof(buff);

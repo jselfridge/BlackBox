@@ -21,45 +21,9 @@
 void tmr_init ( void )  {
   if(DEBUG)  printf("Initializing timing threads \n");
   pthread_attr_t attr;
-  tmr_mutex();
   tmr_setup();
   tmr_attr(&attr);
   tmr_begin(&attr);
-  return;
-}
-
-
-/**
- *  tmr_mutex
- *  Initializes the mutex locks for the shared data.
- */
-void tmr_mutex ( void )  {
-  if(DEBUG)  printf("  Establish mutex locks \n");
-  //pthread_mutex_init( &mutex_i2c1,   NULL );
-  //pthread_mutex_init( &mutex_i2c2,   NULL );
-  //pthread_mutex_init( &input.mutex,  NULL );
-  //pthread_mutex_init( &output.mutex, NULL );
-  //pthread_mutex_init( &imuA.mutex,   NULL );
-  //pthread_mutex_init( &gyrA.mutex,   NULL );
-  //pthread_mutex_init( &accA.mutex,   NULL );
-  //pthread_mutex_init( &magA.mutex,   NULL );
-  //pthread_mutex_init( &compA.mutex,  NULL );
-  //pthread_mutex_init( &ahrsA.mutex,  NULL );
-  //pthread_mutex_init( &imuB.mutex,   NULL );
-  //pthread_mutex_init( &gyrB.mutex,   NULL );
-  //pthread_mutex_init( &accB.mutex,   NULL );
-  //pthread_mutex_init( &magB.mutex,   NULL );
-  //pthread_mutex_init( &compB.mutex,  NULL );
-  //pthread_mutex_init( &ahrsB.mutex,  NULL );
-  //pthread_mutex_init( &rot.mutex,    NULL );
-  //pthread_mutex_init( &stab.mutex,   NULL );
-  //pthread_mutex_init( &sfx.mutex,    NULL );
-  //pthread_mutex_init( &sfy.mutex,    NULL );
-  //pthread_mutex_init( &sfz.mutex,    NULL );
-  //pthread_mutex_init( &idx.mutex, NULL );
-  //pthread_mutex_init( &idy.mutex, NULL );
-  //pthread_mutex_init( &idz.mutex, NULL );
-  //pthread_mutex_init( &gcs.mutex,    NULL );
   return;
 }
 
@@ -153,14 +117,14 @@ void tmr_attr ( pthread_attr_t *attr )  {
 void tmr_begin ( pthread_attr_t *attr )  {
   if(DEBUG)  printf("  Begin timing threads:  ");
 
-  tmr_thread( &tmr_io,    attr, fcn_io    );  usleep(100000);
-  tmr_thread( &tmr_flag,  attr, fcn_flag  );  usleep(100000);
-  tmr_thread( &tmr_imu,   attr, fcn_imu   );  usleep(100000);
-  tmr_thread( &tmr_stab,  attr, fcn_stab  );  usleep(100000);
-  //tmr_thread( &tmr_ins,   attr, fcn_ins   );  usleep(100000);
-  //tmr_thread( &tmr_nav,   attr, fcn_nav   );  usleep(100000);
-  tmr_thread( &tmr_gcstx, attr, fcn_gcstx );  usleep(100000);
-  tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );  usleep(100000);
+  usleep(200000);  tmr_thread( &tmr_io,    attr, fcn_io    );
+  usleep(200000);  tmr_thread( &tmr_flag,  attr, fcn_flag  );
+  usleep(200000);  tmr_thread( &tmr_imu,   attr, fcn_imu   );
+  usleep(200000);  tmr_thread( &tmr_stab,  attr, fcn_stab  );
+  //usleep(200000);  tmr_thread( &tmr_ins,   attr, fcn_ins   );
+  //usleep(200000);  tmr_thread( &tmr_nav,   attr, fcn_nav   );
+  usleep(200000);  tmr_thread( &tmr_gcstx, attr, fcn_gcstx );
+  usleep(200000);  tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );
 
   if(DEBUG) {
     tmr_thread( &tmr_debug, attr, fcn_debug );
@@ -177,33 +141,6 @@ void tmr_begin ( pthread_attr_t *attr )  {
  */
 void tmr_exit ( void )  {
   printf("Close timing threads:  ");
-
-  // Destroy mutex locks
-  //pthread_mutex_destroy(&mutex_i2c1);
-  //pthread_mutex_destroy(&mutex_i2c2);
-  //pthread_mutex_destroy(&input.mutex);
-  //pthread_mutex_destroy(&output.mutex);
-  //pthread_mutex_destroy(&imuA.mutex);
-  //pthread_mutex_destroy(&gyrA.mutex);
-  //pthread_mutex_destroy(&accA.mutex);
-  //pthread_mutex_destroy(&magA.mutex);
-  //pthread_mutex_destroy(&compA.mutex);
-  //pthread_mutex_destroy(&ahrsA.mutex);
-  //pthread_mutex_destroy(&imuB.mutex);
-  //pthread_mutex_destroy(&gyrB.mutex);
-  //pthread_mutex_destroy(&accB.mutex);
-  //pthread_mutex_destroy(&magB.mutex);
-  //pthread_mutex_destroy(&compB.mutex);
-  //pthread_mutex_destroy(&ahrsB.mutex);
-  //pthread_mutex_destroy(&rot.mutex);
-  //pthread_mutex_destroy(&stab.mutex);
-  //pthread_mutex_destroy(&sfx.mutex);
-  //pthread_mutex_destroy(&sfy.mutex);
-  //pthread_mutex_destroy(&sfz.mutex);
-  //pthread_mutex_destroy(&idx.mutex);
-  //pthread_mutex_destroy(&idy.mutex);
-  //pthread_mutex_destroy(&idz.mutex);
-  //pthread_mutex_destroy(&gcs.mutex);
 
   // Exit GCSRX thread
   if( pthread_join ( tmr_gcsrx.id, NULL ) )

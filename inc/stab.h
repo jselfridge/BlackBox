@@ -10,10 +10,10 @@
 
 #define IRESET        0.25
 
-#define QUAD_FL       0
+#define QUAD_FR       0
 #define QUAD_BL       1
-#define QUAD_BR       4
-#define QUAD_FR       5
+#define QUAD_FL       2
+#define QUAD_BR       3
 
 
 typedef struct stab_struct {

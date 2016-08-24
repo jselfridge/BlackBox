@@ -59,7 +59,6 @@ timer_struct tmr_debug;
 
 
 void  tmr_init   ( void );
-void  tmr_mutex  ( void );
 void  tmr_setup  ( void );
 void  tmr_attr   ( pthread_attr_t *attr );
 void  tmr_begin  ( pthread_attr_t *attr );

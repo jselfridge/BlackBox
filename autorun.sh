@@ -16,7 +16,7 @@
 ### END INIT INFO
 
 
-sleep 1
+sleep 2
 echo BLACKBOX > /sys/devices/platform/bone_capemgr/slots
 
 echo none > /sys/class/leds/beaglebone\:green\:usr0/trigger
