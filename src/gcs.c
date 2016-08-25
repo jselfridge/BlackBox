@@ -122,7 +122,7 @@ void gcs_init ( void )  {
   gcs.sendmission = false;
 
   // Assign pause for serial stream
-  gcs.pause = 2;
+  gcs.pause = 10;
 
   return;
 }

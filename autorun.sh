@@ -16,7 +16,7 @@
 ### END INIT INFO
 
 
-sleep 2
+sleep 5
 echo BLACKBOX > /sys/devices/platform/bone_capemgr/slots
 
 echo none > /sys/class/leds/beaglebone\:green\:usr0/trigger
@@ -29,7 +29,7 @@ echo 1 > /sys/class/leds/beaglebone\:green\:usr1/brightness
 echo 1 > /sys/class/leds/beaglebone\:green\:usr2/brightness
 echo 1 > /sys/class/leds/beaglebone\:green\:usr3/brightness
 
-sleep 3
+sleep 2
 cd /root/BlackBox/
 ./RunBlackBox
 
