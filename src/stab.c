@@ -33,9 +33,9 @@ void stab_init ( void )  {
   // Enable mutex locks
   pthread_mutex_init( &stab.mutex, NULL );
   pthread_mutex_init( &sfx.mutex,  NULL );
-  pthread_mutex_init( &idx.mutex,  NULL );
-  //pthread_mutex_init( &sfy.mutex,  NULL );
-  //pthread_mutex_init( &sfz.mutex,  NULL );
+  pthread_mutex_init( &sfy.mutex,  NULL );
+  pthread_mutex_init( &sfz.mutex,  NULL );
+  //pthread_mutex_init( &idx.mutex,  NULL );
   //pthread_mutex_init( &idy.mutex,  NULL );
   //pthread_mutex_init( &idz.mutex,  NULL );
 
@@ -99,18 +99,18 @@ void stab_init ( void )  {
 
   // Wrap values of pi
   sfx.wrap = true;
-  //sfy.wrap = true;
-  //sfz.wrap = true;
+  sfy.wrap = true;
+  sfz.wrap = true;
 
   // Initalize state feedback data struct values
   sfx.r = 0.0;  sfx.zp = 0.0;  sfx.zd = 0.0;
-  //sfy.r = 0.0;  sfy.xp = 0.0;  sfy.xd = 0.0;
-  //sfz.r = 0.0;  sfz.xp = 0.0;  sfz.xd = 0.0;
+  sfy.r = 0.0;  sfy.zp = 0.0;  sfy.zd = 0.0;
+  sfz.r = 0.0;  sfz.zp = 0.0;  sfz.zd = 0.0;
 
   // Assign fixed PD gains
-  sfx.kp = 0.100;  sfx.kd = 0.040;
-  //sfy.kp = 0.050;  sfy.kd = 0.0050;
-  //sfz.kp = 0.050;  sfz.kd = 0.0000;
+  sfx.kp = 0.000;  sfx.kd = 0.000;
+  sfy.kp = 0.000;  sfy.kd = 0.000;
+  sfz.kp = 0.000;  sfz.kd = 0.000;
 
   /*/ Assign desired characteristics
   sfx.ts = 1.70;  sfx.mp =  5.0;  sfx.j = 220.0;  stab_refmdl( &sfx );
@@ -143,12 +143,12 @@ void stab_init ( void )  {
   */
 
   // Initialize sysid param values
-  idx.z1 = 0.001;  idx.z2 = 0.0;  idx.p1 = -2.0;  idx.p2 = 1.0;
+  //idx.z1 = 0.001;  idx.z2 = 0.0;  idx.p1 = -2.0;  idx.p2 = 1.0;
   //idy.z1 = 0.001;  idy.z2 = 0.0;  idy.p1 = -2.0;  idy.p2 = 1.0;
   //idz.z1 = 0.001;  idz.z2 = 0.0;  idz.p1 = -2.0;  idz.p2 = 1.0;
 
   // Initialize sysid signal values
-  idx.u1 = 0.0;  idx.u2 = 0.0;  idx.y1 = 0.0;  idx.y2 = 0.0;
+  //idx.u1 = 0.0;  idx.u2 = 0.0;  idx.y1 = 0.0;  idx.y2 = 0.0;
   //idy.u1 = 0.0;  idy.u2 = 0.0;  idy.y1 = 0.0;  idy.y2 = 0.0;
   //idz.u1 = 0.0;  idz.u2 = 0.0;  idz.y1 = 0.0;  idz.y2 = 0.0;
 
@@ -164,9 +164,9 @@ void stab_exit ( void )  {
   if (DEBUG)  printf("Close stabilization \n");
   pthread_mutex_destroy(&stab.mutex);
   pthread_mutex_destroy(&sfx.mutex);
-  pthread_mutex_destroy(&idx.mutex);
-  //pthread_mutex_destroy(&sfy.mutex);
-  //pthread_mutex_destroy(&sfz.mutex);
+  pthread_mutex_destroy(&sfy.mutex);
+  pthread_mutex_destroy(&sfz.mutex);
+  //pthread_mutex_destroy(&idx.mutex);
   //pthread_mutex_destroy(&idy.mutex);
   //pthread_mutex_destroy(&idz.mutex);
   return;
@@ -281,15 +281,15 @@ void stab_quad ( void )  {
   // Apply state feedback function
   reset = ( in[CH_T] < -0.2 );
   cmd[x] = stab_sf( &sfx, ref[x], att[x], ang[x], reset );
-  cmd[y] = 0.0;  // stab_sf( &sfy, ref[y], att[y], ang[y], reset );
-  cmd[z] = 0.0;  // stab_sf( &sfz, ref[z], ang[z],      0, reset );
+  cmd[y] = stab_sf( &sfy, ref[y], att[y], ang[y], reset );
+  cmd[z] = stab_sf( &sfz, ref[z], ang[z],      0, reset );
 
   // Perform system identification
-  if (!reset)  {
-    stab_id( &idx, cmd[x], att[x] );
+  //if (!reset)  {
+    //stab_id( &idx, cmd[x], att[x] );
     //stab_id( &idy, cmd[y], att[y] );
     //stab_id( &idz, cmd[z], att[z] );
-  }
+  //}
 
   // Determine throttle adjustment
   double tilt_adj = ( 1 - ( cos(att[0]) * cos(att[1]) ) ) * tilt;

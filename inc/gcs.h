@@ -39,9 +39,8 @@ enum param_index {
   X_Gu,*/
 
   // Pitch stabilization
-  /*
   Y_kp,
-  Y_kd,
+  Y_kd, /*
   Y_ts,
   Y_mp,
   Y_j, 
@@ -51,9 +50,8 @@ enum param_index {
   */
 
   // Yaw stabilization
-  /*
   Z_kp,
-  Z_kd,
+  Z_kd, /*
   Z_ts,
   Z_mp,
   Z_j,

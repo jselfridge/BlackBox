@@ -10,10 +10,10 @@
 
 #define IRESET        0.25
 
-#define QUAD_FR       0
+#define QUAD_FL       0
 #define QUAD_BL       1
-#define QUAD_FL       4
-#define QUAD_BR       5
+#define QUAD_BR       4
+#define QUAD_FR       5
 
 
 typedef struct stab_struct {
@@ -57,8 +57,8 @@ typedef struct sf_struct {
   pthread_mutex_t mutex;
 } sf_struct;
 sf_struct sfx;
-//sf_struct sfy;
-//sf_struct sfz;
+sf_struct sfy;
+sf_struct sfz;
 
 
 typedef struct id_struct {
@@ -72,7 +72,7 @@ typedef struct id_struct {
   double y2;
   pthread_mutex_t mutex;
 } id_struct;
-id_struct idx;
+//id_struct idx;
 //id_struct idy;
 //id_struct idz;
 

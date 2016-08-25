@@ -105,8 +105,8 @@ typedef struct log_sf_struct {
   float *u;
 } log_sf_struct;
 log_sf_struct log_sfx;
-//log_sf_struct log_sfY;
-//log_sf_struct log_sfZ;
+log_sf_struct log_sfy;
+log_sf_struct log_sfz;
 
 
 typedef struct log_id_struct {
@@ -115,7 +115,7 @@ typedef struct log_id_struct {
   float *p1;
   float *p2;
 } log_id_struct;
-log_id_struct log_idx;
+//log_id_struct log_idx;
 //log_id_struct log_idy;
 //log_id_struct log_idz;
 
@@ -172,7 +172,8 @@ typedef struct datalog_struct {
   FILE   *rot;
   FILE   *stab;
   FILE   *sfx;
-  FILE   *idx;
+  FILE   *sfy;
+  FILE   *sfz;
 } datalog_struct;
 datalog_struct datalog;
 

@@ -82,9 +82,9 @@ void gcs_init ( void )  {
   */
 
   // Pitch (Y) stabilization paramters
-  /*
   strcpy( param.name[Y_kp], "Y_kp" );  param.val[Y_kp] = sfy.kp;
   strcpy( param.name[Y_kd], "Y_kd" );  param.val[Y_kd] = sfy.kd;
+  /*
   strcpy( param.name[Y_ts], "Y_ts" );  param.val[Y_ts] = sfy.ts;
   strcpy( param.name[Y_mp], "Y_mp" );  param.val[Y_mp] = sfy.mp;
   strcpy( param.name[Y_j],  "Y_j"  );  param.val[Y_j]  = sfy.j;
@@ -94,9 +94,9 @@ void gcs_init ( void )  {
   */
 
   // Yaw (Z) stabilization parameters
-  /*
   strcpy( param.name[Z_kp], "Z_kp" );  param.val[Z_kp] = sfz.kp;
   strcpy( param.name[Z_kd], "Z_kd" );  param.val[Z_kd] = sfz.kd;
+  /*
   strcpy( param.name[Z_ts], "Z_ts" );  param.val[Z_ts] = sfz.ts;
   strcpy( param.name[Z_mp], "Z_mp" );  param.val[Z_mp] = sfz.mp;
   strcpy( param.name[Z_j],  "Z_j"  );  param.val[Z_j]  = sfz.j;
@@ -122,7 +122,7 @@ void gcs_init ( void )  {
   gcs.sendmission = false;
 
   // Assign pause for serial stream
-  gcs.pause = 10;
+  gcs.pause = 2;
 
   return;
 }
@@ -544,17 +544,17 @@ static void gcs_set_param_value ( uint index, double val )  {
 
 
   // Pitch (Y) Stabilization Parameters
-  /*
   case Y_kp :
     pthread_mutex_lock(&sfy.mutex);
-    sfY.kp = val;
+    sfy.kp = val;
     pthread_mutex_unlock(&sfy.mutex);
     break;
   case Y_kd :
     pthread_mutex_lock(&sfy.mutex);
-    sfY.kd = val;
+    sfy.kd = val;
     pthread_mutex_unlock(&sfy.mutex);
     break;
+  /*
   case Y_ts :
     pthread_mutex_lock(&sfy.mutex);
     sfY.ts = val;
@@ -592,17 +592,17 @@ static void gcs_set_param_value ( uint index, double val )  {
 
 
   // Yaw (Z) Stabilization Parameters
-  /*
   case Z_kp :
     pthread_mutex_lock(&sfz.mutex);
-    sfZ.kp = val;
+    sfz.kp = val;
     pthread_mutex_unlock(&sfz.mutex);
     break;
   case Z_kd :
     pthread_mutex_lock(&sfz.mutex);
-    sfZ.kd = val;
+    sfz.kd = val;
     pthread_mutex_unlock(&sfz.mutex);
     break;
+  /*
   case Z_ts :
     pthread_mutex_lock(&sfz.mutex);
     sfZ.ts = val;
