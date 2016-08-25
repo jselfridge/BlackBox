@@ -108,9 +108,9 @@ void stab_init ( void )  {
   sfz.r = 0.0;  sfz.zp = 0.0;  sfz.zd = 0.0;
 
   // Assign fixed PD gains
-  sfx.kp = 0.140;  sfx.kd = 0.050;
-  sfy.kp = 0.140;  sfy.kd = 0.050;
-  sfz.kp = 0.080;  sfz.kd = 0.000;
+  sfx.kp = 0.100;  sfx.kd = 0.050;
+  sfy.kp = 0.120;  sfy.kd = 0.055;
+  sfz.kp = 0.060;  sfz.kd = 0.000;
 
   /*/ Assign desired characteristics
   sfx.ts = 1.70;  sfx.mp =  5.0;  sfx.j = 220.0;  stab_refmdl( &sfx );

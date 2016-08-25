@@ -8,8 +8,8 @@
 #include <sys/types.h>
 
 
-#define PRIO_IMU     96
-#define PRIO_IO      94
+#define PRIO_IO      96
+#define PRIO_IMU     94
 #define PRIO_STAB    92
 //#define PRIO_INS     90
 //#define PRIO_NAV     88
@@ -19,8 +19,8 @@
 #define PRIO_DEBUG   80
 
 #define HZ_IMU      200
-#define HZ_IO       100
-#define HZ_STAB     100
+#define HZ_IO       200
+#define HZ_STAB     200
 //#define HZ_INS       20
 #define HZ_FLAG      20
 //#define HZ_NAV       10
