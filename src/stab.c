@@ -47,9 +47,9 @@ void stab_init ( void )  {
   //sfz.dt  = dt;
 
   // Asign disarming array values
-  sprintf( path, "./param/viking/off" );
+  sprintf( path, "./param/%s/off", systype );
   f = fopen( path, "r" );
-  if(!f)  printf( "Error (stab_init): File for 'viking off' not found. \n" );
+  if(!f)  printf( "Error (stab_init): File for '%s off' not found. \n", systype );
   for ( i=0; i<10; i++ )  {
     fgets( buff, 32, f );
     stab.off[i] = atof(buff);
@@ -64,9 +64,9 @@ void stab_init ( void )  {
   }
 
   // Reference ranges
-  sprintf( path, "./param/viking/range" );
+  sprintf( path, "./param/%s/range", systype );
   f = fopen( path, "r" );
-  if(!f)  printf( "Error (stab_init): File for 'viking range' not found. \n" );
+  if(!f)  printf( "Error (stab_init): File for '%s range' not found. \n", systype );
   for ( i=0; i<4; i++ )  {
     fgets( buff, 32, f );
     stab.range[i] = atof(buff);
@@ -81,9 +81,9 @@ void stab_init ( void )  {
   }
 
   // Throttle values
-  sprintf( path, "./param/viking/thrl" );
+  sprintf( path, "./param/%s/thrl", systype );
   f = fopen( path, "r" );
-  if(!f)  printf( "Error (stab_init): File for 'viking thrl' not found. \n" );
+  if(!f)  printf( "Error (stab_init): File for '%s thrl' not found. \n", systype );
   for ( i=0; i<3; i++ )  {
     fgets( buff, 32, f );
     stab.thrl[i] = atof(buff);

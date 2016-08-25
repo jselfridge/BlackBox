@@ -29,12 +29,19 @@ static void sys_stab  ( void );
 void sys_init ( void )  {
   if(DEBUG)  printf("Initializing system \n");
 
+  FILE *f;
+  struct sigaction sys_run;
+  struct sched_param sp;
+  int i;
+  char *buffer;   
+  char buff [32];  memset( buff, 0, sizeof(buff) );
+  char path [32];  memset( path, 0, sizeof(path) );
+
   // Turn off LED indicators
   led_off(LED_SIO);  led_off(LED_IMU);  led_off(LED_LOG);  led_off(LED_MOT);
 
   // Establish exit condition
   if(DEBUG)  printf("  Set system exit condition \n");
-  struct sigaction sys_run;
   memset( &sys_run, 0, sizeof(sys_run) );
   sys_run.sa_handler = &sys_quit;
   if( sigaction( SIGINT, &sys_run, NULL ) == -1 )
@@ -42,15 +49,12 @@ void sys_init ( void )  {
 
   // Establish realtime priority
   if(DEBUG)  printf("  Establish realtime priority \n");
-  struct sched_param sp;
   sp.sched_priority = 98;
   if( sched_setscheduler( 0, SCHED_FIFO, &sp ) == -1 )
     printf( "Error (sys_init): Function 'sched_setscheduler' failed. \n" );
 
   // Prefault memory stack
   if(DEBUG)  printf("  Prefault memory stack \n");
-  int i;
-  char *buffer;   
   buffer = malloc(SYS_STACK);
   for ( i=0; i<SYS_STACK; i += sysconf(_SC_PAGESIZE) )  {  buffer[i] = 0;  }
   free(buffer);
@@ -61,6 +65,14 @@ void sys_init ( void )  {
     printf( "Error (sys_init): Failed to lock memory. \n" );
   mallopt( M_TRIM_THRESHOLD, -1 );
   mallopt( M_MMAP_MAX, 0 );
+
+  // Assign system type
+  sprintf( path, "./param/systype" );
+  f = fopen( path, "r" );
+  if(!f)  printf( "Error (sys_init): File for 'systype' not found. \n" );
+  fgets( systype, 32, f );
+  fclose(f);
+  if(DEBUG)  printf( "  System type:  %s \n", systype );
 
   // Set global boolean conditions
   running = true;

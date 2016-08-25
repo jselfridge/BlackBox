@@ -12,8 +12,8 @@
 
 #define QUAD_FR       0
 #define QUAD_BL       1
-#define QUAD_FL       2
-#define QUAD_BR       3
+#define QUAD_FL       4
+#define QUAD_BR       5
 
 
 typedef struct stab_struct {
