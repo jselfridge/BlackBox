@@ -163,6 +163,7 @@ void tmr_exit ( void )  {
     //printf( "Error (tmr_exit): Failed to exit 'ins' thread. \n" );
   //if(DEBUG)  printf( "ins " );
   */
+
   // Exit stabilization thread
   if( pthread_join ( tmr_stab.id, NULL ) )
     printf( "Error (tmr_exit): Failed to exit 'stab' thread. \n" );
