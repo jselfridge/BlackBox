@@ -449,7 +449,7 @@ void imu_update ( imu_struct *imu )  {
   imu_comp( imu );
 
   // Run AHRS data fusion algorithm
-  imu_6DOF( imu );
+  imu_9DOF( imu );
 
   return;
 }
