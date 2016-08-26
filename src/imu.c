@@ -782,24 +782,23 @@ void imu_state ( void )  {
   if (IMUA_ENABLED)  {
 
     // Get comp filter values
-    pthread_mutex_lock(&compA.mutex);
-    att[0] += compA.roll  - compA.bias[0];
-    att[1] += compA.pitch - compA.bias[1];
-    pthread_mutex_unlock(&compA.mutex);
+    //pthread_mutex_lock(&compA.mutex);
+    //att[0] += compA.roll  - compA.bias[0];
+    //att[1] += compA.pitch - compA.bias[1];
+    //pthread_mutex_unlock(&compA.mutex);
 
     // Loop through states
     for ( i=0; i<3; i++ )  {
 
-      // LPF gyro values
+      // AHRS values
+      pthread_mutex_lock(&ahrsA.mutex);
+      att[i] += ahrsA.eul[i];
+      pthread_mutex_unlock(&ahrsA.mutex);
+
+      // Gyro values
       pthread_mutex_lock(&gyrA.mutex);
       ang[i] += gyrA.filter[i];
       pthread_mutex_unlock(&gyrA.mutex);
-
-      // AHRS values
-      //pthread_mutex_lock(&ahrsA.mutex);
-      //att[i] += ahrsA.eul[i];
-      //ang[i] += ahrsA.deul[i];
-      //pthread_mutex_unlock(&ahrsA.mutex);
 
     }
   }
@@ -808,24 +807,23 @@ void imu_state ( void )  {
   if (IMUB_ENABLED)  {
 
     // Get comp filter values
-    pthread_mutex_lock(&compB.mutex);
-    att[0] += compB.roll  - compB.bias[0];
-    att[1] += compB.pitch - compB.bias[1];
-    pthread_mutex_unlock(&compB.mutex);
+    //pthread_mutex_lock(&compB.mutex);
+    //att[0] += compB.roll  - compB.bias[0];
+    //att[1] += compB.pitch - compB.bias[1];
+    //pthread_mutex_unlock(&compB.mutex);
 
     // Loop through states
     for ( i=0; i<3; i++ )  {
 
-      // LPF gyro values
+      // AHRS values
+      pthread_mutex_lock(&ahrsB.mutex);
+      att[i] += ahrsB.eul[i];
+      pthread_mutex_unlock(&ahrsB.mutex);
+
+      // Gyro values
       pthread_mutex_lock(&gyrB.mutex);
       ang[i] += gyrB.filter[i];
       pthread_mutex_unlock(&gyrB.mutex);
-
-      // AHRS values
-      //pthread_mutex_lock(&ahrsB.mutex);
-      //att[i] += ahrsB.eul[i];
-      //ang[i] += ahrsB.deul[i];
-      //pthread_mutex_unlock(&ahrsB.mutex);
 
     }
   }
@@ -837,7 +835,6 @@ void imu_state ( void )  {
 
   // Correction b/c comp filter has no yaw value  
   //att[2] *= 2.0; 
-  att[2] = 0.0;
 
   // Push to data structure
   pthread_mutex_lock(&rot.mutex);
