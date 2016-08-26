@@ -82,9 +82,9 @@ void stab_init ( void )  {
   sfz.wrap = true;
 
   // Assign state feedback values
-  sfx.kp = 0.100;  sfx.kd = 0.050;  sfx.ts = 0.75;  sfx.mp =  5.0;  stab_refmdl( &sfx );
-  sfy.kp = 0.120;  sfy.kd = 0.060;  sfy.ts = 0.75;  sfy.mp =  3.0;  stab_refmdl( &sfy );
-  sfz.kp = 0.060;  sfz.kd = 0.000;  sfz.ts = 0.75;  sfz.mp =  1.0;  stab_refmdl( &sfz );
+  sfx.kp = 0.100;  sfx.kd = 0.050;  sfx.ts = 0.50;  sfx.mp = 14.0;  stab_refmdl( &sfx );
+  sfy.kp = 0.120;  sfy.kd = 0.060;  sfy.ts = 0.50;  sfy.mp =  8.0;  stab_refmdl( &sfy );
+  sfz.kp = 0.060;  sfz.kd = 0.060;  sfz.ts = 0.50;  sfz.mp =  2.0;  stab_refmdl( &sfz );
 
   /*
   // Assign adaptive gains
@@ -255,9 +255,9 @@ void stab_quad ( void )  {
 
   // Apply state feedback function
   reset = ( in[CH_T] < -0.2 );
-  cmd[x] = stab_sf( &sfx, ref[x], att[x], ang[x], reset );
-  cmd[y] = stab_sf( &sfy, ref[y], att[y], ang[y], reset );
-  cmd[z] = stab_sf( &sfz, ref[z], ang[z],      0, reset );
+  cmd[x] = stab_sf( &sfx, ref[x],  att[x], ang[x], reset );
+  cmd[y] = stab_sf( &sfy, ref[y],  att[y], ang[y], reset );
+  cmd[z] = stab_sf( &sfz, ref[z], heading, ang[z], reset );
 
   // Perform system identification
   //if (!reset)  {
