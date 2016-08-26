@@ -255,9 +255,9 @@ void stab_quad ( void )  {
 
   // Apply state feedback function
   reset = ( in[CH_T] < -0.2 );
-  cmd[x] = stab_sf( &sfx, ref[x],  att[x], ang[x], reset );
-  cmd[y] = stab_sf( &sfy, ref[y],  att[y], ang[y], reset );
-  cmd[z] = stab_sf( &sfz, ref[z], heading, ang[z], reset );
+  cmd[x] = stab_sf( &sfx,  ref[x], att[x], ang[x], reset );
+  cmd[y] = stab_sf( &sfy,  ref[y], att[y], ang[y], reset );
+  cmd[z] = stab_sf( &sfz, heading, att[z], ang[z], reset );
 
   // Perform system identification
   //if (!reset)  {
