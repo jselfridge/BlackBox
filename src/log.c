@@ -129,6 +129,8 @@ void log_init ( void )  {
 
   // SF roll stabilization
   log_sfx.r         =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfx.xp        =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfx.xd        =  malloc( sizeof(float)  * log_stab.limit );
   log_sfx.zp        =  malloc( sizeof(float)  * log_stab.limit );
   log_sfx.zd        =  malloc( sizeof(float)  * log_stab.limit );
   log_sfx.u         =  malloc( sizeof(float)  * log_stab.limit );
@@ -138,6 +140,8 @@ void log_init ( void )  {
 
   // SF pitch stabilization
   log_sfy.r         =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfy.xp        =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfy.xd        =  malloc( sizeof(float)  * log_stab.limit );
   log_sfy.zp        =  malloc( sizeof(float)  * log_stab.limit );
   log_sfy.zd        =  malloc( sizeof(float)  * log_stab.limit );
   log_sfy.u         =  malloc( sizeof(float)  * log_stab.limit );
@@ -147,6 +151,8 @@ void log_init ( void )  {
 
   // SF yaw stabilization
   log_sfz.r         =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfz.xp        =  malloc( sizeof(float)  * log_stab.limit );
+  log_sfz.xd        =  malloc( sizeof(float)  * log_stab.limit );
   log_sfz.zp        =  malloc( sizeof(float)  * log_stab.limit );
   log_sfz.zd        =  malloc( sizeof(float)  * log_stab.limit );
   log_sfz.u         =  malloc( sizeof(float)  * log_stab.limit );
@@ -295,6 +301,8 @@ void log_exit ( void )  {
 
   // SF roll stab memory
   free(log_sfx.r);
+  free(log_sfx.xp);
+  free(log_sfx.xd);
   free(log_sfx.zp);
   free(log_sfx.zd);
   free(log_sfx.u);
@@ -304,6 +312,8 @@ void log_exit ( void )  {
 
   // SF pitch stab memory
   free(log_sfy.r);
+  free(log_sfy.xp);
+  free(log_sfy.xd);
   free(log_sfy.zp);
   free(log_sfy.zd);
   free(log_sfy.u);
@@ -313,6 +323,8 @@ void log_exit ( void )  {
 
   // SF yaw stab memory
   free(log_sfz.r);
+  free(log_sfz.xp);
+  free(log_sfz.xd);
   free(log_sfz.zp);
   free(log_sfz.zd);
   free(log_sfz.u);
@@ -544,19 +556,19 @@ void log_start ( void )  {
   sprintf( file, "%ssfx.txt", datalog.path );
   datalog.sfx = fopen( file, "w" );
   if( datalog.sfx == NULL )  printf( "Error (log_init): Cannot generate 'sfx' file. \n" );
-  fprintf( datalog.sfx, "       sfx_r    sfx_zp    sfx_zd     sfx_u   ");
+  fprintf( datalog.sfx, "       sfx_r    sfx_xp    sfx_xd    sfx_zp    sfx_zd     sfx_u   ");
 
   // SF pitch stab datalog file
   sprintf( file, "%ssfy.txt", datalog.path );
   datalog.sfy = fopen( file, "w" );
   if( datalog.sfy == NULL )  printf( "Error (log_init): Cannot generate 'sfy' file. \n" );
-  fprintf( datalog.sfy, "       sfy_r    sfy_zp    sfy_zd     sfy_u   ");
+  fprintf( datalog.sfy, "       sfy_r    sfy_xp    sfy_xd    sfy_zp    sfy_zd     sfy_u   ");
 
   // SF yaw stab datalog file
   sprintf( file, "%ssfz.txt", datalog.path );
   datalog.sfz = fopen( file, "w" );
   if( datalog.sfz == NULL )  printf( "Error (log_init): Cannot generate 'sfz' file. \n" );
-  fprintf( datalog.sfz, "       sfz_r    sfz_zp    sfz_zd     sfz_u   ");
+  fprintf( datalog.sfz, "       sfz_r    sfz_xp    sfz_xd    sfz_zp    sfz_zd     sfz_u   ");
 
   // System ID roll datalog file
   //sprintf( file, "%sidx.txt", datalog.path );
@@ -810,6 +822,8 @@ void log_record ( enum log_index index )  {
       // Roll SF values
       pthread_mutex_lock(&sfx.mutex);
       log_sfx.r  [row] = sfx.r;
+      log_sfx.xp [row] = sfx.xp;
+      log_sfx.xd [row] = sfx.xd;
       log_sfx.zp [row] = sfx.zp;
       log_sfx.zd [row] = sfx.zd;
       log_sfx.u  [row] = sfx.u;
@@ -821,6 +835,8 @@ void log_record ( enum log_index index )  {
       // Pitch SF values
       pthread_mutex_lock(&sfy.mutex);
       log_sfy.r  [row] = sfy.r;
+      log_sfy.xp [row] = sfy.xp;
+      log_sfy.xd [row] = sfy.xd;
       log_sfy.zp [row] = sfy.zp;
       log_sfy.zd [row] = sfy.zd;
       log_sfy.u  [row] = sfy.u;
@@ -832,6 +848,8 @@ void log_record ( enum log_index index )  {
       // Yaw SF values
       pthread_mutex_lock(&sfz.mutex);
       log_sfz.r  [row] = sfz.r;
+      log_sfz.xp [row] = sfz.xp;
+      log_sfz.xd [row] = sfz.xd;
       log_sfz.zp [row] = sfz.zp;
       log_sfz.zd [row] = sfz.zd;
       log_sfz.u  [row] = sfz.u;
@@ -1063,6 +1081,8 @@ static void log_save ( void )  {
     // SF roll data
     fprintf( datalog.sfx, "\n     " );
     fprintf( datalog.sfx, "%07.4f   ",  log_sfx.r  [row] );
+    fprintf( datalog.sfx, "%07.4f   ",  log_sfx.xp [row] );
+    fprintf( datalog.sfx, "%07.4f   ",  log_sfx.xd [row] );
     fprintf( datalog.sfx, "%07.4f   ",  log_sfx.zp [row] );
     fprintf( datalog.sfx, "%07.4f   ",  log_sfx.zd [row] );
     fprintf( datalog.sfx, "%07.4f   ",  log_sfx.u  [row] );
@@ -1073,6 +1093,8 @@ static void log_save ( void )  {
     // SF pitch data
     fprintf( datalog.sfy, "\n     " );
     fprintf( datalog.sfy, "%07.4f   ",  log_sfy.r  [row] );
+    fprintf( datalog.sfy, "%07.4f   ",  log_sfy.xp [row] );
+    fprintf( datalog.sfy, "%07.4f   ",  log_sfy.xd [row] );
     fprintf( datalog.sfy, "%07.4f   ",  log_sfy.zp [row] );
     fprintf( datalog.sfy, "%07.4f   ",  log_sfy.zd [row] );
     fprintf( datalog.sfy, "%07.4f   ",  log_sfy.u  [row] );
@@ -1083,6 +1105,8 @@ static void log_save ( void )  {
     // SF yaw data
     fprintf( datalog.sfz, "\n     " );
     fprintf( datalog.sfz, "%07.4f   ",  log_sfz.r  [row] );
+    fprintf( datalog.sfz, "%07.4f   ",  log_sfz.xp [row] );
+    fprintf( datalog.sfz, "%07.4f   ",  log_sfz.xd [row] );
     fprintf( datalog.sfz, "%07.4f   ",  log_sfz.zp [row] );
     fprintf( datalog.sfz, "%07.4f   ",  log_sfz.zd [row] );
     fprintf( datalog.sfz, "%07.4f   ",  log_sfz.u  [row] );

@@ -31,26 +31,25 @@ stab_struct stab;
 
 typedef struct sf_struct {
   bool    wrap;
+  double  dt;
   double  r;
+  double  xp;
+  double  xd;
   double  zp;
   double  zd;
   double  kp;
   double  kd;
   double  u;
-  //double  dt;
-  //double  ts;
-  //double  mp;
-  //double  sigma;
-  //double  zeta;
-  //double  nfreq;
-  //double  dfreq;
-  //double  ap;
-  //double  ad;
+  double  ts;
+  double  mp;
+  double  sigma;
+  double  zeta;
+  double  nfreq;
+  double  dfreq;
+  double  ap;
+  double  ad;
   //double  j;
   //double  ku;
-  //double  r;
-  //double  xp;
-  //double  xd;
   //double  Gp;
   //double  Gd;
   //double  Gu;
@@ -80,7 +79,7 @@ typedef struct id_struct {
 void    stab_init    ( void );
 void    stab_exit    ( void );
 void    stab_update  ( void );
-//void    stab_refmdl  ( sf_struct *sf );
+void    stab_refmdl  ( sf_struct *sf );
 
 #endif
 

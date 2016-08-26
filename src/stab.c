@@ -42,9 +42,9 @@ void stab_init ( void )  {
   // Set timing value
   double dt = 1.0 / HZ_STAB;;
   stab.dt = dt;
-  //sfx.dt  = dt;
-  //sfy.dt  = dt;
-  //sfz.dt  = dt;
+  sfx.dt  = dt;
+  sfy.dt  = dt;
+  sfz.dt  = dt;
 
   // Asign disarming array values
   sprintf( path, "./param/%s/off", systype );
@@ -56,13 +56,6 @@ void stab_init ( void )  {
   }
   fclose(f);
 
-  // Display disarm values
-  if (DEBUG)  {
-    printf("  Disarm values:    ");
-    for ( i=0; i<10; i++ ) printf("%4.1f  ", stab.off[i] );
-    printf("\n");
-  }
-
   // Reference ranges
   sprintf( path, "./param/%s/range", systype );
   f = fopen( path, "r" );
@@ -72,13 +65,6 @@ void stab_init ( void )  {
     stab.range[i] = atof(buff);
   }
   fclose(f);
-
-  // Display reference range values
-  if (DEBUG)  {
-    printf("  Range values:     ");
-    for ( i=0; i<4; i++ ) printf("%4.1f  ", stab.range[i] );
-    printf("\n");
-  }
 
   // Throttle values
   sprintf( path, "./param/%s/thrl", systype );
@@ -90,56 +76,21 @@ void stab_init ( void )  {
   }
   fclose(f);
 
-  // Display throttle values
-  if (DEBUG)  {
-    printf("  Throttle values:  ");
-    for ( i=0; i<3; i++ ) printf("%4.1f  ", stab.thrl[i] );
-    printf("\n");
-  }
-
   // Wrap values of pi
   sfx.wrap = true;
   sfy.wrap = true;
   sfz.wrap = true;
 
-  // Initalize state feedback data struct values
-  sfx.r = 0.0;  sfx.zp = 0.0;  sfx.zd = 0.0;
-  sfy.r = 0.0;  sfy.zp = 0.0;  sfy.zd = 0.0;
-  sfz.r = 0.0;  sfz.zp = 0.0;  sfz.zd = 0.0;
+  // Assign state feedback values
+  sfx.kp = 0.100;  sfx.kd = 0.050;  sfx.ts = 0.75;  sfx.mp =  5.0;  stab_refmdl( &sfx );
+  sfy.kp = 0.120;  sfy.kd = 0.055;  sfy.ts = 0.75;  sfy.mp =  3.0;  stab_refmdl( &sfy );
+  sfz.kp = 0.060;  sfz.kd = 0.000;  sfz.ts = 0.75;  sfz.mp =  1.0;  stab_refmdl( &sfz );
 
-  // Assign fixed PD gains
-  sfx.kp = 0.100;  sfx.kd = 0.050;
-  sfy.kp = 0.120;  sfy.kd = 0.055;
-  sfz.kp = 0.060;  sfz.kd = 0.000;
-
-  /*/ Assign desired characteristics
-  sfx.ts = 1.70;  sfx.mp =  5.0;  sfx.j = 220.0;  stab_refmdl( &sfx );
-  sfy.ts = 1.70;  sfy.mp =  5.0;  sfy.j = 220.0;  stab_refmdl( &sfy );
-  sfz.ts = 1.70;  sfz.mp =  5.0;  sfz.j = 220.0;  stab_refmdl( &sfz );
-  if (DEBUG)  {
-    printf("  Desired system response \n");
-    printf("          Ts    Mp    zeta  nfreq    sigma  dfreq          ap      ad        kp      kd  \n" );
-    printf("  X:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f    %6.4f  %6.4f  \n", 
-      sfX.ts, sfX.mp, sfX.zeta, sfX.nfreq, sfX.sigma, sfX.dfreq, sfX.ap, sfX.ad, sfX.kp, sfX.kd );
-    printf("  Y:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f    %6.4f  %6.4f  \n", 
-      sfY.ts, sfY.mp, sfY.zeta, sfY.nfreq, sfY.sigma, sfY.dfreq, sfY.ap, sfY.ad, sfY.kp, sfY.kd );
-    printf("  Z:    %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f    %6.4f  %6.4f  \n", 
-      sfZ.ts, sfZ.mp, sfZ.zeta, sfZ.nfreq, sfZ.sigma, sfZ.dfreq, sfZ.ap, sfZ.ad, sfZ.kp, sfZ.kd );
-    fflush(stdout);
-  }
-  */
-  /*/ Assign adaptive gains
+  /*
+  // Assign adaptive gains
   sfx.Gp = 0.0;  sfx.Gd = 0.0;  sfx.Gu = 0.0;
   sfy.Gp = 0.0;  sfy.Gd = 0.0;  sfy.Gu = 0.0;
   sfz.Gp = 0.0;  sfz.Gd = 0.0;  sfz.Gu = 0.0;
-  if (DEBUG)  {
-    printf("  Adaptive gain settings \n");
-    printf("       Gp   Gd   Gu  \n");
-    printf("  X:  %3.1f  %3.1f  %3.1f  \n", sfx.Gp, sfx.Gd, sfx.Gu );
-    printf("  Y:  %3.1f  %3.1f  %3.1f  \n", sfy.Gp, sfy.Gd, sfy.Gu );
-    printf("  Z:  %3.1f  %3.1f  %3.1f  \n", sfz.Gp, sfz.Gd, sfz.Gu );
-    fflush(stdout);
-  }
   */
 
   // Initialize sysid param values
@@ -151,6 +102,32 @@ void stab_init ( void )  {
   //idx.u1 = 0.0;  idx.u2 = 0.0;  idx.y1 = 0.0;  idx.y2 = 0.0;
   //idy.u1 = 0.0;  idy.u2 = 0.0;  idy.y1 = 0.0;  idy.y2 = 0.0;
   //idz.u1 = 0.0;  idz.u2 = 0.0;  idz.y1 = 0.0;  idz.y2 = 0.0;
+
+  // Display settings
+  if (DEBUG)  {
+    printf("  Disarm values:    ");  for ( i=0; i<10; i++ ) printf("%4.1f  ", stab.off[i]   );  printf("\n");
+    printf("  Range values:     ");  for ( i=0; i<4;  i++ ) printf("%4.1f  ", stab.range[i] );  printf("\n");
+    printf("  Throttle values:  ");  for ( i=0; i<3;  i++ ) printf("%4.1f  ", stab.thrl[i]  );  printf("\n");
+    printf("  Desired system response: \n");
+    printf("          Ts    Mp    zeta  nfreq    sigma  dfreq          ap      ad        kp      kd  \n" );
+    printf("    X:  %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f    %6.4f  %6.4f  \n", 
+      sfx.ts, sfx.mp, sfx.zeta, sfx.nfreq, sfx.sigma, sfx.dfreq, sfx.ap, sfx.ad, sfx.kp, sfx.kd );
+    printf("    Y:  %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f    %6.4f  %6.4f  \n", 
+      sfy.ts, sfy.mp, sfy.zeta, sfy.nfreq, sfy.sigma, sfy.dfreq, sfy.ap, sfy.ad, sfy.kp, sfy.kd );
+    printf("    Z:  %4.2f  %4.1f    %4.2f  %5.2f    %5.2f  %5.2f    %8.3f  %6.3f    %6.4f  %6.4f  \n", 
+      sfz.ts, sfz.mp, sfz.zeta, sfz.nfreq, sfz.sigma, sfz.dfreq, sfz.ap, sfz.ad, sfz.kp, sfz.kd );
+  }
+  /*
+  if (DEBUG)  {
+    printf("  Adaptive gain settings \n");
+    printf("       Gp   Gd   Gu  \n");
+    printf("  X:  %3.1f  %3.1f  %3.1f  \n", sfx.Gp, sfx.Gd, sfx.Gu );
+    printf("  Y:  %3.1f  %3.1f  %3.1f  \n", sfy.Gp, sfy.Gd, sfy.Gu );
+    printf("  Z:  %3.1f  %3.1f  %3.1f  \n", sfz.Gp, sfz.Gd, sfz.Gu );
+    fflush(stdout);
+  }
+  */
+
 
   return;
 }
@@ -177,21 +154,19 @@ void stab_exit ( void )  {
  *  stab_refmdl
  *  Take desired system char and determine reference model
  */
-/*
 void stab_refmdl ( sf_struct *sf )  {
 
   // Local variables
-  double ts, mp, ln, j;
+  double ts, mp, ln;
   double sigma, zeta;
   double nfreq, dfreq;
   double ap, ad;
-  double kp, kd, ku;
+  //double kp, kd, ku;
 
   // Get desired system characteristics
   pthread_mutex_lock(&sf->mutex);
   ts = sf->ts;
   mp = sf->mp / 100.0;
-  j  = sf->j;
   pthread_mutex_unlock(&sf->mutex);
 
   // Calculate parameters
@@ -202,9 +177,9 @@ void stab_refmdl ( sf_struct *sf )  {
   dfreq = nfreq * sqrt( 1 - zeta * zeta );
   ap = nfreq * nfreq;
   ad = 2.0 * zeta * nfreq;
-  kp = ap / j;
-  kd = ad / j;
-  ku = 1.0;  //--- WIP ---//
+  //kp = ap / j;
+  //kd = ad / j;
+  //ku = 1.0;
 
   // Assign reference model parameters
   pthread_mutex_lock(&sf->mutex);
@@ -214,14 +189,14 @@ void stab_refmdl ( sf_struct *sf )  {
   sf->dfreq = dfreq;
   sf->ap    = ap;
   sf->ad    = ad;
-  sf->kp    = kp;
-  sf->kd    = kd;
-  sf->ku    = ku;
+  //sf->kp    = kp;
+  //sf->kd    = kd;
+  //sf->ku    = ku;
   pthread_mutex_unlock(&sf->mutex);
 
   return;
 }
-*/
+
 
 /**
  *  stab_update
@@ -333,13 +308,12 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
 
   // Local variables
   bool   wrap;
+  double dt;
+  double xp, xd, xa;
   double kp, kd;
+  double ap, ad;
   double u;
   double diff;
-  //double dt;
-  //double ap, ad, j;
-  //double ku;
-  //double xp, xd, xa;
   //double Gp, Gd, Gu;
   //double p_tilde, d_tilde;
   //double kp_dot, kd_dot, ku_dot;
@@ -347,15 +321,15 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
   // Pull data from structure
   pthread_mutex_lock(&sf->mutex);
   wrap = sf->wrap;
+  dt   = sf->dt;
+  xp   = sf->xp;
+  xd   = sf->xd;
   kp   = sf->kp;
   kd   = sf->kd;
-  //dt = sf->dt;
-  //ap = sf->ap;
-  //ad = sf->ad;
+  ap   = sf->ap;
+  ad   = sf->ad;
   //j  = sf->j;
   //ku = sf->ku;
-  //xp = sf->xp;
-  //xd = sf->xd;
   //Gp = sf->Gp;
   //Gd = sf->Gd;
   //Gu = sf->Gu;
@@ -369,7 +343,7 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
   }
   u = diff * kp - zd * kd;
 
-  /*/ Determine ref model states
+  // Determine ref model states
   diff = r - xp;
   if (wrap)  {
     if ( diff >   PI )  diff -= 2.0 * PI;
@@ -378,7 +352,6 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
   xa  = diff * ap - xd * ad;
   xd += dt * xa;
   xp += dt * xd + 0.5 * dt * dt * xa;
-  */
 
   // Reset adaptive gains if needed
   //if (areset)  {  Gp = 0.0;  Gd = 0.0;  Gu = 0.0;  }
@@ -422,6 +395,8 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
   // Push data to structure
   pthread_mutex_lock(&sf->mutex);
   sf->r  = r;
+  sf->zp = xp;
+  sf->zd = xd;
   sf->zp = zp;
   sf->zd = zd;
   sf->u  = u;

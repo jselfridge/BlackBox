@@ -100,6 +100,8 @@ log_stab_struct log_stab;
 
 typedef struct log_sf_struct {
   float *r;
+  float *xp;
+  float *xd;
   float *zp;
   float *zd;
   float *u;
