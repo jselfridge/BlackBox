@@ -395,8 +395,8 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
   // Push data to structure
   pthread_mutex_lock(&sf->mutex);
   sf->r  = r;
-  sf->zp = xp;
-  sf->zd = xd;
+  sf->xp = xp;
+  sf->xd = xd;
   sf->zp = zp;
   sf->zd = zd;
   sf->u  = u;
