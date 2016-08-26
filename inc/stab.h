@@ -31,15 +31,7 @@ stab_struct stab;
 
 typedef struct sf_struct {
   bool    wrap;
-  double  dt;
-  double  r;
-  double  xp;
-  double  xd;
-  double  zp;
-  double  zd;
-  double  kp;
-  double  kd;
-  double  u;
+  double  dt; 
   double  ts;
   double  mp;
   double  sigma;
@@ -48,6 +40,14 @@ typedef struct sf_struct {
   double  dfreq;
   double  ap;
   double  ad;
+  double  r;
+  double  xp;
+  double  xd;
+  double  zp;
+  double  zd;
+  double  kp;
+  double  kd;
+  double  u;
   //double  j;
   //double  ku;
   //double  Gp;

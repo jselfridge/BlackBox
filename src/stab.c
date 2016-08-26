@@ -83,7 +83,7 @@ void stab_init ( void )  {
 
   // Assign state feedback values
   sfx.kp = 0.100;  sfx.kd = 0.050;  sfx.ts = 0.75;  sfx.mp =  5.0;  stab_refmdl( &sfx );
-  sfy.kp = 0.120;  sfy.kd = 0.055;  sfy.ts = 0.75;  sfy.mp =  3.0;  stab_refmdl( &sfy );
+  sfy.kp = 0.120;  sfy.kd = 0.060;  sfy.ts = 0.75;  sfy.mp =  3.0;  stab_refmdl( &sfy );
   sfz.kp = 0.060;  sfz.kd = 0.000;  sfz.ts = 0.75;  sfz.mp =  1.0;  stab_refmdl( &sfz );
 
   /*
