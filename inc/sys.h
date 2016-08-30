@@ -8,10 +8,10 @@
 #include <stdbool.h>
 
 
-#define DEBUG       false
-#define SYS_EXIT    true
+#define DEBUG       true
+#define SYS_EXIT    false
 #define SYS_IO      false
-#define SYS_IMU     false
+#define SYS_IMU     true
 #define SYS_AHRS    false
 #define SYS_STAB    false
 #define SYS_STACK  ( 200 * 1024 * 1024 )
