@@ -1,9 +1,10 @@
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  blackbox.dts
-//  Primary overlay for the BlackBox controller
-//  Justin M Selfridge
+//  blackbox_v1.dts
 //  Gradient Consulting, LLC
+//  Justin M Selfridge
+//  Enables the blackbox robotics controller overlay
+//  Derived from 'am335x_boneblack_overlay.dtb'
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /dts-v1/;
@@ -79,28 +80,28 @@
 		#size-cells = <0x1>;
 		ranges;
 		ti,hwmods = "l3_main";
-		linux,phandle = <0x42>;
-		phandle = <0x42>;
+		linux,phandle = <0x41>;
+		phandle = <0x41>;
 
 		l4_wkup@44c00000 {
 			compatible = "ti,am3-l4-wkup", "simple-bus";
 			#address-cells = <0x1>;
 			#size-cells = <0x1>;
 			ranges = <0x0 0x44c00000 0x280000>;
-			linux,phandle = <0x43>;
-			phandle = <0x43>;
+			linux,phandle = <0x42>;
+			phandle = <0x42>;
 
 			prcm@200000 {
 				compatible = "ti,am3-prcm";
 				reg = <0x200000 0x4000>;
-				linux,phandle = <0x44>;
-				phandle = <0x44>;
+				linux,phandle = <0x43>;
+				phandle = <0x43>;
 
 				clocks {
 					#address-cells = <0x1>;
 					#size-cells = <0x0>;
-					linux,phandle = <0x45>;
-					phandle = <0x45>;
+					linux,phandle = <0x44>;
+					phandle = <0x44>;
 
 					clk_32768_ck {
 						#clock-cells = <0x0>;
@@ -204,8 +205,8 @@
 						ti,max-div = <0x1f>;
 						reg = <0x4d8>;
 						ti,index-starts-at-one;
-						linux,phandle = <0x46>;
-						phandle = <0x46>;
+						linux,phandle = <0x45>;
+						phandle = <0x45>;
 					};
 
 					dpll_mpu_ck {
@@ -224,8 +225,8 @@
 						ti,max-div = <0x1f>;
 						reg = <0x4a8>;
 						ti,index-starts-at-one;
-						linux,phandle = <0x47>;
-						phandle = <0x47>;
+						linux,phandle = <0x46>;
+						phandle = <0x46>;
 					};
 
 					dpll_ddr_ck {
@@ -254,8 +255,8 @@
 						clocks = <0x8>;
 						clock-mult = <0x1>;
 						clock-div = <0x2>;
-						linux,phandle = <0x48>;
-						phandle = <0x48>;
+						linux,phandle = <0x47>;
+						phandle = <0x47>;
 					};
 
 					dpll_disp_ck {
@@ -305,8 +306,8 @@
 						clocks = <0xb>;
 						clock-mult = <0x1>;
 						clock-div = <0x4>;
-						linux,phandle = <0x49>;
-						phandle = <0x49>;
+						linux,phandle = <0x48>;
+						phandle = <0x48>;
 					};
 
 					dpll_per_m2_div4_ck {
@@ -315,8 +316,8 @@
 						clocks = <0xb>;
 						clock-mult = <0x1>;
 						clock-div = <0x4>;
-						linux,phandle = <0x4a>;
-						phandle = <0x4a>;
+						linux,phandle = <0x49>;
+						phandle = <0x49>;
 					};
 
 					cefuse_fck {
@@ -325,8 +326,8 @@
 						clocks = <0x4>;
 						ti,bit-shift = <0x1>;
 						reg = <0xa20>;
-						linux,phandle = <0x4b>;
-						phandle = <0x4b>;
+						linux,phandle = <0x4a>;
+						phandle = <0x4a>;
 					};
 
 					clk_24mhz {
@@ -374,8 +375,8 @@
 						compatible = "ti,mux-clock";
 						clocks = <0xf 0x10>;
 						reg = <0x530>;
-						linux,phandle = <0x4c>;
-						phandle = <0x4c>;
+						linux,phandle = <0x4b>;
+						phandle = <0x4b>;
 					};
 
 					mmu_fck {
@@ -384,8 +385,8 @@
 						clocks = <0xe>;
 						ti,bit-shift = <0x1>;
 						reg = <0x914>;
-						linux,phandle = <0x4d>;
-						phandle = <0x4d>;
+						linux,phandle = <0x4c>;
+						phandle = <0x4c>;
 					};
 
 					timer1_fck {
@@ -393,8 +394,8 @@
 						compatible = "ti,mux-clock";
 						clocks = <0x4 0x11 0x12 0x13 0x14>;
 						reg = <0x528>;
-						linux,phandle = <0x4e>;
-						phandle = <0x4e>;
+						linux,phandle = <0x4d>;
+						phandle = <0x4d>;
 					};
 
 					timer2_fck {
@@ -402,8 +403,8 @@
 						compatible = "ti,mux-clock";
 						clocks = <0x12 0x4 0x11>;
 						reg = <0x508>;
-						linux,phandle = <0x4f>;
-						phandle = <0x4f>;
+						linux,phandle = <0x4e>;
+						phandle = <0x4e>;
 					};
 
 					timer3_fck {
@@ -411,8 +412,8 @@
 						compatible = "ti,mux-clock";
 						clocks = <0x12 0x4 0x11>;
 						reg = <0x50c>;
-						linux,phandle = <0x50>;
-						phandle = <0x50>;
+						linux,phandle = <0x4f>;
+						phandle = <0x4f>;
 					};
 
 					timer4_fck {
@@ -420,8 +421,8 @@
 						compatible = "ti,mux-clock";
 						clocks = <0x12 0x4 0x11>;
 						reg = <0x510>;
-						linux,phandle = <0x51>;
-						phandle = <0x51>;
+						linux,phandle = <0x50>;
+						phandle = <0x50>;
 					};
 
 					timer5_fck {
@@ -429,8 +430,8 @@
 						compatible = "ti,mux-clock";
 						clocks = <0x12 0x4 0x11>;
 						reg = <0x518>;
-						linux,phandle = <0x52>;
-						phandle = <0x52>;
+						linux,phandle = <0x51>;
+						phandle = <0x51>;
 					};
 
 					timer6_fck {
@@ -438,8 +439,8 @@
 						compatible = "ti,mux-clock";
 						clocks = <0x12 0x4 0x11>;
 						reg = <0x51c>;
-						linux,phandle = <0x53>;
-						phandle = <0x53>;
+						linux,phandle = <0x52>;
+						phandle = <0x52>;
 					};
 
 					timer7_fck {
@@ -447,8 +448,8 @@
 						compatible = "ti,mux-clock";
 						clocks = <0x12 0x4 0x11>;
 						reg = <0x504>;
-						linux,phandle = <0x54>;
-						phandle = <0x54>;
+						linux,phandle = <0x53>;
+						phandle = <0x53>;
 					};
 
 					usbotg_fck {
@@ -457,8 +458,8 @@
 						clocks = <0xa>;
 						ti,bit-shift = <0x8>;
 						reg = <0x47c>;
-						linux,phandle = <0x55>;
-						phandle = <0x55>;
+						linux,phandle = <0x54>;
+						phandle = <0x54>;
 					};
 
 					dpll_core_m4_div2_ck {
@@ -477,8 +478,8 @@
 						clocks = <0x15>;
 						ti,bit-shift = <0x1>;
 						reg = <0xe4>;
-						linux,phandle = <0x56>;
-						phandle = <0x56>;
+						linux,phandle = <0x55>;
+						phandle = <0x55>;
 					};
 
 					wdt1_fck {
@@ -486,8 +487,8 @@
 						compatible = "ti,mux-clock";
 						clocks = <0x13 0x11>;
 						reg = <0x538>;
-						linux,phandle = <0x57>;
-						phandle = <0x57>;
+						linux,phandle = <0x56>;
+						phandle = <0x56>;
 					};
 
 					l4_rtc_gclk {
@@ -496,8 +497,8 @@
 						clocks = <0xe>;
 						clock-mult = <0x1>;
 						clock-div = <0x2>;
-						linux,phandle = <0x58>;
-						phandle = <0x58>;
+						linux,phandle = <0x57>;
+						phandle = <0x57>;
 					};
 
 					l4hs_gclk {
@@ -506,8 +507,8 @@
 						clocks = <0xe>;
 						clock-mult = <0x1>;
 						clock-div = <0x1>;
-						linux,phandle = <0x59>;
-						phandle = <0x59>;
+						linux,phandle = <0x58>;
+						phandle = <0x58>;
 					};
 
 					l3s_gclk {
@@ -516,8 +517,8 @@
 						clocks = <0x15>;
 						clock-mult = <0x1>;
 						clock-div = <0x1>;
-						linux,phandle = <0x5a>;
-						phandle = <0x5a>;
+						linux,phandle = <0x59>;
+						phandle = <0x59>;
 					};
 
 					l4fw_gclk {
@@ -526,8 +527,8 @@
 						clocks = <0x15>;
 						clock-mult = <0x1>;
 						clock-div = <0x1>;
-						linux,phandle = <0x5b>;
-						phandle = <0x5b>;
+						linux,phandle = <0x5a>;
+						phandle = <0x5a>;
 					};
 
 					l4ls_gclk {
@@ -546,8 +547,8 @@
 						clocks = <0xe>;
 						clock-mult = <0x1>;
 						clock-div = <0x1>;
-						linux,phandle = <0x5c>;
-						phandle = <0x5c>;
+						linux,phandle = <0x5b>;
+						phandle = <0x5b>;
 					};
 
 					cpsw_125mhz_gclk {
@@ -556,8 +557,8 @@
 						clocks = <0x16>;
 						clock-mult = <0x1>;
 						clock-div = <0x2>;
-						linux,phandle = <0x34>;
-						phandle = <0x34>;
+						linux,phandle = <0x33>;
+						phandle = <0x33>;
 					};
 
 					cpsw_cpts_rft_clk {
@@ -565,8 +566,8 @@
 						compatible = "ti,mux-clock";
 						clocks = <0x16 0xe>;
 						reg = <0x520>;
-						linux,phandle = <0x35>;
-						phandle = <0x35>;
+						linux,phandle = <0x34>;
+						phandle = <0x34>;
 					};
 
 					gpio0_dbclk_mux_ck {
@@ -584,8 +585,8 @@
 						clocks = <0x17>;
 						ti,bit-shift = <0x12>;
 						reg = <0x408>;
-						linux,phandle = <0x5d>;
-						phandle = <0x5d>;
+						linux,phandle = <0x5c>;
+						phandle = <0x5c>;
 					};
 
 					gpio1_dbclk {
@@ -594,8 +595,8 @@
 						clocks = <0x11>;
 						ti,bit-shift = <0x12>;
 						reg = <0xac>;
-						linux,phandle = <0x5e>;
-						phandle = <0x5e>;
+						linux,phandle = <0x5d>;
+						phandle = <0x5d>;
 					};
 
 					gpio2_dbclk {
@@ -604,8 +605,8 @@
 						clocks = <0x11>;
 						ti,bit-shift = <0x12>;
 						reg = <0xb0>;
-						linux,phandle = <0x5f>;
-						phandle = <0x5f>;
+						linux,phandle = <0x5e>;
+						phandle = <0x5e>;
 					};
 
 					gpio3_dbclk {
@@ -614,8 +615,8 @@
 						clocks = <0x11>;
 						ti,bit-shift = <0x12>;
 						reg = <0xb4>;
-						linux,phandle = <0x60>;
-						phandle = <0x60>;
+						linux,phandle = <0x5f>;
+						phandle = <0x5f>;
 					};
 
 					lcd_gclk {
@@ -634,8 +635,8 @@
 						clocks = <0xb>;
 						clock-mult = <0x1>;
 						clock-div = <0x2>;
-						linux,phandle = <0x61>;
-						phandle = <0x61>;
+						linux,phandle = <0x60>;
+						phandle = <0x60>;
 					};
 
 					gfx_fclk_clksel_ck {
@@ -654,8 +655,8 @@
 						clocks = <0x18>;
 						reg = <0x52c>;
 						ti,max-div = <0x2>;
-						linux,phandle = <0x62>;
-						phandle = <0x62>;
+						linux,phandle = <0x61>;
+						phandle = <0x61>;
 					};
 
 					sysclkout_pre_ck {
@@ -726,8 +727,8 @@
 						ti,max-div = <0x40>;
 						reg = <0x414>;
 						ti,index-power-of-two;
-						linux,phandle = <0x63>;
-						phandle = <0x63>;
+						linux,phandle = <0x62>;
+						phandle = <0x62>;
 					};
 
 					trace_clk_div_ck {
@@ -738,8 +739,8 @@
 						ti,max-div = <0x40>;
 						reg = <0x414>;
 						ti,index-power-of-two;
-						linux,phandle = <0x64>;
-						phandle = <0x64>;
+						linux,phandle = <0x63>;
+						phandle = <0x63>;
 					};
 
 					clkout2_ck {
@@ -748,20 +749,20 @@
 						clocks = <0x1f>;
 						ti,bit-shift = <0x7>;
 						reg = <0x700>;
-						linux,phandle = <0x65>;
-						phandle = <0x65>;
+						linux,phandle = <0x64>;
+						phandle = <0x64>;
 					};
 				};
 
 				clockdomains {
-					linux,phandle = <0x66>;
-					phandle = <0x66>;
+					linux,phandle = <0x65>;
+					phandle = <0x65>;
 
 					clk_24mhz_clkdm {
 						compatible = "ti,clockdomain";
 						clocks = <0x11>;
-						linux,phandle = <0x67>;
-						phandle = <0x67>;
+						linux,phandle = <0x66>;
+						phandle = <0x66>;
 					};
 				};
 			};
@@ -772,8 +773,8 @@
 				#address-cells = <0x1>;
 				#size-cells = <0x1>;
 				ranges = <0x0 0x210000 0x2000>;
-				linux,phandle = <0x68>;
-				phandle = <0x68>;
+				linux,phandle = <0x67>;
+				phandle = <0x67>;
 
 				pinmux@800 {
 					compatible = "pinctrl-single";
@@ -782,13 +783,13 @@
 					#size-cells = <0x0>;
 					pinctrl-single,register-width = <0x20>;
 					pinctrl-single,function-mask = <0x7f>;
-					linux,phandle = <0x69>;
-					phandle = <0x69>;
+					linux,phandle = <0x68>;
+					phandle = <0x68>;
 
 					user_leds_s0 {
 						pinctrl-single,pins = <0x54 0x7 0x58 0x17 0x5c 0x7 0x60 0x17>;
-						linux,phandle = <0x3b>;
-						phandle = <0x3b>;
+						linux,phandle = <0x3a>;
+						phandle = <0x3a>;
 					};
 
 					pinmux_i2c0_pins {
@@ -811,26 +812,26 @@
 
 					cpsw_default {
 						pinctrl-single,pins = <0x108 0x28 0x10c 0x28 0x110 0x30 0x114 0x0 0x118 0x30 0x11c 0x0 0x120 0x0 0x124 0x0 0x128 0x0 0x12c 0x30 0x130 0x30 0x134 0x30 0x138 0x30 0x13c 0x30 0x140 0x30>;
-						linux,phandle = <0x36>;
-						phandle = <0x36>;
+						linux,phandle = <0x35>;
+						phandle = <0x35>;
 					};
 
 					cpsw_sleep {
 						pinctrl-single,pins = <0x108 0x27 0x10c 0x27 0x110 0x27 0x114 0x27 0x118 0x27 0x11c 0x27 0x120 0x27 0x124 0x27 0x128 0x27 0x12c 0x27 0x130 0x27 0x134 0x27 0x138 0x27 0x13c 0x27 0x140 0x27>;
-						linux,phandle = <0x37>;
-						phandle = <0x37>;
+						linux,phandle = <0x36>;
+						phandle = <0x36>;
 					};
 
 					davinci_mdio_default {
 						pinctrl-single,pins = <0x148 0x30 0x14c 0x10>;
-						linux,phandle = <0x38>;
-						phandle = <0x38>;
+						linux,phandle = <0x37>;
+						phandle = <0x37>;
 					};
 
 					davinci_mdio_sleep {
 						pinctrl-single,pins = <0x148 0x27 0x14c 0x27>;
-						linux,phandle = <0x39>;
-						phandle = <0x39>;
+						linux,phandle = <0x38>;
+						phandle = <0x38>;
 					};
 
 					pinmux_mmc1_pins {
@@ -841,8 +842,8 @@
 
 					pinmux_emmc_pins {
 						pinctrl-single,pins = <0x80 0x32 0x84 0x32 0x0 0x31 0x4 0x31 0x8 0x31 0xc 0x31 0x10 0x31 0x14 0x31 0x18 0x31 0x1c 0x31>;
-						linux,phandle = <0x2c>;
-						phandle = <0x2c>;
+						linux,phandle = <0x69>;
+						phandle = <0x69>;
 					};
 				};
 
@@ -851,8 +852,8 @@
 					reg = <0x0 0x800>;
 					#address-cells = <0x1>;
 					#size-cells = <0x1>;
-					linux,phandle = <0x2e>;
-					phandle = <0x2e>;
+					linux,phandle = <0x2d>;
+					phandle = <0x2d>;
 
 					clocks {
 						#address-cells = <0x1>;
@@ -886,8 +887,8 @@
 							clocks = <0x4>;
 							clock-mult = <0x1>;
 							clock-div = <0x1>;
-							linux,phandle = <0x2d>;
-							phandle = <0x2d>;
+							linux,phandle = <0x2c>;
+							phandle = <0x2c>;
 						};
 
 						dcan1_fck {
@@ -896,8 +897,8 @@
 							clocks = <0x4>;
 							clock-mult = <0x1>;
 							clock-div = <0x1>;
-							linux,phandle = <0x2f>;
-							phandle = <0x2f>;
+							linux,phandle = <0x2e>;
+							phandle = <0x2e>;
 						};
 
 						mcasp0_fck {
@@ -1050,8 +1051,15 @@
 			#interrupt-cells = <0x2>;
 			reg = <0x4804c000 0x1000>;
 			interrupts = <0x62>;
-			linux,phandle = <0x3c>;
-			phandle = <0x3c>;
+			linux,phandle = <0x3b>;
+			phandle = <0x3b>;
+
+			emmc_rst {
+				gpio-hog;
+				gpios = <0x14 0x0>;
+				output-high;
+				line-name = "EMMC ResetN";
+			};
 		};
 
 		gpio@481ac000 {
@@ -1264,8 +1272,8 @@
 
 				baseboard_data@0 {
 					reg = <0x0 0x100>;
-					linux,phandle = <0x3d>;
-					phandle = <0x3d>;
+					linux,phandle = <0x3c>;
+					phandle = <0x3c>;
 				};
 			};
 		};
@@ -1306,8 +1314,8 @@
 
 				cape_data@0 {
 					reg = <0x0 0x100>;
-					linux,phandle = <0x3e>;
-					phandle = <0x3e>;
+					linux,phandle = <0x3d>;
+					phandle = <0x3d>;
 				};
 			};
 
@@ -1321,8 +1329,8 @@
 
 				cape_data@0 {
 					reg = <0x0 0x100>;
-					linux,phandle = <0x3f>;
-					phandle = <0x3f>;
+					linux,phandle = <0x3e>;
+					phandle = <0x3e>;
 				};
 			};
 
@@ -1336,8 +1344,8 @@
 
 				cape_data@0 {
 					reg = <0x0 0x100>;
-					linux,phandle = <0x40>;
-					phandle = <0x40>;
+					linux,phandle = <0x3f>;
+					phandle = <0x3f>;
 				};
 			};
 
@@ -1351,8 +1359,8 @@
 
 				cape_data@0 {
 					reg = <0x0 0x100>;
-					linux,phandle = <0x41>;
-					phandle = <0x41>;
+					linux,phandle = <0x40>;
+					phandle = <0x40>;
 				};
 			};
 		};
@@ -1388,11 +1396,7 @@
 			interrupts = <0x1c>;
 			interrupt-parent = <0x1>;
 			reg = <0x481d8000 0x1000>;
-			status = "okay";
-			vmmc-supply = <0x2b>;
-			pinctrl-names = "default";
-			pinctrl-0 = <0x2c>;
-			bus-width = <0x8>;
+			status = "disabled";
 			linux,phandle = <0x8f>;
 			phandle = <0x8f>;
 		};
@@ -1431,9 +1435,9 @@
 			compatible = "ti,am3352-d_can";
 			ti,hwmods = "d_can0";
 			reg = <0x481cc000 0x2000>;
-			clocks = <0x2d>;
+			clocks = <0x2c>;
 			clock-names = "fck";
-			syscon-raminit = <0x2e 0x644 0x0>;
+			syscon-raminit = <0x2d 0x644 0x0>;
 			interrupts = <0x34>;
 			status = "disabled";
 			linux,phandle = <0x93>;
@@ -1444,9 +1448,9 @@
 			compatible = "ti,am3352-d_can";
 			ti,hwmods = "d_can1";
 			reg = <0x481d0000 0x2000>;
-			clocks = <0x2f>;
+			clocks = <0x2e>;
 			clock-names = "fck";
-			syscon-raminit = <0x2e 0x644 0x1>;
+			syscon-raminit = <0x2d 0x644 0x1>;
 			interrupts = <0x37>;
 			status = "disabled";
 			linux,phandle = <0x94>;
@@ -1609,8 +1613,8 @@
 				reg = <0x44e10620 0x10 0x44e10648 0x4>;
 				reg-names = "phy_ctrl", "wakeup";
 				status = "okay";
-				linux,phandle = <0x30>;
-				phandle = <0x30>;
+				linux,phandle = <0x2f>;
+				phandle = <0x2f>;
 			};
 
 			usb-phy@47401300 {
@@ -1618,9 +1622,9 @@
 				reg = <0x47401300 0x100>;
 				reg-names = "phy";
 				status = "okay";
-				ti,ctrl_mod = <0x30>;
-				linux,phandle = <0x31>;
-				phandle = <0x31>;
+				ti,ctrl_mod = <0x2f>;
+				linux,phandle = <0x30>;
+				phandle = <0x30>;
 			};
 
 			usb@47401000 {
@@ -1635,8 +1639,8 @@
 				mentor,num-eps = <0x10>;
 				mentor,ram-bits = <0xc>;
 				mentor,power = <0x1f4>;
-				phys = <0x31>;
-				dmas = <0x32 0x0 0x0 0x32 0x1 0x0 0x32 0x2 0x0 0x32 0x3 0x0 0x32 0x4 0x0 0x32 0x5 0x0 0x32 0x6 0x0 0x32 0x7 0x0 0x32 0x8 0x0 0x32 0x9 0x0 0x32 0xa 0x0 0x32 0xb 0x0 0x32 0xc 0x0 0x32 0xd 0x0 0x32 0xe 0x0 0x32 0x0 0x1 0x32 0x1 0x1 0x32 0x2 0x1 0x32 0x3 0x1 0x32 0x4 0x1 0x32 0x5 0x1 0x32 0x6 0x1 0x32 0x7 0x1 0x32 0x8 0x1 0x32 0x9 0x1 0x32 0xa 0x1 0x32 0xb 0x1 0x32 0xc 0x1 0x32 0xd 0x1 0x32 0xe 0x1>;
+				phys = <0x30>;
+				dmas = <0x31 0x0 0x0 0x31 0x1 0x0 0x31 0x2 0x0 0x31 0x3 0x0 0x31 0x4 0x0 0x31 0x5 0x0 0x31 0x6 0x0 0x31 0x7 0x0 0x31 0x8 0x0 0x31 0x9 0x0 0x31 0xa 0x0 0x31 0xb 0x0 0x31 0xc 0x0 0x31 0xd 0x0 0x31 0xe 0x0 0x31 0x0 0x1 0x31 0x1 0x1 0x31 0x2 0x1 0x31 0x3 0x1 0x31 0x4 0x1 0x31 0x5 0x1 0x31 0x6 0x1 0x31 0x7 0x1 0x31 0x8 0x1 0x31 0x9 0x1 0x31 0xa 0x1 0x31 0xb 0x1 0x31 0xc 0x1 0x31 0xd 0x1 0x31 0xe 0x1>;
 				dma-names = "rx1", "rx2", "rx3", "rx4", "rx5", "rx6", "rx7", "rx8", "rx9", "rx10", "rx11", "rx12", "rx13", "rx14", "rx15", "tx1", "tx2", "tx3", "tx4", "tx5", "tx6", "tx7", "tx8", "tx9", "tx10", "tx11", "tx12", "tx13", "tx14", "tx15";
 				linux,phandle = <0xa3>;
 				phandle = <0xa3>;
@@ -1647,9 +1651,9 @@
 				reg = <0x47401b00 0x100>;
 				reg-names = "phy";
 				status = "okay";
-				ti,ctrl_mod = <0x30>;
-				linux,phandle = <0x33>;
-				phandle = <0x33>;
+				ti,ctrl_mod = <0x2f>;
+				linux,phandle = <0x32>;
+				phandle = <0x32>;
 			};
 
 			usb@47401800 {
@@ -1664,8 +1668,8 @@
 				mentor,num-eps = <0x10>;
 				mentor,ram-bits = <0xc>;
 				mentor,power = <0x1f4>;
-				phys = <0x33>;
-				dmas = <0x32 0xf 0x0 0x32 0x10 0x0 0x32 0x11 0x0 0x32 0x12 0x0 0x32 0x13 0x0 0x32 0x14 0x0 0x32 0x15 0x0 0x32 0x16 0x0 0x32 0x17 0x0 0x32 0x18 0x0 0x32 0x19 0x0 0x32 0x1a 0x0 0x32 0x1b 0x0 0x32 0x1c 0x0 0x32 0x1d 0x0 0x32 0xf 0x1 0x32 0x10 0x1 0x32 0x11 0x1 0x32 0x12 0x1 0x32 0x13 0x1 0x32 0x14 0x1 0x32 0x15 0x1 0x32 0x16 0x1 0x32 0x17 0x1 0x32 0x18 0x1 0x32 0x19 0x1 0x32 0x1a 0x1 0x32 0x1b 0x1 0x32 0x1c 0x1 0x32 0x1d 0x1>;
+				phys = <0x32>;
+				dmas = <0x31 0xf 0x0 0x31 0x10 0x0 0x31 0x11 0x0 0x31 0x12 0x0 0x31 0x13 0x0 0x31 0x14 0x0 0x31 0x15 0x0 0x31 0x16 0x0 0x31 0x17 0x0 0x31 0x18 0x0 0x31 0x19 0x0 0x31 0x1a 0x0 0x31 0x1b 0x0 0x31 0x1c 0x0 0x31 0x1d 0x0 0x31 0xf 0x1 0x31 0x10 0x1 0x31 0x11 0x1 0x31 0x12 0x1 0x31 0x13 0x1 0x31 0x14 0x1 0x31 0x15 0x1 0x31 0x16 0x1 0x31 0x17 0x1 0x31 0x18 0x1 0x31 0x19 0x1 0x31 0x1a 0x1 0x31 0x1b 0x1 0x31 0x1c 0x1 0x31 0x1d 0x1>;
 				dma-names = "rx1", "rx2", "rx3", "rx4", "rx5", "rx6", "rx7", "rx8", "rx9", "rx10", "rx11", "rx12", "rx13", "rx14", "rx15", "tx1", "tx2", "tx3", "tx4", "tx5", "tx6", "tx7", "tx8", "tx9", "tx10", "tx11", "tx12", "tx13", "tx14", "tx15";
 				linux,phandle = <0xa4>;
 				phandle = <0xa4>;
@@ -1681,8 +1685,8 @@
 				#dma-channels = <0x1e>;
 				#dma-requests = <0x100>;
 				status = "okay";
-				linux,phandle = <0x32>;
-				phandle = <0x32>;
+				linux,phandle = <0x31>;
+				phandle = <0x31>;
 			};
 		};
 
@@ -1824,7 +1828,7 @@
 		ethernet@4a100000 {
 			compatible = "ti,cpsw";
 			ti,hwmods = "cpgmac0";
-			clocks = <0x34 0x35>;
+			clocks = <0x33 0x34>;
 			clock-names = "fck", "cpts";
 			cpdma_channels = <0x8>;
 			ale_entries = <0x400>;
@@ -1842,11 +1846,11 @@
 			interrupt-parent = <0x1>;
 			interrupts = <0x28 0x29 0x2a 0x2b>;
 			ranges;
-			syscon = <0x2e>;
+			syscon = <0x2d>;
 			status = "okay";
 			pinctrl-names = "default", "sleep";
-			pinctrl-0 = <0x36>;
-			pinctrl-1 = <0x37>;
+			pinctrl-0 = <0x35>;
+			pinctrl-1 = <0x36>;
 			linux,phandle = <0xb1>;
 			phandle = <0xb1>;
 
@@ -1859,15 +1863,15 @@
 				reg = <0x4a101000 0x100>;
 				status = "okay";
 				pinctrl-names = "default", "sleep";
-				pinctrl-0 = <0x38>;
-				pinctrl-1 = <0x39>;
-				linux,phandle = <0x3a>;
-				phandle = <0x3a>;
+				pinctrl-0 = <0x37>;
+				pinctrl-1 = <0x38>;
+				linux,phandle = <0x39>;
+				phandle = <0x39>;
 			};
 
 			slave@4a100200 {
 				mac-address = [00 00 00 00 00 00];
-				phy_id = <0x3a 0x0>;
+				phy_id = <0x39 0x0>;
 				phy-mode = "mii";
 				linux,phandle = <0xb2>;
 				phandle = <0xb2>;
@@ -1875,7 +1879,7 @@
 
 			slave@4a100300 {
 				mac-address = [00 00 00 00 00 00];
-				phy_id = <0x3a 0x1>;
+				phy_id = <0x39 0x1>;
 				phy-mode = "mii";
 				linux,phandle = <0xb3>;
 				phandle = <0xb3>;
@@ -2035,33 +2039,33 @@
 
 	leds {
 		pinctrl-names = "default";
-		pinctrl-0 = <0x3b>;
+		pinctrl-0 = <0x3a>;
 		compatible = "gpio-leds";
 
 		led@2 {
 			label = "beaglebone:green:usr0";
-			gpios = <0x3c 0x15 0x0>;
+			gpios = <0x3b 0x15 0x0>;
 			linux,default-trigger = "heartbeat";
 			default-state = "off";
 		};
 
 		led@3 {
 			label = "beaglebone:green:usr1";
-			gpios = <0x3c 0x16 0x0>;
+			gpios = <0x3b 0x16 0x0>;
 			linux,default-trigger = "mmc0";
 			default-state = "off";
 		};
 
 		led@4 {
 			label = "beaglebone:green:usr2";
-			gpios = <0x3c 0x17 0x0>;
+			gpios = <0x3b 0x17 0x0>;
 			linux,default-trigger = "cpu0";
 			default-state = "off";
 		};
 
 		led@5 {
 			label = "beaglebone:green:usr3";
-			gpios = <0x3c 0x18 0x0>;
+			gpios = <0x3b 0x18 0x0>;
 			linux,default-trigger = "mmc1";
 			default-state = "off";
 		};
@@ -2079,7 +2083,7 @@
 	bone_capemgr {
 		compatible = "ti,bone-capemgr";
 		status = "okay";
-		nvmem-cells = <0x3d 0x3e 0x3f 0x40 0x41>;
+		nvmem-cells = <0x3c 0x3d 0x3e 0x3f 0x40>;
 		nvmem-cell-names = "baseboard", "slot0", "slot1", "slot2", "slot3";
 		#slots = <0x4>;
 
@@ -2668,8 +2672,6 @@
 			mmc@481d8000 {
 				dmas = <0x0 0x8>;
 				interrupt-parent = <0x0>;
-				vmmc-supply = <0x0>;
-				pinctrl-0 = <0x0>;
 			};
 
 			mmc@47810000 {
