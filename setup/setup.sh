@@ -61,10 +61,8 @@ cd
 rm -r ./bb.org-overlays/ ./git/
 
 echo "--- STANDARD OVERLAY ---"
-#sed -i -e "s/#cape_disable=bone_capemgr.disable_partno=/cape_disable=bone_capemgr.disable_partno=BB-BONELT-HDMI,BB-BONELT-HDMIN/g" $UENV
-#sed -i -e 's/#dtb=am335x-boneblack-emmc-overlay.dtb/dtb=am335x-boneblack-emmc-overlay.dtb/g' $UENV
-#sed -i -e '/cape_universal=enable/ s??#cape_universal=enable?' $UENV
-#echo "CAPE=BLACKBOX" > /etc/default/capemgr
+cp blackbox.dtb /boot/dtbs/4.1.29-bone-rt-r22/
+echo "dtb=blackbox.dtb" >> $UENV
 
 echo "--- PRU DRIVERS ---"
 git clone https://github.com/beagleboard/am335x_pru_package.git
@@ -96,12 +94,6 @@ make install
 cd
 mkdir Log
 cd
-
-# Install autorun script
-#
-#
-#
-#
 
 # Restart the system
 sudo reboot
