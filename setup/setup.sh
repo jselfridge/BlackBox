@@ -1,12 +1,23 @@
 
 NET=/etc/network/interfaces
 UENV=/boot/uEnv.txt
+SRV=/etc/systemd/system/autorun.service
 
 # Make sure the user is root
 if [ `whoami` != 'root' ]; then
     echo "You must be root to install this"
     exit
 fi
+
+echo "--- RUNNING SETUP SCRIPT ---"
+echo none > /sys/class/leds/beaglebone\:green\:usr0/trigger
+echo none > /sys/class/leds/beaglebone\:green\:usr1/trigger
+echo none > /sys/class/leds/beaglebone\:green\:usr2/trigger
+echo none > /sys/class/leds/beaglebone\:green\:usr3/trigger
+echo    1 > /sys/class/leds/beaglebone\:green\:usr0/brightness
+echo    1 > /sys/class/leds/beaglebone\:green\:usr1/brightness
+echo    1 > /sys/class/leds/beaglebone\:green\:usr2/brightness
+echo    1 > /sys/class/leds/beaglebone\:green\:usr3/brightness
 
 echo "--- UPDATE DEBIAN ---"
 sudo apt-get update
@@ -62,6 +73,7 @@ rm -r ./bb.org-overlays/ ./git/
 
 echo "--- STANDARD OVERLAY ---"
 cp blackbox.dtb /boot/dtbs/4.1.29-bone-rt-r22/
+echo "dtb=blackbox.dts" >> $UENV
 echo "dtb=blackbox.dtb" >> $UENV
 
 echo "--- PRU DRIVERS ---"
@@ -91,10 +103,30 @@ cd ./BlackBox/dto/
 make clean
 make
 make install
+cd ..
+make clean
+make
 cd
 mkdir Log
 cd
 
+echo "--- AUTORUN ---"
+echo "[Unit]"                               >> $SRV
+echo "Description=AutoRun"                  >> $SRV
+echo " "                                    >> $SRV
+echo "[Service]"                            >> $SRV
+echo "ExecStart=/root/BlackBox/autorun.sh"  >> $SRV
+echo " "                                    >> $SRV
+echo "[Install]"                            >> $SRV
+echo "WantedBy=multi-user.target"           >> $SRV
+sudo systemctl enable /etc/systemd/system/autorun.service
+sudo systemctl start autorun.service
+
 # Restart the system
-sudo reboot
+echo 0 > /sys/class/leds/beaglebone\:green\:usr0/brightness
+echo 0 > /sys/class/leds/beaglebone\:green\:usr1/brightness
+echo 0 > /sys/class/leds/beaglebone\:green\:usr2/brightness
+echo 0 > /sys/class/leds/beaglebone\:green\:usr3/brightness
+sleep 2
+sudo shutdown -h now
 
