@@ -6,8 +6,8 @@ Develops a cape for a BeagleBone Black to enable "Black
 Box" functionality for research and development.
 
 
-v0.1.8 - State Feedback
------------------------
+v0.1.8 - State Feedback Control
+-------------------------------
 <ul>
   <li> Revised data structure. </li>
   <li> Obtained ref model param from settling time (ts) and percent overshoot (mp). </li>
