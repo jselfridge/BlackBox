@@ -9,7 +9,7 @@
 
 
 #define EKF_N   2
-#define EKF_M   4
+#define EKF_M   2
 
 
 typedef struct ekf_struct {
