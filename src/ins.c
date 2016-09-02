@@ -24,7 +24,7 @@ void ins_init ( void )  {
 
   // Display settings
   if (DEBUG)  {
-    printf("INS settings \n");
+    printf("  INS settings... (to be added) \n");
   }
 
   return;

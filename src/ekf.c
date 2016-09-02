@@ -39,6 +39,9 @@ void ekf_init ( void )  {
   uint n  = EKF_N;
   uint m  = EKF_M;
 
+  // Enable mutex lock
+  pthread_mutex_init( &ekf.mutex, NULL );
+
   // Allocate memory for storage arrays
   ekf.x  = mat_init(n,1);
   ekf.z  = mat_init(m,1);
@@ -56,44 +59,30 @@ void ekf_init ( void )  {
   // Assign plant covariance values
   mat_set( ekf.Q, 1, 1, 0.1 );
   mat_set( ekf.Q, 2, 2, 0.1 );
-  mat_set( ekf.Q, 3, 3, 0.1 );
-  mat_set( ekf.Q, 4, 4, 0.1 );
-  mat_set( ekf.Q, 5, 5, 0.1 );
-  mat_set( ekf.Q, 6, 6, 0.1 );
 
   // Assign measurement covariance values
   mat_set( ekf.R, 1, 1, 0.1 );
   mat_set( ekf.R, 2, 2, 0.1 );
-  mat_set( ekf.R, 3, 3, 0.1 );
-  mat_set( ekf.R, 4, 4, 0.1 );
-  mat_set( ekf.R, 5, 5, 0.1 );
-  mat_set( ekf.R, 6, 6, 0.1 );
 
   // Initialize prediction matrix
   mat_set( ekf.P, 1, 1, 0.1 );
   mat_set( ekf.P, 2, 2, 0.1 );
-  mat_set( ekf.P, 3, 3, 0.1 );
-  mat_set( ekf.P, 4, 4, 0.1 );
-  mat_set( ekf.P, 5, 5, 0.1 );
-  mat_set( ekf.P, 6, 6, 0.1 );
 
   // Static F matrix
-  double dt  = 1.0;  // / HZ_STAB;
+  double dt  = 1.0 / HZ_STAB;
   ekf.F = mat_eye(n);
-  mat_set( ekf.F, 1,4, dt );
-  mat_set( ekf.F, 2,5, dt );
-  mat_set( ekf.F, 3,6, dt );
+  mat_set( ekf.F, 1,2, dt );
 
   // Static H matrix
   ekf.H = mat_eye(n);
 
   // Display EKF settings
   if (DEBUG) {
-    printf("Q  ");  mat_print(ekf.Q);
-    printf("R  ");  mat_print(ekf.R);
-    printf("P  ");  mat_print(ekf.P);
-    printf("F  ");  mat_print(ekf.F);
-    printf("H  ");  mat_print(ekf.H);
+    printf("  Q ");  mat_print(ekf.Q);
+    printf("  R ");  mat_print(ekf.R);
+    printf("  P ");  mat_print(ekf.P);
+    printf("  F ");  mat_print(ekf.F);
+    printf("  H ");  mat_print(ekf.H);
   }
 
   return;
@@ -104,8 +93,8 @@ void ekf_init ( void )  {
  * Exits the EKF routine
  */
 void ekf_exit ( void )  {
-  if(DEBUG)  printf( "Close EKF \n" );  
-  // Add code as needed...
+  if (DEBUG)  printf("Close EKF \n");
+  pthread_mutex_destroy(&ekf.mutex);
   return;
 }
 
@@ -122,20 +111,20 @@ void ekf_exit ( void )  {
 void ekf_update ( void )  {
 
   // Define local variables
-  //ushort r, c;
   ushort n = EKF_N;
   ushort m = EKF_M;
+  //ushort r, c;
   //double num, den, val;
 
   // Initialize local EKF arrays
   matrix *x  = mat_init(n,1);
-  //matrix *xp = mat_init(n,1);
-  //matrix *xd = mat_init(n,1);
   matrix *z  = mat_init(m,1);
   matrix *f  = mat_init(n,1);
-  // matrix *fp = mat_init(n,1);
-  //matrix *fd = mat_init(n,1);
   matrix *h  = mat_init(m,1);
+  //matrix *xp = mat_init(n,1);
+  //matrix *xd = mat_init(n,1);
+  //matrix *fp = mat_init(n,1);
+  //matrix *fd = mat_init(n,1);
 
   // Initialize local EKF matrices
   matrix *F = mat_init(n,n);
@@ -147,18 +136,18 @@ void ekf_update ( void )  {
   matrix *S = mat_init(m,m);
   matrix *K = mat_init(n,m);
 
-  // Initialize intermediate storage arrays
+  // Initialize transpose matrices
   matrix *Ft  = mat_init(n,n);
   matrix *Ht  = mat_init(n,m);
 
-  // Initialize temp storage arrays
+  // Initialize temp storage matrices
   matrix *tmpNN = mat_init(n,n);
   matrix *tmpNM = mat_init(n,m);
   matrix *tmpMN = mat_init(m,n);
   matrix *tmpN  = mat_init(n,1);
   matrix *tmpM  = mat_init(m,1);
 
-  // Obtain EKF values
+  // Obtain EKF values from data structure
   pthread_mutex_lock(&ekf.mutex);
   x = mat_copy(ekf.x);
   f = mat_copy(ekf.f);
@@ -170,27 +159,23 @@ void ekf_update ( void )  {
   K = mat_copy(ekf.K);
   pthread_mutex_unlock(&ekf.mutex);
 
-  // Obtain gyro A measurements
-  pthread_mutex_lock(&gyrA.mutex);
-  double dRa = gyrA.filter[0];
-  double dPa = gyrA.filter[1];
-  double dYa = gyrA.filter[2];
-  pthread_mutex_unlock(&gyrA.mutex);
-
   // Obtain AHRS A measurements
   pthread_mutex_lock(&ahrsA.mutex);
   double Ra = ahrsA.eul[0];
-  double Pa = ahrsA.eul[1];
-  double Ya = ahrsA.eul[2];
+  //double Pa = ahrsA.eul[1];
+  //double Ya = ahrsA.eul[2];
   pthread_mutex_unlock(&ahrsA.mutex);
+
+  // Obtain gyro A measurements
+  pthread_mutex_lock(&gyrA.mutex);
+  double dRa = gyrA.filter[0];
+  //double dPa = gyrA.filter[1];
+  //double dYa = gyrA.filter[2];
+  pthread_mutex_unlock(&gyrA.mutex);
 
   // Populate measurement vector
   mat_set( z, 1,1,  Ra );
-  mat_set( z, 2,1,  Pa );
-  mat_set( z, 3,1,  Ya );
-  mat_set( z, 4,1, dRa );
-  mat_set( z, 5,1, dPa );
-  mat_set( z, 6,1, dYa );
+  mat_set( z, 2,1, dRa );
 
   /*
   // Save previous states before updating
@@ -256,13 +241,13 @@ void ekf_update ( void )  {
 
   // Clear local EKF arrays
   mat_clear(x);
-  //mat_clear(xp);
-  //mat_clear(xd);
   mat_clear(z);
   mat_clear(f);
+  mat_clear(h);
+  //mat_clear(xp);
+  //mat_clear(xd);
   //mat_clear(fp);
   //mat_clear(fd);
-  mat_clear(h);
 
   // Clear local EKF matrices
   mat_clear(F);
@@ -274,11 +259,11 @@ void ekf_update ( void )  {
   mat_clear(S);
   mat_clear(K);
 
-  // Clear intermediate storage arrays
+  // Clear transpose matrices
   mat_clear(Ft);
   mat_clear(Ht);
 
-  // Clear temp storage arrays
+  // Clear temp storage matrices
   mat_clear(tmpNN);
   mat_clear(tmpNM);
   mat_clear(tmpMN);
@@ -317,16 +302,18 @@ void ekf_gain ( void )  {
   // K = T Ht S^{-1}
   Ht = mat_trans(H);
   tmp = mat_mul( T, Ht );
-  //inv = mat_inv(S);
-  //K = mat_mul( tmp, inv );
+  inv = mat_inv(S);
+  K = mat_mul( tmp, inv );
 
   //--- DEBUGGING ---//
+  /*
   mat_set( K,1,1, 0.6180 );  mat_set( K,1,4, 0.0011 );
   mat_set( K,2,2, 0.6180 );  mat_set( K,2,5, 0.0011 );
   mat_set( K,3,3, 0.6180 );  mat_set( K,3,6, 0.0011 );
   mat_set( K,4,4, 0.6180 );  mat_set( K,4,1, 0.0011 );
   mat_set( K,5,5, 0.6180 );  mat_set( K,5,2, 0.0011 );
   mat_set( K,6,6, 0.6180 );  mat_set( K,6,3, 0.0011 );
+  */
 
   // Push data to structure
   pthread_mutex_lock(&ekf.mutex);

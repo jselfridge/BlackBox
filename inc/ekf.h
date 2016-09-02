@@ -8,8 +8,8 @@
 #include <matLib.h>
 
 
-#define EKF_N   6
-#define EKF_M   6
+#define EKF_N   2
+#define EKF_M   2
 
 
 typedef struct ekf_struct {
