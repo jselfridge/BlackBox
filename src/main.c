@@ -15,8 +15,8 @@ int main ( void )  {
   io_init();
   flag_init();
   imu_init();
-  stab_init();
   ekf_init();
+  stab_init();
   ins_init();
   gcs_init();
   log_init();
@@ -33,8 +33,8 @@ int main ( void )  {
   log_exit();
   gcs_exit();
   ins_exit();
-  ekf_exit();
   stab_exit();
+  ekf_exit();
   imu_exit();
   flag_exit();
   io_exit();

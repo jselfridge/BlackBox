@@ -363,6 +363,7 @@ void *fcn_imu (  )  {
       if (IMUA_ENABLED)  imu_update(&imuA);
       if (IMUB_ENABLED)  imu_update(&imuB);
       imu_state();
+      ekf_update();
     }
     tmr_finish(&tmr_imu);
     if (datalog.enabled)  log_record(LOG_IMU);
@@ -382,7 +383,6 @@ void *fcn_stab (  )  {
   while (running) {
     tmr_start(&tmr_stab);
     stab_update();
-    ekf_update();
     tmr_finish(&tmr_stab);
     if (datalog.enabled)  log_record(LOG_STAB);
     tmr_pause(&tmr_stab);

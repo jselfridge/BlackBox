@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include "ekf.h"
 #include "gcs.h"
 #include "imu.h"
 #include "ins.h"
@@ -128,6 +129,17 @@ void log_init ( void )  {
   log_rot.att       =  malloc( sizeof(float)  * log_imu.limit * 3 );
   log_rot.ang       =  malloc( sizeof(float)  * log_imu.limit * 3 );
 
+  // Data fusion setup
+  ushort n = EKF_N, m = EKF_M;
+  log_df.x          =  malloc( sizeof(float)  * log_imu.limit *  n  );
+  log_df.z          =  malloc( sizeof(float)  * log_imu.limit *  m  );
+  log_df.f          =  malloc( sizeof(float)  * log_imu.limit *  n  );
+  log_df.h          =  malloc( sizeof(float)  * log_imu.limit *  m  );
+  //log_df.F          =  malloc( sizeof(float)  * log_imu.limit * n*n );
+  //log_df.P          =  malloc( sizeof(float)  * log_imu.limit * n*n );
+  //log_df.T          =  malloc( sizeof(float)  * log_imu.limit * n*n );
+  //log_df.S          =  malloc( sizeof(float)  * log_imu.limit * m*m );
+
   // SF roll stabilization
   log_sfx.r         =  malloc( sizeof(float)  * log_stab.limit );
   log_sfx.xp        =  malloc( sizeof(float)  * log_stab.limit );
@@ -178,22 +190,6 @@ void log_init ( void )  {
   //log_sysidz.z2     =  malloc( sizeof(float)  * log_stab.limit );
   //log_sysidz.p1     =  malloc( sizeof(float)  * log_stab.limit );
   //log_sysidz.p2     =  malloc( sizeof(float)  * log_stab.limit );
-
-  /*
-  // EKF setup
-  ushort n = EKF_N, m = EKF_M;
-  log_ekf.time      =  malloc( sizeof(float)  * log_ekf.limit       );
-  log_ekf.dur       =  malloc( sizeof(ulong)  * log_ekf.limit       );
-  log_ekf.x         =  malloc( sizeof(float)  * log_ekf.limit *  n  );
-  log_ekf.z         =  malloc( sizeof(float)  * log_ekf.limit *  m  );
-  log_ekf.f         =  malloc( sizeof(float)  * log_ekf.limit *  n  );
-  log_ekf.h         =  malloc( sizeof(float)  * log_ekf.limit *  m  );
-  log_ekf.F         =  malloc( sizeof(float)  * log_ekf.limit * n*n );
-  log_ekf.P         =  malloc( sizeof(float)  * log_ekf.limit * n*n );
-  log_ekf.T         =  malloc( sizeof(float)  * log_ekf.limit * n*n );
-  log_ekf.S         =  malloc( sizeof(float)  * log_ekf.limit * m*m );
-  */
-
 
   return;
 }
@@ -294,6 +290,12 @@ void log_exit ( void )  {
   free(log_rot.att);
   free(log_rot.ang);
 
+  // Data fusion memory
+  free(log_df.x);
+  free(log_df.z);
+  free(log_df.f);
+  free(log_df.h);
+
   // SF roll stab memory
   free(log_sfx.r);
   free(log_sfx.xp);
@@ -344,20 +346,6 @@ void log_exit ( void )  {
   //free(log_sysidz.z2);
   //free(log_sysidz.p1);
   //free(log_sysidz.p2);
-
-  /*
-  // EKF memory
-  free(log_ekf.time);
-  free(log_ekf.dur);
-  free(log_ekf.x);
-  free(log_ekf.z);
-  free(log_ekf.f);
-  free(log_ekf.h);
-  free(log_ekf.F);
-  free(log_ekf.P);
-  free(log_ekf.T);
-  free(log_ekf.S);
-  */
 
   return;
 }
@@ -534,6 +522,22 @@ void log_start ( void )  {
     att_x     att_y     att_z      \
     ang_x     ang_y     ang_z        ");
 
+  // Data Fusion datalog file
+  ushort r;
+  ushort n = EKF_N, m = EKF_M;
+  sprintf( file, "%sdf.txt", datalog.path );
+  datalog.df = fopen( file, "w" );
+  if( datalog.df == NULL )  printf( "Error (log_init): Cannot generate 'df' file. \n" );
+  fprintf( datalog.df, "  " );
+  for ( r=1; r<=n; r++ )  fprintf( datalog.df, "       x%02d", r );  fprintf( datalog.df, "     " );
+  for ( r=1; r<=m; r++ )  fprintf( datalog.df, "       z%02d", r );  fprintf( datalog.df, "     " );
+  for ( r=1; r<=n; r++ )  fprintf( datalog.df, "       f%02d", r );  fprintf( datalog.df, "     " );
+  for ( r=1; r<=m; r++ )  fprintf( datalog.df, "       h%02d", r );  fprintf( datalog.df, "     " );
+  //for ( r=1; r<=n; r++ )  for ( c=1; c<=n; c++ )  fprintf( datalog.ekf, "    F%02d%02d", r, c );  fprintf( datalog.ekf, "     " );
+  //for ( r=1; r<=n; r++ )  for ( c=1; c<=n; c++ )  fprintf( datalog.ekf, "    P%02d%02d", r, c );  fprintf( datalog.ekf, "     " );
+  //for ( r=1; r<=n; r++ )  for ( c=1; c<=n; c++ )  fprintf( datalog.ekf, "    T%02d%02d", r, c );  fprintf( datalog.ekf, "     " );
+  //for ( r=1; r<=m; r++ )  for ( c=1; c<=m; c++ )  fprintf( datalog.ekf, "    S%02d%02d", r, c );  fprintf( datalog.ekf, "     " );
+
   // Stabilization timing thread datalog file
   sprintf( file, "%sstab.txt", datalog.path );
   datalog.stab = fopen( file, "w" );
@@ -564,7 +568,6 @@ void log_start ( void )  {
   //if( datalog.idx == NULL )  printf( "Error (log_init): Cannot generate 'idx' file. \n" );
   //fprintf( datalog.idx, "      idx_z1    idx_z2    idx_p1    idx_p2   ");
 
-
   /*
   // System identification datalog file
   sprintf( file, "%ssysid.txt", datalog.path );
@@ -577,31 +580,11 @@ void log_start ( void )  {
     Z_z1     Z_z2     Z_p1     Z_p2    " );
   */
 
-
   // INS timing thread datalog file
   sprintf( file, "%sins.txt", datalog.path );
   datalog.ins = fopen( file, "w" );
   if( datalog.ins == NULL )  printf( "Error (log_init): Cannot generate 'ins' file. \n" );
   fprintf( datalog.ins, "        ins_time    ins_dur   ");
-
-
-  /*
-  // EKF datalog file
-  ushort n = EKF_N, m = EKF_M;
-  sprintf( file, "%sekf.txt", datalog.path );
-  datalog.ekf = fopen( file, "w" );
-  if( datalog.ekf == NULL )  printf( "Error (log_init): Cannot generate 'ekf' file. \n" );
-  fprintf( datalog.ekf, "     ekftime   ekfdur    " );
-  for ( r=1; r<=n; r++ )  fprintf( datalog.ekf, "      x%02d", r );  fprintf( datalog.ekf, "    " );
-  for ( r=1; r<=m; r++ )  fprintf( datalog.ekf, "      z%02d", r );  fprintf( datalog.ekf, "    " );
-  for ( r=1; r<=n; r++ )  fprintf( datalog.ekf, "      f%02d", r );  fprintf( datalog.ekf, "    " );
-  for ( r=1; r<=m; r++ )  fprintf( datalog.ekf, "      h%02d", r );  fprintf( datalog.ekf, "    " );
-  for ( r=1; r<=n; r++ )  for ( c=1; c<=n; c++ )  fprintf( datalog.ekf, "    F%02d%02d", r, c );  fprintf( datalog.ekf, "    " );
-  //for ( r=1; r<=n; r++ )  for ( c=1; c<=n; c++ )  fprintf( datalog.ekf, "    P%02d%02d", r, c );  fprintf( datalog.ekf, "    " );
-  //for ( r=1; r<=n; r++ )  for ( c=1; c<=n; c++ )  fprintf( datalog.ekf, "    T%02d%02d", r, c );  fprintf( datalog.ekf, "    " );
-  //for ( r=1; r<=m; r++ )  for ( c=1; c<=m; c++ )  fprintf( datalog.ekf, "    S%02d%02d", r, c );  fprintf( datalog.ekf, "    " );
-  */
-
 
   // Determine start second
   struct timespec timeval;
@@ -788,6 +771,20 @@ void log_record ( enum log_index index )  {
       for ( i=0; i<3; i++ )  log_rot.ang [ row*3 +i ] = rot.ang[i];
       pthread_mutex_unlock(&rot.mutex);
 
+      // Data Fusion values
+      ushort r;
+      ushort n = EKF_N, m = EKF_M;
+      pthread_mutex_lock(&ekf.mutex);
+      for ( r=0; r<n; r++ )                         log_df.x [ row*n        +r ] = mat_get( ekf.x, r+1,   1 );
+      for ( r=0; r<m; r++ )                         log_df.z [ row*m        +r ] = mat_get( ekf.z, r+1,   1 );
+      for ( r=0; r<n; r++ )                         log_df.f [ row*n        +r ] = mat_get( ekf.f, r+1,   1 );
+      for ( r=0; r<m; r++ )                         log_df.h [ row*m        +r ] = mat_get( ekf.h, r+1,   1 );
+      //for ( r=0; r<n; r++ )  for ( c=0; c<n; c++ )  log_df.F [ row*n*n +r*n +c ] = mat_get( ekf.F, r+1, c+1 );
+      //for ( r=0; r<n; r++ )  for ( c=0; c<n; c++ )  log_df.P [ row*n*n +r*n +c ] = mat_get( ekf.P, r+1, c+1 );
+      //for ( r=0; r<n; r++ )  for ( c=0; c<n; c++ )  log_df.T [ row*n*n +r*n +c ] = mat_get( ekf.T, r+1, c+1 );
+      //for ( r=0; r<m; r++ )  for ( c=0; c<m; c++ )  log_df.S [ row*m*m +r*m +c ] = mat_get( ekf.S, r+1, c+1 );
+      pthread_mutex_unlock(&ekf.mutex);
+
       // Increment log counter
       log_imu.count++;
 
@@ -870,21 +867,6 @@ void log_record ( enum log_index index )  {
       log_sysidz.p1 [row] = sysidz.p1;
       log_sysidz.p2 [row] = sysidz.p2;
       pthread_mutex_unlock(&sysidz.mutex);
-      */
-      /*
-      // EKF values
-      ushort r, c;
-      ushort n = EKF_N, m = EKF_M;
-      pthread_mutex_lock(&ekf.mutex);
-      for ( r=0; r<n; r++ )                         log_ekf.x [ row*n        +r ] = mat_get( ekf.x, r+1,   1 );
-      for ( r=0; r<m; r++ )                         log_ekf.z [ row*m        +r ] = mat_get( ekf.z, r+1,   1 );
-      for ( r=0; r<n; r++ )                         log_ekf.f [ row*n        +r ] = mat_get( ekf.f, r+1,   1 );
-      for ( r=0; r<m; r++ )                         log_ekf.h [ row*m        +r ] = mat_get( ekf.h, r+1,   1 );
-      for ( r=0; r<n; r++ )  for ( c=0; c<n; c++ )  log_ekf.F [ row*n*n +r*n +c ] = mat_get( ekf.F, r+1, c+1 );
-      //for ( r=0; r<n; r++ )  for ( c=0; c<n; c++ )  log_ekf.P [ row*n*n +r*n +c ] = mat_get( ekf.P, r+1, c+1 );
-      //for ( r=0; r<n; r++ )  for ( c=0; c<n; c++ )  log_ekf.T [ row*n*n +r*n +c ] = mat_get( ekf.T, r+1, c+1 );
-      //for ( r=0; r<m; r++ )  for ( c=0; c<m; c++ )  log_ekf.S [ row*m*m +r*m +c ] = mat_get( ekf.S, r+1, c+1 );
-      pthread_mutex_unlock(&ekf.mutex);
       */
 
       // Increment log counter
@@ -1053,6 +1035,18 @@ static void log_save ( void )  {
     for ( i=0; i<3; i++ )  fprintf( datalog.rot, "%07.4f   ", log_rot.att [ row*3 +i ] );   fprintf( datalog.rot, "     " );
     for ( i=0; i<3; i++ )  fprintf( datalog.rot, "%07.4f   ", log_rot.ang [ row*3 +i ] );   fprintf( datalog.rot, "     " );
 
+    // Data Fusion data
+    ushort n = EKF_N, m = EKF_M;
+    fprintf( datalog.df, "\n     " );
+    for ( i=0; i<n;   i++ )  fprintf( datalog.df, "%07.4f   ",  log_df.x [ row*n   +i ] );   fprintf( datalog.df, "     " );
+    for ( i=0; i<m;   i++ )  fprintf( datalog.df, "%07.4f   ",  log_df.z [ row*m   +i ] );   fprintf( datalog.df, "     " );
+    for ( i=0; i<n;   i++ )  fprintf( datalog.df, "%07.4f   ",  log_df.f [ row*n   +i ] );   fprintf( datalog.df, "     " );
+    for ( i=0; i<m;   i++ )  fprintf( datalog.df, "%07.4f   ",  log_df.h [ row*m   +i ] );   fprintf( datalog.df, "     " );
+    //for ( i=0; i<n*n; i++ )  fprintf( datalog.df, "%07.4f   ",  log_df.F [ row*n*n +i ] );   fprintf( datalog.df, "     " );
+    //for ( i=0; i<n*n; i++ )  fprintf( datalog.df, "%07.4f   ",  log_df.P [ row*n*n +i ] );   fprintf( datalog.df, "     " );
+    //for ( i=0; i<n*n; i++ )  fprintf( datalog.df, "%07.4f   ",  log_df.T [ row*n*n +i ] );   fprintf( datalog.df, "     " );
+    //for ( i=0; i<m*m; i++ )  fprintf( datalog.df, "%07.4f   ",  log_df.S [ row*m*m +i ] );   fprintf( datalog.df, "     " );
+
   }
 
 
@@ -1116,23 +1110,6 @@ static void log_save ( void )  {
 
   }
 
-  /*
-  // Extended Kalman Filter data
-  ushort n = EKF_N, m = EKF_M;
-  for ( row = 0; row < log_stab.count; row++ )  {
-    fprintf( datalog.ekf, "\n %011.6f   %06ld      ", log_stab.time[row], log_stab.dur[row] );
-    for ( i=0; i<n;   i++ )  fprintf( datalog.ekf, "%07.4f  ",  log_ekf.x [ row*n   +i ] );   fprintf( datalog.ekf, "    " );
-    for ( i=0; i<m;   i++ )  fprintf( datalog.ekf, "%07.4f  ",  log_ekf.z [ row*m   +i ] );   fprintf( datalog.ekf, "    " );
-    for ( i=0; i<n;   i++ )  fprintf( datalog.ekf, "%07.4f  ",  log_ekf.f [ row*n   +i ] );   fprintf( datalog.ekf, "    " );
-    for ( i=0; i<m;   i++ )  fprintf( datalog.ekf, "%07.4f  ",  log_ekf.h [ row*m   +i ] );   fprintf( datalog.ekf, "    " );
-    for ( i=0; i<n*n; i++ )  fprintf( datalog.ekf, "%07.4f  ",  log_ekf.F [ row*n*n +i ] );   fprintf( datalog.ekf, "    " );
-    //for ( i=0; i<n*n; i++ )  fprintf( datalog.ekf, "%07.4f  ",  log_ekf.P [ row*n*n +i ] );   fprintf( datalog.ekf, "    " );
-    //for ( i=0; i<n*n; i++ )  fprintf( datalog.ekf, "%07.4f  ",  log_ekf.T [ row*n*n +i ] );   fprintf( datalog.ekf, "    " );
-    //for ( i=0; i<m*m; i++ )  fprintf( datalog.ekf, "%07.4f  ",  log_ekf.S [ row*m*m +i ] );   fprintf( datalog.ekf, "    " );
-
-  }
-  */
-
 
   return;
 }
@@ -1164,6 +1141,7 @@ static void log_close ( void )  {
     fclose(datalog.ahrsB);
   }
   fclose(datalog.rot);
+  fclose(datalog.df);
 
   fclose(datalog.stab);
   fclose(datalog.sfx);

@@ -9,7 +9,7 @@ timer.c:471:7:fcn_debug	40	static
 timer.c:454:7:fcn_gcsrx	40	static
 timer.c:437:7:fcn_gcstx	40	static
 timer.c:399:7:fcn_ins	40	static
-timer.c:380:7:fcn_stab	40	static
+timer.c:381:7:fcn_stab	40	static
 timer.c:358:7:fcn_imu	40	static
 timer.c:341:7:fcn_flag	40	static
 timer.c:323:7:fcn_io	40	static
