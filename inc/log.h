@@ -18,7 +18,7 @@ enum log_index {
   LOG_IO,
   LOG_IMU,
   LOG_STAB,
-  LOG_INS, 
+  LOG_INS,
   LOG_NAV
 } log_index;
 
@@ -121,6 +121,16 @@ typedef struct log_id_struct {
 //log_id_struct log_idy;
 //log_id_struct log_idz;
 
+
+typedef struct log_ins_struct {
+  ulong  count;
+  ulong  limit;
+  float  *time;
+  ulong  *dur;
+} log_ins_struct;
+log_ins_struct log_ins;
+
+
 /*
 typedef struct log_ekf_struct {
   ulong  count;
@@ -137,16 +147,6 @@ typedef struct log_ekf_struct {
   float  *S;
 } log_ekf_struct;
 log_ekf_struct log_ekf;
-*/
-/*
-typedef struct log_ins_struct {
-  ulong  count;
-  ulong  limit;
-  float  *time;
-  ulong  *dur;
-  float  *K;
-} log_ins_struct;
-log_ins_struct log_ins;
 */
 
 
@@ -176,6 +176,7 @@ typedef struct datalog_struct {
   FILE   *sfx;
   FILE   *sfy;
   FILE   *sfz;
+  FILE   *ins;
 } datalog_struct;
 datalog_struct datalog;
 

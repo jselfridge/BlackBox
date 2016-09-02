@@ -13,7 +13,7 @@
 
 static void    stab_quad    ( void );
 static double  stab_sf      ( sf_struct *sf, double r, double zp, double zd, bool areset );
-static void    stab_id      ( id_struct *id, double u, double y );
+//static void    stab_id      ( id_struct *id, double u, double y );
 static void    stab_disarm  ( void );
 
 
@@ -413,6 +413,7 @@ double stab_sf ( sf_struct *sf, double r, double zp, double zd, bool areset )  {
  *  stab_id
  *  Perform system identification update.
  */
+/*
 void stab_id ( id_struct *id, double u, double y )  {
 
   // Local variables
@@ -461,7 +462,7 @@ void stab_id ( id_struct *id, double u, double y )  {
 
   return;
 }
-
+*/
 
 /**
  *  stab_disarm

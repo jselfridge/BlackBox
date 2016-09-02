@@ -20,6 +20,7 @@ static void sys_io    ( void );
 static void sys_imu   ( void );
 static void sys_ahrs  ( void );
 static void sys_stab  ( void );
+static void sys_ins   ( void );
 
 
 /**
@@ -132,6 +133,7 @@ void sys_update ( void )  {
   if(SYS_IMU)    sys_imu();
   if(SYS_AHRS)   sys_ahrs();
   if(SYS_STAB)   sys_stab();
+  if(SYS_INS)    sys_ins();
 
   // Complete debugging display 
   printf("  "); fflush(stdout);
@@ -147,14 +149,14 @@ void sys_update ( void )  {
 static void sys_io ( void )  {
 
   // Loop counter
-  ushort i;
+  //ushort i;
 
   // Input signals
-  pthread_mutex_lock(&input.mutex);
+  //pthread_mutex_lock(&input.mutex);
   //for ( i=0; i<6; i++ )  printf("%5d ",   input.reg[i]  );  printf("   ");  fflush(stdout);
   //for ( i=0; i<6; i++ )  printf("%4d ",   input.pwm[i]  );  printf("   ");  fflush(stdout);
-  for ( i=0; i<6; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&input.mutex);
+  //for ( i=0; i<6; i++ )  printf("%5.2f ", input.norm[i] );  printf("   ");  fflush(stdout);
+  //pthread_mutex_unlock(&input.mutex);
 
   // Output signals
   //pthread_mutex_lock(&output.mutex);
@@ -164,13 +166,13 @@ static void sys_io ( void )  {
   //pthread_mutex_unlock(&output.mutex);
 
   // Quadrotor output signals
-  pthread_mutex_lock(&output.mutex);
-  printf("%5.2f ", output.norm[0] );
-  printf("%5.2f ", output.norm[1] );
-  printf("%5.2f ", output.norm[4] );
-  printf("%5.2f ", output.norm[5] );
-  printf("   ");  fflush(stdout);
-  pthread_mutex_unlock(&output.mutex);
+  //pthread_mutex_lock(&output.mutex);
+  //printf("%5.2f ", output.norm[0] );
+  //printf("%5.2f ", output.norm[1] );
+  //printf("%5.2f ", output.norm[4] );
+  //printf("%5.2f ", output.norm[5] );
+  //printf("   ");  fflush(stdout);
+  //pthread_mutex_unlock(&output.mutex);
 
   return;
 }
@@ -313,11 +315,11 @@ static void sys_stab ( void )  {
   //pthread_mutex_unlock(&stab.mutex);
 
   // Roll state feedback values
-  pthread_mutex_lock(&sfx.mutex);
-  printf("%6.3f %6.3f %6.3f %6.3f   ", sfx.r, sfx.zp, sfx.zd, sfx.u );  fflush(stdout);
+  //pthread_mutex_lock(&sfx.mutex);
+  //printf("%6.3f %6.3f %6.3f %6.3f   ", sfx.r, sfx.zp, sfx.zd, sfx.u );  fflush(stdout);
   //printf("%6.3f %6.3f %6.3f %6.3f   ", sfx.ap, sfx.ad, sfx.kp, sfx.kd );  fflush(stdout);
   //printf("%6.3f %6.3f %6.3f   ", sfx.Gp, sfx.Gd, sfx.Gu );  fflush(stdout);
-  pthread_mutex_unlock(&sfx.mutex);
+  //pthread_mutex_unlock(&sfx.mutex);
 
   // Pitch state feedback values
   //pthread_mutex_lock(&sfy.mutex);
@@ -335,6 +337,23 @@ static void sys_stab ( void )  {
 
   return;
 }
+
+
+/**
+ *  sys_ins
+ *  Prints INS debugging messages to the terminal.
+ */
+static void sys_ins ( void )  {
+
+  // Loop counter
+  //ushort i;
+
+  return;
+}
+
+
+
+
 
 
 /**

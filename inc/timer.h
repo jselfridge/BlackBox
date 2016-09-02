@@ -11,7 +11,7 @@
 #define PRIO_IO      96
 #define PRIO_IMU     94
 #define PRIO_STAB    92
-//#define PRIO_INS     90
+#define PRIO_INS     90
 //#define PRIO_NAV     88
 #define PRIO_GCSTX   86
 #define PRIO_GCSRX   84
@@ -21,7 +21,7 @@
 #define HZ_IMU      200
 #define HZ_IO       200
 #define HZ_STAB     200
-//#define HZ_INS       20
+#define HZ_INS       20
 #define HZ_FLAG      20
 //#define HZ_NAV       10
 #define HZ_GCSTX     10
@@ -51,7 +51,7 @@ timer_struct tmr_io;
 timer_struct tmr_flag;
 timer_struct tmr_imu;
 timer_struct tmr_stab;
-//timer_struct tmr_ins;
+timer_struct tmr_ins;
 //timer_struct tmr_nav;
 timer_struct tmr_gcstx;
 timer_struct tmr_gcsrx;
@@ -74,7 +74,7 @@ void *fcn_io     (  );
 void *fcn_flag   (  );
 void *fcn_imu    (  );
 void *fcn_stab   (  );
-//void *fcn_ins    (  );
+void *fcn_ins    (  );
 //void *fcn_nav    (  );
 void *fcn_gcstx  (  );
 void *fcn_gcsrx  (  );

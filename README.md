@@ -13,8 +13,10 @@ responsible for updating the EKF gain matrix, and implementing some
 position hold techniques.
 
 <ul> 
-  <li> TODO: Setup INS timing loop. </li>
-  <li> TODO: Enable data logging on timing loop. </li>
+  <li> Createed INS souce code and header files. </li>
+  <li> Setup INS timing loop. </li>
+  <li> Enabled data logging on timing loop. </li>
+  <li> Established debgging terminal print statements. </li>
   <li> TODO: Test timing for EKF gain update. </li>
   <li> TODO:  </li>
 </ul>

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "gcs.h"
 #include "imu.h"
+#include "ins.h"
 #include "io.h"
 #include "led.h"
 #include "stab.h"
@@ -36,7 +37,7 @@ void log_init ( void )  {
   log_output.limit  =  LOG_MAX_DUR * HZ_IO;
   log_imu.limit     =  LOG_MAX_DUR * HZ_IMU;
   log_stab.limit    =  LOG_MAX_DUR * HZ_STAB;
-  //log_ins.limit     =  LOG_MAX_DUR * HZ_INS;
+  log_ins.limit     =  LOG_MAX_DUR * HZ_INS;
   //log_nav.limit     =  LOG_MAX_DUR * HZ_NAV;
 
   // Parameter value setup
@@ -54,13 +55,13 @@ void log_init ( void )  {
   // Timestamp setup
   log_imu.time      = malloc( sizeof(float)  * log_imu.limit  );
   log_stab.time     = malloc( sizeof(float)  * log_stab.limit );
-  //log_ins.time      = malloc( sizeof(float)  * log_ins.limit  );
+  log_ins.time      = malloc( sizeof(float)  * log_ins.limit  );
   //log_nav.time      = malloc( sizeof(float)  * log_nav.limit  );
 
   // Timing loop duration setup
   log_imu.dur       = malloc( sizeof(ulong)  * log_imu.limit  );
   log_stab.dur      = malloc( sizeof(ulong)  * log_stab.limit );
-  //log_ins.dur       = malloc( sizeof(ulong)  * log_ins.limit  );
+  log_ins.dur       = malloc( sizeof(ulong)  * log_ins.limit  );
   //log_nav.dur       = malloc( sizeof(ulong)  * log_nag.limit  );
 
   // IMU A setup
@@ -193,12 +194,6 @@ void log_init ( void )  {
   log_ekf.S         =  malloc( sizeof(float)  * log_ekf.limit * m*m );
   */
 
-  /*
-  // INS setup
-  log_ins.time      =  malloc( sizeof(float)  * log_ins.limit       );
-  log_ins.dur       =  malloc( sizeof(ulong)  * log_ins.limit       );
-  log_ins.K         =  malloc( sizeof(float)  * log_ins.limit * n*m );
-  */
 
   return;
 }
@@ -226,13 +221,13 @@ void log_exit ( void )  {
   // Timestamp memory
   free(log_imu.time);
   free(log_stab.time);
-  //free(log_ins.time);
+  free(log_ins.time);
   //free(log_nav.time);
 
   // Timing loop duration memory
   free(log_imu.dur);
   free(log_stab.dur);
-  //free(log_ins.dur);
+  free(log_ins.dur);
   //free(log_nav.dur);
 
   // IMU A memory
@@ -364,13 +359,6 @@ void log_exit ( void )  {
   free(log_ekf.S);
   */
 
-  /*
-  // INS memory
-  free(log_ins.time);
-  free(log_ins.dur);
-  free(log_ins.K);
-  */
-
   return;
 }
 
@@ -387,7 +375,7 @@ void log_start ( void )  {
   log_output.count = 0;
   log_imu.count    = 0;
   log_stab.count   = 0;
-  //log_ins.count    = 0;
+  log_ins.count    = 0;
   //log_nav.count    = 0;
 
   // Allocate dir/path/file memory
@@ -589,6 +577,14 @@ void log_start ( void )  {
     Z_z1     Z_z2     Z_p1     Z_p2    " );
   */
 
+
+  // INS timing thread datalog file
+  sprintf( file, "%sins.txt", datalog.path );
+  datalog.ins = fopen( file, "w" );
+  if( datalog.ins == NULL )  printf( "Error (log_init): Cannot generate 'ins' file. \n" );
+  fprintf( datalog.ins, "        ins_time    ins_dur   ");
+
+
   /*
   // EKF datalog file
   ushort n = EKF_N, m = EKF_M;
@@ -606,14 +602,6 @@ void log_start ( void )  {
   //for ( r=1; r<=m; r++ )  for ( c=1; c<=m; c++ )  fprintf( datalog.ekf, "    S%02d%02d", r, c );  fprintf( datalog.ekf, "    " );
   */
 
-  /*
-  // INS datalog file
-  sprintf( file, "%sins.txt", datalog.path );
-  datalog.ins = fopen( file, "w" );
-  if( datalog.ins == NULL )  printf( "Error (log_init): Cannot generate 'ins' file. \n" );
-  fprintf( datalog.ins, "     instime   insdur    " );
-  for ( r=1; r<=n; r++ )  for ( c=1; c<=m; c++ )  fprintf( datalog.ins, "    K%02d%02d", r, c );  fprintf( datalog.ins, "    " );
-  */
 
   // Determine start second
   struct timespec timeval;
@@ -906,28 +894,24 @@ void log_record ( enum log_index index )  {
     return;
 
 
-  /*
   // Record INS data
   case LOG_INS :
 
-    timestamp = (float) ( tmr_ins.start_sec + ( tmr_ins.start_usec / 1000000.0f ) ) - datalog.offset;
+    // Check memory limit
+    if ( log_ins.count < log_ins.limit )  {
 
-    if ( log_ins.count < log_ins.limit ) {
+      // INS timing data
       row = log_ins.count;
+      timestamp = (float) ( tmr_ins.start_sec  + ( tmr_ins.start_usec  / 1000000.0f ) ) - datalog.offset;
       log_ins.time[row] = timestamp;
       log_ins.dur[row]  = tmr_ins.dur;
 
-      ushort r, c;
-      ushort n = EKF_N, m = EKF_M;
-      pthread_mutex_lock(&ekf.mutex);
-      for ( r=0; r<n; r++ )  for ( c=0; c<m; c++ )  log_ins.K [ row*n*m +r*m +c ] = mat_get( ekf.K, r+1, c+1 );
-      pthread_mutex_unlock(&ekf.mutex);
-
+      // Increment log counter
       log_ins.count++;
-    }
 
+    }
     return;
-  */
+
 
   default :
     return;
@@ -1121,6 +1105,14 @@ static void log_save ( void )  {
     //fprintf( datalog.idx, "%07.4f   ",  log_idx.p1 [row] );
     //fprintf( datalog.idx, "%07.4f   ",  log_idx.p2 [row] );
 
+  }
+
+
+  // INS timing thread
+  for ( row = 0; row < log_ins.count; row++ )  {
+
+    // INS timing data
+    fprintf( datalog.ins, "\n     %011.6f     %06ld   ", log_ins.time[row], log_ins.dur[row] );
 
   }
 
@@ -1140,13 +1132,7 @@ static void log_save ( void )  {
 
   }
   */
-  /*
-  // Inertial Navigation System data
-  for ( row = 0; row < log_ins.count; row++ )  {
-    fprintf( datalog.ins, "\n %011.6f   %06ld      ", log_ins.time[row], log_ins.dur[row] );
-    for ( i=0; i<n*m; i++ )  fprintf( datalog.ins, "%07.4f  ",  log_ins.K [ row*n*m +i ] );   fprintf( datalog.ins, "    " );
-  }
-  */
+
 
   return;
 }
@@ -1183,6 +1169,8 @@ static void log_close ( void )  {
   fclose(datalog.sfx);
   fclose(datalog.sfy);
   fclose(datalog.sfz);
+
+  fclose(datalog.ins);
 
   return;
 }

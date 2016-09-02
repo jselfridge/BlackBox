@@ -8,6 +8,7 @@
 #include "flag.h"
 #include "gcs.h"
 #include "imu.h"
+#include "ins.h"
 #include "io.h"
 #include "log.h"
 #include "stab.h"
@@ -56,9 +57,9 @@ void tmr_setup ( void )  {
   tmr_stab.per  = 1000000 / HZ_STAB;
 
   // Inertial Navigation System timer
-  //tmr_ins.name = "ins";
-  //tmr_ins.prio = PRIO_INS;
-  //tmr_ins.per  = 1000000 / HZ_INS;
+  tmr_ins.name = "ins";
+  tmr_ins.prio = PRIO_INS;
+  tmr_ins.per  = 1000000 / HZ_INS;
 
   // GCSTX timer
   tmr_gcstx.name = "gcstx";
@@ -121,7 +122,7 @@ void tmr_begin ( pthread_attr_t *attr )  {
   usleep(200000);  tmr_thread( &tmr_flag,  attr, fcn_flag  );
   usleep(200000);  tmr_thread( &tmr_imu,   attr, fcn_imu   );
   usleep(200000);  tmr_thread( &tmr_stab,  attr, fcn_stab  );
-  //usleep(200000);  tmr_thread( &tmr_ins,   attr, fcn_ins   );
+  usleep(200000);  tmr_thread( &tmr_ins,   attr, fcn_ins   );
   //usleep(200000);  tmr_thread( &tmr_nav,   attr, fcn_nav   );
   usleep(200000);  tmr_thread( &tmr_gcstx, attr, fcn_gcstx );
   usleep(200000);  tmr_thread( &tmr_gcsrx, attr, fcn_gcsrx );
@@ -152,17 +153,15 @@ void tmr_exit ( void )  {
     printf( "Error (tmr_exit): Failed to exit 'gcstx' thread. \n" );
   if(DEBUG)  printf( "gcstx " );
 
-  /*
   // Exit navigation thread
   //if( pthread_join ( tmr_nav.id, NULL ) )
     //printf( "Error (tmr_exit): Failed to exit 'nav' thread. \n" );
   //if(DEBUG)  printf( "ins " );
 
   // Exit inertial nav sys thread
-  //if( pthread_join ( tmr_ins.id, NULL ) )
-    //printf( "Error (tmr_exit): Failed to exit 'ins' thread. \n" );
-  //if(DEBUG)  printf( "ins " );
-  */
+  if( pthread_join ( tmr_ins.id, NULL ) )
+    printf( "Error (tmr_exit): Failed to exit 'ins' thread. \n" );
+  if(DEBUG)  printf( "ins " );
 
   // Exit stabilization thread
   if( pthread_join ( tmr_stab.id, NULL ) )
@@ -395,7 +394,6 @@ void *fcn_stab (  )  {
  *  fcn_ins
  *  Function handler for the inertial navigation system timing thread.
  */
-/*
 void *fcn_ins (  )  {
   tmr_create(&tmr_ins);
   while (running) {
@@ -408,7 +406,7 @@ void *fcn_ins (  )  {
   pthread_exit(NULL);
   return NULL;
 }
-*/
+
 
 /**
  *  fcn_nav

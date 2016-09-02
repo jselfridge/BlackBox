@@ -11,6 +11,7 @@
 #include "flag.h"
 #include "gcs.h"
 #include "imu.h"
+#include "ins.h"
 #include "io.h"
 #include "led.h"
 #include "log.h"
