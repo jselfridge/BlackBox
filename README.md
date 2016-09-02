@@ -6,8 +6,16 @@ Develops a cape for a BeagleBone Black to enable "Black
 Box" functionality for research and development.
 
 
-v0.1.8 - State Feedback Control
--------------------------------
+v0.2.0 - Quadrotor Basic Flight Capabilities
+--------------------------------------------
+This software version focused on the sensors and algorithms to stabilize 
+a quadrotor system flying in the air.  It adds a second IMU sensor with a
+9DOF Attitude Heading and Reference SYstem (AHRS) algorithm, GPS framework, 
+a Ground Control Station (GCS), the framework for an Extended Kalman Filter
+(EKF), and state feedback controller for inner loop stabilization.
+
+<ul>
+<li><b> v0.1.8 - State Feedback Control </b></li>
 <ul>
   <li> Revised data structure. </li>
   <li> Obtained ref model param from settling time (ts) and percent overshoot (mp). </li>
@@ -18,10 +26,7 @@ v0.1.8 - State Feedback Control
   <li> Added parameters to GCS interface. </li> 
   <li> Bench tested and flight tested new code. </li>
 </ul>
-
-
-v0.1.7 - Extended Kalman Filter (EKF) Development
--------------------------------------------------
+<li><b> v0.1.7 - Extended Kalman Filter (EKF) Development </b></li>
 <ul>
   <li> Created module for Extended Kalman Filter (EKF). </li>
   <li> Doing a fast update within the stabilization thread. </li>
@@ -31,10 +36,7 @@ v0.1.7 - Extended Kalman Filter (EKF) Development
   <li> TODO: Limited by matrix inverse calculation; currently fixed gain. </li>
   <li> TODO: Revise Jacobian (F matrix) at each update; currently static matrix. </li>
 </ul>
-
-
-v0.1.6 - Revised AHRS code
---------------------------
+<li><b> v0.1.6 - Revised AHRS code </b></li>
 <ul>
   <li> Merged AHRS into IMU source code. </li>
   <li> Added both 6DOF (gyr/acc) and 9DOF (gyr/acc/mag) solutions. </li>
@@ -42,24 +44,18 @@ v0.1.6 - Revised AHRS code
   <li> Added complimentary filters for roll and pitch states. </li>
   <li> Crude state estimation is the average of all att and ang states. </li>
 </ul>
-
-
-v0.1.5 - Signal filtering and parameter tuning
-----------------------------------------------
+<li><b> v0.1.5 - Signal filtering and parameter tuning </b></li>
 <ul>
   <li> Revised source code and header file structure. </li>
   <li> Incorporated second IMU into the system. </li>
-  <li> Set I2C bus to 100kHz until replacement resistors are available. </li>
+  <li> Set I2C bus to 200kHz until replacement resistors are available. </li>
   <li> Configured tunable control gains for quadrotor vehicle. </li>
   <li> Developed module for filter functionality.  </li>
   <li> Configured tunable filter settings from GCS. </li>
   <li> Log parameter changes made by GCS. </li>
   <li> Tuned LPF settings for small quad. </li>
 </ul>
-
-
-v0.1.4 - Ground Control Station (GCS)
--------------------------------------
+<li><b> v0.1.4 - Ground Control Station (GCS) </b></li>
 <ul> 
   <li> Set up timing thread code for GCS and send generic msg </li>
   <li> Read transmission through external USB/FTDI cable </li>
@@ -69,36 +65,28 @@ v0.1.4 - Ground Control Station (GCS)
   <li> Send state info to GCS </li>
   <li> Receive parameter updates from GCS </li>
 </ul>
-
-
-v0.1.3 - GPS Receiver
----------------------
+<li><b>v0.1.3 - GPS Receiver </b></li>
 <ul>
   <li> Reading GPS through UART port. </li>
   <li> Added code to configure GPS parameters. </li>
   <li> Running checksum to verify accurate message. </li>
   <li> Logging GPS message data. </li>
 </ul>
-
-
-v0.1.2 - Configure serial UARTS
--------------------------------
+<li><b> v0.1.2 - Configure serial UARTS </b></li>
 <ul>
   <li> Enabled four UART channels within DTO. </li>
   <li> Added new header and source code files for UART functionality. </li>
   <li> Incorporated new timing threads. </li>
   <li> Enable specific UARTs as needed. </li>
 </ul>
-
-
-v0.1.1 - Second I2C channel
----------------------------
+<li><b> v0.1.1 - Second I2C channel </b></li>
 <ul>
   <li> Revised MPU code directory structure. </li>
   <li> Revised MPU function calls to accept second I2C channel. </li>
   <li> Implemented custom I2C code framework. </li>
   <li> Added second IMU sensor. </li>
   <li> Added code to toggle which IMUs are operational. </li>
+</ul>
 </ul>
 
 
