@@ -88,7 +88,7 @@ typedef struct log_rot_struct {
 } log_rot_struct;
 log_rot_struct log_rot;
 
-/*
+
 typedef struct log_df_struct {
   float  *x;
   float  *z;
@@ -100,7 +100,7 @@ typedef struct log_df_struct {
   //float  *S;
 } log_df_struct;
 log_df_struct log_df;
-*/
+
 
 typedef struct log_stab_struct {
   ulong  count;
@@ -143,12 +143,12 @@ typedef struct log_ins_struct {
 } log_ins_struct;
 log_ins_struct log_ins;
 
-/*
+
 typedef struct log_gain_struct {
   float  *gain;
 } log_gain_struct;
 log_gain_struct log_gain;
-*/
+
 
 typedef struct datalog_struct {
   bool   enabled;
@@ -172,13 +172,13 @@ typedef struct datalog_struct {
   FILE   *compB;
   FILE   *ahrsB;
   FILE   *rot;
-  //FILE   *df;
+  FILE   *df;
   FILE   *stab;
   FILE   *sfx;
   FILE   *sfy;
   FILE   *sfz;
   FILE   *ins;
-  //FILE   *gain;
+  FILE   *gain;
 } datalog_struct;
 datalog_struct datalog;
 

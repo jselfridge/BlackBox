@@ -74,7 +74,7 @@ void ekf_init ( void )  {
   mat_set( ekf.F, 1,2, dt );
 
   // Static H matrix
-  ekf.H = eye(m);
+  ekf.H = mat_eye(m);
   //mat_set( ekf.H, 1, 1, 1 );  mat_set( ekf.H, 1, 2, 0 );
   //mat_set( ekf.H, 2, 1, 1 );  mat_set( ekf.H, 2, 2, 0 );
   //mat_set( ekf.H, 3, 1, 0 );  mat_set( ekf.H, 3, 2, 1 );

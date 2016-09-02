@@ -401,7 +401,7 @@ void *fcn_ins (  )  {
   while (running) {
     tmr_start(&tmr_ins);
     ins_update();
-    //ekf_gain();
+    ekf_gain();
     tmr_finish(&tmr_ins);
     if (datalog.enabled)  log_record(LOG_INS);
     tmr_pause(&tmr_ins);
