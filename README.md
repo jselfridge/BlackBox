@@ -6,6 +6,20 @@ Develops a cape for a BeagleBone Black to enable "Black
 Box" functionality for research and development.
 
 
+Current Tasks
+-------------
+Develop an Inertial Navigation System loop.  This slower loop will be 
+responsible for updating the EKF gain matrix, and implementing some
+position hold techniques.
+
+<ul> 
+  <li> TODO: Setup INS timing loop. </li>
+  <li> TODO: Enable data logging on timing loop. </li>
+  <li> TODO: Test timing for EKF gain update. </li>
+  <li> TODO:  </li>
+</ul>
+
+
 v0.2.0 - Quadrotor Basic Flight Capabilities
 --------------------------------------------
 This software version focused on the sensors and algorithms to stabilize 
@@ -175,9 +189,6 @@ The following list outlines some proposed upcoming change.
 </ul>
 <li><b> Controls </b></li>
 <ul>
-  <li> Generic PID function </li>
-  <li> Generic state feedback (SISO) functions </li>
-  <li> Generic state feedback (MIMO) functions </li>
   <li> Multisine signal generator </li>
   <li> System ID quad </li>
   <li> SISO MRAC quad </li>
