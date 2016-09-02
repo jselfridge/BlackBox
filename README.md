@@ -6,6 +6,20 @@ Develops a cape for a BeagleBone Black to enable "Black
 Box" functionality for research and development.
 
 
+Current Tasks
+-------------
+Enable EKF with Kalman gain update inside INS timing loop.
+<ul> 
+  <li> TODO: Initialize and exit EKF data structures. </li>
+  <li> TODO: Run EKF inside stabilization loop. </li>
+  <li> TODO: Run gain update in INS loop. </li>
+  <li> TODO: Enable data logging. </li>
+  <li> TODO: Print results to debugging terminal. </li>
+  <li> TODO: Flight test EKF system. </li>
+  <li> TODO: Compare results to Matlab sysid results. </li>
+</ul>
+
+
 v0.2.1 - Inertial Navigation System Loop
 ----------------------------------------
 <ul> 
