@@ -6,22 +6,17 @@ Develops a cape for a BeagleBone Black to enable "Black
 Box" functionality for research and development.
 
 
-Current Tasks
--------------
-The current effort takes the fixed PID control structure, and will modify the 
-algorithms to implement adaptive state feedback control.
-
-<b> State Feedback Adaptive Control - WIP </b>
+v0.1.8 - State Feedback
+-----------------------
 <ul>
   <li> Revised data structure. </li>
   <li> Obtained ref model param from settling time (ts) and percent overshoot (mp). </li>
-  <li> WIP - Develop reference model signals. </li>
-  <li> WIP - Modify function call to include adaptive parameters. </li>
-  <li> WIP - Hard code a second order SISO algorithm. </li>
-  <li> WIP - Run control law within the stabilization thread. </li>
-  <li> WIP - Implement data logging. </li>
-  <li> WIP - Add parameters to GCS interface. </li> 
-  <li> WIP - Bench test and flight test experimental code. </li>
+  <li> Developed reference model signals. </li>
+  <li> Hard code a second order SISO algorithm. </li>
+  <li> Running control law within the stabilization thread. </li>
+  <li> Implemented data logging. </li>
+  <li> Added parameters to GCS interface. </li> 
+  <li> Bench tested and flight tested new code. </li>
 </ul>
 
 
