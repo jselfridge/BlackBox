@@ -6,6 +6,20 @@ Develops a cape for a BeagleBone Black to enable "Black
 Box" functionality for research and development.
 
 
+Current Tasks
+-------------
+Develop an Inertial Navigation System loop.  This slower loop will be 
+responsible for updating the EKF gain matrix, and implementing some
+position hold techniques.
+
+<ul> 
+  <li> Createed INS souce code and header files. </li>
+  <li> Setup INS timing loop. </li>
+  <li> Enabled data logging on timing loop. </li>
+  <li> Established debgging terminal print statements. </li>
+</ul>
+
+
 v0.2.0 - Quadrotor Basic Flight Capabilities
 --------------------------------------------
 This software version focused on the sensors and algorithms to stabilize 
