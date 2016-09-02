@@ -6,12 +6,8 @@ Develops a cape for a BeagleBone Black to enable "Black
 Box" functionality for research and development.
 
 
-Current Tasks
--------------
-Develop an Inertial Navigation System loop.  This slower loop will be 
-responsible for updating the EKF gain matrix, and implementing some
-position hold techniques.
-
+v0.2.1 - Inertial Navigation System Loop
+----------------------------------------
 <ul> 
   <li> Createed INS souce code and header files. </li>
   <li> Setup INS timing loop. </li>
