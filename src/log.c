@@ -27,8 +27,8 @@ void log_init ( void )  {
   if(DEBUG)  printf("Initializing data logging \n");
 
   // Local variables
-  ushort n = EKF_N;
-  ushort m = EKF_M;
+  //ushort n = EKF_N;
+  //ushort m = EKF_M;
 
   // Set boolean values
   if(DEBUG)  printf("  Set boolean conditions \n");
@@ -134,10 +134,10 @@ void log_init ( void )  {
   log_rot.ang       =  malloc( sizeof(float)  * log_imu.limit * 3 );
 
   // Data fusion setup
-  log_df.x          =  malloc( sizeof(float)  * log_imu.limit *  n  );
-  log_df.z          =  malloc( sizeof(float)  * log_imu.limit *  m  );
-  log_df.f          =  malloc( sizeof(float)  * log_imu.limit *  n  );
-  log_df.h          =  malloc( sizeof(float)  * log_imu.limit *  m  );
+  //log_df.x          =  malloc( sizeof(float)  * log_imu.limit *  n  );
+  //log_df.z          =  malloc( sizeof(float)  * log_imu.limit *  m  );
+  //log_df.f          =  malloc( sizeof(float)  * log_imu.limit *  n  );
+  //log_df.h          =  malloc( sizeof(float)  * log_imu.limit *  m  );
   //log_df.F          =  malloc( sizeof(float)  * log_imu.limit * n*n );
   //log_df.P          =  malloc( sizeof(float)  * log_imu.limit * n*n );
   //log_df.T          =  malloc( sizeof(float)  * log_imu.limit * n*n );
@@ -195,7 +195,7 @@ void log_init ( void )  {
   //log_sysidz.p2     =  malloc( sizeof(float)  * log_stab.limit );
 
   // Kalman gain
-  log_gain.gain     =  malloc( sizeof(float)  * log_ins.limit * n*m );
+  //log_gain.gain     =  malloc( sizeof(float)  * log_ins.limit * n*m );
 
   return;
 }
@@ -297,10 +297,10 @@ void log_exit ( void )  {
   free(log_rot.ang);
 
   // Data fusion memory
-  free(log_df.x);
-  free(log_df.z);
-  free(log_df.f);
-  free(log_df.h);
+  //free(log_df.x);
+  //free(log_df.z);
+  //free(log_df.f);
+  //free(log_df.h);
 
   // SF roll stab memory
   free(log_sfx.r);
@@ -354,7 +354,7 @@ void log_exit ( void )  {
   //free(log_sysidz.p2);
 
   // Kalman gain
-  free(log_gain.gain);
+  //free(log_gain.gain);
 
   return;
 }
@@ -368,9 +368,9 @@ void log_start ( void )  {
 
   // Local variables
   ushort i = 0; 
-  ushort r, c;
-  ushort n = EKF_N;
-  ushort m = EKF_M;
+  //ushort r, c;
+  //ushort n = EKF_N;
+  //ushort m = EKF_M;
 
   // Reset counters
   log_param.count  = 0;
@@ -537,6 +537,7 @@ void log_start ( void )  {
     ang_x     ang_y     ang_z        ");
 
   // Data Fusion datalog file
+  /*
   sprintf( file, "%sdf.txt", datalog.path );
   datalog.df = fopen( file, "w" );
   if( datalog.df == NULL )  printf( "Error (log_init): Cannot generate 'df' file. \n" );
@@ -549,6 +550,7 @@ void log_start ( void )  {
   //for ( r=1; r<=n; r++ )  for ( c=1; c<=n; c++ )  fprintf( datalog.df, "    P%02d%02d", r, c );  fprintf( datalog.df, "     " );
   //for ( r=1; r<=n; r++ )  for ( c=1; c<=n; c++ )  fprintf( datalog.df, "    T%02d%02d", r, c );  fprintf( datalog.df, "     " );
   //for ( r=1; r<=m; r++ )  for ( c=1; c<=m; c++ )  fprintf( datalog.df, "    S%02d%02d", r, c );  fprintf( datalog.df, "     " );
+  */
 
   // Stabilization timing thread datalog file
   sprintf( file, "%sstab.txt", datalog.path );
@@ -599,11 +601,13 @@ void log_start ( void )  {
   fprintf( datalog.ins, "        ins_time    ins_dur   ");
 
   // Kalman gain
+  /*
   sprintf( file, "%sgain.txt", datalog.path );
   datalog.gain = fopen( file, "w" );
   if( datalog.gain == NULL )  printf( "Error (log_init): Cannot generate 'gain' file. \n" );
   fprintf( datalog.gain, "  " );
   for ( r=1; r<=n; r++ )  for ( c=1; c<=m; c++ )  fprintf( datalog.gain, "     K%02d%02d", r, c );  fprintf( datalog.gain, "     " );
+  */
 
   // Determine start second
   struct timespec timeval;
@@ -628,9 +632,9 @@ void log_record ( enum log_index index )  {
 
   // Local variables
   ushort i;
-  ushort r, c;
-  ushort n = EKF_N;
-  ushort m = EKF_M;
+  //ushort r, c;
+  //ushort n = EKF_N;
+  //ushort m = EKF_M;
   ulong  row;
   float  timestamp;
   struct timespec t;
@@ -794,6 +798,7 @@ void log_record ( enum log_index index )  {
       pthread_mutex_unlock(&rot.mutex);
 
       // Data Fusion values
+      /*
       pthread_mutex_lock(&ekf.mutex);
       for ( r=0; r<n; r++ )                         log_df.x [ row*n        +r ] = mat_get( ekf.x, r+1,   1 );
       for ( r=0; r<m; r++ )                         log_df.z [ row*m        +r ] = mat_get( ekf.z, r+1,   1 );
@@ -804,6 +809,7 @@ void log_record ( enum log_index index )  {
       //for ( r=0; r<n; r++ )  for ( c=0; c<n; c++ )  log_df.T [ row*n*n +r*n +c ] = mat_get( ekf.T, r+1, c+1 );
       //for ( r=0; r<m; r++ )  for ( c=0; c<m; c++ )  log_df.S [ row*m*m +r*m +c ] = mat_get( ekf.S, r+1, c+1 );
       pthread_mutex_unlock(&ekf.mutex);
+      */
 
       // Increment log counter
       log_imu.count++;
@@ -909,9 +915,9 @@ void log_record ( enum log_index index )  {
       log_ins.dur[row]  = tmr_ins.dur;
 
       // Kalman Gain values
-      pthread_mutex_lock(&ekf.mutex);
-      for ( r=0; r<n; r++ )  for ( c=0; c<m; c++ )  log_gain.gain [ row*n*m +r*m +c ] = mat_get( ekf.K, r+1, c+1 );
-      pthread_mutex_unlock(&ekf.mutex);
+      //pthread_mutex_lock(&ekf.mutex);
+      //for ( r=0; r<n; r++ )  for ( c=0; c<m; c++ )  log_gain.gain [ row*n*m +r*m +c ] = mat_get( ekf.K, r+1, c+1 );
+      //pthread_mutex_unlock(&ekf.mutex);
 
       // Increment log counter
       log_ins.count++;
@@ -959,8 +965,8 @@ static void log_save ( void )  {
 
   // Local variables
   ushort i;
-  ushort n = EKF_N;
-  ushort m = EKF_M;
+  //ushort n = EKF_N;
+  //ushort m = EKF_M;
   ulong  row;
 
   // Parameter data
@@ -1063,6 +1069,7 @@ static void log_save ( void )  {
     for ( i=0; i<3; i++ )  fprintf( datalog.rot, "%07.4f   ", log_rot.ang [ row*3 +i ] );   fprintf( datalog.rot, "     " );
 
     // Data Fusion data
+    /*
     fprintf( datalog.df, "\n     " );
     for ( i=0; i<n;   i++ )  fprintf( datalog.df, "%07.4f   ",  log_df.x [ row*n   +i ] );   fprintf( datalog.df, "     " );
     for ( i=0; i<m;   i++ )  fprintf( datalog.df, "%07.4f   ",  log_df.z [ row*m   +i ] );   fprintf( datalog.df, "     " );
@@ -1072,6 +1079,7 @@ static void log_save ( void )  {
     //for ( i=0; i<n*n; i++ )  fprintf( datalog.df, "%07.4f   ",  log_df.P [ row*n*n +i ] );   fprintf( datalog.df, "     " );
     //for ( i=0; i<n*n; i++ )  fprintf( datalog.df, "%07.4f   ",  log_df.T [ row*n*n +i ] );   fprintf( datalog.df, "     " );
     //for ( i=0; i<m*m; i++ )  fprintf( datalog.df, "%07.4f   ",  log_df.S [ row*m*m +i ] );   fprintf( datalog.df, "     " );
+    */
 
   }
 
@@ -1135,8 +1143,8 @@ static void log_save ( void )  {
     fprintf( datalog.ins, "\n     %011.6f     %06ld   ", log_ins.time[row], log_ins.dur[row] );
 
     // Kalman Gain data
-    fprintf( datalog.gain, "\n     " );
-    for ( i=0; i<n*m; i++ )  fprintf( datalog.gain, "%07.4f   ",  log_gain.gain [ row*n*m +i ] );   fprintf( datalog.gain, "     " );
+    //fprintf( datalog.gain, "\n     " );
+    //for ( i=0; i<n*m; i++ )  fprintf( datalog.gain, "%07.4f   ",  log_gain.gain [ row*n*m +i ] );   fprintf( datalog.gain, "     " );
 
   }
 
@@ -1171,7 +1179,7 @@ static void log_close ( void )  {
     fclose(datalog.ahrsB);
   }
   fclose(datalog.rot);
-  fclose(datalog.df);
+  //fclose(datalog.df);
 
   fclose(datalog.stab);
   fclose(datalog.sfx);
@@ -1179,7 +1187,7 @@ static void log_close ( void )  {
   fclose(datalog.sfz);
 
   fclose(datalog.ins);
-  fclose(datalog.gain);
+  //fclose(datalog.gain);
 
   return;
 }
