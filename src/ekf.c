@@ -63,6 +63,8 @@ void ekf_init ( void )  {
   // Assign measurement covariance values
   mat_set( ekf.R, 1, 1, 0.1 );
   mat_set( ekf.R, 2, 2, 0.1 );
+  mat_set( ekf.R, 3, 3, 0.1 );
+  mat_set( ekf.R, 4, 4, 0.1 );
 
   // Initialize prediction matrix
   mat_set( ekf.P, 1, 1, 0.1 );
@@ -74,11 +76,10 @@ void ekf_init ( void )  {
   mat_set( ekf.F, 1,2, dt );
 
   // Static H matrix
-  ekf.H = mat_eye(m);
-  //mat_set( ekf.H, 1, 1, 1 );  mat_set( ekf.H, 1, 2, 0 );
-  //mat_set( ekf.H, 2, 1, 1 );  mat_set( ekf.H, 2, 2, 0 );
-  //mat_set( ekf.H, 3, 1, 0 );  mat_set( ekf.H, 3, 2, 1 );
-  //mat_set( ekf.H, 4, 1, 0 );  mat_set( ekf.H, 4, 2, 1 );
+  mat_set( ekf.H, 1, 1, 1 );  mat_set( ekf.H, 1, 2, 0 );
+  mat_set( ekf.H, 2, 1, 1 );  mat_set( ekf.H, 2, 2, 0 );
+  mat_set( ekf.H, 3, 1, 0 );  mat_set( ekf.H, 3, 2, 1 );
+  mat_set( ekf.H, 4, 1, 0 );  mat_set( ekf.H, 4, 2, 1 );
 
   // Display EKF settings
   if (DEBUG) {
@@ -171,11 +172,11 @@ void ekf_update ( void )  {
   pthread_mutex_unlock(&ahrsA.mutex);
 
   // Obtain AHRS B measurements
-  //pthread_mutex_lock(&ahrsB.mutex);
-  //double Rb = ahrsB.eul[0];
+  pthread_mutex_lock(&ahrsB.mutex);
+  double Rb = ahrsB.eul[0];
   //double Pb = ahrsB.eul[1];
   //double Yb = ahrsB.eul[2];
-  //pthread_mutex_unlock(&ahrsB.mutex);
+  pthread_mutex_unlock(&ahrsB.mutex);
 
   // Obtain gyro A measurements
   pthread_mutex_lock(&gyrA.mutex);
@@ -185,15 +186,17 @@ void ekf_update ( void )  {
   pthread_mutex_unlock(&gyrA.mutex);
 
   // Obtain gyro B measurements
-  //pthread_mutex_lock(&gyrB.mutex);
-  //double dRb = gyrB.filter[0];
+  pthread_mutex_lock(&gyrB.mutex);
+  double dRb = gyrB.filter[0];
   //double dPb = gyrB.filter[1];
   //double dYb = gyrB.filter[2];
-  //pthread_mutex_unlock(&gyrB.mutex);
+  pthread_mutex_unlock(&gyrB.mutex);
 
   // Populate measurement vector
   mat_set( z, 1,1,  Ra );
-  mat_set( z, 2,1, dRa );
+  mat_set( z, 2,1,  Rb );
+  mat_set( z, 3,1, dRa );
+  mat_set( z, 4,1, dRb );
 
   /*
   // Save previous states before updating
