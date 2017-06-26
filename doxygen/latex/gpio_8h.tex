@@ -1,0 +1,142 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/inc/gpio.h File Reference}
+\label{gpio_8h}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/inc/gpio.\+h@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/inc/gpio.\+h}}
+{\ttfamily \#include $<$sys/types.\+h$>$}\newline
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ G\+P\+I\+O\+\_\+\+P\+A\+TH}~\char`\"{}/sys/class/gpio\char`\"{}
+\item 
+\#define \textbf{ G\+P\+I\+O\+\_\+\+B\+UF}~64
+\end{DoxyCompactItemize}
+\subsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \textbf{ P\+I\+N\+\_\+\+D\+IR} \{ \textbf{ I\+N\+P\+U\+T\+\_\+\+P\+IN} = 0, 
+\textbf{ O\+U\+T\+P\+U\+T\+\_\+\+P\+IN} = 1
+ \}
+\item 
+enum \textbf{ P\+I\+N\+\_\+\+V\+AL} \{ \textbf{ L\+OW} = 0, 
+\textbf{ H\+I\+GH} = 1
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \textbf{ gpio\+\_\+export} (uint gpio)
+\item 
+void \textbf{ gpio\+\_\+unexport} (uint gpio)
+\item 
+void \textbf{ gpio\+\_\+setdir} (uint gpio, enum \textbf{ P\+I\+N\+\_\+\+D\+IR} dir)
+\item 
+void \textbf{ gpio\+\_\+setval} (uint gpio, enum \textbf{ P\+I\+N\+\_\+\+V\+AL} val)
+\item 
+void \textbf{ gpio\+\_\+getval} (uint gpio, uint $\ast$val)
+\item 
+void \textbf{ gpio\+\_\+setedge} (uint gpio, char $\ast$edge)
+\item 
+int \textbf{ gpio\+\_\+fdopen} (uint gpio)
+\item 
+void \textbf{ gpio\+\_\+fdclose} (int fd)
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\label{gpio_8h_a8c891ac43d9c197a4054ed5f11a409a6}} 
+\index{gpio.\+h@{gpio.\+h}!G\+P\+I\+O\+\_\+\+B\+UF@{G\+P\+I\+O\+\_\+\+B\+UF}}
+\index{G\+P\+I\+O\+\_\+\+B\+UF@{G\+P\+I\+O\+\_\+\+B\+UF}!gpio.\+h@{gpio.\+h}}
+\subsubsection{G\+P\+I\+O\+\_\+\+B\+UF}
+{\footnotesize\ttfamily \#define G\+P\+I\+O\+\_\+\+B\+UF~64}
+
+\mbox{\label{gpio_8h_aa735592f7579934ca442d9a338588b90}} 
+\index{gpio.\+h@{gpio.\+h}!G\+P\+I\+O\+\_\+\+P\+A\+TH@{G\+P\+I\+O\+\_\+\+P\+A\+TH}}
+\index{G\+P\+I\+O\+\_\+\+P\+A\+TH@{G\+P\+I\+O\+\_\+\+P\+A\+TH}!gpio.\+h@{gpio.\+h}}
+\subsubsection{G\+P\+I\+O\+\_\+\+P\+A\+TH}
+{\footnotesize\ttfamily \#define G\+P\+I\+O\+\_\+\+P\+A\+TH~\char`\"{}/sys/class/gpio\char`\"{}}
+
+
+
+\subsection{Enumeration Type Documentation}
+\mbox{\label{gpio_8h_a398677379cbbf7ae9db5d7c85ffaaf5b}} 
+\index{gpio.\+h@{gpio.\+h}!P\+I\+N\+\_\+\+D\+IR@{P\+I\+N\+\_\+\+D\+IR}}
+\index{P\+I\+N\+\_\+\+D\+IR@{P\+I\+N\+\_\+\+D\+IR}!gpio.\+h@{gpio.\+h}}
+\subsubsection{P\+I\+N\+\_\+\+D\+IR}
+{\footnotesize\ttfamily enum \textbf{ P\+I\+N\+\_\+\+D\+IR}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{I\+N\+P\+U\+T\+\_\+\+P\+IN@{I\+N\+P\+U\+T\+\_\+\+P\+IN}!gpio.\+h@{gpio.\+h}}\index{gpio.\+h@{gpio.\+h}!I\+N\+P\+U\+T\+\_\+\+P\+IN@{I\+N\+P\+U\+T\+\_\+\+P\+IN}}}\mbox{\label{gpio_8h_a398677379cbbf7ae9db5d7c85ffaaf5ba0468ec578a2dd1435458c52d514b64d6}} 
+I\+N\+P\+U\+T\+\_\+\+P\+IN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{O\+U\+T\+P\+U\+T\+\_\+\+P\+IN@{O\+U\+T\+P\+U\+T\+\_\+\+P\+IN}!gpio.\+h@{gpio.\+h}}\index{gpio.\+h@{gpio.\+h}!O\+U\+T\+P\+U\+T\+\_\+\+P\+IN@{O\+U\+T\+P\+U\+T\+\_\+\+P\+IN}}}\mbox{\label{gpio_8h_a398677379cbbf7ae9db5d7c85ffaaf5ba6067e112acaaf93000fc4173336d7f8a}} 
+O\+U\+T\+P\+U\+T\+\_\+\+P\+IN&\\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\label{gpio_8h_aef3bc6bb9a2e13070a0f1096d7b3af46}} 
+\index{gpio.\+h@{gpio.\+h}!P\+I\+N\+\_\+\+V\+AL@{P\+I\+N\+\_\+\+V\+AL}}
+\index{P\+I\+N\+\_\+\+V\+AL@{P\+I\+N\+\_\+\+V\+AL}!gpio.\+h@{gpio.\+h}}
+\subsubsection{P\+I\+N\+\_\+\+V\+AL}
+{\footnotesize\ttfamily enum \textbf{ P\+I\+N\+\_\+\+V\+AL}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{L\+OW@{L\+OW}!gpio.\+h@{gpio.\+h}}\index{gpio.\+h@{gpio.\+h}!L\+OW@{L\+OW}}}\mbox{\label{gpio_8h_aef3bc6bb9a2e13070a0f1096d7b3af46a6a226f4143ca3b18999551694cdb72a8}} 
+L\+OW&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{H\+I\+GH@{H\+I\+GH}!gpio.\+h@{gpio.\+h}}\index{gpio.\+h@{gpio.\+h}!H\+I\+GH@{H\+I\+GH}}}\mbox{\label{gpio_8h_aef3bc6bb9a2e13070a0f1096d7b3af46a0c3a1dacf94061154b3ee354359c5893}} 
+H\+I\+GH&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\subsection{Function Documentation}
+\mbox{\label{gpio_8h_a5dbb5086ddc8eaadfb743bcfaa0da2c3}} 
+\index{gpio.\+h@{gpio.\+h}!gpio\+\_\+export@{gpio\+\_\+export}}
+\index{gpio\+\_\+export@{gpio\+\_\+export}!gpio.\+h@{gpio.\+h}}
+\subsubsection{gpio\+\_\+export()}
+{\footnotesize\ttfamily void gpio\+\_\+export (\begin{DoxyParamCaption}\item[{uint}]{gpio }\end{DoxyParamCaption})}
+
+gpio\+\_\+export Establishes a G\+P\+IO configuration. \mbox{\label{gpio_8h_ab4f8efa8c5e55c51fe86069e1e41f3c7}} 
+\index{gpio.\+h@{gpio.\+h}!gpio\+\_\+fdclose@{gpio\+\_\+fdclose}}
+\index{gpio\+\_\+fdclose@{gpio\+\_\+fdclose}!gpio.\+h@{gpio.\+h}}
+\subsubsection{gpio\+\_\+fdclose()}
+{\footnotesize\ttfamily void gpio\+\_\+fdclose (\begin{DoxyParamCaption}\item[{int}]{fd }\end{DoxyParamCaption})}
+
+gpio\+\_\+fdclose Closes a G\+P\+IO file description. \mbox{\label{gpio_8h_af7aa14aee780d55285274db5c2ed8348}} 
+\index{gpio.\+h@{gpio.\+h}!gpio\+\_\+fdopen@{gpio\+\_\+fdopen}}
+\index{gpio\+\_\+fdopen@{gpio\+\_\+fdopen}!gpio.\+h@{gpio.\+h}}
+\subsubsection{gpio\+\_\+fdopen()}
+{\footnotesize\ttfamily int gpio\+\_\+fdopen (\begin{DoxyParamCaption}\item[{uint}]{gpio }\end{DoxyParamCaption})}
+
+gpio\+\_\+fdopen Opens a G\+P\+IO file description. \mbox{\label{gpio_8h_a75d4417a403bb01d9c3d6eec4102e3b0}} 
+\index{gpio.\+h@{gpio.\+h}!gpio\+\_\+getval@{gpio\+\_\+getval}}
+\index{gpio\+\_\+getval@{gpio\+\_\+getval}!gpio.\+h@{gpio.\+h}}
+\subsubsection{gpio\+\_\+getval()}
+{\footnotesize\ttfamily void gpio\+\_\+getval (\begin{DoxyParamCaption}\item[{uint}]{gpio,  }\item[{uint $\ast$}]{val }\end{DoxyParamCaption})}
+
+gpio\+\_\+getval Determine the current value of a G\+P\+IO pin. \mbox{\label{gpio_8h_a311e196f50d423d9f18cf5c1736a821a}} 
+\index{gpio.\+h@{gpio.\+h}!gpio\+\_\+setdir@{gpio\+\_\+setdir}}
+\index{gpio\+\_\+setdir@{gpio\+\_\+setdir}!gpio.\+h@{gpio.\+h}}
+\subsubsection{gpio\+\_\+setdir()}
+{\footnotesize\ttfamily void gpio\+\_\+setdir (\begin{DoxyParamCaption}\item[{uint}]{gpio,  }\item[{enum \textbf{ P\+I\+N\+\_\+\+D\+IR}}]{dir }\end{DoxyParamCaption})}
+
+gpio\+\_\+setdir Assign a G\+P\+IO pin as an input or output. \mbox{\label{gpio_8h_ac458f19324ea884432b863ad8a8a6413}} 
+\index{gpio.\+h@{gpio.\+h}!gpio\+\_\+setedge@{gpio\+\_\+setedge}}
+\index{gpio\+\_\+setedge@{gpio\+\_\+setedge}!gpio.\+h@{gpio.\+h}}
+\subsubsection{gpio\+\_\+setedge()}
+{\footnotesize\ttfamily void gpio\+\_\+setedge (\begin{DoxyParamCaption}\item[{uint}]{gpio,  }\item[{char $\ast$}]{edge }\end{DoxyParamCaption})}
+
+gpio\+\_\+setedge Edge assignment options\+: \char`\"{}none\char`\"{}, \char`\"{}rising\char`\"{}, \char`\"{}falling\char`\"{}, \char`\"{}both\char`\"{}. \mbox{\label{gpio_8h_a11ab695374d8ee44aee0cb14dece82ce}} 
+\index{gpio.\+h@{gpio.\+h}!gpio\+\_\+setval@{gpio\+\_\+setval}}
+\index{gpio\+\_\+setval@{gpio\+\_\+setval}!gpio.\+h@{gpio.\+h}}
+\subsubsection{gpio\+\_\+setval()}
+{\footnotesize\ttfamily void gpio\+\_\+setval (\begin{DoxyParamCaption}\item[{uint}]{gpio,  }\item[{enum \textbf{ P\+I\+N\+\_\+\+V\+AL}}]{val }\end{DoxyParamCaption})}
+
+gpio\+\_\+setval Assign a value to a gpio pin. \mbox{\label{gpio_8h_abbbd59c075ac8502be7652339e0d6365}} 
+\index{gpio.\+h@{gpio.\+h}!gpio\+\_\+unexport@{gpio\+\_\+unexport}}
+\index{gpio\+\_\+unexport@{gpio\+\_\+unexport}!gpio.\+h@{gpio.\+h}}
+\subsubsection{gpio\+\_\+unexport()}
+{\footnotesize\ttfamily void gpio\+\_\+unexport (\begin{DoxyParamCaption}\item[{uint}]{gpio }\end{DoxyParamCaption})}
+
+gpio\+\_\+unexport Disables a G\+P\+IO configuration. 

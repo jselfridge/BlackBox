@@ -1,0 +1,104 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/common/mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.h File Reference}
+\label{mavlink__msg__gps2__raw_8h}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/common/mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/common/mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h}}
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+gps2\+\_\+raw\+\_\+t}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+P\+S2\+\_\+\+R\+AW}~124
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+P\+S2\+\_\+\+R\+A\+W\+\_\+\+L\+EN}~35
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+124\+\_\+\+L\+EN}~35
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+P\+S2\+\_\+\+R\+A\+W\+\_\+\+C\+RC}~87
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+124\+\_\+\+C\+RC}~87
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+G\+P\+S2\+\_\+\+R\+AW}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+gps2\+\_\+raw\+\_\+t} \textbf{ mavlink\+\_\+gps2\+\_\+raw\+\_\+t}
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\label{mavlink__msg__gps2__raw_8h_a52d9a6164c297ea0e343fc94f8d9b370}} 
+\index{mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h@{mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+G\+P\+S2\+\_\+\+R\+AW@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+G\+P\+S2\+\_\+\+R\+AW}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+G\+P\+S2\+\_\+\+R\+AW@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+G\+P\+S2\+\_\+\+R\+AW}!mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h@{mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+G\+P\+S2\+\_\+\+R\+AW}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+G\+P\+S2\+\_\+\+R\+AW}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\{ \(\backslash\)
+    \textcolor{stringliteral}{"GPS2\_RAW"}, \(\backslash\)
+    12, \(\backslash\)
+    \{  \{ \textcolor{stringliteral}{"time\_usec"}, NULL, MAVLINK_TYPE_UINT64_T, 0, 0, offsetof(
+      mavlink_gps2_raw_t, time\_usec) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"lat"}, NULL, MAVLINK_TYPE_INT32_T, 0, 8, offsetof(mavlink_gps2_raw_t, lat) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"lon"}, NULL, MAVLINK_TYPE_INT32_T, 0, 12, offsetof(mavlink_gps2_raw_t, lon) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"alt"}, NULL, MAVLINK_TYPE_INT32_T, 0, 16, offsetof(mavlink_gps2_raw_t, alt) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"dgps\_age"}, NULL, MAVLINK_TYPE_UINT32_T, 0, 20, offsetof(
+      mavlink_gps2_raw_t, dgps\_age) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"eph"}, NULL, MAVLINK_TYPE_UINT16_T, 0, 24, offsetof(
+      mavlink_gps2_raw_t, eph) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"epv"}, NULL, MAVLINK_TYPE_UINT16_T, 0, 26, offsetof(
+      mavlink_gps2_raw_t, epv) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"vel"}, NULL, MAVLINK_TYPE_UINT16_T, 0, 28, offsetof(
+      mavlink_gps2_raw_t, vel) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"cog"}, NULL, MAVLINK_TYPE_UINT16_T, 0, 30, offsetof(
+      mavlink_gps2_raw_t, cog) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"fix\_type"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 32, offsetof(
+      mavlink_gps2_raw_t, fix\_type) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"satellites\_visible"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 33, offsetof(
+      mavlink_gps2_raw_t, satellites\_visible) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"dgps\_numch"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 34, offsetof(
+      mavlink_gps2_raw_t, dgps\_numch) \}, \(\backslash\)
+         \} \(\backslash\)
+\}
+\end{DoxyCode}
+\mbox{\label{mavlink__msg__gps2__raw_8h_ab5e4223e00fcd5774c3f73c2d0fefed4}} 
+\index{mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h@{mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+124\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+124\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+124\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+124\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h@{mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+124\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+124\+\_\+\+C\+RC~87}
+
+\mbox{\label{mavlink__msg__gps2__raw_8h_aba70ff5ab362b3636b3b022cfca1faf3}} 
+\index{mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h@{mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+124\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+124\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+124\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+124\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h@{mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+124\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+124\+\_\+\+L\+EN~35}
+
+\mbox{\label{mavlink__msg__gps2__raw_8h_a313743e2cede4c685cd64702b837f2df}} 
+\index{mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h@{mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+P\+S2\+\_\+\+R\+AW@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+P\+S2\+\_\+\+R\+AW}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+P\+S2\+\_\+\+R\+AW@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+P\+S2\+\_\+\+R\+AW}!mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h@{mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+P\+S2\+\_\+\+R\+AW}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+P\+S2\+\_\+\+R\+AW~124}
+
+\mbox{\label{mavlink__msg__gps2__raw_8h_a023ba816955cafe47543ec409dcf63c2}} 
+\index{mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h@{mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+P\+S2\+\_\+\+R\+A\+W\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+P\+S2\+\_\+\+R\+A\+W\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+P\+S2\+\_\+\+R\+A\+W\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+P\+S2\+\_\+\+R\+A\+W\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h@{mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+P\+S2\+\_\+\+R\+A\+W\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+P\+S2\+\_\+\+R\+A\+W\+\_\+\+C\+RC~87}
+
+\mbox{\label{mavlink__msg__gps2__raw_8h_a24942a169140a328acb6b144058528e7}} 
+\index{mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h@{mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+P\+S2\+\_\+\+R\+A\+W\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+P\+S2\+\_\+\+R\+A\+W\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+P\+S2\+\_\+\+R\+A\+W\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+P\+S2\+\_\+\+R\+A\+W\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h@{mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+P\+S2\+\_\+\+R\+A\+W\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+P\+S2\+\_\+\+R\+A\+W\+\_\+\+L\+EN~35}
+
+
+
+\subsection{Typedef Documentation}
+\mbox{\label{mavlink__msg__gps2__raw_8h_a7ad54565a3a4217f6fdcea0ba18cb889}} 
+\index{mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h@{mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h}!mavlink\+\_\+gps2\+\_\+raw\+\_\+t@{mavlink\+\_\+gps2\+\_\+raw\+\_\+t}}
+\index{mavlink\+\_\+gps2\+\_\+raw\+\_\+t@{mavlink\+\_\+gps2\+\_\+raw\+\_\+t}!mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h@{mavlink\+\_\+msg\+\_\+gps2\+\_\+raw.\+h}}
+\subsubsection{mavlink\+\_\+gps2\+\_\+raw\+\_\+t}
+{\footnotesize\ttfamily typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+gps2\+\_\+raw\+\_\+t}  \textbf{ mavlink\+\_\+gps2\+\_\+raw\+\_\+t}}
+

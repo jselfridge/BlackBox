@@ -1,0 +1,99 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/common/mavlink\+\_\+msg\+\_\+hil\+\_\+gps.h File Reference}
+\label{mavlink__msg__hil__gps_8h}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/common/mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/common/mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h}}
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+hil\+\_\+gps\+\_\+t}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+H\+I\+L\+\_\+\+G\+PS}~113
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+H\+I\+L\+\_\+\+G\+P\+S\+\_\+\+L\+EN}~36
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+113\+\_\+\+L\+EN}~36
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+H\+I\+L\+\_\+\+G\+P\+S\+\_\+\+C\+RC}~124
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+113\+\_\+\+C\+RC}~124
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+H\+I\+L\+\_\+\+G\+PS}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+hil\+\_\+gps\+\_\+t} \textbf{ mavlink\+\_\+hil\+\_\+gps\+\_\+t}
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\label{mavlink__msg__hil__gps_8h_a8a4aba1bb4558f433bb05bb468344a43}} 
+\index{mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h@{mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+H\+I\+L\+\_\+\+G\+PS@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+H\+I\+L\+\_\+\+G\+PS}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+H\+I\+L\+\_\+\+G\+PS@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+H\+I\+L\+\_\+\+G\+PS}!mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h@{mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+H\+I\+L\+\_\+\+G\+PS}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+H\+I\+L\+\_\+\+G\+PS}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\{ \(\backslash\)
+    \textcolor{stringliteral}{"HIL\_GPS"}, \(\backslash\)
+    13, \(\backslash\)
+    \{  \{ \textcolor{stringliteral}{"time\_usec"}, NULL, MAVLINK_TYPE_UINT64_T, 0, 0, offsetof(
+      mavlink_hil_gps_t, time\_usec) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"lat"}, NULL, MAVLINK_TYPE_INT32_T, 0, 8, offsetof(mavlink_hil_gps_t, lat) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"lon"}, NULL, MAVLINK_TYPE_INT32_T, 0, 12, offsetof(mavlink_hil_gps_t, lon) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"alt"}, NULL, MAVLINK_TYPE_INT32_T, 0, 16, offsetof(mavlink_hil_gps_t, alt) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"eph"}, NULL, MAVLINK_TYPE_UINT16_T, 0, 20, offsetof(mavlink_hil_gps_t, eph) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"epv"}, NULL, MAVLINK_TYPE_UINT16_T, 0, 22, offsetof(mavlink_hil_gps_t, epv) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"vel"}, NULL, MAVLINK_TYPE_UINT16_T, 0, 24, offsetof(mavlink_hil_gps_t, vel) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"vn"}, NULL, MAVLINK_TYPE_INT16_T, 0, 26, offsetof(mavlink_hil_gps_t, vn) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"ve"}, NULL, MAVLINK_TYPE_INT16_T, 0, 28, offsetof(mavlink_hil_gps_t, ve) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"vd"}, NULL, MAVLINK_TYPE_INT16_T, 0, 30, offsetof(mavlink_hil_gps_t, vd) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"cog"}, NULL, MAVLINK_TYPE_UINT16_T, 0, 32, offsetof(mavlink_hil_gps_t, cog) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"fix\_type"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 34, offsetof(
+      mavlink_hil_gps_t, fix\_type) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"satellites\_visible"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 35, offsetof(
+      mavlink_hil_gps_t, satellites\_visible) \}, \(\backslash\)
+         \} \(\backslash\)
+\}
+\end{DoxyCode}
+\mbox{\label{mavlink__msg__hil__gps_8h_a940129ab6433a486ea41f183134675a2}} 
+\index{mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h@{mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+113\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+113\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+113\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+113\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h@{mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+113\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+113\+\_\+\+C\+RC~124}
+
+\mbox{\label{mavlink__msg__hil__gps_8h_aeac9512fc14f48bb53ef9e0ec6a46859}} 
+\index{mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h@{mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+113\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+113\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+113\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+113\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h@{mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+113\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+113\+\_\+\+L\+EN~36}
+
+\mbox{\label{mavlink__msg__hil__gps_8h_a7358a3d0176e959b5b93c8992ef6ea15}} 
+\index{mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h@{mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+H\+I\+L\+\_\+\+G\+PS@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+H\+I\+L\+\_\+\+G\+PS}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+H\+I\+L\+\_\+\+G\+PS@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+H\+I\+L\+\_\+\+G\+PS}!mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h@{mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+H\+I\+L\+\_\+\+G\+PS}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+H\+I\+L\+\_\+\+G\+PS~113}
+
+\mbox{\label{mavlink__msg__hil__gps_8h_a86d18cf597f163ee0935c9922467ebba}} 
+\index{mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h@{mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+H\+I\+L\+\_\+\+G\+P\+S\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+H\+I\+L\+\_\+\+G\+P\+S\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+H\+I\+L\+\_\+\+G\+P\+S\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+H\+I\+L\+\_\+\+G\+P\+S\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h@{mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+H\+I\+L\+\_\+\+G\+P\+S\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+H\+I\+L\+\_\+\+G\+P\+S\+\_\+\+C\+RC~124}
+
+\mbox{\label{mavlink__msg__hil__gps_8h_a66978f58017d0ddef612b869eea282e0}} 
+\index{mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h@{mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+H\+I\+L\+\_\+\+G\+P\+S\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+H\+I\+L\+\_\+\+G\+P\+S\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+H\+I\+L\+\_\+\+G\+P\+S\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+H\+I\+L\+\_\+\+G\+P\+S\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h@{mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+H\+I\+L\+\_\+\+G\+P\+S\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+H\+I\+L\+\_\+\+G\+P\+S\+\_\+\+L\+EN~36}
+
+
+
+\subsection{Typedef Documentation}
+\mbox{\label{mavlink__msg__hil__gps_8h_a8646b303af25d25330ca0fa032cb18c1}} 
+\index{mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h@{mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h}!mavlink\+\_\+hil\+\_\+gps\+\_\+t@{mavlink\+\_\+hil\+\_\+gps\+\_\+t}}
+\index{mavlink\+\_\+hil\+\_\+gps\+\_\+t@{mavlink\+\_\+hil\+\_\+gps\+\_\+t}!mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h@{mavlink\+\_\+msg\+\_\+hil\+\_\+gps.\+h}}
+\subsubsection{mavlink\+\_\+hil\+\_\+gps\+\_\+t}
+{\footnotesize\ttfamily typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+hil\+\_\+gps\+\_\+t}  \textbf{ mavlink\+\_\+hil\+\_\+gps\+\_\+t}}
+

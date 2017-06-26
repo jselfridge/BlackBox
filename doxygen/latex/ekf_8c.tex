@@ -1,0 +1,81 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/src/ekf.c File Reference}
+\label{ekf_8c}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/src/ekf.\+c@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/src/ekf.\+c}}
+{\ttfamily \#include \char`\"{}ekf.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}imu.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}sys.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}timer.\+h\char`\"{}}\newline
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \textbf{ ekf\+\_\+init} (void)
+\item 
+void \textbf{ ekf\+\_\+exit} (void)
+\item 
+void \textbf{ ekf\+\_\+update} (void)
+\item 
+void \textbf{ ekf\+\_\+gain} (void)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\label{ekf_8c_a8605fed4a02d90742432212ca7282884}} 
+\index{ekf.\+c@{ekf.\+c}!ekf\+\_\+exit@{ekf\+\_\+exit}}
+\index{ekf\+\_\+exit@{ekf\+\_\+exit}!ekf.\+c@{ekf.\+c}}
+\subsubsection{ekf\+\_\+exit()}
+{\footnotesize\ttfamily void ekf\+\_\+exit (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Exits the E\+KF routine \mbox{\label{ekf_8c_a6596867e430b06a953c9c64a10d47baf}} 
+\index{ekf.\+c@{ekf.\+c}!ekf\+\_\+gain@{ekf\+\_\+gain}}
+\index{ekf\+\_\+gain@{ekf\+\_\+gain}!ekf.\+c@{ekf.\+c}}
+\subsubsection{ekf\+\_\+gain()}
+{\footnotesize\ttfamily void ekf\+\_\+gain (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+\mbox{\label{ekf_8c_ab21e660d2b4f6434ae51bfa33acd4946}} 
+\index{ekf.\+c@{ekf.\+c}!ekf\+\_\+init@{ekf\+\_\+init}}
+\index{ekf\+\_\+init@{ekf\+\_\+init}!ekf.\+c@{ekf.\+c}}
+\subsubsection{ekf\+\_\+init()}
+{\footnotesize\ttfamily void ekf\+\_\+init (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Initializes the E\+KF structure. 
+\begin{DoxyParams}{Parameters}
+{\em ekf} & pointer to an E\+KF structure to be initialized \\
+\hline
+{\em n} & number of system states \\
+\hline
+{\em m} & number of measurements\\
+\hline
+\end{DoxyParams}
+{\ttfamily ekf} should be a pointer to a structure defined as follows, where {\ttfamily N} and M are constants\+: 
+\begin{DoxyPre}
+   int n;           // number of state values
+   int m;           // number of observables
+   double x[N];     // state vector
+   double P[N][N];  // prediction error covariance
+   double Q[N][N];  // process noise covariance
+   double R[M][M];  // measurement error covariance
+   double G[N][M];  // Kalman gain; a.k.a. K
+   double F[N][N];  // Jacobian of process model
+   double H[M][N];  // Jacobian of measurement model
+   double Ht[N][M]; // transpose of measurement Jacobian
+   double Ft[N][N]; // transpose of process Jacobian
+   double Pp[N][N]; // P, post-prediction, pre-update
+   double fx[N];    // output of user defined f() state-transition function
+   double hx[M];    // output of user defined h() measurement function
+\end{DoxyPre}
+ \mbox{\label{ekf_8c_a392840dbe690990b6837c5bcb20e5e18}} 
+\index{ekf.\+c@{ekf.\+c}!ekf\+\_\+update@{ekf\+\_\+update}}
+\index{ekf\+\_\+update@{ekf\+\_\+update}!ekf.\+c@{ekf.\+c}}
+\subsubsection{ekf\+\_\+update()}
+{\footnotesize\ttfamily void ekf\+\_\+update (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Runs one step of E\+KF prediction and update. Your code should first build a model, setting the contents of {\ttfamily ekf.\+fx}, {\ttfamily ekf.\+F}, {\ttfamily ekf.\+hx}, and {\ttfamily \doxyref{ekf.\+H}{p.}{ekf_8h}} to appropriate values. 
+\begin{DoxyParams}{Parameters}
+{\em ekf} & pointer to structure E\+KF \\
+\hline
+{\em z} & array of measurement (observation) values \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 on success, -\/1 on failure caused by non-\/positive-\/definite matrix. 
+\end{DoxyReturn}

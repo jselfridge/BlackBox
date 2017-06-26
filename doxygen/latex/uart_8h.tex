@@ -1,0 +1,136 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/wip/uart.h File Reference}
+\label{uart_8h}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/wip/uart.\+h@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/wip/uart.\+h}}
+{\ttfamily \#include $<$main.\+h$>$}\newline
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ uart\+\_\+struct}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ U\+A\+R\+T1\+\_\+\+E\+N\+A\+B\+L\+ED}~false
+\item 
+\#define \textbf{ U\+A\+R\+T2\+\_\+\+E\+N\+A\+B\+L\+ED}~false
+\item 
+\#define \textbf{ U\+A\+R\+T4\+\_\+\+E\+N\+A\+B\+L\+ED}~false
+\item 
+\#define \textbf{ U\+A\+R\+T5\+\_\+\+E\+N\+A\+B\+L\+ED}~true
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \textbf{ uart\+\_\+struct} \textbf{ uart\+\_\+struct}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \textbf{ uart\+\_\+init} (void)
+\item 
+void \textbf{ uart\+\_\+setup} (\textbf{ uart\+\_\+struct} $\ast$uart)
+\item 
+void \textbf{ uart\+\_\+update} (\textbf{ uart\+\_\+struct} $\ast$uart)
+\item 
+void \textbf{ uart\+\_\+exit} (void)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\textbf{ uart\+\_\+struct} \textbf{ uart1}
+\item 
+\textbf{ uart\+\_\+struct} \textbf{ uart2}
+\item 
+\textbf{ uart\+\_\+struct} \textbf{ uart4}
+\item 
+\textbf{ uart\+\_\+struct} \textbf{ uart5}
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\label{uart_8h_aa086b359987a555f46bfba186cfd176d}} 
+\index{uart.\+h@{uart.\+h}!U\+A\+R\+T1\+\_\+\+E\+N\+A\+B\+L\+ED@{U\+A\+R\+T1\+\_\+\+E\+N\+A\+B\+L\+ED}}
+\index{U\+A\+R\+T1\+\_\+\+E\+N\+A\+B\+L\+ED@{U\+A\+R\+T1\+\_\+\+E\+N\+A\+B\+L\+ED}!uart.\+h@{uart.\+h}}
+\subsubsection{U\+A\+R\+T1\+\_\+\+E\+N\+A\+B\+L\+ED}
+{\footnotesize\ttfamily \#define U\+A\+R\+T1\+\_\+\+E\+N\+A\+B\+L\+ED~false}
+
+\mbox{\label{uart_8h_a5b89583c2b02a07b0f323e21c8c06963}} 
+\index{uart.\+h@{uart.\+h}!U\+A\+R\+T2\+\_\+\+E\+N\+A\+B\+L\+ED@{U\+A\+R\+T2\+\_\+\+E\+N\+A\+B\+L\+ED}}
+\index{U\+A\+R\+T2\+\_\+\+E\+N\+A\+B\+L\+ED@{U\+A\+R\+T2\+\_\+\+E\+N\+A\+B\+L\+ED}!uart.\+h@{uart.\+h}}
+\subsubsection{U\+A\+R\+T2\+\_\+\+E\+N\+A\+B\+L\+ED}
+{\footnotesize\ttfamily \#define U\+A\+R\+T2\+\_\+\+E\+N\+A\+B\+L\+ED~false}
+
+\mbox{\label{uart_8h_a1f05fb8401f9978628eea4c1277833b5}} 
+\index{uart.\+h@{uart.\+h}!U\+A\+R\+T4\+\_\+\+E\+N\+A\+B\+L\+ED@{U\+A\+R\+T4\+\_\+\+E\+N\+A\+B\+L\+ED}}
+\index{U\+A\+R\+T4\+\_\+\+E\+N\+A\+B\+L\+ED@{U\+A\+R\+T4\+\_\+\+E\+N\+A\+B\+L\+ED}!uart.\+h@{uart.\+h}}
+\subsubsection{U\+A\+R\+T4\+\_\+\+E\+N\+A\+B\+L\+ED}
+{\footnotesize\ttfamily \#define U\+A\+R\+T4\+\_\+\+E\+N\+A\+B\+L\+ED~false}
+
+\mbox{\label{uart_8h_ad5dabee52dbd42e8b5f5d0a801fd0f2a}} 
+\index{uart.\+h@{uart.\+h}!U\+A\+R\+T5\+\_\+\+E\+N\+A\+B\+L\+ED@{U\+A\+R\+T5\+\_\+\+E\+N\+A\+B\+L\+ED}}
+\index{U\+A\+R\+T5\+\_\+\+E\+N\+A\+B\+L\+ED@{U\+A\+R\+T5\+\_\+\+E\+N\+A\+B\+L\+ED}!uart.\+h@{uart.\+h}}
+\subsubsection{U\+A\+R\+T5\+\_\+\+E\+N\+A\+B\+L\+ED}
+{\footnotesize\ttfamily \#define U\+A\+R\+T5\+\_\+\+E\+N\+A\+B\+L\+ED~true}
+
+
+
+\subsection{Typedef Documentation}
+\mbox{\label{uart_8h_a5f0e86fce871bdfd129840e6cf94520b}} 
+\index{uart.\+h@{uart.\+h}!uart\+\_\+struct@{uart\+\_\+struct}}
+\index{uart\+\_\+struct@{uart\+\_\+struct}!uart.\+h@{uart.\+h}}
+\subsubsection{uart\+\_\+struct}
+{\footnotesize\ttfamily typedef struct \textbf{ uart\+\_\+struct}  \textbf{ uart\+\_\+struct}}
+
+
+
+\subsection{Function Documentation}
+\mbox{\label{uart_8h_a7d322e20e7d34d9a8ddea6977e1a338f}} 
+\index{uart.\+h@{uart.\+h}!uart\+\_\+exit@{uart\+\_\+exit}}
+\index{uart\+\_\+exit@{uart\+\_\+exit}!uart.\+h@{uart.\+h}}
+\subsubsection{uart\+\_\+exit()}
+{\footnotesize\ttfamily void uart\+\_\+exit (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+\mbox{\label{uart_8h_a0c0ca72359ddf28dcd15900dfba19343}} 
+\index{uart.\+h@{uart.\+h}!uart\+\_\+init@{uart\+\_\+init}}
+\index{uart\+\_\+init@{uart\+\_\+init}!uart.\+h@{uart.\+h}}
+\subsubsection{uart\+\_\+init()}
+{\footnotesize\ttfamily void uart\+\_\+init (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+\mbox{\label{uart_8h_a405c48b160a7d3acd62fffd1689c4565}} 
+\index{uart.\+h@{uart.\+h}!uart\+\_\+setup@{uart\+\_\+setup}}
+\index{uart\+\_\+setup@{uart\+\_\+setup}!uart.\+h@{uart.\+h}}
+\subsubsection{uart\+\_\+setup()}
+{\footnotesize\ttfamily void uart\+\_\+setup (\begin{DoxyParamCaption}\item[{\textbf{ uart\+\_\+struct} $\ast$}]{uart }\end{DoxyParamCaption})}
+
+\mbox{\label{uart_8h_a68a0ecd6fa6c38259233f56ca5d8d534}} 
+\index{uart.\+h@{uart.\+h}!uart\+\_\+update@{uart\+\_\+update}}
+\index{uart\+\_\+update@{uart\+\_\+update}!uart.\+h@{uart.\+h}}
+\subsubsection{uart\+\_\+update()}
+{\footnotesize\ttfamily void uart\+\_\+update (\begin{DoxyParamCaption}\item[{\textbf{ uart\+\_\+struct} $\ast$}]{uart }\end{DoxyParamCaption})}
+
+
+
+\subsection{Variable Documentation}
+\mbox{\label{uart_8h_a1cc6e1f991633f4d528ee8a979685b30}} 
+\index{uart.\+h@{uart.\+h}!uart1@{uart1}}
+\index{uart1@{uart1}!uart.\+h@{uart.\+h}}
+\subsubsection{uart1}
+{\footnotesize\ttfamily \textbf{ uart\+\_\+struct} uart1}
+
+\mbox{\label{uart_8h_a642e8d51aa7bf1cab6f72203a933c9ee}} 
+\index{uart.\+h@{uart.\+h}!uart2@{uart2}}
+\index{uart2@{uart2}!uart.\+h@{uart.\+h}}
+\subsubsection{uart2}
+{\footnotesize\ttfamily \textbf{ uart\+\_\+struct} uart2}
+
+\mbox{\label{uart_8h_aa8e203dc18f4b405481f2e679e7d0cc2}} 
+\index{uart.\+h@{uart.\+h}!uart4@{uart4}}
+\index{uart4@{uart4}!uart.\+h@{uart.\+h}}
+\subsubsection{uart4}
+{\footnotesize\ttfamily \textbf{ uart\+\_\+struct} uart4}
+
+\mbox{\label{uart_8h_aa3f68d3c667bb4b02c177524561a69ed}} 
+\index{uart.\+h@{uart.\+h}!uart5@{uart5}}
+\index{uart5@{uart5}!uart.\+h@{uart.\+h}}
+\subsubsection{uart5}
+{\footnotesize\ttfamily \textbf{ uart\+\_\+struct} uart5}
+

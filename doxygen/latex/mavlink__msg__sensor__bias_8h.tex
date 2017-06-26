@@ -1,0 +1,95 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/slugs/mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.h File Reference}
+\label{mavlink__msg__sensor__bias_8h}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/slugs/mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/slugs/mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h}}
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+sensor\+\_\+bias\+\_\+t}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+AS}~172
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+A\+S\+\_\+\+L\+EN}~24
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+172\+\_\+\+L\+EN}~24
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+A\+S\+\_\+\+C\+RC}~168
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+172\+\_\+\+C\+RC}~168
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+AS}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+sensor\+\_\+bias\+\_\+t} \textbf{ mavlink\+\_\+sensor\+\_\+bias\+\_\+t}
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\label{mavlink__msg__sensor__bias_8h_ad26fb859a1a94fb326416e48937e24b9}} 
+\index{mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h@{mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+AS@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+AS}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+AS@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+AS}!mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h@{mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+AS}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+AS}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\{ \(\backslash\)
+    \textcolor{stringliteral}{"SENSOR\_BIAS"}, \(\backslash\)
+    6, \(\backslash\)
+    \{  \{ \textcolor{stringliteral}{"axBias"}, NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(
+      mavlink_sensor_bias_t, axBias) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"ayBias"}, NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(
+      mavlink_sensor_bias_t, ayBias) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"azBias"}, NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(
+      mavlink_sensor_bias_t, azBias) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"gxBias"}, NULL, MAVLINK_TYPE_FLOAT, 0, 12, offsetof(
+      mavlink_sensor_bias_t, gxBias) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"gyBias"}, NULL, MAVLINK_TYPE_FLOAT, 0, 16, offsetof(
+      mavlink_sensor_bias_t, gyBias) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"gzBias"}, NULL, MAVLINK_TYPE_FLOAT, 0, 20, offsetof(
+      mavlink_sensor_bias_t, gzBias) \}, \(\backslash\)
+         \} \(\backslash\)
+\}
+\end{DoxyCode}
+\mbox{\label{mavlink__msg__sensor__bias_8h_a712d81727fb74b8ed8aea10b6ad29100}} 
+\index{mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h@{mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+172\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+172\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+172\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+172\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h@{mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+172\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+172\+\_\+\+C\+RC~168}
+
+\mbox{\label{mavlink__msg__sensor__bias_8h_adc700d721c6c9e841004a8a9fbda5b68}} 
+\index{mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h@{mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+172\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+172\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+172\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+172\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h@{mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+172\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+172\+\_\+\+L\+EN~24}
+
+\mbox{\label{mavlink__msg__sensor__bias_8h_ac664c39514ac63f5d60e95ee8ba1f2ef}} 
+\index{mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h@{mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+AS@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+AS}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+AS@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+AS}!mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h@{mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+AS}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+AS~172}
+
+\mbox{\label{mavlink__msg__sensor__bias_8h_ab57e8d549df7fd333ef4a18167914f73}} 
+\index{mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h@{mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+A\+S\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+A\+S\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+A\+S\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+A\+S\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h@{mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+A\+S\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+A\+S\+\_\+\+C\+RC~168}
+
+\mbox{\label{mavlink__msg__sensor__bias_8h_a0472f09a080a149c3f1a262432bac684}} 
+\index{mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h@{mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+A\+S\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+A\+S\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+A\+S\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+A\+S\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h@{mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+A\+S\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+B\+I\+A\+S\+\_\+\+L\+EN~24}
+
+
+
+\subsection{Typedef Documentation}
+\mbox{\label{mavlink__msg__sensor__bias_8h_a91dc59f692efa5811b9e6b61ffdd11a9}} 
+\index{mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h@{mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h}!mavlink\+\_\+sensor\+\_\+bias\+\_\+t@{mavlink\+\_\+sensor\+\_\+bias\+\_\+t}}
+\index{mavlink\+\_\+sensor\+\_\+bias\+\_\+t@{mavlink\+\_\+sensor\+\_\+bias\+\_\+t}!mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h@{mavlink\+\_\+msg\+\_\+sensor\+\_\+bias.\+h}}
+\subsubsection{mavlink\+\_\+sensor\+\_\+bias\+\_\+t}
+{\footnotesize\ttfamily typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+sensor\+\_\+bias\+\_\+t}  \textbf{ mavlink\+\_\+sensor\+\_\+bias\+\_\+t}}
+

@@ -1,0 +1,150 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/inc/sys.h File Reference}
+\label{sys_8h}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/inc/sys.\+h@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/inc/sys.\+h}}
+{\ttfamily \#include $<$signal.\+h$>$}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ D\+E\+B\+UG}~false
+\item 
+\#define \textbf{ S\+Y\+S\+\_\+\+E\+X\+IT}~true
+\item 
+\#define \textbf{ S\+Y\+S\+\_\+\+IO}~false
+\item 
+\#define \textbf{ S\+Y\+S\+\_\+\+I\+MU}~false
+\item 
+\#define \textbf{ S\+Y\+S\+\_\+\+A\+H\+RS}~false
+\item 
+\#define \textbf{ S\+Y\+S\+\_\+\+S\+T\+AB}~false
+\item 
+\#define \textbf{ S\+Y\+S\+\_\+\+I\+NS}~false
+\item 
+\#define \textbf{ S\+Y\+S\+\_\+\+S\+T\+A\+CK}~( 200 $\ast$ 1024 $\ast$ 1024 )
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \textbf{ sys\+\_\+init} (void)
+\item 
+void \textbf{ sys\+\_\+exit} (void)
+\item 
+void \textbf{ sys\+\_\+quit} ()
+\item 
+void \textbf{ sys\+\_\+update} (void)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+struct sigaction \textbf{ sys\+\_\+signal}
+\item 
+bool \textbf{ running}
+\item 
+bool \textbf{ armed}
+\item 
+char \textbf{ systype} [32]
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\label{sys_8h_ad72dbcf6d0153db1b8d8a58001feed83}} 
+\index{sys.\+h@{sys.\+h}!D\+E\+B\+UG@{D\+E\+B\+UG}}
+\index{D\+E\+B\+UG@{D\+E\+B\+UG}!sys.\+h@{sys.\+h}}
+\subsubsection{D\+E\+B\+UG}
+{\footnotesize\ttfamily \#define D\+E\+B\+UG~false}
+
+\mbox{\label{sys_8h_af76fc891a8e1c056d95ff32466c88d7a}} 
+\index{sys.\+h@{sys.\+h}!S\+Y\+S\+\_\+\+A\+H\+RS@{S\+Y\+S\+\_\+\+A\+H\+RS}}
+\index{S\+Y\+S\+\_\+\+A\+H\+RS@{S\+Y\+S\+\_\+\+A\+H\+RS}!sys.\+h@{sys.\+h}}
+\subsubsection{S\+Y\+S\+\_\+\+A\+H\+RS}
+{\footnotesize\ttfamily \#define S\+Y\+S\+\_\+\+A\+H\+RS~false}
+
+\mbox{\label{sys_8h_a1812279c69c5d8d2e1d3e9355c7b1304}} 
+\index{sys.\+h@{sys.\+h}!S\+Y\+S\+\_\+\+E\+X\+IT@{S\+Y\+S\+\_\+\+E\+X\+IT}}
+\index{S\+Y\+S\+\_\+\+E\+X\+IT@{S\+Y\+S\+\_\+\+E\+X\+IT}!sys.\+h@{sys.\+h}}
+\subsubsection{S\+Y\+S\+\_\+\+E\+X\+IT}
+{\footnotesize\ttfamily \#define S\+Y\+S\+\_\+\+E\+X\+IT~true}
+
+\mbox{\label{sys_8h_a4bd32b5c1b9f3fd014099688a002cbbc}} 
+\index{sys.\+h@{sys.\+h}!S\+Y\+S\+\_\+\+I\+MU@{S\+Y\+S\+\_\+\+I\+MU}}
+\index{S\+Y\+S\+\_\+\+I\+MU@{S\+Y\+S\+\_\+\+I\+MU}!sys.\+h@{sys.\+h}}
+\subsubsection{S\+Y\+S\+\_\+\+I\+MU}
+{\footnotesize\ttfamily \#define S\+Y\+S\+\_\+\+I\+MU~false}
+
+\mbox{\label{sys_8h_a364d040325c1b84452cd6daa2802467a}} 
+\index{sys.\+h@{sys.\+h}!S\+Y\+S\+\_\+\+I\+NS@{S\+Y\+S\+\_\+\+I\+NS}}
+\index{S\+Y\+S\+\_\+\+I\+NS@{S\+Y\+S\+\_\+\+I\+NS}!sys.\+h@{sys.\+h}}
+\subsubsection{S\+Y\+S\+\_\+\+I\+NS}
+{\footnotesize\ttfamily \#define S\+Y\+S\+\_\+\+I\+NS~false}
+
+\mbox{\label{sys_8h_a5f4e1d26549f4beb254b0b63f30e5916}} 
+\index{sys.\+h@{sys.\+h}!S\+Y\+S\+\_\+\+IO@{S\+Y\+S\+\_\+\+IO}}
+\index{S\+Y\+S\+\_\+\+IO@{S\+Y\+S\+\_\+\+IO}!sys.\+h@{sys.\+h}}
+\subsubsection{S\+Y\+S\+\_\+\+IO}
+{\footnotesize\ttfamily \#define S\+Y\+S\+\_\+\+IO~false}
+
+\mbox{\label{sys_8h_aeca3e77ce959284ab23d38a1a9b524aa}} 
+\index{sys.\+h@{sys.\+h}!S\+Y\+S\+\_\+\+S\+T\+AB@{S\+Y\+S\+\_\+\+S\+T\+AB}}
+\index{S\+Y\+S\+\_\+\+S\+T\+AB@{S\+Y\+S\+\_\+\+S\+T\+AB}!sys.\+h@{sys.\+h}}
+\subsubsection{S\+Y\+S\+\_\+\+S\+T\+AB}
+{\footnotesize\ttfamily \#define S\+Y\+S\+\_\+\+S\+T\+AB~false}
+
+\mbox{\label{sys_8h_aacd2adb511d99465bcfd72082b8492a5}} 
+\index{sys.\+h@{sys.\+h}!S\+Y\+S\+\_\+\+S\+T\+A\+CK@{S\+Y\+S\+\_\+\+S\+T\+A\+CK}}
+\index{S\+Y\+S\+\_\+\+S\+T\+A\+CK@{S\+Y\+S\+\_\+\+S\+T\+A\+CK}!sys.\+h@{sys.\+h}}
+\subsubsection{S\+Y\+S\+\_\+\+S\+T\+A\+CK}
+{\footnotesize\ttfamily \#define S\+Y\+S\+\_\+\+S\+T\+A\+CK~( 200 $\ast$ 1024 $\ast$ 1024 )}
+
+
+
+\subsection{Function Documentation}
+\mbox{\label{sys_8h_ac8c2364fd51221e5ac983f174aeb289f}} 
+\index{sys.\+h@{sys.\+h}!sys\+\_\+exit@{sys\+\_\+exit}}
+\index{sys\+\_\+exit@{sys\+\_\+exit}!sys.\+h@{sys.\+h}}
+\subsubsection{sys\+\_\+exit()}
+{\footnotesize\ttfamily void sys\+\_\+exit (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+sys\+\_\+exit Code that runs prior to exiting the system. \mbox{\label{sys_8h_af411a8bc6b7ed4b0af9114e10c959448}} 
+\index{sys.\+h@{sys.\+h}!sys\+\_\+init@{sys\+\_\+init}}
+\index{sys\+\_\+init@{sys\+\_\+init}!sys.\+h@{sys.\+h}}
+\subsubsection{sys\+\_\+init()}
+{\footnotesize\ttfamily void sys\+\_\+init (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+sys\+\_\+init Initializes the system. \mbox{\label{sys_8h_a7452240234dccdd008b189f22ad70469}} 
+\index{sys.\+h@{sys.\+h}!sys\+\_\+quit@{sys\+\_\+quit}}
+\index{sys\+\_\+quit@{sys\+\_\+quit}!sys.\+h@{sys.\+h}}
+\subsubsection{sys\+\_\+quit()}
+{\footnotesize\ttfamily void sys\+\_\+quit (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+sys\+\_\+quit Changes the \textquotesingle{}running\textquotesingle{} status flag to begin closing threads. \mbox{\label{sys_8h_aa21074a5e744e59d10aa2ae116479031}} 
+\index{sys.\+h@{sys.\+h}!sys\+\_\+update@{sys\+\_\+update}}
+\index{sys\+\_\+update@{sys\+\_\+update}!sys.\+h@{sys.\+h}}
+\subsubsection{sys\+\_\+update()}
+{\footnotesize\ttfamily void sys\+\_\+update (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+sys\+\_\+update Prints system debugging messages to the terminal. 
+
+\subsection{Variable Documentation}
+\mbox{\label{sys_8h_a95a7a3c9dec5f98703b42898ccd417a1}} 
+\index{sys.\+h@{sys.\+h}!armed@{armed}}
+\index{armed@{armed}!sys.\+h@{sys.\+h}}
+\subsubsection{armed}
+{\footnotesize\ttfamily bool armed}
+
+\mbox{\label{sys_8h_a36f7b6be7108281af77939ceaec42fd6}} 
+\index{sys.\+h@{sys.\+h}!running@{running}}
+\index{running@{running}!sys.\+h@{sys.\+h}}
+\subsubsection{running}
+{\footnotesize\ttfamily bool running}
+
+\mbox{\label{sys_8h_a0c47ee9a971ae64fdb6e67c95ed3c842}} 
+\index{sys.\+h@{sys.\+h}!sys\+\_\+signal@{sys\+\_\+signal}}
+\index{sys\+\_\+signal@{sys\+\_\+signal}!sys.\+h@{sys.\+h}}
+\subsubsection{sys\+\_\+signal}
+{\footnotesize\ttfamily struct sigaction sys\+\_\+signal}
+
+\mbox{\label{sys_8h_a0c655eafbc29c3302d2fe8153a831076}} 
+\index{sys.\+h@{sys.\+h}!systype@{systype}}
+\index{systype@{systype}!sys.\+h@{sys.\+h}}
+\subsubsection{systype}
+{\footnotesize\ttfamily char systype[32]}
+

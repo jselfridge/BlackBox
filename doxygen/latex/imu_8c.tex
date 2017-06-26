@@ -1,0 +1,51 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/src/imu.c File Reference}
+\label{imu_8c}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/src/imu.\+c@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/src/imu.\+c}}
+{\ttfamily \#include \char`\"{}imu.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}i2c.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}led.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}mpu.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}sys.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}timer.\+h\char`\"{}}\newline
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \textbf{ imu\+\_\+init} (void)
+\item 
+void \textbf{ imu\+\_\+exit} (void)
+\item 
+void \textbf{ imu\+\_\+update} (\textbf{ imu\+\_\+struct} $\ast$imu)
+\item 
+void \textbf{ imu\+\_\+state} (void)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\label{imu_8c_adc3ee21523634d4aa99807b453f3afbd}} 
+\index{imu.\+c@{imu.\+c}!imu\+\_\+exit@{imu\+\_\+exit}}
+\index{imu\+\_\+exit@{imu\+\_\+exit}!imu.\+c@{imu.\+c}}
+\subsubsection{imu\+\_\+exit()}
+{\footnotesize\ttfamily void imu\+\_\+exit (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+imu\+\_\+exit Terminate an M\+PU sensor. \mbox{\label{imu_8c_a86a06fe7a9831292bd92867da2d12f80}} 
+\index{imu.\+c@{imu.\+c}!imu\+\_\+init@{imu\+\_\+init}}
+\index{imu\+\_\+init@{imu\+\_\+init}!imu.\+c@{imu.\+c}}
+\subsubsection{imu\+\_\+init()}
+{\footnotesize\ttfamily void imu\+\_\+init (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+imu\+\_\+init Initializes an M\+PU sensor. \mbox{\label{imu_8c_a5ca8497ef3bdd15a3b779302d2c1acc1}} 
+\index{imu.\+c@{imu.\+c}!imu\+\_\+state@{imu\+\_\+state}}
+\index{imu\+\_\+state@{imu\+\_\+state}!imu.\+c@{imu.\+c}}
+\subsubsection{imu\+\_\+state()}
+{\footnotesize\ttfamily void imu\+\_\+state (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+imu\+\_\+state Calculate the rotational state from various signals and filters \mbox{\label{imu_8c_a38a1db0ae278088ee76fc6db380f209a}} 
+\index{imu.\+c@{imu.\+c}!imu\+\_\+update@{imu\+\_\+update}}
+\index{imu\+\_\+update@{imu\+\_\+update}!imu.\+c@{imu.\+c}}
+\subsubsection{imu\+\_\+update()}
+{\footnotesize\ttfamily void imu\+\_\+update (\begin{DoxyParamCaption}\item[{\textbf{ imu\+\_\+struct} $\ast$}]{imu }\end{DoxyParamCaption})}
+
+imu\+\_\+update Update system with new I\+MU sensor data. 

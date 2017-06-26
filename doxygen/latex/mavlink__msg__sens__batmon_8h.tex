@@ -1,0 +1,109 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/\+A\+S\+L\+U\+A\+V/mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.h File Reference}
+\label{mavlink__msg__sens__batmon_8h}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/\+A\+S\+L\+U\+A\+V/mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/\+A\+S\+L\+U\+A\+V/mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h}}
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+sens\+\_\+batmon\+\_\+t}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+ON}~209
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+O\+N\+\_\+\+L\+EN}~27
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+209\+\_\+\+L\+EN}~27
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+O\+N\+\_\+\+C\+RC}~62
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+209\+\_\+\+C\+RC}~62
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+ON}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+sens\+\_\+batmon\+\_\+t} \textbf{ mavlink\+\_\+sens\+\_\+batmon\+\_\+t}
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\label{mavlink__msg__sens__batmon_8h_a788b46f33afce093a4160e4962b2e5bb}} 
+\index{mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h@{mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+ON@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+ON}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+ON@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+ON}!mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h@{mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+ON}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+ON}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\{ \(\backslash\)
+    \textcolor{stringliteral}{"SENS\_BATMON"}, \(\backslash\)
+    13, \(\backslash\)
+    \{  \{ \textcolor{stringliteral}{"temperature"}, NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(
+      mavlink_sens_batmon_t, temperature) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"voltage"}, NULL, MAVLINK_TYPE_UINT16_T, 0, 4, offsetof(
+      mavlink_sens_batmon_t, voltage) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"current"}, NULL, MAVLINK_TYPE_INT16_T, 0, 6, offsetof(
+      mavlink_sens_batmon_t, current) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"batterystatus"}, NULL, MAVLINK_TYPE_UINT16_T, 0, 8, offsetof(
+      mavlink_sens_batmon_t, batterystatus) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"serialnumber"}, NULL, MAVLINK_TYPE_UINT16_T, 0, 10, offsetof(
+      mavlink_sens_batmon_t, serialnumber) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"hostfetcontrol"}, NULL, MAVLINK_TYPE_UINT16_T, 0, 12, offsetof(
+      mavlink_sens_batmon_t, hostfetcontrol) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"cellvoltage1"}, NULL, MAVLINK_TYPE_UINT16_T, 0, 14, offsetof(
+      mavlink_sens_batmon_t, cellvoltage1) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"cellvoltage2"}, NULL, MAVLINK_TYPE_UINT16_T, 0, 16, offsetof(
+      mavlink_sens_batmon_t, cellvoltage2) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"cellvoltage3"}, NULL, MAVLINK_TYPE_UINT16_T, 0, 18, offsetof(
+      mavlink_sens_batmon_t, cellvoltage3) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"cellvoltage4"}, NULL, MAVLINK_TYPE_UINT16_T, 0, 20, offsetof(
+      mavlink_sens_batmon_t, cellvoltage4) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"cellvoltage5"}, NULL, MAVLINK_TYPE_UINT16_T, 0, 22, offsetof(
+      mavlink_sens_batmon_t, cellvoltage5) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"cellvoltage6"}, NULL, MAVLINK_TYPE_UINT16_T, 0, 24, offsetof(
+      mavlink_sens_batmon_t, cellvoltage6) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"SoC"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 26, offsetof(
+      mavlink_sens_batmon_t, SoC) \}, \(\backslash\)
+         \} \(\backslash\)
+\}
+\end{DoxyCode}
+\mbox{\label{mavlink__msg__sens__batmon_8h_a3edbbc6fa4ab36b363e4649eedd01581}} 
+\index{mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h@{mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+209\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+209\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+209\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+209\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h@{mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+209\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+209\+\_\+\+C\+RC~62}
+
+\mbox{\label{mavlink__msg__sens__batmon_8h_a579cbb7fc906bf105671fae4d383294e}} 
+\index{mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h@{mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+209\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+209\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+209\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+209\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h@{mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+209\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+209\+\_\+\+L\+EN~27}
+
+\mbox{\label{mavlink__msg__sens__batmon_8h_a5d129a859c64aef3393bfaab21124574}} 
+\index{mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h@{mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+ON@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+ON}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+ON@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+ON}!mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h@{mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+ON}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+ON~209}
+
+\mbox{\label{mavlink__msg__sens__batmon_8h_af9979d9406a37ae85eebde85bc390c94}} 
+\index{mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h@{mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+O\+N\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+O\+N\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+O\+N\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+O\+N\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h@{mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+O\+N\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+O\+N\+\_\+\+C\+RC~62}
+
+\mbox{\label{mavlink__msg__sens__batmon_8h_a5d9e7d944c6c6f6b4c24cc971e0015c8}} 
+\index{mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h@{mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+O\+N\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+O\+N\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+O\+N\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+O\+N\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h@{mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+O\+N\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+E\+N\+S\+\_\+\+B\+A\+T\+M\+O\+N\+\_\+\+L\+EN~27}
+
+
+
+\subsection{Typedef Documentation}
+\mbox{\label{mavlink__msg__sens__batmon_8h_ac1aa1c3ee87b3dc15430c8fc6fb434f6}} 
+\index{mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h@{mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h}!mavlink\+\_\+sens\+\_\+batmon\+\_\+t@{mavlink\+\_\+sens\+\_\+batmon\+\_\+t}}
+\index{mavlink\+\_\+sens\+\_\+batmon\+\_\+t@{mavlink\+\_\+sens\+\_\+batmon\+\_\+t}!mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h@{mavlink\+\_\+msg\+\_\+sens\+\_\+batmon.\+h}}
+\subsubsection{mavlink\+\_\+sens\+\_\+batmon\+\_\+t}
+{\footnotesize\ttfamily typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+sens\+\_\+batmon\+\_\+t}  \textbf{ mavlink\+\_\+sens\+\_\+batmon\+\_\+t}}
+

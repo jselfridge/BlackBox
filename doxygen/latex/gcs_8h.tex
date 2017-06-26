@@ -1,0 +1,278 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/inc/gcs.h File Reference}
+\label{gcs_8h}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/inc/gcs.\+h@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/inc/gcs.\+h}}
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include $<$common/mavlink.\+h$>$}\newline
+{\ttfamily \#include $<$sys/types.\+h$>$}\newline
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ param\+\_\+struct}
+\item 
+struct \textbf{ gcs\+\_\+struct}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ G\+C\+S\+\_\+\+D\+E\+B\+UG}~false
+\item 
+\#define \textbf{ G\+C\+S\+\_\+\+S\+Y\+S\+ID}~01
+\item 
+\#define \textbf{ G\+C\+S\+\_\+\+H\+E\+A\+R\+T\+B\+E\+AT}~01
+\item 
+\#define \textbf{ G\+C\+S\+\_\+\+P\+A\+R\+AM}~02
+\item 
+\#define \textbf{ G\+C\+S\+\_\+\+M\+I\+S\+S\+I\+ON}~03
+\item 
+\#define \textbf{ G\+C\+S\+\_\+\+I\+N\+P\+UT}~40
+\item 
+\#define \textbf{ G\+C\+S\+\_\+\+O\+U\+T\+P\+UT}~50
+\item 
+\#define \textbf{ G\+C\+S\+\_\+\+A\+TT}~60
+\item 
+\#define \textbf{ G\+C\+S\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+N\+A\+B\+L\+ED}~true
+\item 
+\#define \textbf{ G\+C\+S\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+E\+N\+A\+B\+L\+ED}~true
+\item 
+\#define \textbf{ G\+C\+S\+\_\+\+A\+T\+T\+\_\+\+E\+N\+A\+B\+L\+ED}~true
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \textbf{ param\+\_\+struct} \textbf{ param\+\_\+struct}
+\item 
+typedef struct \textbf{ gcs\+\_\+struct} \textbf{ gcs\+\_\+struct}
+\end{DoxyCompactItemize}
+\subsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \textbf{ param\+\_\+index} \{ \newline
+\textbf{ X\+\_\+kp} = 0, 
+\textbf{ X\+\_\+kd}, 
+\textbf{ Y\+\_\+kp}, 
+\textbf{ Y\+\_\+kd}, 
+\newline
+\textbf{ Z\+\_\+kp}, 
+\textbf{ Z\+\_\+kd}, 
+\textbf{ T\+\_\+min}, 
+\textbf{ T\+\_\+max}, 
+\newline
+\textbf{ T\+\_\+tilt}, 
+\textbf{ X\+\_\+\+Range}, 
+\textbf{ Y\+\_\+\+Range}, 
+\textbf{ Z\+\_\+\+Range}, 
+\newline
+\textbf{ T\+\_\+\+Range}, 
+\textbf{ param\+\_\+count}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \textbf{ gcs\+\_\+init} (void)
+\item 
+void \textbf{ gcs\+\_\+exit} (void)
+\item 
+void \textbf{ gcs\+\_\+tx} (void)
+\item 
+void \textbf{ gcs\+\_\+rx} (void)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\textbf{ param\+\_\+struct} \textbf{ param}
+\item 
+\textbf{ gcs\+\_\+struct} \textbf{ gcs}
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\label{gcs_8h_a8ba30227a431d29d269f737e479300f4}} 
+\index{gcs.\+h@{gcs.\+h}!G\+C\+S\+\_\+\+A\+TT@{G\+C\+S\+\_\+\+A\+TT}}
+\index{G\+C\+S\+\_\+\+A\+TT@{G\+C\+S\+\_\+\+A\+TT}!gcs.\+h@{gcs.\+h}}
+\subsubsection{G\+C\+S\+\_\+\+A\+TT}
+{\footnotesize\ttfamily \#define G\+C\+S\+\_\+\+A\+TT~60}
+
+\mbox{\label{gcs_8h_a01b77a71b518c47e520e60c98a70d8e6}} 
+\index{gcs.\+h@{gcs.\+h}!G\+C\+S\+\_\+\+A\+T\+T\+\_\+\+E\+N\+A\+B\+L\+ED@{G\+C\+S\+\_\+\+A\+T\+T\+\_\+\+E\+N\+A\+B\+L\+ED}}
+\index{G\+C\+S\+\_\+\+A\+T\+T\+\_\+\+E\+N\+A\+B\+L\+ED@{G\+C\+S\+\_\+\+A\+T\+T\+\_\+\+E\+N\+A\+B\+L\+ED}!gcs.\+h@{gcs.\+h}}
+\subsubsection{G\+C\+S\+\_\+\+A\+T\+T\+\_\+\+E\+N\+A\+B\+L\+ED}
+{\footnotesize\ttfamily \#define G\+C\+S\+\_\+\+A\+T\+T\+\_\+\+E\+N\+A\+B\+L\+ED~true}
+
+\mbox{\label{gcs_8h_a5c15b03aef5e2d95df81dc004d4c21c0}} 
+\index{gcs.\+h@{gcs.\+h}!G\+C\+S\+\_\+\+D\+E\+B\+UG@{G\+C\+S\+\_\+\+D\+E\+B\+UG}}
+\index{G\+C\+S\+\_\+\+D\+E\+B\+UG@{G\+C\+S\+\_\+\+D\+E\+B\+UG}!gcs.\+h@{gcs.\+h}}
+\subsubsection{G\+C\+S\+\_\+\+D\+E\+B\+UG}
+{\footnotesize\ttfamily \#define G\+C\+S\+\_\+\+D\+E\+B\+UG~false}
+
+\mbox{\label{gcs_8h_afee390719e41a459a06b33ae3fc4955d}} 
+\index{gcs.\+h@{gcs.\+h}!G\+C\+S\+\_\+\+H\+E\+A\+R\+T\+B\+E\+AT@{G\+C\+S\+\_\+\+H\+E\+A\+R\+T\+B\+E\+AT}}
+\index{G\+C\+S\+\_\+\+H\+E\+A\+R\+T\+B\+E\+AT@{G\+C\+S\+\_\+\+H\+E\+A\+R\+T\+B\+E\+AT}!gcs.\+h@{gcs.\+h}}
+\subsubsection{G\+C\+S\+\_\+\+H\+E\+A\+R\+T\+B\+E\+AT}
+{\footnotesize\ttfamily \#define G\+C\+S\+\_\+\+H\+E\+A\+R\+T\+B\+E\+AT~01}
+
+\mbox{\label{gcs_8h_a94bc51dfa2cf5e0fbd9aa1de01339aec}} 
+\index{gcs.\+h@{gcs.\+h}!G\+C\+S\+\_\+\+I\+N\+P\+UT@{G\+C\+S\+\_\+\+I\+N\+P\+UT}}
+\index{G\+C\+S\+\_\+\+I\+N\+P\+UT@{G\+C\+S\+\_\+\+I\+N\+P\+UT}!gcs.\+h@{gcs.\+h}}
+\subsubsection{G\+C\+S\+\_\+\+I\+N\+P\+UT}
+{\footnotesize\ttfamily \#define G\+C\+S\+\_\+\+I\+N\+P\+UT~40}
+
+\mbox{\label{gcs_8h_ad4f1a256536fee82d2dc563bb002dc94}} 
+\index{gcs.\+h@{gcs.\+h}!G\+C\+S\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+N\+A\+B\+L\+ED@{G\+C\+S\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+N\+A\+B\+L\+ED}}
+\index{G\+C\+S\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+N\+A\+B\+L\+ED@{G\+C\+S\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+N\+A\+B\+L\+ED}!gcs.\+h@{gcs.\+h}}
+\subsubsection{G\+C\+S\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+N\+A\+B\+L\+ED}
+{\footnotesize\ttfamily \#define G\+C\+S\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+N\+A\+B\+L\+ED~true}
+
+\mbox{\label{gcs_8h_a1175522577b72339c158fe872dbd7fd1}} 
+\index{gcs.\+h@{gcs.\+h}!G\+C\+S\+\_\+\+M\+I\+S\+S\+I\+ON@{G\+C\+S\+\_\+\+M\+I\+S\+S\+I\+ON}}
+\index{G\+C\+S\+\_\+\+M\+I\+S\+S\+I\+ON@{G\+C\+S\+\_\+\+M\+I\+S\+S\+I\+ON}!gcs.\+h@{gcs.\+h}}
+\subsubsection{G\+C\+S\+\_\+\+M\+I\+S\+S\+I\+ON}
+{\footnotesize\ttfamily \#define G\+C\+S\+\_\+\+M\+I\+S\+S\+I\+ON~03}
+
+\mbox{\label{gcs_8h_ace29aa9427062b0dcc4480448a80a8e4}} 
+\index{gcs.\+h@{gcs.\+h}!G\+C\+S\+\_\+\+O\+U\+T\+P\+UT@{G\+C\+S\+\_\+\+O\+U\+T\+P\+UT}}
+\index{G\+C\+S\+\_\+\+O\+U\+T\+P\+UT@{G\+C\+S\+\_\+\+O\+U\+T\+P\+UT}!gcs.\+h@{gcs.\+h}}
+\subsubsection{G\+C\+S\+\_\+\+O\+U\+T\+P\+UT}
+{\footnotesize\ttfamily \#define G\+C\+S\+\_\+\+O\+U\+T\+P\+UT~50}
+
+\mbox{\label{gcs_8h_ac634e92d6a3229d963197361a3cd919a}} 
+\index{gcs.\+h@{gcs.\+h}!G\+C\+S\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+E\+N\+A\+B\+L\+ED@{G\+C\+S\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+E\+N\+A\+B\+L\+ED}}
+\index{G\+C\+S\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+E\+N\+A\+B\+L\+ED@{G\+C\+S\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+E\+N\+A\+B\+L\+ED}!gcs.\+h@{gcs.\+h}}
+\subsubsection{G\+C\+S\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+E\+N\+A\+B\+L\+ED}
+{\footnotesize\ttfamily \#define G\+C\+S\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+E\+N\+A\+B\+L\+ED~true}
+
+\mbox{\label{gcs_8h_a3d215c685c20dc6da8b8c4cedb066e76}} 
+\index{gcs.\+h@{gcs.\+h}!G\+C\+S\+\_\+\+P\+A\+R\+AM@{G\+C\+S\+\_\+\+P\+A\+R\+AM}}
+\index{G\+C\+S\+\_\+\+P\+A\+R\+AM@{G\+C\+S\+\_\+\+P\+A\+R\+AM}!gcs.\+h@{gcs.\+h}}
+\subsubsection{G\+C\+S\+\_\+\+P\+A\+R\+AM}
+{\footnotesize\ttfamily \#define G\+C\+S\+\_\+\+P\+A\+R\+AM~02}
+
+\mbox{\label{gcs_8h_a0b96207bebccdb14b48fd0a7dd7e18c6}} 
+\index{gcs.\+h@{gcs.\+h}!G\+C\+S\+\_\+\+S\+Y\+S\+ID@{G\+C\+S\+\_\+\+S\+Y\+S\+ID}}
+\index{G\+C\+S\+\_\+\+S\+Y\+S\+ID@{G\+C\+S\+\_\+\+S\+Y\+S\+ID}!gcs.\+h@{gcs.\+h}}
+\subsubsection{G\+C\+S\+\_\+\+S\+Y\+S\+ID}
+{\footnotesize\ttfamily \#define G\+C\+S\+\_\+\+S\+Y\+S\+ID~01}
+
+
+
+\subsection{Typedef Documentation}
+\mbox{\label{gcs_8h_a5d51e71926177fb1fcac21288d6b450f}} 
+\index{gcs.\+h@{gcs.\+h}!gcs\+\_\+struct@{gcs\+\_\+struct}}
+\index{gcs\+\_\+struct@{gcs\+\_\+struct}!gcs.\+h@{gcs.\+h}}
+\subsubsection{gcs\+\_\+struct}
+{\footnotesize\ttfamily typedef struct \textbf{ gcs\+\_\+struct}  \textbf{ gcs\+\_\+struct}}
+
+\mbox{\label{gcs_8h_a109bdcf9853227f1f6f28d1e3f74be34}} 
+\index{gcs.\+h@{gcs.\+h}!param\+\_\+struct@{param\+\_\+struct}}
+\index{param\+\_\+struct@{param\+\_\+struct}!gcs.\+h@{gcs.\+h}}
+\subsubsection{param\+\_\+struct}
+{\footnotesize\ttfamily typedef struct \textbf{ param\+\_\+struct}  \textbf{ param\+\_\+struct}}
+
+
+
+\subsection{Enumeration Type Documentation}
+\mbox{\label{gcs_8h_a932e63177cb0ac2548e195a4908ad945}} 
+\index{gcs.\+h@{gcs.\+h}!param\+\_\+index@{param\+\_\+index}}
+\index{param\+\_\+index@{param\+\_\+index}!gcs.\+h@{gcs.\+h}}
+\subsubsection{param\+\_\+index}
+{\footnotesize\ttfamily enum \textbf{ param\+\_\+index}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{X\+\_\+kp@{X\+\_\+kp}!gcs.\+h@{gcs.\+h}}\index{gcs.\+h@{gcs.\+h}!X\+\_\+kp@{X\+\_\+kp}}}\mbox{\label{gcs_8h_a932e63177cb0ac2548e195a4908ad945afbeadba44d20e3a9daf41f0db7cf0a53}} 
+X\+\_\+kp&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{X\+\_\+kd@{X\+\_\+kd}!gcs.\+h@{gcs.\+h}}\index{gcs.\+h@{gcs.\+h}!X\+\_\+kd@{X\+\_\+kd}}}\mbox{\label{gcs_8h_a932e63177cb0ac2548e195a4908ad945a86ba95d2d95a40119c4f2b913fd2ffa2}} 
+X\+\_\+kd&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Y\+\_\+kp@{Y\+\_\+kp}!gcs.\+h@{gcs.\+h}}\index{gcs.\+h@{gcs.\+h}!Y\+\_\+kp@{Y\+\_\+kp}}}\mbox{\label{gcs_8h_a932e63177cb0ac2548e195a4908ad945ad9c0c4a8de0696767d49038f979defe5}} 
+Y\+\_\+kp&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Y\+\_\+kd@{Y\+\_\+kd}!gcs.\+h@{gcs.\+h}}\index{gcs.\+h@{gcs.\+h}!Y\+\_\+kd@{Y\+\_\+kd}}}\mbox{\label{gcs_8h_a932e63177cb0ac2548e195a4908ad945aa48b6d8fba8d3bc459fa45d9ff609edd}} 
+Y\+\_\+kd&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Z\+\_\+kp@{Z\+\_\+kp}!gcs.\+h@{gcs.\+h}}\index{gcs.\+h@{gcs.\+h}!Z\+\_\+kp@{Z\+\_\+kp}}}\mbox{\label{gcs_8h_a932e63177cb0ac2548e195a4908ad945a71bc1fb132785cfe207a37efab9eb7bb}} 
+Z\+\_\+kp&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Z\+\_\+kd@{Z\+\_\+kd}!gcs.\+h@{gcs.\+h}}\index{gcs.\+h@{gcs.\+h}!Z\+\_\+kd@{Z\+\_\+kd}}}\mbox{\label{gcs_8h_a932e63177cb0ac2548e195a4908ad945af7aa8ab811b64a52fb3639168ab27a3d}} 
+Z\+\_\+kd&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{T\+\_\+min@{T\+\_\+min}!gcs.\+h@{gcs.\+h}}\index{gcs.\+h@{gcs.\+h}!T\+\_\+min@{T\+\_\+min}}}\mbox{\label{gcs_8h_a932e63177cb0ac2548e195a4908ad945af25131f91c3afbc3ce37dccf3080db0c}} 
+T\+\_\+min&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{T\+\_\+max@{T\+\_\+max}!gcs.\+h@{gcs.\+h}}\index{gcs.\+h@{gcs.\+h}!T\+\_\+max@{T\+\_\+max}}}\mbox{\label{gcs_8h_a932e63177cb0ac2548e195a4908ad945aa19fe1635e3b1f1f9ed73c8cb47e50a1}} 
+T\+\_\+max&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{T\+\_\+tilt@{T\+\_\+tilt}!gcs.\+h@{gcs.\+h}}\index{gcs.\+h@{gcs.\+h}!T\+\_\+tilt@{T\+\_\+tilt}}}\mbox{\label{gcs_8h_a932e63177cb0ac2548e195a4908ad945a55cc8b9cf1d9d402fd1401a1674ce6e3}} 
+T\+\_\+tilt&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{X\+\_\+\+Range@{X\+\_\+\+Range}!gcs.\+h@{gcs.\+h}}\index{gcs.\+h@{gcs.\+h}!X\+\_\+\+Range@{X\+\_\+\+Range}}}\mbox{\label{gcs_8h_a932e63177cb0ac2548e195a4908ad945a4e4986dba74090187c617fd977c4e0fe}} 
+X\+\_\+\+Range&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Y\+\_\+\+Range@{Y\+\_\+\+Range}!gcs.\+h@{gcs.\+h}}\index{gcs.\+h@{gcs.\+h}!Y\+\_\+\+Range@{Y\+\_\+\+Range}}}\mbox{\label{gcs_8h_a932e63177cb0ac2548e195a4908ad945abd3f2a62cb9f02c9692e3200308e10dc}} 
+Y\+\_\+\+Range&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Z\+\_\+\+Range@{Z\+\_\+\+Range}!gcs.\+h@{gcs.\+h}}\index{gcs.\+h@{gcs.\+h}!Z\+\_\+\+Range@{Z\+\_\+\+Range}}}\mbox{\label{gcs_8h_a932e63177cb0ac2548e195a4908ad945ad80b75b76bc85e941f84cd398b843630}} 
+Z\+\_\+\+Range&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{T\+\_\+\+Range@{T\+\_\+\+Range}!gcs.\+h@{gcs.\+h}}\index{gcs.\+h@{gcs.\+h}!T\+\_\+\+Range@{T\+\_\+\+Range}}}\mbox{\label{gcs_8h_a932e63177cb0ac2548e195a4908ad945a4c6deaa47139a81e97beb442f2aa9296}} 
+T\+\_\+\+Range&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{param\+\_\+count@{param\+\_\+count}!gcs.\+h@{gcs.\+h}}\index{gcs.\+h@{gcs.\+h}!param\+\_\+count@{param\+\_\+count}}}\mbox{\label{gcs_8h_a932e63177cb0ac2548e195a4908ad945a669b0729bf66af47c8ac098727c99cdc}} 
+param\+\_\+count&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\subsection{Function Documentation}
+\mbox{\label{gcs_8h_a1eee329df0998f954f117821626b68f1}} 
+\index{gcs.\+h@{gcs.\+h}!gcs\+\_\+exit@{gcs\+\_\+exit}}
+\index{gcs\+\_\+exit@{gcs\+\_\+exit}!gcs.\+h@{gcs.\+h}}
+\subsubsection{gcs\+\_\+exit()}
+{\footnotesize\ttfamily void gcs\+\_\+exit (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+gcs\+\_\+exit Exits the G\+CS sensor. \mbox{\label{gcs_8h_a9b733311664e0b3d20db4dbbf766df43}} 
+\index{gcs.\+h@{gcs.\+h}!gcs\+\_\+init@{gcs\+\_\+init}}
+\index{gcs\+\_\+init@{gcs\+\_\+init}!gcs.\+h@{gcs.\+h}}
+\subsubsection{gcs\+\_\+init()}
+{\footnotesize\ttfamily void gcs\+\_\+init (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+gcs\+\_\+init Initializes the G\+CS communication. \mbox{\label{gcs_8h_ae2602edc0d4dab57bcccbb7c9feb4dfd}} 
+\index{gcs.\+h@{gcs.\+h}!gcs\+\_\+rx@{gcs\+\_\+rx}}
+\index{gcs\+\_\+rx@{gcs\+\_\+rx}!gcs.\+h@{gcs.\+h}}
+\subsubsection{gcs\+\_\+rx()}
+{\footnotesize\ttfamily void gcs\+\_\+rx (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+gcs\+\_\+rx Receive from the ground control station. \mbox{\label{gcs_8h_a44198c4ef9397140234bf464ed6c784a}} 
+\index{gcs.\+h@{gcs.\+h}!gcs\+\_\+tx@{gcs\+\_\+tx}}
+\index{gcs\+\_\+tx@{gcs\+\_\+tx}!gcs.\+h@{gcs.\+h}}
+\subsubsection{gcs\+\_\+tx()}
+{\footnotesize\ttfamily void gcs\+\_\+tx (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+gcs\+\_\+tx Transmit to the ground control station. 
+
+\subsection{Variable Documentation}
+\mbox{\label{gcs_8h_ac7cc1bf00f0e3dc0d9db27a74490ef81}} 
+\index{gcs.\+h@{gcs.\+h}!gcs@{gcs}}
+\index{gcs@{gcs}!gcs.\+h@{gcs.\+h}}
+\subsubsection{gcs}
+{\footnotesize\ttfamily \textbf{ gcs\+\_\+struct} gcs}
+
+\mbox{\label{gcs_8h_a9d948b18537e6c8c6ef61b023bc70180}} 
+\index{gcs.\+h@{gcs.\+h}!param@{param}}
+\index{param@{param}!gcs.\+h@{gcs.\+h}}
+\subsubsection{param}
+{\footnotesize\ttfamily \textbf{ param\+\_\+struct} param}
+

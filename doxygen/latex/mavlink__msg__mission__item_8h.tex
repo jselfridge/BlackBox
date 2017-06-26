@@ -1,0 +1,108 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/common/mavlink\+\_\+msg\+\_\+mission\+\_\+item.h File Reference}
+\label{mavlink__msg__mission__item_8h}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/common/mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/common/mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h}}
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+mission\+\_\+item\+\_\+t}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+EM}~39
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+E\+M\+\_\+\+L\+EN}~37
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+39\+\_\+\+L\+EN}~37
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+E\+M\+\_\+\+C\+RC}~254
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+39\+\_\+\+C\+RC}~254
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+EM}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+mission\+\_\+item\+\_\+t} \textbf{ mavlink\+\_\+mission\+\_\+item\+\_\+t}
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\label{mavlink__msg__mission__item_8h_aee6c7bb8c7226649660d0dbdaa79ff52}} 
+\index{mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+EM@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+EM}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+EM@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+EM}!mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+EM}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+EM}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\{ \(\backslash\)
+    \textcolor{stringliteral}{"MISSION\_ITEM"}, \(\backslash\)
+    14, \(\backslash\)
+    \{  \{ \textcolor{stringliteral}{"param1"}, NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(
+      mavlink_mission_item_t, param1) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"param2"}, NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(
+      mavlink_mission_item_t, param2) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"param3"}, NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(
+      mavlink_mission_item_t, param3) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"param4"}, NULL, MAVLINK_TYPE_FLOAT, 0, 12, offsetof(
+      mavlink_mission_item_t, param4) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"x"}, NULL, MAVLINK_TYPE_FLOAT, 0, 16, offsetof(mavlink_mission_item_t, x) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"y"}, NULL, MAVLINK_TYPE_FLOAT, 0, 20, offsetof(mavlink_mission_item_t, y) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"z"}, NULL, MAVLINK_TYPE_FLOAT, 0, 24, offsetof(mavlink_mission_item_t, z) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"seq"}, NULL, MAVLINK_TYPE_UINT16_T, 0, 28, offsetof(
+      mavlink_mission_item_t, seq) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"command"}, NULL, MAVLINK_TYPE_UINT16_T, 0, 30, offsetof(
+      mavlink_mission_item_t, command) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"target\_system"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 32, offsetof(
+      mavlink_mission_item_t, target\_system) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"target\_component"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 33, offsetof(
+      mavlink_mission_item_t, target\_component) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"frame"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 34, offsetof(
+      mavlink_mission_item_t, frame) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"current"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 35, offsetof(
+      mavlink_mission_item_t, current) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"autocontinue"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 36, offsetof(
+      mavlink_mission_item_t, autocontinue) \}, \(\backslash\)
+         \} \(\backslash\)
+\}
+\end{DoxyCode}
+\mbox{\label{mavlink__msg__mission__item_8h_a699af06c9e8d5ce922f7396a403a78a2}} 
+\index{mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+39\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+39\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+39\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+39\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+39\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+39\+\_\+\+C\+RC~254}
+
+\mbox{\label{mavlink__msg__mission__item_8h_a6f277406f2c364b058bc53377d23c725}} 
+\index{mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+39\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+39\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+39\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+39\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+39\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+39\+\_\+\+L\+EN~37}
+
+\mbox{\label{mavlink__msg__mission__item_8h_aca731c7005b0d278247efd7bcaed0ad6}} 
+\index{mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+EM@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+EM}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+EM@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+EM}!mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+EM}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+EM~39}
+
+\mbox{\label{mavlink__msg__mission__item_8h_a74e9b03d871711385f10e8869e86fda7}} 
+\index{mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+E\+M\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+E\+M\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+E\+M\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+E\+M\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+E\+M\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+E\+M\+\_\+\+C\+RC~254}
+
+\mbox{\label{mavlink__msg__mission__item_8h_a4bf5cc6640c6f991a2b3ad07c972630d}} 
+\index{mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+E\+M\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+E\+M\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+E\+M\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+E\+M\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+E\+M\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+I\+T\+E\+M\+\_\+\+L\+EN~37}
+
+
+
+\subsection{Typedef Documentation}
+\mbox{\label{mavlink__msg__mission__item_8h_a11da510ec856330aab38b88e46a15e97}} 
+\index{mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h}!mavlink\+\_\+mission\+\_\+item\+\_\+t@{mavlink\+\_\+mission\+\_\+item\+\_\+t}}
+\index{mavlink\+\_\+mission\+\_\+item\+\_\+t@{mavlink\+\_\+mission\+\_\+item\+\_\+t}!mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+item.\+h}}
+\subsubsection{mavlink\+\_\+mission\+\_\+item\+\_\+t}
+{\footnotesize\ttfamily typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+mission\+\_\+item\+\_\+t}  \textbf{ mavlink\+\_\+mission\+\_\+item\+\_\+t}}
+

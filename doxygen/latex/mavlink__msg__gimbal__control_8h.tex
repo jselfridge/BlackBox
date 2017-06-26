@@ -1,0 +1,93 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/ardupilotmega/mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.h File Reference}
+\label{mavlink__msg__gimbal__control_8h}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/ardupilotmega/mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/ardupilotmega/mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h}}
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+gimbal\+\_\+control\+\_\+t}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+OL}~201
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+L\+EN}~14
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+201\+\_\+\+L\+EN}~14
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+C\+RC}~205
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+201\+\_\+\+C\+RC}~205
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+OL}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+gimbal\+\_\+control\+\_\+t} \textbf{ mavlink\+\_\+gimbal\+\_\+control\+\_\+t}
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\label{mavlink__msg__gimbal__control_8h_a322b6f8527e5c1225febe4a336238646}} 
+\index{mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h@{mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+OL@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+OL}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+OL@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+OL}!mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h@{mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+OL}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+OL}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\{ \(\backslash\)
+    \textcolor{stringliteral}{"GIMBAL\_CONTROL"}, \(\backslash\)
+    5, \(\backslash\)
+    \{  \{ \textcolor{stringliteral}{"demanded\_rate\_x"}, NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(
+      mavlink_gimbal_control_t, demanded\_rate\_x) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"demanded\_rate\_y"}, NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(
+      mavlink_gimbal_control_t, demanded\_rate\_y) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"demanded\_rate\_z"}, NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(
+      mavlink_gimbal_control_t, demanded\_rate\_z) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"target\_system"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 12, offsetof(
+      mavlink_gimbal_control_t, target\_system) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"target\_component"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 13, offsetof(
+      mavlink_gimbal_control_t, target\_component) \}, \(\backslash\)
+         \} \(\backslash\)
+\}
+\end{DoxyCode}
+\mbox{\label{mavlink__msg__gimbal__control_8h_a9102c9febd387eaffc1b63e93255923d}} 
+\index{mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h@{mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+201\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+201\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+201\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+201\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h@{mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+201\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+201\+\_\+\+C\+RC~205}
+
+\mbox{\label{mavlink__msg__gimbal__control_8h_a270bb2e7f9a59fd34707fb8ebe5222f3}} 
+\index{mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h@{mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+201\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+201\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+201\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+201\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h@{mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+201\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+201\+\_\+\+L\+EN~14}
+
+\mbox{\label{mavlink__msg__gimbal__control_8h_a05b71b798713d013cc03fa7257f3594d}} 
+\index{mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h@{mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+OL@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+OL}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+OL@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+OL}!mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h@{mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+OL}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+OL~201}
+
+\mbox{\label{mavlink__msg__gimbal__control_8h_a2f6a2fdb7397f05694d8f45a9aee1680}} 
+\index{mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h@{mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h@{mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+C\+RC~205}
+
+\mbox{\label{mavlink__msg__gimbal__control_8h_a9dbaf5c43fbf681886be18a776aacc47}} 
+\index{mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h@{mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h@{mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+G\+I\+M\+B\+A\+L\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+L\+EN~14}
+
+
+
+\subsection{Typedef Documentation}
+\mbox{\label{mavlink__msg__gimbal__control_8h_af5e1daa49798e1369b47e5a1e3e25960}} 
+\index{mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h@{mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h}!mavlink\+\_\+gimbal\+\_\+control\+\_\+t@{mavlink\+\_\+gimbal\+\_\+control\+\_\+t}}
+\index{mavlink\+\_\+gimbal\+\_\+control\+\_\+t@{mavlink\+\_\+gimbal\+\_\+control\+\_\+t}!mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h@{mavlink\+\_\+msg\+\_\+gimbal\+\_\+control.\+h}}
+\subsubsection{mavlink\+\_\+gimbal\+\_\+control\+\_\+t}
+{\footnotesize\ttfamily typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+gimbal\+\_\+control\+\_\+t}  \textbf{ mavlink\+\_\+gimbal\+\_\+control\+\_\+t}}
+

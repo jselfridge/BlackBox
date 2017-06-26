@@ -1,0 +1,97 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/matrixpilot/mavlink\+\_\+msg\+\_\+airspeeds.h File Reference}
+\label{mavlink__msg__airspeeds_8h}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/matrixpilot/mavlink\+\_\+msg\+\_\+airspeeds.\+h@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/matrixpilot/mavlink\+\_\+msg\+\_\+airspeeds.\+h}}
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+airspeeds\+\_\+t}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+I\+R\+S\+P\+E\+E\+DS}~182
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+I\+R\+S\+P\+E\+E\+D\+S\+\_\+\+L\+EN}~16
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+182\+\_\+\+L\+EN}~16
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+I\+R\+S\+P\+E\+E\+D\+S\+\_\+\+C\+RC}~154
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+182\+\_\+\+C\+RC}~154
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+A\+I\+R\+S\+P\+E\+E\+DS}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+airspeeds\+\_\+t} \textbf{ mavlink\+\_\+airspeeds\+\_\+t}
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\label{mavlink__msg__airspeeds_8h_ae09b48c8921d312b5f37b1527baaea9e}} 
+\index{mavlink\+\_\+msg\+\_\+airspeeds.\+h@{mavlink\+\_\+msg\+\_\+airspeeds.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+A\+I\+R\+S\+P\+E\+E\+DS@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+A\+I\+R\+S\+P\+E\+E\+DS}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+A\+I\+R\+S\+P\+E\+E\+DS@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+A\+I\+R\+S\+P\+E\+E\+DS}!mavlink\+\_\+msg\+\_\+airspeeds.\+h@{mavlink\+\_\+msg\+\_\+airspeeds.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+A\+I\+R\+S\+P\+E\+E\+DS}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+A\+I\+R\+S\+P\+E\+E\+DS}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\{ \(\backslash\)
+    \textcolor{stringliteral}{"AIRSPEEDS"}, \(\backslash\)
+    7, \(\backslash\)
+    \{  \{ \textcolor{stringliteral}{"time\_boot\_ms"}, NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(
+      mavlink_airspeeds_t, time\_boot\_ms) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"airspeed\_imu"}, NULL, MAVLINK_TYPE_INT16_T, 0, 4, offsetof(
+      mavlink_airspeeds_t, airspeed\_imu) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"airspeed\_pitot"}, NULL, MAVLINK_TYPE_INT16_T, 0, 6, offsetof(
+      mavlink_airspeeds_t, airspeed\_pitot) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"airspeed\_hot\_wire"}, NULL, MAVLINK_TYPE_INT16_T, 0, 8, offsetof(
+      mavlink_airspeeds_t, airspeed\_hot\_wire) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"airspeed\_ultrasonic"}, NULL, MAVLINK_TYPE_INT16_T, 0, 10, offsetof(
+      mavlink_airspeeds_t, airspeed\_ultrasonic) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"aoa"}, NULL, MAVLINK_TYPE_INT16_T, 0, 12, offsetof(
+      mavlink_airspeeds_t, aoa) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"aoy"}, NULL, MAVLINK_TYPE_INT16_T, 0, 14, offsetof(
+      mavlink_airspeeds_t, aoy) \}, \(\backslash\)
+         \} \(\backslash\)
+\}
+\end{DoxyCode}
+\mbox{\label{mavlink__msg__airspeeds_8h_a697ea2c6889dca391fee17eb52dd4ad4}} 
+\index{mavlink\+\_\+msg\+\_\+airspeeds.\+h@{mavlink\+\_\+msg\+\_\+airspeeds.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+182\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+182\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+182\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+182\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+airspeeds.\+h@{mavlink\+\_\+msg\+\_\+airspeeds.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+182\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+182\+\_\+\+C\+RC~154}
+
+\mbox{\label{mavlink__msg__airspeeds_8h_abc9614b12441e038668a029f87ea5342}} 
+\index{mavlink\+\_\+msg\+\_\+airspeeds.\+h@{mavlink\+\_\+msg\+\_\+airspeeds.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+182\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+182\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+182\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+182\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+airspeeds.\+h@{mavlink\+\_\+msg\+\_\+airspeeds.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+182\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+182\+\_\+\+L\+EN~16}
+
+\mbox{\label{mavlink__msg__airspeeds_8h_a85b4e91301a0c370ce6a4c794fe8c1cc}} 
+\index{mavlink\+\_\+msg\+\_\+airspeeds.\+h@{mavlink\+\_\+msg\+\_\+airspeeds.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+I\+R\+S\+P\+E\+E\+DS@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+I\+R\+S\+P\+E\+E\+DS}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+I\+R\+S\+P\+E\+E\+DS@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+I\+R\+S\+P\+E\+E\+DS}!mavlink\+\_\+msg\+\_\+airspeeds.\+h@{mavlink\+\_\+msg\+\_\+airspeeds.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+I\+R\+S\+P\+E\+E\+DS}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+I\+R\+S\+P\+E\+E\+DS~182}
+
+\mbox{\label{mavlink__msg__airspeeds_8h_ae6bcda4a0cd8dc20526a24dd36b38694}} 
+\index{mavlink\+\_\+msg\+\_\+airspeeds.\+h@{mavlink\+\_\+msg\+\_\+airspeeds.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+I\+R\+S\+P\+E\+E\+D\+S\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+I\+R\+S\+P\+E\+E\+D\+S\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+I\+R\+S\+P\+E\+E\+D\+S\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+I\+R\+S\+P\+E\+E\+D\+S\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+airspeeds.\+h@{mavlink\+\_\+msg\+\_\+airspeeds.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+I\+R\+S\+P\+E\+E\+D\+S\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+I\+R\+S\+P\+E\+E\+D\+S\+\_\+\+C\+RC~154}
+
+\mbox{\label{mavlink__msg__airspeeds_8h_ac44f4fec2de800eaf3015473fed40a7a}} 
+\index{mavlink\+\_\+msg\+\_\+airspeeds.\+h@{mavlink\+\_\+msg\+\_\+airspeeds.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+I\+R\+S\+P\+E\+E\+D\+S\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+I\+R\+S\+P\+E\+E\+D\+S\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+I\+R\+S\+P\+E\+E\+D\+S\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+I\+R\+S\+P\+E\+E\+D\+S\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+airspeeds.\+h@{mavlink\+\_\+msg\+\_\+airspeeds.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+I\+R\+S\+P\+E\+E\+D\+S\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+I\+R\+S\+P\+E\+E\+D\+S\+\_\+\+L\+EN~16}
+
+
+
+\subsection{Typedef Documentation}
+\mbox{\label{mavlink__msg__airspeeds_8h_af362c7894ca4a0c66942889a4ce7e17f}} 
+\index{mavlink\+\_\+msg\+\_\+airspeeds.\+h@{mavlink\+\_\+msg\+\_\+airspeeds.\+h}!mavlink\+\_\+airspeeds\+\_\+t@{mavlink\+\_\+airspeeds\+\_\+t}}
+\index{mavlink\+\_\+airspeeds\+\_\+t@{mavlink\+\_\+airspeeds\+\_\+t}!mavlink\+\_\+msg\+\_\+airspeeds.\+h@{mavlink\+\_\+msg\+\_\+airspeeds.\+h}}
+\subsubsection{mavlink\+\_\+airspeeds\+\_\+t}
+{\footnotesize\ttfamily typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+airspeeds\+\_\+t}  \textbf{ mavlink\+\_\+airspeeds\+\_\+t}}
+

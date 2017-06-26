@@ -1,0 +1,53 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/src/gcs.c File Reference}
+\label{gcs_8c}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/src/gcs.\+c@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/src/gcs.\+c}}
+{\ttfamily \#include \char`\"{}gcs.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$fcntl.\+h$>$}\newline
+{\ttfamily \#include $<$pthread.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$termios.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}imu.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}io.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}log.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}stab.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}sys.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}timer.\+h\char`\"{}}\newline
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \textbf{ gcs\+\_\+init} (void)
+\item 
+void \textbf{ gcs\+\_\+exit} (void)
+\item 
+void \textbf{ gcs\+\_\+tx} (void)
+\item 
+void \textbf{ gcs\+\_\+rx} (void)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\label{gcs_8c_a1eee329df0998f954f117821626b68f1}} 
+\index{gcs.\+c@{gcs.\+c}!gcs\+\_\+exit@{gcs\+\_\+exit}}
+\index{gcs\+\_\+exit@{gcs\+\_\+exit}!gcs.\+c@{gcs.\+c}}
+\subsubsection{gcs\+\_\+exit()}
+{\footnotesize\ttfamily void gcs\+\_\+exit (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+gcs\+\_\+exit Exits the G\+CS sensor. \mbox{\label{gcs_8c_a9b733311664e0b3d20db4dbbf766df43}} 
+\index{gcs.\+c@{gcs.\+c}!gcs\+\_\+init@{gcs\+\_\+init}}
+\index{gcs\+\_\+init@{gcs\+\_\+init}!gcs.\+c@{gcs.\+c}}
+\subsubsection{gcs\+\_\+init()}
+{\footnotesize\ttfamily void gcs\+\_\+init (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+gcs\+\_\+init Initializes the G\+CS communication. \mbox{\label{gcs_8c_ae2602edc0d4dab57bcccbb7c9feb4dfd}} 
+\index{gcs.\+c@{gcs.\+c}!gcs\+\_\+rx@{gcs\+\_\+rx}}
+\index{gcs\+\_\+rx@{gcs\+\_\+rx}!gcs.\+c@{gcs.\+c}}
+\subsubsection{gcs\+\_\+rx()}
+{\footnotesize\ttfamily void gcs\+\_\+rx (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+gcs\+\_\+rx Receive from the ground control station. \mbox{\label{gcs_8c_a44198c4ef9397140234bf464ed6c784a}} 
+\index{gcs.\+c@{gcs.\+c}!gcs\+\_\+tx@{gcs\+\_\+tx}}
+\index{gcs\+\_\+tx@{gcs\+\_\+tx}!gcs.\+c@{gcs.\+c}}
+\subsubsection{gcs\+\_\+tx()}
+{\footnotesize\ttfamily void gcs\+\_\+tx (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+gcs\+\_\+tx Transmit to the ground control station. 

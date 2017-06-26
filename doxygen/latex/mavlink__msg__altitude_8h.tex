@@ -1,0 +1,97 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/common/mavlink\+\_\+msg\+\_\+altitude.h File Reference}
+\label{mavlink__msg__altitude_8h}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/common/mavlink\+\_\+msg\+\_\+altitude.\+h@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/common/mavlink\+\_\+msg\+\_\+altitude.\+h}}
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+altitude\+\_\+t}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+L\+T\+I\+T\+U\+DE}~141
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+L\+T\+I\+T\+U\+D\+E\+\_\+\+L\+EN}~32
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+141\+\_\+\+L\+EN}~32
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+L\+T\+I\+T\+U\+D\+E\+\_\+\+C\+RC}~47
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+141\+\_\+\+C\+RC}~47
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+A\+L\+T\+I\+T\+U\+DE}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+altitude\+\_\+t} \textbf{ mavlink\+\_\+altitude\+\_\+t}
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\label{mavlink__msg__altitude_8h_ae6dd77363ccf67dc3fa6b1cc0ce36ce9}} 
+\index{mavlink\+\_\+msg\+\_\+altitude.\+h@{mavlink\+\_\+msg\+\_\+altitude.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+A\+L\+T\+I\+T\+U\+DE@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+A\+L\+T\+I\+T\+U\+DE}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+A\+L\+T\+I\+T\+U\+DE@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+A\+L\+T\+I\+T\+U\+DE}!mavlink\+\_\+msg\+\_\+altitude.\+h@{mavlink\+\_\+msg\+\_\+altitude.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+A\+L\+T\+I\+T\+U\+DE}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+A\+L\+T\+I\+T\+U\+DE}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\{ \(\backslash\)
+    \textcolor{stringliteral}{"ALTITUDE"}, \(\backslash\)
+    7, \(\backslash\)
+    \{  \{ \textcolor{stringliteral}{"time\_usec"}, NULL, MAVLINK_TYPE_UINT64_T, 0, 0, offsetof(
+      mavlink_altitude_t, time\_usec) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"altitude\_monotonic"}, NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(
+      mavlink_altitude_t, altitude\_monotonic) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"altitude\_amsl"}, NULL, MAVLINK_TYPE_FLOAT, 0, 12, offsetof(
+      mavlink_altitude_t, altitude\_amsl) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"altitude\_local"}, NULL, MAVLINK_TYPE_FLOAT, 0, 16, offsetof(
+      mavlink_altitude_t, altitude\_local) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"altitude\_relative"}, NULL, MAVLINK_TYPE_FLOAT, 0, 20, offsetof(
+      mavlink_altitude_t, altitude\_relative) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"altitude\_terrain"}, NULL, MAVLINK_TYPE_FLOAT, 0, 24, offsetof(
+      mavlink_altitude_t, altitude\_terrain) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"bottom\_clearance"}, NULL, MAVLINK_TYPE_FLOAT, 0, 28, offsetof(
+      mavlink_altitude_t, bottom\_clearance) \}, \(\backslash\)
+         \} \(\backslash\)
+\}
+\end{DoxyCode}
+\mbox{\label{mavlink__msg__altitude_8h_a1e9cb7c984b072ffcd35dce6b2b66210}} 
+\index{mavlink\+\_\+msg\+\_\+altitude.\+h@{mavlink\+\_\+msg\+\_\+altitude.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+141\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+141\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+141\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+141\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+altitude.\+h@{mavlink\+\_\+msg\+\_\+altitude.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+141\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+141\+\_\+\+C\+RC~47}
+
+\mbox{\label{mavlink__msg__altitude_8h_ae07cae45b194b5a971b97f1d34448dd1}} 
+\index{mavlink\+\_\+msg\+\_\+altitude.\+h@{mavlink\+\_\+msg\+\_\+altitude.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+141\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+141\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+141\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+141\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+altitude.\+h@{mavlink\+\_\+msg\+\_\+altitude.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+141\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+141\+\_\+\+L\+EN~32}
+
+\mbox{\label{mavlink__msg__altitude_8h_afb746b0bab65a6f4bd96575030dabacd}} 
+\index{mavlink\+\_\+msg\+\_\+altitude.\+h@{mavlink\+\_\+msg\+\_\+altitude.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+L\+T\+I\+T\+U\+DE@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+L\+T\+I\+T\+U\+DE}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+L\+T\+I\+T\+U\+DE@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+L\+T\+I\+T\+U\+DE}!mavlink\+\_\+msg\+\_\+altitude.\+h@{mavlink\+\_\+msg\+\_\+altitude.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+L\+T\+I\+T\+U\+DE}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+L\+T\+I\+T\+U\+DE~141}
+
+\mbox{\label{mavlink__msg__altitude_8h_aca9a2438677393fdb851b20dd63edc70}} 
+\index{mavlink\+\_\+msg\+\_\+altitude.\+h@{mavlink\+\_\+msg\+\_\+altitude.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+L\+T\+I\+T\+U\+D\+E\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+L\+T\+I\+T\+U\+D\+E\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+L\+T\+I\+T\+U\+D\+E\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+L\+T\+I\+T\+U\+D\+E\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+altitude.\+h@{mavlink\+\_\+msg\+\_\+altitude.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+L\+T\+I\+T\+U\+D\+E\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+L\+T\+I\+T\+U\+D\+E\+\_\+\+C\+RC~47}
+
+\mbox{\label{mavlink__msg__altitude_8h_a740fa91c62c6e8813c3bd6b52c15b02d}} 
+\index{mavlink\+\_\+msg\+\_\+altitude.\+h@{mavlink\+\_\+msg\+\_\+altitude.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+L\+T\+I\+T\+U\+D\+E\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+L\+T\+I\+T\+U\+D\+E\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+L\+T\+I\+T\+U\+D\+E\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+L\+T\+I\+T\+U\+D\+E\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+altitude.\+h@{mavlink\+\_\+msg\+\_\+altitude.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+L\+T\+I\+T\+U\+D\+E\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+A\+L\+T\+I\+T\+U\+D\+E\+\_\+\+L\+EN~32}
+
+
+
+\subsection{Typedef Documentation}
+\mbox{\label{mavlink__msg__altitude_8h_a0edd46bcb1404a83ff42808e6563b9cb}} 
+\index{mavlink\+\_\+msg\+\_\+altitude.\+h@{mavlink\+\_\+msg\+\_\+altitude.\+h}!mavlink\+\_\+altitude\+\_\+t@{mavlink\+\_\+altitude\+\_\+t}}
+\index{mavlink\+\_\+altitude\+\_\+t@{mavlink\+\_\+altitude\+\_\+t}!mavlink\+\_\+msg\+\_\+altitude.\+h@{mavlink\+\_\+msg\+\_\+altitude.\+h}}
+\subsubsection{mavlink\+\_\+altitude\+\_\+t}
+{\footnotesize\ttfamily typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+altitude\+\_\+t}  \textbf{ mavlink\+\_\+altitude\+\_\+t}}
+

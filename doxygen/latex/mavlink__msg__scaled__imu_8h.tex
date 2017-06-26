@@ -1,0 +1,103 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/common/mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.h File Reference}
+\label{mavlink__msg__scaled__imu_8h}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/common/mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/common/mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h}}
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+scaled\+\_\+imu\+\_\+t}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+MU}~26
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+M\+U\+\_\+\+L\+EN}~22
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+26\+\_\+\+L\+EN}~22
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+M\+U\+\_\+\+C\+RC}~170
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+26\+\_\+\+C\+RC}~170
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+MU}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+scaled\+\_\+imu\+\_\+t} \textbf{ mavlink\+\_\+scaled\+\_\+imu\+\_\+t}
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\label{mavlink__msg__scaled__imu_8h_aaf3b64211cdca86282fd6e0a360cdf15}} 
+\index{mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h@{mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+MU@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+MU}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+MU@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+MU}!mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h@{mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+MU}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+MU}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\{ \(\backslash\)
+    \textcolor{stringliteral}{"SCALED\_IMU"}, \(\backslash\)
+    10, \(\backslash\)
+    \{  \{ \textcolor{stringliteral}{"time\_boot\_ms"}, NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(
+      mavlink_scaled_imu_t, time\_boot\_ms) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"xacc"}, NULL, MAVLINK_TYPE_INT16_T, 0, 4, offsetof(
+      mavlink_scaled_imu_t, xacc) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"yacc"}, NULL, MAVLINK_TYPE_INT16_T, 0, 6, offsetof(
+      mavlink_scaled_imu_t, yacc) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"zacc"}, NULL, MAVLINK_TYPE_INT16_T, 0, 8, offsetof(
+      mavlink_scaled_imu_t, zacc) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"xgyro"}, NULL, MAVLINK_TYPE_INT16_T, 0, 10, offsetof(
+      mavlink_scaled_imu_t, xgyro) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"ygyro"}, NULL, MAVLINK_TYPE_INT16_T, 0, 12, offsetof(
+      mavlink_scaled_imu_t, ygyro) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"zgyro"}, NULL, MAVLINK_TYPE_INT16_T, 0, 14, offsetof(
+      mavlink_scaled_imu_t, zgyro) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"xmag"}, NULL, MAVLINK_TYPE_INT16_T, 0, 16, offsetof(
+      mavlink_scaled_imu_t, xmag) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"ymag"}, NULL, MAVLINK_TYPE_INT16_T, 0, 18, offsetof(
+      mavlink_scaled_imu_t, ymag) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"zmag"}, NULL, MAVLINK_TYPE_INT16_T, 0, 20, offsetof(
+      mavlink_scaled_imu_t, zmag) \}, \(\backslash\)
+         \} \(\backslash\)
+\}
+\end{DoxyCode}
+\mbox{\label{mavlink__msg__scaled__imu_8h_a1091fd68caff1d465e5d48816d7fe32a}} 
+\index{mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h@{mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+26\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+26\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+26\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+26\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h@{mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+26\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+26\+\_\+\+C\+RC~170}
+
+\mbox{\label{mavlink__msg__scaled__imu_8h_ac06be782c30428ac5eeb9de91b3e2b4b}} 
+\index{mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h@{mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+26\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+26\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+26\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+26\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h@{mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+26\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+26\+\_\+\+L\+EN~22}
+
+\mbox{\label{mavlink__msg__scaled__imu_8h_a82d22e6db01c2771c785baa8e3c26283}} 
+\index{mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h@{mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+MU@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+MU}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+MU@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+MU}!mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h@{mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+MU}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+MU~26}
+
+\mbox{\label{mavlink__msg__scaled__imu_8h_ab4647a5104a3a1d3d5a3d9f7ba7e7f3d}} 
+\index{mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h@{mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+M\+U\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+M\+U\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+M\+U\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+M\+U\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h@{mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+M\+U\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+M\+U\+\_\+\+C\+RC~170}
+
+\mbox{\label{mavlink__msg__scaled__imu_8h_a278ee2af32a666bc204fe924031485b0}} 
+\index{mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h@{mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+M\+U\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+M\+U\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+M\+U\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+M\+U\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h@{mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+M\+U\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+S\+C\+A\+L\+E\+D\+\_\+\+I\+M\+U\+\_\+\+L\+EN~22}
+
+
+
+\subsection{Typedef Documentation}
+\mbox{\label{mavlink__msg__scaled__imu_8h_a48b480b2bd58f950d5cb6807b2927899}} 
+\index{mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h@{mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h}!mavlink\+\_\+scaled\+\_\+imu\+\_\+t@{mavlink\+\_\+scaled\+\_\+imu\+\_\+t}}
+\index{mavlink\+\_\+scaled\+\_\+imu\+\_\+t@{mavlink\+\_\+scaled\+\_\+imu\+\_\+t}!mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h@{mavlink\+\_\+msg\+\_\+scaled\+\_\+imu.\+h}}
+\subsubsection{mavlink\+\_\+scaled\+\_\+imu\+\_\+t}
+{\footnotesize\ttfamily typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+scaled\+\_\+imu\+\_\+t}  \textbf{ mavlink\+\_\+scaled\+\_\+imu\+\_\+t}}
+

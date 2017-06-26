@@ -1,0 +1,89 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/common/mavlink\+\_\+msg\+\_\+data\+\_\+stream.h File Reference}
+\label{mavlink__msg__data__stream_8h}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/common/mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/common/mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h}}
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+data\+\_\+stream\+\_\+t}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+AM}~67
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+A\+M\+\_\+\+L\+EN}~4
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+67\+\_\+\+L\+EN}~4
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+A\+M\+\_\+\+C\+RC}~21
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+67\+\_\+\+C\+RC}~21
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+AM}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+data\+\_\+stream\+\_\+t} \textbf{ mavlink\+\_\+data\+\_\+stream\+\_\+t}
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\label{mavlink__msg__data__stream_8h_aea5250c039a5561916c0ddf4aa9334b4}} 
+\index{mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h@{mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+AM@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+AM}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+AM@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+AM}!mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h@{mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+AM}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+AM}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\{ \(\backslash\)
+    \textcolor{stringliteral}{"DATA\_STREAM"}, \(\backslash\)
+    3, \(\backslash\)
+    \{  \{ \textcolor{stringliteral}{"message\_rate"}, NULL, MAVLINK_TYPE_UINT16_T, 0, 0, offsetof(
+      mavlink_data_stream_t, message\_rate) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"stream\_id"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 2, offsetof(
+      mavlink_data_stream_t, stream\_id) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"on\_off"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 3, offsetof(
+      mavlink_data_stream_t, on\_off) \}, \(\backslash\)
+         \} \(\backslash\)
+\}
+\end{DoxyCode}
+\mbox{\label{mavlink__msg__data__stream_8h_a93b1008bb37678daed6c599f513b9220}} 
+\index{mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h@{mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+67\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+67\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+67\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+67\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h@{mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+67\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+67\+\_\+\+C\+RC~21}
+
+\mbox{\label{mavlink__msg__data__stream_8h_a741808270373a61567aa77759c4176ce}} 
+\index{mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h@{mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+67\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+67\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+67\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+67\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h@{mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+67\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+67\+\_\+\+L\+EN~4}
+
+\mbox{\label{mavlink__msg__data__stream_8h_a3ad0c8791410f3a53cc19de1b2cd92f9}} 
+\index{mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h@{mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+AM@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+AM}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+AM@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+AM}!mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h@{mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+AM}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+AM~67}
+
+\mbox{\label{mavlink__msg__data__stream_8h_aae34359b1a2c71b43f4c731e0ba6c461}} 
+\index{mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h@{mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+A\+M\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+A\+M\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+A\+M\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+A\+M\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h@{mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+A\+M\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+A\+M\+\_\+\+C\+RC~21}
+
+\mbox{\label{mavlink__msg__data__stream_8h_ac359578b60a5539a4148c1157655964c}} 
+\index{mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h@{mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+A\+M\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+A\+M\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+A\+M\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+A\+M\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h@{mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+A\+M\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+D\+A\+T\+A\+\_\+\+S\+T\+R\+E\+A\+M\+\_\+\+L\+EN~4}
+
+
+
+\subsection{Typedef Documentation}
+\mbox{\label{mavlink__msg__data__stream_8h_a84cf4c0026ba62b1a3519fbbb14bb5d4}} 
+\index{mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h@{mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h}!mavlink\+\_\+data\+\_\+stream\+\_\+t@{mavlink\+\_\+data\+\_\+stream\+\_\+t}}
+\index{mavlink\+\_\+data\+\_\+stream\+\_\+t@{mavlink\+\_\+data\+\_\+stream\+\_\+t}!mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h@{mavlink\+\_\+msg\+\_\+data\+\_\+stream.\+h}}
+\subsubsection{mavlink\+\_\+data\+\_\+stream\+\_\+t}
+{\footnotesize\ttfamily typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+data\+\_\+stream\+\_\+t}  \textbf{ mavlink\+\_\+data\+\_\+stream\+\_\+t}}
+

@@ -1,0 +1,93 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/ardupilotmega/mavlink\+\_\+msg\+\_\+fence\+\_\+point.h File Reference}
+\label{mavlink__msg__fence__point_8h}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/ardupilotmega/mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/ardupilotmega/mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h}}
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+fence\+\_\+point\+\_\+t}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+NT}~160
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+N\+T\+\_\+\+L\+EN}~12
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+160\+\_\+\+L\+EN}~12
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+N\+T\+\_\+\+C\+RC}~78
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+160\+\_\+\+C\+RC}~78
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+NT}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+fence\+\_\+point\+\_\+t} \textbf{ mavlink\+\_\+fence\+\_\+point\+\_\+t}
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\label{mavlink__msg__fence__point_8h_aa0a291fd78934e75661008a6852afc19}} 
+\index{mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h@{mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+NT@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+NT}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+NT@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+NT}!mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h@{mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+NT}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+NT}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\{ \(\backslash\)
+    \textcolor{stringliteral}{"FENCE\_POINT"}, \(\backslash\)
+    6, \(\backslash\)
+    \{  \{ \textcolor{stringliteral}{"lat"}, NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_fence_point_t, lat) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"lng"}, NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_fence_point_t, lng) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"target\_system"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 8, offsetof(
+      mavlink_fence_point_t, target\_system) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"target\_component"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 9, offsetof(
+      mavlink_fence_point_t, target\_component) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"idx"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 10, offsetof(
+      mavlink_fence_point_t, idx) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"count"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 11, offsetof(
+      mavlink_fence_point_t, count) \}, \(\backslash\)
+         \} \(\backslash\)
+\}
+\end{DoxyCode}
+\mbox{\label{mavlink__msg__fence__point_8h_a07d42bc16810533a9fb59b37b8f4dc66}} 
+\index{mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h@{mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+160\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+160\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+160\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+160\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h@{mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+160\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+160\+\_\+\+C\+RC~78}
+
+\mbox{\label{mavlink__msg__fence__point_8h_a02a9a92d84d603bf1f53dea3d7cda157}} 
+\index{mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h@{mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+160\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+160\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+160\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+160\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h@{mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+160\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+160\+\_\+\+L\+EN~12}
+
+\mbox{\label{mavlink__msg__fence__point_8h_ad87466c36a0635a1553be1e4ee9daf8c}} 
+\index{mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h@{mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+NT@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+NT}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+NT@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+NT}!mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h@{mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+NT}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+NT~160}
+
+\mbox{\label{mavlink__msg__fence__point_8h_a8da472d1833002346666a6847c541f0a}} 
+\index{mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h@{mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+N\+T\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+N\+T\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+N\+T\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+N\+T\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h@{mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+N\+T\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+N\+T\+\_\+\+C\+RC~78}
+
+\mbox{\label{mavlink__msg__fence__point_8h_a89ade9c64e85f09ad4299e01599ce8ab}} 
+\index{mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h@{mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+N\+T\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+N\+T\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+N\+T\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+N\+T\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h@{mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+N\+T\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+F\+E\+N\+C\+E\+\_\+\+P\+O\+I\+N\+T\+\_\+\+L\+EN~12}
+
+
+
+\subsection{Typedef Documentation}
+\mbox{\label{mavlink__msg__fence__point_8h_aba22f382a22694aa44405d736b4b386c}} 
+\index{mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h@{mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h}!mavlink\+\_\+fence\+\_\+point\+\_\+t@{mavlink\+\_\+fence\+\_\+point\+\_\+t}}
+\index{mavlink\+\_\+fence\+\_\+point\+\_\+t@{mavlink\+\_\+fence\+\_\+point\+\_\+t}!mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h@{mavlink\+\_\+msg\+\_\+fence\+\_\+point.\+h}}
+\subsubsection{mavlink\+\_\+fence\+\_\+point\+\_\+t}
+{\footnotesize\ttfamily typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+fence\+\_\+point\+\_\+t}  \textbf{ mavlink\+\_\+fence\+\_\+point\+\_\+t}}
+

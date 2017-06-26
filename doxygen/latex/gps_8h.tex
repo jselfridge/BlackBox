@@ -1,0 +1,168 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/wip/gps.h File Reference}
+\label{gps_8h}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/wip/gps.\+h@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/wip/gps.\+h}}
+{\ttfamily \#include $<$sys/types.\+h$>$}\newline
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ gps\+\_\+struct}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ G\+P\+S\+\_\+\+R\+M\+C\+\_\+\+E\+N\+A\+B\+L\+ED}~true
+\item 
+\#define \textbf{ G\+P\+S\+\_\+\+G\+G\+A\+\_\+\+E\+N\+A\+B\+L\+ED}~false
+\item 
+\#define \textbf{ G\+P\+S\+\_\+\+B\+A\+U\+D\+\_\+57600}~\char`\"{}\$P\+M\+T\+K251,57600$\ast$2\+C\char`\"{}
+\item 
+\#define \textbf{ G\+P\+S\+\_\+\+B\+A\+U\+D\+\_\+9600}~\char`\"{}\$P\+M\+T\+K251,9600$\ast$17\char`\"{}
+\item 
+\#define \textbf{ G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+100\+\_\+\+M\+HZ}~\char`\"{}\$P\+M\+T\+K220,10000$\ast$2\+F\textbackslash{}r\textbackslash{}n\char`\"{}
+\item 
+\#define \textbf{ G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+200\+\_\+\+M\+HZ}~\char`\"{}\$P\+M\+T\+K220,5000$\ast$1\+B\textbackslash{}r\textbackslash{}n\char`\"{}
+\item 
+\#define \textbf{ G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+001\+\_\+\+HZ}~\char`\"{}\$P\+M\+T\+K220,1000$\ast$1\+F\textbackslash{}r\textbackslash{}n\char`\"{}
+\item 
+\#define \textbf{ G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+005\+\_\+\+HZ}~\char`\"{}\$P\+M\+T\+K220,200$\ast$2\+C\textbackslash{}r\textbackslash{}n\char`\"{}
+\item 
+\#define \textbf{ G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+010\+\_\+\+HZ}~\char`\"{}\$P\+M\+T\+K220,100$\ast$2\+F\textbackslash{}r\textbackslash{}n\char`\"{}
+\item 
+\#define \textbf{ G\+P\+S\+\_\+\+R\+M\+C\+O\+N\+LY}~\char`\"{}\$P\+M\+T\+K314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0$\ast$29\textbackslash{}r\textbackslash{}n\char`\"{}
+\item 
+\#define \textbf{ G\+P\+S\+\_\+\+G\+G\+A\+O\+N\+LY}~\char`\"{}\$P\+M\+T\+K314,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0$\ast$29\textbackslash{}r\textbackslash{}n\char`\"{}
+\item 
+\#define \textbf{ G\+P\+S\+\_\+\+R\+M\+C\+G\+GA}~\char`\"{}\$P\+M\+T\+K314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0$\ast$28\textbackslash{}r\textbackslash{}n\char`\"{}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \textbf{ gps\+\_\+struct} \textbf{ gps\+\_\+struct}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \textbf{ gps\+\_\+init} (void)
+\item 
+void \textbf{ gps\+\_\+exit} (void)
+\item 
+void \textbf{ gps\+\_\+update} (void)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\textbf{ gps\+\_\+struct} \textbf{ gps}
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\label{gps_8h_ac4dee3145eefffbc785cf2a6e09501a9}} 
+\index{gps.\+h@{gps.\+h}!G\+P\+S\+\_\+\+B\+A\+U\+D\+\_\+57600@{G\+P\+S\+\_\+\+B\+A\+U\+D\+\_\+57600}}
+\index{G\+P\+S\+\_\+\+B\+A\+U\+D\+\_\+57600@{G\+P\+S\+\_\+\+B\+A\+U\+D\+\_\+57600}!gps.\+h@{gps.\+h}}
+\subsubsection{G\+P\+S\+\_\+\+B\+A\+U\+D\+\_\+57600}
+{\footnotesize\ttfamily \#define G\+P\+S\+\_\+\+B\+A\+U\+D\+\_\+57600~\char`\"{}\$P\+M\+T\+K251,57600$\ast$2\+C\char`\"{}}
+
+\mbox{\label{gps_8h_acca757856d6bb158fdc454c0dc72561c}} 
+\index{gps.\+h@{gps.\+h}!G\+P\+S\+\_\+\+B\+A\+U\+D\+\_\+9600@{G\+P\+S\+\_\+\+B\+A\+U\+D\+\_\+9600}}
+\index{G\+P\+S\+\_\+\+B\+A\+U\+D\+\_\+9600@{G\+P\+S\+\_\+\+B\+A\+U\+D\+\_\+9600}!gps.\+h@{gps.\+h}}
+\subsubsection{G\+P\+S\+\_\+\+B\+A\+U\+D\+\_\+9600}
+{\footnotesize\ttfamily \#define G\+P\+S\+\_\+\+B\+A\+U\+D\+\_\+9600~\char`\"{}\$P\+M\+T\+K251,9600$\ast$17\char`\"{}}
+
+\mbox{\label{gps_8h_ae24a037c31d716ca52a08c617c113de6}} 
+\index{gps.\+h@{gps.\+h}!G\+P\+S\+\_\+\+G\+G\+A\+\_\+\+E\+N\+A\+B\+L\+ED@{G\+P\+S\+\_\+\+G\+G\+A\+\_\+\+E\+N\+A\+B\+L\+ED}}
+\index{G\+P\+S\+\_\+\+G\+G\+A\+\_\+\+E\+N\+A\+B\+L\+ED@{G\+P\+S\+\_\+\+G\+G\+A\+\_\+\+E\+N\+A\+B\+L\+ED}!gps.\+h@{gps.\+h}}
+\subsubsection{G\+P\+S\+\_\+\+G\+G\+A\+\_\+\+E\+N\+A\+B\+L\+ED}
+{\footnotesize\ttfamily \#define G\+P\+S\+\_\+\+G\+G\+A\+\_\+\+E\+N\+A\+B\+L\+ED~false}
+
+\mbox{\label{gps_8h_adbba449b3a7a7b7a4dabb22306793d18}} 
+\index{gps.\+h@{gps.\+h}!G\+P\+S\+\_\+\+G\+G\+A\+O\+N\+LY@{G\+P\+S\+\_\+\+G\+G\+A\+O\+N\+LY}}
+\index{G\+P\+S\+\_\+\+G\+G\+A\+O\+N\+LY@{G\+P\+S\+\_\+\+G\+G\+A\+O\+N\+LY}!gps.\+h@{gps.\+h}}
+\subsubsection{G\+P\+S\+\_\+\+G\+G\+A\+O\+N\+LY}
+{\footnotesize\ttfamily \#define G\+P\+S\+\_\+\+G\+G\+A\+O\+N\+LY~\char`\"{}\$P\+M\+T\+K314,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0$\ast$29\textbackslash{}r\textbackslash{}n\char`\"{}}
+
+\mbox{\label{gps_8h_ac59e0a63ea42d4637533e753d0af6836}} 
+\index{gps.\+h@{gps.\+h}!G\+P\+S\+\_\+\+R\+M\+C\+\_\+\+E\+N\+A\+B\+L\+ED@{G\+P\+S\+\_\+\+R\+M\+C\+\_\+\+E\+N\+A\+B\+L\+ED}}
+\index{G\+P\+S\+\_\+\+R\+M\+C\+\_\+\+E\+N\+A\+B\+L\+ED@{G\+P\+S\+\_\+\+R\+M\+C\+\_\+\+E\+N\+A\+B\+L\+ED}!gps.\+h@{gps.\+h}}
+\subsubsection{G\+P\+S\+\_\+\+R\+M\+C\+\_\+\+E\+N\+A\+B\+L\+ED}
+{\footnotesize\ttfamily \#define G\+P\+S\+\_\+\+R\+M\+C\+\_\+\+E\+N\+A\+B\+L\+ED~true}
+
+\mbox{\label{gps_8h_abf55faa6f13ce39152f4c9812968bfdb}} 
+\index{gps.\+h@{gps.\+h}!G\+P\+S\+\_\+\+R\+M\+C\+G\+GA@{G\+P\+S\+\_\+\+R\+M\+C\+G\+GA}}
+\index{G\+P\+S\+\_\+\+R\+M\+C\+G\+GA@{G\+P\+S\+\_\+\+R\+M\+C\+G\+GA}!gps.\+h@{gps.\+h}}
+\subsubsection{G\+P\+S\+\_\+\+R\+M\+C\+G\+GA}
+{\footnotesize\ttfamily \#define G\+P\+S\+\_\+\+R\+M\+C\+G\+GA~\char`\"{}\$P\+M\+T\+K314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0$\ast$28\textbackslash{}r\textbackslash{}n\char`\"{}}
+
+\mbox{\label{gps_8h_a399451792d6ab3d01c6ab1e8c86a2410}} 
+\index{gps.\+h@{gps.\+h}!G\+P\+S\+\_\+\+R\+M\+C\+O\+N\+LY@{G\+P\+S\+\_\+\+R\+M\+C\+O\+N\+LY}}
+\index{G\+P\+S\+\_\+\+R\+M\+C\+O\+N\+LY@{G\+P\+S\+\_\+\+R\+M\+C\+O\+N\+LY}!gps.\+h@{gps.\+h}}
+\subsubsection{G\+P\+S\+\_\+\+R\+M\+C\+O\+N\+LY}
+{\footnotesize\ttfamily \#define G\+P\+S\+\_\+\+R\+M\+C\+O\+N\+LY~\char`\"{}\$P\+M\+T\+K314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0$\ast$29\textbackslash{}r\textbackslash{}n\char`\"{}}
+
+\mbox{\label{gps_8h_a05223d6bac9c6c3e67cd8a7ea27dd1c5}} 
+\index{gps.\+h@{gps.\+h}!G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+001\+\_\+\+HZ@{G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+001\+\_\+\+HZ}}
+\index{G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+001\+\_\+\+HZ@{G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+001\+\_\+\+HZ}!gps.\+h@{gps.\+h}}
+\subsubsection{G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+001\+\_\+\+HZ}
+{\footnotesize\ttfamily \#define G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+001\+\_\+\+HZ~\char`\"{}\$P\+M\+T\+K220,1000$\ast$1\+F\textbackslash{}r\textbackslash{}n\char`\"{}}
+
+\mbox{\label{gps_8h_a612279591531d91c60a78b8f52d5ee5f}} 
+\index{gps.\+h@{gps.\+h}!G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+005\+\_\+\+HZ@{G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+005\+\_\+\+HZ}}
+\index{G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+005\+\_\+\+HZ@{G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+005\+\_\+\+HZ}!gps.\+h@{gps.\+h}}
+\subsubsection{G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+005\+\_\+\+HZ}
+{\footnotesize\ttfamily \#define G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+005\+\_\+\+HZ~\char`\"{}\$P\+M\+T\+K220,200$\ast$2\+C\textbackslash{}r\textbackslash{}n\char`\"{}}
+
+\mbox{\label{gps_8h_ae1e73f3c5d270755185f2fff36d0a986}} 
+\index{gps.\+h@{gps.\+h}!G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+010\+\_\+\+HZ@{G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+010\+\_\+\+HZ}}
+\index{G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+010\+\_\+\+HZ@{G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+010\+\_\+\+HZ}!gps.\+h@{gps.\+h}}
+\subsubsection{G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+010\+\_\+\+HZ}
+{\footnotesize\ttfamily \#define G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+010\+\_\+\+HZ~\char`\"{}\$P\+M\+T\+K220,100$\ast$2\+F\textbackslash{}r\textbackslash{}n\char`\"{}}
+
+\mbox{\label{gps_8h_ad19f04b4161eeefed0e7dc8f340386b4}} 
+\index{gps.\+h@{gps.\+h}!G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+100\+\_\+\+M\+HZ@{G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+100\+\_\+\+M\+HZ}}
+\index{G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+100\+\_\+\+M\+HZ@{G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+100\+\_\+\+M\+HZ}!gps.\+h@{gps.\+h}}
+\subsubsection{G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+100\+\_\+\+M\+HZ}
+{\footnotesize\ttfamily \#define G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+100\+\_\+\+M\+HZ~\char`\"{}\$P\+M\+T\+K220,10000$\ast$2\+F\textbackslash{}r\textbackslash{}n\char`\"{}}
+
+\mbox{\label{gps_8h_acc2b1e38199628cf759fb78c3c793f4a}} 
+\index{gps.\+h@{gps.\+h}!G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+200\+\_\+\+M\+HZ@{G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+200\+\_\+\+M\+HZ}}
+\index{G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+200\+\_\+\+M\+HZ@{G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+200\+\_\+\+M\+HZ}!gps.\+h@{gps.\+h}}
+\subsubsection{G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+200\+\_\+\+M\+HZ}
+{\footnotesize\ttfamily \#define G\+P\+S\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+200\+\_\+\+M\+HZ~\char`\"{}\$P\+M\+T\+K220,5000$\ast$1\+B\textbackslash{}r\textbackslash{}n\char`\"{}}
+
+
+
+\subsection{Typedef Documentation}
+\mbox{\label{gps_8h_ab232414422f09e758dd2da0a3546e48c}} 
+\index{gps.\+h@{gps.\+h}!gps\+\_\+struct@{gps\+\_\+struct}}
+\index{gps\+\_\+struct@{gps\+\_\+struct}!gps.\+h@{gps.\+h}}
+\subsubsection{gps\+\_\+struct}
+{\footnotesize\ttfamily typedef struct \textbf{ gps\+\_\+struct}  \textbf{ gps\+\_\+struct}}
+
+
+
+\subsection{Function Documentation}
+\mbox{\label{gps_8h_a4dc3078b60b9efb9fc6fdd0a5493a878}} 
+\index{gps.\+h@{gps.\+h}!gps\+\_\+exit@{gps\+\_\+exit}}
+\index{gps\+\_\+exit@{gps\+\_\+exit}!gps.\+h@{gps.\+h}}
+\subsubsection{gps\+\_\+exit()}
+{\footnotesize\ttfamily void gps\+\_\+exit (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+gps\+\_\+exit Exits the G\+PS sensor. \mbox{\label{gps_8h_ab37f7040b9efd19fdd3f92b1df77e771}} 
+\index{gps.\+h@{gps.\+h}!gps\+\_\+init@{gps\+\_\+init}}
+\index{gps\+\_\+init@{gps\+\_\+init}!gps.\+h@{gps.\+h}}
+\subsubsection{gps\+\_\+init()}
+{\footnotesize\ttfamily void gps\+\_\+init (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+gps\+\_\+init Initializes the G\+PS sensor. \mbox{\label{gps_8h_a89ec0a415f4e2f9f100bc9b44daca279}} 
+\index{gps.\+h@{gps.\+h}!gps\+\_\+update@{gps\+\_\+update}}
+\index{gps\+\_\+update@{gps\+\_\+update}!gps.\+h@{gps.\+h}}
+\subsubsection{gps\+\_\+update()}
+{\footnotesize\ttfamily void gps\+\_\+update (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+gps\+\_\+update Obtains a new set of G\+PS data. 
+
+\subsection{Variable Documentation}
+\mbox{\label{gps_8h_a3ac9e34d8b27112400d1b5f488f95924}} 
+\index{gps.\+h@{gps.\+h}!gps@{gps}}
+\index{gps@{gps}!gps.\+h@{gps.\+h}}
+\subsubsection{gps}
+{\footnotesize\ttfamily \textbf{ gps\+\_\+struct} gps}
+

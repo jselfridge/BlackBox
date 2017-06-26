@@ -1,0 +1,89 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/common/mavlink\+\_\+msg\+\_\+mission\+\_\+ack.h File Reference}
+\label{mavlink__msg__mission__ack_8h}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/common/mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/common/mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h}}
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+mission\+\_\+ack\+\_\+t}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+CK}~47
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+C\+K\+\_\+\+L\+EN}~3
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+47\+\_\+\+L\+EN}~3
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+C\+K\+\_\+\+C\+RC}~153
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+47\+\_\+\+C\+RC}~153
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+CK}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+mission\+\_\+ack\+\_\+t} \textbf{ mavlink\+\_\+mission\+\_\+ack\+\_\+t}
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\label{mavlink__msg__mission__ack_8h_ae76cae9d7fced796dd752cbf7f0a9d1c}} 
+\index{mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+CK@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+CK}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+CK@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+CK}!mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+CK}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+CK}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\{ \(\backslash\)
+    \textcolor{stringliteral}{"MISSION\_ACK"}, \(\backslash\)
+    3, \(\backslash\)
+    \{  \{ \textcolor{stringliteral}{"target\_system"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 0, offsetof(
+      mavlink_mission_ack_t, target\_system) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"target\_component"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 1, offsetof(
+      mavlink_mission_ack_t, target\_component) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"type"}, NULL, MAVLINK_TYPE_UINT8_T, 0, 2, offsetof(
+      mavlink_mission_ack_t, type) \}, \(\backslash\)
+         \} \(\backslash\)
+\}
+\end{DoxyCode}
+\mbox{\label{mavlink__msg__mission__ack_8h_ae97e79dda5b656f526f879161514ee6b}} 
+\index{mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+47\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+47\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+47\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+47\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+47\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+47\+\_\+\+C\+RC~153}
+
+\mbox{\label{mavlink__msg__mission__ack_8h_abfb81fd998063c5927e1916f5c1fe0ef}} 
+\index{mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+47\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+47\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+47\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+47\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+47\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+47\+\_\+\+L\+EN~3}
+
+\mbox{\label{mavlink__msg__mission__ack_8h_a66020d7d0d7cd678cc904a6a732b2d93}} 
+\index{mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+CK@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+CK}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+CK@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+CK}!mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+CK}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+CK~47}
+
+\mbox{\label{mavlink__msg__mission__ack_8h_a38bfcebeb51098bd239c58a96507544a}} 
+\index{mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+C\+K\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+C\+K\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+C\+K\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+C\+K\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+C\+K\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+C\+K\+\_\+\+C\+RC~153}
+
+\mbox{\label{mavlink__msg__mission__ack_8h_aa0fa76451482d74498ea70dedee0f534}} 
+\index{mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+C\+K\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+C\+K\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+C\+K\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+C\+K\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+C\+K\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+M\+I\+S\+S\+I\+O\+N\+\_\+\+A\+C\+K\+\_\+\+L\+EN~3}
+
+
+
+\subsection{Typedef Documentation}
+\mbox{\label{mavlink__msg__mission__ack_8h_ab7d447ab32d016e029471becd2a248ee}} 
+\index{mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h}!mavlink\+\_\+mission\+\_\+ack\+\_\+t@{mavlink\+\_\+mission\+\_\+ack\+\_\+t}}
+\index{mavlink\+\_\+mission\+\_\+ack\+\_\+t@{mavlink\+\_\+mission\+\_\+ack\+\_\+t}!mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h@{mavlink\+\_\+msg\+\_\+mission\+\_\+ack.\+h}}
+\subsubsection{mavlink\+\_\+mission\+\_\+ack\+\_\+t}
+{\footnotesize\ttfamily typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+mission\+\_\+ack\+\_\+t}  \textbf{ mavlink\+\_\+mission\+\_\+ack\+\_\+t}}
+

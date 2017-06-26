@@ -1,0 +1,94 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/\+A\+S\+L\+U\+A\+V/mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.h File Reference}
+\label{mavlink__msg__ekf__ext_8h}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/\+A\+S\+L\+U\+A\+V/mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/mavlink/\+A\+S\+L\+U\+A\+V/mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h}}
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+ekf\+\_\+ext\+\_\+t}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+E\+K\+F\+\_\+\+E\+XT}~206
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+E\+K\+F\+\_\+\+E\+X\+T\+\_\+\+L\+EN}~32
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+206\+\_\+\+L\+EN}~32
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+E\+K\+F\+\_\+\+E\+X\+T\+\_\+\+C\+RC}~64
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+206\+\_\+\+C\+RC}~64
+\item 
+\#define \textbf{ M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+E\+K\+F\+\_\+\+E\+XT}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+ekf\+\_\+ext\+\_\+t} \textbf{ mavlink\+\_\+ekf\+\_\+ext\+\_\+t}
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\label{mavlink__msg__ekf__ext_8h_a4aec5412b876af35a2e3dd447a36b000}} 
+\index{mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h@{mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+E\+K\+F\+\_\+\+E\+XT@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+E\+K\+F\+\_\+\+E\+XT}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+E\+K\+F\+\_\+\+E\+XT@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+E\+K\+F\+\_\+\+E\+XT}!mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h@{mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+E\+K\+F\+\_\+\+E\+XT}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+I\+N\+F\+O\+\_\+\+E\+K\+F\+\_\+\+E\+XT}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\{ \(\backslash\)
+    \textcolor{stringliteral}{"EKF\_EXT"}, \(\backslash\)
+    7, \(\backslash\)
+    \{  \{ \textcolor{stringliteral}{"timestamp"}, NULL, MAVLINK_TYPE_UINT64_T, 0, 0, offsetof(
+      mavlink_ekf_ext_t, timestamp) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"Windspeed"}, NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(
+      mavlink_ekf_ext_t, Windspeed) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"WindDir"}, NULL, MAVLINK_TYPE_FLOAT, 0, 12, offsetof(
+      mavlink_ekf_ext_t, WindDir) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"WindZ"}, NULL, MAVLINK_TYPE_FLOAT, 0, 16, offsetof(mavlink_ekf_ext_t, WindZ) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"Airspeed"}, NULL, MAVLINK_TYPE_FLOAT, 0, 20, offsetof(
+      mavlink_ekf_ext_t, Airspeed) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"beta"}, NULL, MAVLINK_TYPE_FLOAT, 0, 24, offsetof(mavlink_ekf_ext_t, beta) \}, \(\backslash\)
+         \{ \textcolor{stringliteral}{"alpha"}, NULL, MAVLINK_TYPE_FLOAT, 0, 28, offsetof(mavlink_ekf_ext_t, alpha) \}, \(\backslash\)
+         \} \(\backslash\)
+\}
+\end{DoxyCode}
+\mbox{\label{mavlink__msg__ekf__ext_8h_aca4641294533ebedbbd0efc8eabc51ab}} 
+\index{mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h@{mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+206\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+206\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+206\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+206\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h@{mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+206\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+206\+\_\+\+C\+RC~64}
+
+\mbox{\label{mavlink__msg__ekf__ext_8h_a9ab7672be2db28f3d004a4357f4e13a5}} 
+\index{mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h@{mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+206\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+206\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+206\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+206\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h@{mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+206\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+206\+\_\+\+L\+EN~32}
+
+\mbox{\label{mavlink__msg__ekf__ext_8h_a134f84d71137db1bca7409472ef72ebf}} 
+\index{mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h@{mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+E\+K\+F\+\_\+\+E\+XT@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+E\+K\+F\+\_\+\+E\+XT}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+E\+K\+F\+\_\+\+E\+XT@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+E\+K\+F\+\_\+\+E\+XT}!mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h@{mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+E\+K\+F\+\_\+\+E\+XT}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+E\+K\+F\+\_\+\+E\+XT~206}
+
+\mbox{\label{mavlink__msg__ekf__ext_8h_ad0330207d4a0ec1d1cd016bd7c73c44d}} 
+\index{mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h@{mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+E\+K\+F\+\_\+\+E\+X\+T\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+E\+K\+F\+\_\+\+E\+X\+T\+\_\+\+C\+RC}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+E\+K\+F\+\_\+\+E\+X\+T\+\_\+\+C\+RC@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+E\+K\+F\+\_\+\+E\+X\+T\+\_\+\+C\+RC}!mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h@{mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+E\+K\+F\+\_\+\+E\+X\+T\+\_\+\+C\+RC}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+E\+K\+F\+\_\+\+E\+X\+T\+\_\+\+C\+RC~64}
+
+\mbox{\label{mavlink__msg__ekf__ext_8h_af72ffec3dad568d6964dbc7321498d08}} 
+\index{mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h@{mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h}!M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+E\+K\+F\+\_\+\+E\+X\+T\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+E\+K\+F\+\_\+\+E\+X\+T\+\_\+\+L\+EN}}
+\index{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+E\+K\+F\+\_\+\+E\+X\+T\+\_\+\+L\+EN@{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+E\+K\+F\+\_\+\+E\+X\+T\+\_\+\+L\+EN}!mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h@{mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h}}
+\subsubsection{M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+E\+K\+F\+\_\+\+E\+X\+T\+\_\+\+L\+EN}
+{\footnotesize\ttfamily \#define M\+A\+V\+L\+I\+N\+K\+\_\+\+M\+S\+G\+\_\+\+I\+D\+\_\+\+E\+K\+F\+\_\+\+E\+X\+T\+\_\+\+L\+EN~32}
+
+
+
+\subsection{Typedef Documentation}
+\mbox{\label{mavlink__msg__ekf__ext_8h_a5172de463be4a0feca8822bb655de46f}} 
+\index{mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h@{mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h}!mavlink\+\_\+ekf\+\_\+ext\+\_\+t@{mavlink\+\_\+ekf\+\_\+ext\+\_\+t}}
+\index{mavlink\+\_\+ekf\+\_\+ext\+\_\+t@{mavlink\+\_\+ekf\+\_\+ext\+\_\+t}!mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h@{mavlink\+\_\+msg\+\_\+ekf\+\_\+ext.\+h}}
+\subsubsection{mavlink\+\_\+ekf\+\_\+ext\+\_\+t}
+{\footnotesize\ttfamily typedef struct \textbf{ \+\_\+\+\_\+mavlink\+\_\+ekf\+\_\+ext\+\_\+t}  \textbf{ mavlink\+\_\+ekf\+\_\+ext\+\_\+t}}
+

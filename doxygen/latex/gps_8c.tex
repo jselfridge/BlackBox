@@ -1,0 +1,58 @@
+\section{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/wip/gps.c File Reference}
+\label{gps_8c}\index{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/wip/gps.\+c@{/\+Users/jselfridge/\+Documents/\+Git\+Hub/\+Black\+Box/wip/gps.\+c}}
+{\ttfamily \#include \char`\"{}gps.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$fcntl.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$termios.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}timer.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}sys.\+h\char`\"{}}\newline
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+uint \textbf{ gps\+\_\+hex2dec} (char c)
+\item 
+void \textbf{ gps\+\_\+rmc} (char $\ast$msg)
+\item 
+void \textbf{ gps\+\_\+init} (void)
+\item 
+void \textbf{ gps\+\_\+exit} (void)
+\item 
+void \textbf{ gps\+\_\+update} (void)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\label{gps_8c_a4dc3078b60b9efb9fc6fdd0a5493a878}} 
+\index{gps.\+c@{gps.\+c}!gps\+\_\+exit@{gps\+\_\+exit}}
+\index{gps\+\_\+exit@{gps\+\_\+exit}!gps.\+c@{gps.\+c}}
+\subsubsection{gps\+\_\+exit()}
+{\footnotesize\ttfamily void gps\+\_\+exit (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+gps\+\_\+exit Exits the G\+PS sensor. \mbox{\label{gps_8c_ad2a567fd990d296c23fe34aa09dd57e5}} 
+\index{gps.\+c@{gps.\+c}!gps\+\_\+hex2dec@{gps\+\_\+hex2dec}}
+\index{gps\+\_\+hex2dec@{gps\+\_\+hex2dec}!gps.\+c@{gps.\+c}}
+\subsubsection{gps\+\_\+hex2dec()}
+{\footnotesize\ttfamily uint gps\+\_\+hex2dec (\begin{DoxyParamCaption}\item[{char}]{c }\end{DoxyParamCaption})}
+
+gps\+\_\+hex2dec Converts a hex character into an integer \mbox{\label{gps_8c_ab37f7040b9efd19fdd3f92b1df77e771}} 
+\index{gps.\+c@{gps.\+c}!gps\+\_\+init@{gps\+\_\+init}}
+\index{gps\+\_\+init@{gps\+\_\+init}!gps.\+c@{gps.\+c}}
+\subsubsection{gps\+\_\+init()}
+{\footnotesize\ttfamily void gps\+\_\+init (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+gps\+\_\+init Initializes the G\+PS sensor. \mbox{\label{gps_8c_a3b6eeec7cc2b85bb68cac05c5973e190}} 
+\index{gps.\+c@{gps.\+c}!gps\+\_\+rmc@{gps\+\_\+rmc}}
+\index{gps\+\_\+rmc@{gps\+\_\+rmc}!gps.\+c@{gps.\+c}}
+\subsubsection{gps\+\_\+rmc()}
+{\footnotesize\ttfamily void gps\+\_\+rmc (\begin{DoxyParamCaption}\item[{char $\ast$}]{msg }\end{DoxyParamCaption})}
+
+gps\+\_\+rmc Parse an R\+MC G\+PS message. \mbox{\label{gps_8c_a89ec0a415f4e2f9f100bc9b44daca279}} 
+\index{gps.\+c@{gps.\+c}!gps\+\_\+update@{gps\+\_\+update}}
+\index{gps\+\_\+update@{gps\+\_\+update}!gps.\+c@{gps.\+c}}
+\subsubsection{gps\+\_\+update()}
+{\footnotesize\ttfamily void gps\+\_\+update (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+gps\+\_\+update Obtains a new set of G\+PS data. 
