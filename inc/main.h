@@ -1,10 +1,10 @@
 
 
-//#ifndef MAIN_H
-//#define MAIN_H
+#ifndef MAIN_H
+#define MAIN_H
 
 
-//#include <stdio.h>
+#include <stdio.h>
 //#include <unistd.h>
 
 
@@ -21,7 +21,7 @@
 //#include "timer.h"
 
 
-//#endif
+#endif
 
 
 

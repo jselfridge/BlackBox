@@ -7,7 +7,8 @@
 
 EXEC   = RunBlackBox
 CC     = gcc
-CFLAGS = -Wall -g -c -fstack-check -fstack-usage -O3
+CFLAGS = -Wall -g -c -O3
+#CFLAGS = -Wall -g -c -fstack-check -fstack-usage -O3
 
 LIB    = -lm 
 #-lrt -lpthread -lprussdrv -lmat
