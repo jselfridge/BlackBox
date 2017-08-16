@@ -2,7 +2,13 @@
 
 #include "main.h"
 
-int main ( void )  {
+/**
+ * @brief       This is the main program for the BlackBox program.
+ * @param[in]   None
+ * @return      None
+ */
+int main ( void )
+{
   printf("\n\nHello World!\n\n");
   return 0;
 }
