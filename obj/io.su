@@ -1,7 +1,0 @@
-io.c:20:6:io_init	408	dynamic,bounded
-io.c:71:6:io_exit	8	static
-io.c:91:6:io_update	40	static
-io.c:118:6:io_setreg	16	static
-io.c:139:6:io_setpwm	16	static
-io.c:160:6:io_setnorm	24	static
-io.c:186:8:io_norm	8	static
