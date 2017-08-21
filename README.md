@@ -2,12 +2,18 @@
 BLACK BOX
 =========
 
-Develops a cape for a BeagleBone Black to enable "Black 
-Box" functionality for research and development.
+Originally developed a cape for a BeagleBone Black to enable 
+"Black Box" functionality for research and development.  Currently, 
+the BeagleBone Blue, along with a more developed API coded in C, 
+looks to offer a better solution.  Starting a new repo to house a 
+collection of robotics projects with this new hardware and 
+software implementation.  Thsi repo will continue to exist, while 
+the features and capabilities are being ported over into the new 
+repo, and will be removed once it has fully served its purpose.    
 
 
-Current Tasks
--------------
+Current Work-In-Progress
+------------------------
 Enable EKF with Kalman gain update inside INS timing loop.
 <ul> 
   <li> TODO: Initialize and exit EKF data structures. </li>
